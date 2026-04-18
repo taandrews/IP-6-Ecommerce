@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --forest: 27 67 50;
+    --gold: 201 168 76;
+    --ivory: 248 244 238;
+    --ink: 26 26 26;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface text-ink font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-forest-700;
+  }
+
+  ::selection {
+    background: rgb(var(--gold) / 0.35);
+    color: rgb(var(--ink));
+  }
+
+  a {
+    @apply transition-colors duration-200 ease-brand;
+  }
+
+  button, [role="button"], a {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 focus-visible:ring-offset-2 focus-visible:ring-offset-surface;
+  }
+
+  input, textarea, select {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-300 focus-visible:border-forest-500;
+  }
+}
+
+@layer components {
+  .container-tight {
+    @apply container max-w-5xl;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-medium rounded-md transition-all duration-200 ease-brand disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-forest-700 text-ivory-100 hover:bg-forest-800 px-5 py-3;
+  }
+
+  .btn-secondary {
+    @apply btn border border-forest-700 text-forest-700 hover:bg-forest-50 px-5 py-3;
+  }
+
+  .btn-gold {
+    @apply btn bg-gold-400 text-forest-900 hover:bg-gold-500 px-5 py-3;
+  }
+
+  .btn-ghost {
+    @apply btn text-forest-700 hover:bg-ivory-200 px-4 py-2;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-ivory-300 bg-surface px-3 py-2.5 text-ink placeholder:text-ink/40 transition-colors;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-ink mb-1.5;
+  }
+
+  .card {
+    @apply bg-surface rounded-lg shadow-soft border border-ivory-300/60;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .badge-gold {
+    @apply badge bg-gold-100 text-forest-900 ring-1 ring-gold-300;
+  }
+
+  .badge-forest {
+    @apply badge bg-forest-50 text-forest-800 ring-1 ring-forest-200;
+  }
+
+  .eyebrow {
+    @apply text-xs uppercase tracking-[0.18em] text-forest-600 font-medium;
+  }
+
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+}

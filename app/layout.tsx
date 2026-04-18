@@ -1,0 +1,91 @@
+import type { Metadata, Viewport } from "next";
+import { Inter, DM_Serif_Display } from "next/font/google";
+import { headers } from "next/headers";
+import Link from "next/link";
+import "./globals.css";
+import { Navigation } from "@/components/layout/Navigation";
+import { CookieBanner } from "@/components/layout/CookieBanner";
+import { Analytics } from "@/components/layout/Analytics";
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { isEuOrUk } from "@/lib/utils";
+import { hreflangAlternates } from "@/lib/i18n";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+const display = DM_Serif_Display({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400"],
+  display: "swap",
+});
+
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "IP-6 Research, Inc.";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: { default: `${siteName} — Science-backed wellness`, template: `%s · ${siteName}` },
+  description:
+    "Premium supplements, cortisone-free skincare, and gravity-fed water filtration — held to institutional research standards.",
+  applicationName: siteName,
+  alternates: hreflangAlternates("/"),
+  openGraph: {
+    type: "website",
+    siteName,
+    url: siteUrl,
+    title: `${siteName} — Science-backed wellness`,
+    description:
+      "Premium supplements, cortisone-free skincare, and gravity-fed water filtration — held to institutional research standards.",
+  },
+  twitter: { card: "summary_large_image", title: siteName },
+  robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1B4332",
+  width: "device-width",
+  initialScale: 1,
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const hdrs = headers();
+  const country =
+    hdrs.get("cloudfront-viewer-country") ??
+    hdrs.get("x-vercel-ip-country") ??
+    hdrs.get("x-country") ??
+    undefined;
+
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteName,
+    url: siteUrl,
+    logo: `${siteUrl}/logo.svg`,
+    sameAs: [] as string[],
+  };
+
+  return (
+    <html lang="en" className={`${inter.variable} ${display.variable}`}>
+      <body>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-forest-800 focus:text-ivory-100 focus:px-3 focus:py-2 focus:rounded"
+        >
+          Skip to main content
+        </a>
+        <Navigation />
+        <main id="main">{children}</main>
+        <CartDrawer />
+        <CookieBanner isEuOrUk={isEuOrUk(country)} />
+        <Analytics />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+        />
+      </body>
+    </html>
+  );
+}

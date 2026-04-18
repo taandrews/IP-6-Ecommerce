@@ -1,0 +1,23 @@
+{
+  "nav.shop": "Shop",
+  "nav.science": "The Science",
+  "nav.founder": "The Founder",
+  "nav.about": "About",
+  "nav.blog": "Journal",
+  "nav.faq": "FAQ",
+  "nav.contact": "Contact",
+  "nav.account": "Account",
+  "nav.cart": "Cart",
+  "cta.add_to_cart": "Add to cart",
+  "cta.subscribe_save": "Subscribe & save",
+  "cta.one_time": "One-time purchase",
+  "cta.checkout": "Checkout",
+  "cart.empty": "Your cart is empty",
+  "cart.subtotal": "Subtotal",
+  "cart.shipping": "Shipping",
+  "cart.tax": "Tax",
+  "cart.total": "Total",
+  "checkout.continue": "Continue",
+  "footer.dshea": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
+  "footer.tagline": "Science-backed wellness, held to institutional standards."
+}
