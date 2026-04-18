@@ -61,32 +61,35 @@ export default function ProductPage({ params }: Params) {
 
   return (
     <>
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="container pt-6 text-sm text-ink/60">
-        <ol className="flex items-center gap-1.5">
-          <li>
-            <Link href="/" className="hover:text-forest-700">Home</Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li>
-            <Link href="/shop" className="hover:text-forest-700">Shop</Link>
-          </li>
-          <li aria-hidden>/</li>
-          <li className="text-ink/80 truncate">{product.name}</li>
-        </ol>
-      </nav>
+      {/* Atmospheric product hero with gradient ground + serial detail */}
+      <section className="bg-atmosphere-deep relative">
+        <nav aria-label="Breadcrumb" className="container pt-6 text-sm text-ink/60">
+          <ol className="flex items-center gap-1.5">
+            <li>
+              <Link href="/" className="hover:text-forest-700">Home</Link>
+            </li>
+            <li aria-hidden>/</li>
+            <li>
+              <Link href="/shop" className="hover:text-forest-700">Shop</Link>
+            </li>
+            <li aria-hidden>/</li>
+            <li className="text-ink/80 truncate">{product.name}</li>
+          </ol>
+        </nav>
 
-      {/* Hero */}
-      <section className="container py-10 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-        <ProductGallery images={product.images} />
+        <div className="container py-10 lg:py-14 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 stagger">
+          <ProductGallery images={product.images} />
 
-        <div className="flex flex-col">
-          <div className="mb-5">
-            <Badge variant="gold" className="mb-3">{product.heroClaim}</Badge>
-            <h1 className="font-display text-display-lg text-forest-800 mb-4 text-balance">
-              {product.name}
-            </h1>
-            <p className="text-lg text-ink/75 leading-relaxed">{product.shortDescription}</p>
+          <div className="flex flex-col">
+            <div className="mb-5">
+              <p className="eyebrow mb-4">{product.category === "supplement" ? "Supplement" : product.category === "skincare" ? "Skincare" : "Water filtration"}</p>
+              <Badge variant="gold" className="mb-4">{product.heroClaim}</Badge>
+              <h1 className="font-display text-balance text-forest-800 mb-4" style={{ fontSize: "clamp(2rem, 4vw, 3.25rem)", lineHeight: 1.05, letterSpacing: "-0.025em", fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
+                {product.name}
+              </h1>
+              <span className="hairline-gold-left bg-gold-400 mb-5" />
+              <p className="text-lg text-ink/75 leading-relaxed">{product.shortDescription}</p>
+              <p className="sku-serial mt-6 text-ink/55">{product.sku}</p>
             {reviewAggregate ? (
               <div className="mt-4 flex items-center gap-2 text-sm text-ink/70">
                 <Stars rating={reviewAggregate.avg} size={16} />
@@ -98,7 +101,8 @@ export default function ProductPage({ params }: Params) {
             ) : null}
           </div>
 
-          <PurchasePanel product={product} currency={currency} />
+            <PurchasePanel product={product} currency={currency} />
+          </div>
         </div>
       </section>
 

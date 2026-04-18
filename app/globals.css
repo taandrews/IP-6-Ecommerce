@@ -18,12 +18,22 @@
 
   body {
     @apply bg-surface text-ink font-sans antialiased;
-    font-feature-settings: "cv11", "ss01";
+    font-feature-settings: "ss01", "ss02";
   }
 
+  /* Fraunces variable-font character */
   h1, h2, h3, h4 {
     @apply font-display text-forest-700;
+    font-variation-settings: "opsz" 72, "SOFT" 30;
+    font-weight: 400;
+    letter-spacing: -0.015em;
   }
+  h1 {
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    letter-spacing: -0.025em;
+  }
+  h2 { font-variation-settings: "opsz" 96, "SOFT" 40; }
+  h4 { font-variation-settings: "opsz" 24, "SOFT" 20; }
 
   ::selection {
     background: rgb(var(--gold) / 0.35);
@@ -92,10 +102,45 @@
     @apply badge bg-forest-50 text-forest-800 ring-1 ring-forest-200;
   }
 
+  /* Eyebrow — tighter tracking, leading rule */
   .eyebrow {
-    @apply text-xs uppercase tracking-[0.18em] text-forest-600 font-medium;
+    @apply inline-flex items-center gap-3 text-[11px] uppercase tracking-[0.24em] text-forest-600 font-medium;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
   }
 
+  /* Gold hairline — used under product card titles and section heads */
+  .hairline-gold {
+    display: block;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgb(var(--gold) / 0.7) 15%,
+      rgb(var(--gold) / 0.7) 85%,
+      transparent 100%
+    );
+  }
+  .hairline-gold-left {
+    display: block;
+    width: 2rem;
+    height: 1px;
+    background: rgb(var(--gold));
+  }
+
+  /* Serial-style SKU treatment */
+  .sku-serial {
+    @apply font-sans text-[10px] uppercase tracking-[0.32em] text-ink/50;
+  }
+  .sku-serial::before {
+    content: "№ ";
+    opacity: 0.7;
+  }
 }
 
 @layer utilities {
@@ -104,4 +149,66 @@
   }
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Fullscreen grain — loaded from /grain.svg, fixed, pointer-events none */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.045;
+    mix-blend-mode: multiply;
+    background-image: url("/grain.svg");
+    background-size: 300px 300px;
+  }
+
+  /* Staggered page-load entry. Apply to a parent; direct children fade up in sequence. */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: stagger-in 700ms cubic-bezier(0.2, 0.65, 0.2, 1) forwards;
+  }
+  .stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger > *:nth-child(2) { animation-delay: 120ms; }
+  .stagger > *:nth-child(3) { animation-delay: 260ms; }
+  .stagger > *:nth-child(4) { animation-delay: 420ms; }
+  .stagger > *:nth-child(5) { animation-delay: 580ms; }
+  .stagger > *:nth-child(6) { animation-delay: 720ms; }
+
+  @keyframes stagger-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Hero gradient — subtle radial + vertical to give pages weight */
+  .bg-atmosphere {
+    background:
+      radial-gradient(ellipse at top left, rgb(var(--gold) / 0.08), transparent 45%),
+      radial-gradient(ellipse at bottom right, rgb(var(--forest) / 0.05), transparent 50%),
+      linear-gradient(180deg, rgb(var(--ivory)) 0%, #FFFFFF 100%);
+  }
+  .bg-atmosphere-deep {
+    background:
+      radial-gradient(ellipse at 20% 10%, rgb(var(--gold) / 0.12), transparent 50%),
+      radial-gradient(circle at 85% 85%, rgb(var(--forest) / 0.1), transparent 40%),
+      #FDFBF7;
+  }
+
+  /* Editorial display size — allows hero headline to intentionally feel weightier */
+  .text-hero {
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger > * {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }

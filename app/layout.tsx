@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, DM_Serif_Display } from "next/font/google";
+import { Figtree, Fraunces } from "next/font/google";
 import { headers } from "next/headers";
 import Link from "next/link";
 import "./globals.css";
@@ -10,16 +10,16 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { isEuOrUk } from "@/lib/utils";
 import { hreflangAlternates } from "@/lib/i18n";
 
-const inter = Inter({
+const body = Figtree({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-body",
   display: "swap",
 });
-const display = DM_Serif_Display({
+const display = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400"],
   display: "swap",
+  axes: ["opsz", "SOFT"],
 });
 
 const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "IP-6 Research, Inc.";
@@ -68,8 +68,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" className={`${inter.variable} ${display.variable}`}>
+    <html lang="en" className={`${body.variable} ${display.variable}`}>
       <body>
+        <div className="grain-overlay" aria-hidden />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-forest-800 focus:text-ivory-100 focus:px-3 focus:py-2 focus:rounded"
