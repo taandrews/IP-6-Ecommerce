@@ -39,6 +39,11 @@ Thumbs.db
 .vercel
 coverage
 .cache
+tsconfig.tsbuildinfo
+
+# CDK
+infra/cdk.out
+infra/cdk.context.json
 
 # Claude
-.claude/local/
+.claude/
