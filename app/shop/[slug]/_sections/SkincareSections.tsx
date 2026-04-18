@@ -2,13 +2,14 @@ import Image from "next/image";
 import type { Product } from "@/types";
 import { Stars } from "@/components/ui/Stars";
 import { testimonials } from "@/content/testimonials";
+import { asset } from "@/lib/assets";
 
 export function SkincareSections({ product }: { product: Product }) {
   const skincareReviews = testimonials.filter((t) => t.productSku === "SKN-LSC-BASE");
 
   return (
     <>
-      {/* Before / after — customer-submitted only */}
+      {/* Before / after, customer-submitted only */}
       <section className="bg-ivory-200 py-20">
         <div className="container max-w-5xl">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -17,7 +18,7 @@ export function SkincareSections({ product }: { product: Product }) {
               Stories from customers, in their own words.
             </h2>
             <p className="text-ink/75 leading-relaxed">
-              The experiences below are voluntarily submitted by customers. We present them as individual experiences — not as clinical claims or guarantees of results.
+              The experiences below are voluntarily submitted by customers. We present them as individual experiences, not as clinical claims or guarantees of results.
             </p>
           </div>
 
@@ -31,9 +32,9 @@ export function SkincareSections({ product }: { product: Product }) {
                   <Image
                     src={
                       [
-                        "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?q=80&w=800&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=800&auto=format&fit=crop",
+                        asset("products/cream-3.jpg"),
+                        asset("products/cream-1.jpg"),
+                        asset("products/cream-2.jpg"),
                       ][i]!
                     }
                     alt={`Customer-submitted photograph of skin care routine ${i + 1}.`}
@@ -68,7 +69,7 @@ export function SkincareSections({ product }: { product: Product }) {
           A cortisone-free formula, deliberately.
         </h2>
         <p className="text-ink/85 leading-relaxed">
-          {product.name} is built without corticosteroids. The formula centers on a ceramide base, shea butter, our IP6 complex, niacinamide, and allantoin — chosen to support skin barrier function without the long-term trade-offs associated with topical steroid use.
+          {product.name} is built without corticosteroids. The formula centers on a ceramide base, shea butter, our IP6 complex, niacinamide, and allantoin, chosen to support skin barrier function without the long-term trade-offs associated with topical steroid use.
         </p>
       </section>
     </>

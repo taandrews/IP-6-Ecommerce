@@ -1,3 +1,5 @@
+import { asset } from "@/lib/assets";
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -21,7 +23,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-03-01",
     readMinutes: 6,
     coverImage:
-      "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?q=80&w=1600&auto=format&fit=crop",
+      asset("blog/the-science-behind-ip6.jpg"),
     coverAlt: "Laboratory glassware arranged on a pale surface.",
     category: "Science",
     content: [
@@ -55,7 +57,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-02-12",
     readMinutes: 5,
     coverImage:
-      "https://images.unsplash.com/photo-1556228841-a3f527ebefe5?q=80&w=1600&auto=format&fit=crop",
+      asset("blog/formulating-cortisone-free-skincare.jpg"),
     coverAlt: "Botanical skincare ingredients in glass jars.",
     category: "Wellness",
     content: [
@@ -84,7 +86,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-01-18",
     readMinutes: 7,
     coverImage:
-      "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1600&auto=format&fit=crop",
+      asset("blog/humanitarian-water-filtration.jpg"),
     coverAlt: "A hillside village at dawn with visible water collection points.",
     category: "Humanitarian",
     content: [
@@ -113,7 +115,7 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-04-02",
     readMinutes: 4,
     coverImage:
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600&auto=format&fit=crop",
+      asset("blog/building-a-science-first-brand.jpg"),
     coverAlt: "A quiet workspace with open notebooks and scientific journals.",
     category: "Company",
     content: [

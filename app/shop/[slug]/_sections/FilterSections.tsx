@@ -3,13 +3,14 @@ import Link from "next/link";
 import { Droplets, Globe2, Zap, Users } from "lucide-react";
 import type { Product } from "@/types";
 import { Badge } from "@/components/ui/Badge";
+import { asset } from "@/lib/assets";
 
 const NSF_CERTIFIED = process.env.NEXT_PUBLIC_NSF_CERTIFIED === "true";
 
 export function FilterSections({ product }: { product: Product }) {
   return (
     <>
-      {/* Performance claims banner — device, not supplement, so this is allowed */}
+      {/* Performance claims banner: device, not supplement, so this is allowed */}
       <section className="bg-forest-800 text-ivory-100 py-20">
         <div className="container max-w-5xl grid md:grid-cols-2 gap-10 items-center">
           <div>
@@ -29,14 +30,14 @@ export function FilterSections({ product }: { product: Product }) {
                     className="inline-block size-2 rounded-full bg-gold-300"
                     aria-hidden
                   />
-                  NSF certification pending — badge will activate when issued.
+                  NSF certification pending. Badge will activate when issued.
                 </div>
               )}
             </div>
           </div>
           <div className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-card">
             <Image
-              src="https://images.unsplash.com/photo-1527689368864-3a821dbccc34?q=80&w=1600&auto=format&fit=crop"
+              src={asset("products/filter-lifestyle.jpg")}
               alt="Water is poured into the IP6-Citrate filter reservoir."
               fill
               sizes="(min-width:768px) 480px, 100vw"
@@ -51,7 +52,7 @@ export function FilterSections({ product }: { product: Product }) {
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
           <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1600&auto=format&fit=crop"
+              src={asset("products/filter-humanitarian.jpg")}
               alt="Community members at a remote water access point at dawn."
               fill
               sizes="(min-width:1024px) 560px, 100vw"
@@ -64,7 +65,7 @@ export function FilterSections({ product }: { product: Product }) {
               Built for the households we often can't reach with a power grid.
             </h2>
             <p className="text-ink/85 leading-relaxed mb-6">
-              The IP6-Citrate Water Filter is used by humanitarian partners in South and Southeast Asia, West Africa, and disaster-response contexts — environments where electricity and replacement-part supply chains are uncertain. A portion of every consumer sale helps subsidize those deployments.
+              The IP6-Citrate Water Filter is used by humanitarian partners in South and Southeast Asia, West Africa, and disaster-response contexts, environments where electricity and replacement-part supply chains are uncertain. A portion of every consumer sale helps subsidize those deployments.
             </p>
             <ul className="grid grid-cols-2 gap-3 text-sm text-ink/80">
               <li className="flex items-center gap-2"><Droplets className="size-4 text-forest-600" />Gravity-fed</li>

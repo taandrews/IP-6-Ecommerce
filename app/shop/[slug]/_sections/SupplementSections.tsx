@@ -1,16 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { asset } from "@/lib/assets";
 
 export function SupplementSections() {
   return (
     <>
-      {/* Founder endorsement — compliant structure-function language only */}
+      {/* Founder endorsement, compliant structure-function language only */}
       <section className="bg-ivory-200 py-20">
         <div className="container max-w-4xl grid lg:grid-cols-[1fr_1.4fr] gap-10 items-center">
           <div className="relative aspect-square rounded-full overflow-hidden mx-auto w-48 lg:w-full">
             <Image
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop"
-              alt="Portrait of the founder of IP-6 Research."
+              src={asset("founder/shamsuddin.png")}
+              alt="Portrait of Dr. AbulKalam M. Shamsuddin, founder of IP-6 Research."
               fill
               sizes="(min-width:1024px) 360px, 192px"
               className="object-cover"

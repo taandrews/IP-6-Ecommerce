@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "@/components/layout/Footer";
 import { hreflangAlternates } from "@/lib/i18n";
+import { asset } from "@/lib/assets";
 
 export const metadata: Metadata = {
   title: "About",
@@ -39,7 +40,7 @@ export default function AboutPage() {
           </div>
           <div className="relative aspect-[4/5] rounded-xl overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1600&auto=format&fit=crop"
+              src={asset("hero/about.jpg")}
               alt="Laboratory instruments and notebooks arranged on a wooden surface."
               fill
               sizes="(min-width:1024px) 560px, 100vw"

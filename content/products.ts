@@ -1,26 +1,18 @@
 import type { Product } from "@/types";
+import { asset } from "@/lib/assets";
 
-const HERO_SUPPLEMENT =
-  "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?q=80&w=1600&auto=format&fit=crop";
-const HERO_CREAM =
-  "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=1600&auto=format&fit=crop";
-const HERO_FILTER =
-  "https://images.unsplash.com/photo-1523362628745-0c100150b504?q=80&w=1600&auto=format&fit=crop";
+const HERO_SUPPLEMENT = asset("products/supplement-1.jpg");
+const HERO_CREAM = asset("products/cream-1.jpg");
+const HERO_FILTER = asset("products/filter-1.jpg");
 
-const DETAIL_SUPPLEMENT_2 =
-  "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?q=80&w=1600&auto=format&fit=crop";
-const DETAIL_SUPPLEMENT_3 =
-  "https://images.unsplash.com/photo-1550572017-edd951b55104?q=80&w=1600&auto=format&fit=crop";
+const DETAIL_SUPPLEMENT_2 = asset("products/supplement-2.jpg");
+const DETAIL_SUPPLEMENT_3 = asset("products/supplement-3.jpg");
 
-const DETAIL_CREAM_2 =
-  "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=1600&auto=format&fit=crop";
-const DETAIL_CREAM_3 =
-  "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?q=80&w=1600&auto=format&fit=crop";
+const DETAIL_CREAM_2 = asset("products/cream-2.jpg");
+const DETAIL_CREAM_3 = asset("products/cream-3.jpg");
 
-const DETAIL_FILTER_2 =
-  "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?q=80&w=1600&auto=format&fit=crop";
-const DETAIL_FILTER_3 =
-  "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=1600&auto=format&fit=crop";
+const DETAIL_FILTER_2 = asset("products/filter-2.jpg");
+const DETAIL_FILTER_3 = asset("products/filter-3.jpg");
 
 export const products: Product[] = [
   {

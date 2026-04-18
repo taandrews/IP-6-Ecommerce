@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { products } from "@/content/products";
 import { testimonials } from "@/content/testimonials";
 import { resolveCurrency } from "@/lib/currency";
+import { asset } from "@/lib/assets";
 
 export default function HomePage() {
   const currency = resolveCurrency();
@@ -55,7 +56,7 @@ export default function HomePage() {
             <div className="relative lg:col-span-5 lg:-mr-12 xl:-mr-24">
               <div className="relative aspect-[4/5] lg:aspect-[3/4] rounded-xl overflow-hidden shadow-card">
                 <Image
-                  src="https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?q=80&w=1600&auto=format&fit=crop"
+                  src={asset("hero/home.jpg")}
                   alt="Soft natural light on a studio arrangement of IP-6 Research products."
                   fill
                   priority
@@ -144,7 +145,7 @@ export default function HomePage() {
           <div className="lg:col-span-6 relative">
             <div className="relative aspect-[4/5] rounded-xl overflow-hidden shadow-card">
               <Image
-                src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1600&auto=format&fit=crop"
+                src={asset("hero/science.jpg")}
                 alt="A researcher examines a sample under soft laboratory lighting."
                 fill
                 sizes="(min-width: 1024px) 560px, 100vw"
