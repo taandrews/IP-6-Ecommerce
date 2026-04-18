@@ -4,6 +4,7 @@ import {
   RemovalPolicy,
   CfnOutput,
   Duration,
+  SecretValue,
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
@@ -12,6 +13,7 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as ses from "aws-cdk-lib/aws-ses";
+import * as secrets from "aws-cdk-lib/aws-secretsmanager";
 
 export interface Ip6StackProps extends StackProps {
   environment: "staging" | "prod";
@@ -255,6 +257,57 @@ export class Ip6Stack extends Stack {
     });
 
     // -----------------------
+    // Secrets Manager
+    // -----------------------
+    // One secret per third-party service. Each holds JSON with multiple keys
+    // so the app fetches a single secret and pulls out the values it needs.
+    // Populate real values in the AWS console after deploy.
+    const stripeSecret = new secrets.Secret(this, "StripeSecret", {
+      secretName: `ip6/${props.environment}/stripe`,
+      description: "Stripe API keys (test mode for staging; rotate to live at launch)",
+      secretObjectValue: {
+        secretKey: SecretValue.unsafePlainText("sk_test_REPLACE_ME"),
+        publishableKey: SecretValue.unsafePlainText("pk_test_REPLACE_ME"),
+        webhookSecret: SecretValue.unsafePlainText("whsec_REPLACE_ME"),
+      },
+      removalPolicy: removal,
+    });
+
+    const sanitySecret = new secrets.Secret(this, "SanitySecret", {
+      secretName: `ip6/${props.environment}/sanity`,
+      description: "Sanity CMS project credentials",
+      secretObjectValue: {
+        projectId: SecretValue.unsafePlainText("REPLACE_ME"),
+        dataset: SecretValue.unsafePlainText("production"),
+        apiToken: SecretValue.unsafePlainText("REPLACE_ME"),
+      },
+      removalPolicy: removal,
+    });
+
+    const algoliaSecret = new secrets.Secret(this, "AlgoliaSecret", {
+      secretName: `ip6/${props.environment}/algolia`,
+      description: "Algolia app credentials",
+      secretObjectValue: {
+        appId: SecretValue.unsafePlainText("REPLACE_ME"),
+        searchKey: SecretValue.unsafePlainText("REPLACE_ME"),
+        adminKey: SecretValue.unsafePlainText("REPLACE_ME"),
+      },
+      removalPolicy: removal,
+    });
+
+    const appSecret = new secrets.Secret(this, "AppSecret", {
+      secretName: `ip6/${props.environment}/app`,
+      description: "Application-level secrets (rate limit, etc.)",
+      generateSecretString: {
+        secretStringTemplate: JSON.stringify({}),
+        generateStringKey: "rateLimitSecret",
+        passwordLength: 64,
+        excludePunctuation: true,
+      },
+      removalPolicy: removal,
+    });
+
+    // -----------------------
     // Outputs
     // -----------------------
     new CfnOutput(this, "UserPoolId", { value: userPool.userPoolId });
@@ -262,5 +315,9 @@ export class Ip6Stack extends Stack {
     new CfnOutput(this, "AssetsBucketName", { value: assetsBucket.bucketName });
     new CfnOutput(this, "CloudfrontDomain", { value: distribution.distributionDomainName });
     new CfnOutput(this, "TablePrefix", { value: props.tablePrefix });
+    new CfnOutput(this, "StripeSecretArn", { value: stripeSecret.secretArn });
+    new CfnOutput(this, "SanitySecretArn", { value: sanitySecret.secretArn });
+    new CfnOutput(this, "AlgoliaSecretArn", { value: algoliaSecret.secretArn });
+    new CfnOutput(this, "AppSecretArn", { value: appSecret.secretArn });
   }
 }
