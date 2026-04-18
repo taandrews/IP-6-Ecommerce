@@ -17,7 +17,7 @@ export default function FounderPage() {
       <section className="container py-16 lg:py-24 grid lg:grid-cols-[1fr_1.2fr] gap-12 items-center">
         <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-ivory-200">
           <Image
-            src="/founder/shamsuddin.jpg"
+            src="/founder/shamsuddin.png"
             alt="Portrait of Dr. AbulKalam M. Shamsuddin, Professor of Pathology at the University of Maryland School of Medicine."
             fill
             priority
