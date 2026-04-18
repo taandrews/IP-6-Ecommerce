@@ -28,7 +28,7 @@ export const products: Product[] = [
     sku: "SUP-IP6-BASE",
     name: "IP6 Original Supplement",
     shortDescription:
-      "Pharmaceutical-grade inositol hexaphosphate (IP6) — 95%+ purity, produced to institutional research standards.",
+      "Pharmaceutical-grade inositol hexaphosphate at 95%+ purity, manufactured to research-grade specifications.",
     category: "supplement",
     heroClaim: "95%+ purity",
     highlights: [
@@ -39,7 +39,7 @@ export const products: Product[] = [
       "Vegan, non-GMO, gluten-free",
     ],
     ingredients: [
-      "Inositol hexaphosphate (IP6) — 500 mg",
+      "Inositol hexaphosphate (IP6), 500 mg",
       "Vegetable cellulose (capsule)",
       "Rice flour",
       "No artificial colors, flavors, or preservatives",
@@ -103,11 +103,11 @@ export const products: Product[] = [
     faq: [
       {
         q: "What is IP6?",
-        a: "IP6 — inositol hexaphosphate — is a naturally occurring compound found in whole grains, legumes, and seeds. Our formulation delivers 95%+ purity IP6 standardized to institutional research specifications.",
+        a: "IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. Our formulation delivers 95%+ purity IP6 standardized to research-grade specifications.",
       },
       {
         q: "Why take IP6 between meals?",
-        a: "Taking IP6 on an empty stomach, away from mineral-rich meals, is recommended for optimal absorption.",
+        a: "Take IP6 on an empty stomach, away from mineral-rich meals, for the best absorption.",
       },
       {
         q: "Is this product third-party tested?",
@@ -220,12 +220,12 @@ export const products: Product[] = [
     sku: "FIL-CITRATE-BASE",
     name: "IP6-Citrate Water Filter",
     shortDescription:
-      "Gravity-fed water purification using IP6-Citrate media. Removes lead and arsenic in under 60 seconds — no electricity required.",
+      "Gravity-fed water purification using IP6-Citrate media. Removes lead and arsenic in under 60 seconds. No electricity required.",
     category: "filter",
     heroClaim: "Removes lead and arsenic in under 60 seconds",
     highlights: [
       "Removes lead and arsenic in under 60 seconds of flow time",
-      "No electricity required — fully gravity-fed",
+      "Fully gravity-fed. No electricity required",
       "Replaceable IP6-Citrate cartridge",
       "BPA-free food-grade housing",
       "Designed for household and humanitarian field use",
@@ -290,7 +290,7 @@ export const products: Product[] = [
     faq: [
       {
         q: "How is the IP6-Citrate media different from carbon filters?",
-        a: "Activated-carbon filters primarily reduce chlorine and taste. The IP6-Citrate media is engineered to chelate heavy-metal contaminants — lead, arsenic, cadmium — at flow rates that typical gravity filters cannot match.",
+        a: "Activated-carbon filters primarily reduce chlorine and taste. The IP6-Citrate media is engineered to chelate heavy-metal contaminants (lead, arsenic, cadmium) at flow rates that typical gravity filters cannot match.",
       },
       {
         q: "Does it need electricity or plumbing?",

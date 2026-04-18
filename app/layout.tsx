@@ -27,18 +27,18 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: `${siteName} — Science-backed wellness`, template: `%s · ${siteName}` },
+  title: { default: `${siteName} · Science-backed wellness`, template: `%s · ${siteName}` },
   description:
-    "Premium supplements, cortisone-free skincare, and gravity-fed water filtration — held to institutional research standards.",
+    "Premium supplements, cortisone-free skincare, and gravity-fed water filtration, built to research-grade specifications.",
   applicationName: siteName,
   alternates: hreflangAlternates("/"),
   openGraph: {
     type: "website",
     siteName,
     url: siteUrl,
-    title: `${siteName} — Science-backed wellness`,
+    title: `${siteName} · Science-backed wellness`,
     description:
-      "Premium supplements, cortisone-free skincare, and gravity-fed water filtration — held to institutional research standards.",
+      "Premium supplements, cortisone-free skincare, and gravity-fed water filtration, built to research-grade specifications.",
   },
   twitter: { card: "summary_large_image", title: siteName },
   robots: { index: true, follow: true },

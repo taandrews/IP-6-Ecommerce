@@ -28,7 +28,7 @@ export default function HomePage() {
                 </span>
               </h1>
               <p className="mt-8 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
-                A quietly serious wellness brand built on institutional research standards. Supplements, cortisone-free skincare, and gravity-fed filtration — each held to a single, uncompromising specification.
+                Supplements, cortisone-free skincare, and gravity-fed filtration, each built to a single research-grade specification.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-4">
                 <Link
@@ -118,7 +118,7 @@ export default function HomePage() {
         ]}
       />
 
-      {/* Editorial science strip — dark ground, gold accents */}
+      {/* Editorial science strip, dark ground with gold accents */}
       <section className="relative bg-forest-800 text-ivory-100 py-24 overflow-hidden">
         <div
           aria-hidden
@@ -137,7 +137,7 @@ export default function HomePage() {
             </h2>
             <span className="hairline-gold-left bg-gold-400 mb-6" />
             <p className="text-ivory-100/85 leading-relaxed mb-8 text-lg">
-              The credibility of a wellness brand lives or dies by what it chooses not to say. Every ingredient is selected for a specific, measurable role. Every batch is tested by an independent, ISO-accredited laboratory. Every claim on this site uses structure-function language — no shortcuts, no promises we can't stand behind.
+              A credible wellness brand is defined as much by what it refuses to say as by what it says. Every ingredient is selected for a specific, measurable role. Every batch is tested by an independent, ISO-accredited laboratory. Every claim on this site uses structure-function language. No shortcuts, no promises we cannot stand behind.
             </p>
             <Link href="/about" className="btn-gold">Read our approach</Link>
           </div>

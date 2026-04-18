@@ -7,7 +7,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "The Founder",
   description:
-    "The founder's story behind IP-6 Research, Inc. — a research-driven approach to wellness, without the theatrics.",
+    "Dr. AbulKalam M. Shamsuddin, Professor of Pathology at the University of Maryland School of Medicine and founder of IP-6 Research, Inc.",
   alternates: hreflangAlternates("/founder"),
 };
 
@@ -15,10 +15,10 @@ export default function FounderPage() {
   return (
     <>
       <section className="container py-16 lg:py-24 grid lg:grid-cols-[1fr_1.2fr] gap-12 items-center">
-        <div className="relative aspect-[4/5] rounded-xl overflow-hidden">
+        <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-ivory-200">
           <Image
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1200&auto=format&fit=crop"
-            alt="Portrait of the founder in natural light."
+            src="/founder/shamsuddin.jpg"
+            alt="Portrait of Dr. AbulKalam M. Shamsuddin, Professor of Pathology at the University of Maryland School of Medicine."
             fill
             priority
             sizes="(min-width:1024px) 480px, 100vw"
@@ -27,27 +27,33 @@ export default function FounderPage() {
         </div>
         <div>
           <p className="eyebrow mb-4">The Founder</p>
-          <h1 className="font-display text-display-xl text-forest-800 mb-6 text-balance">
-            A practitioner's view of wellness.
+          <h1 className="font-display text-display-xl text-forest-800 mb-4 text-balance">
+            Dr. AbulKalam M. Shamsuddin
           </h1>
+          <p className="text-sm text-ink/60 mb-6 uppercase tracking-[0.2em]">
+            M.B., B.S., PhD · Professor of Pathology · Founder
+          </p>
           <p className="text-lg text-ink/75 leading-relaxed">
-            IP-6 Research, Inc. grew out of decades of hands-on experience in clinical research and product formulation. Our founder has dedicated their career to the question of how rigorous science becomes trustworthy, accessible consumer products — without the hype.
+            Professor Shamsuddin has spent his academic career at the University of Maryland School of Medicine in Baltimore, where several decades of peer-reviewed investigation into inositol hexaphosphate (IP6) and inositol form the scientific foundation of IP-6 Research, Inc.
           </p>
         </div>
       </section>
 
       <section className="container py-16 max-w-3xl space-y-8 text-ink/85 leading-relaxed">
         <p>
-          The wellness industry rewards confident claims. Bold promises, compelling stories, clean-looking labels. For a long time, our founder worked adjacent to that industry — in research contexts where those same claims would never survive peer review.
+          Prof. Shamsuddin graduated from the University of Dhaka (Dhaka Medical College). Following an internship in Massachusetts and residency training in pathology in Maryland, he was certified by the American Board of Pathology in 1977 and joined the faculty of the University of Maryland School of Medicine as an Instructor the same year. He received his PhD from the University of Maryland in 1980 and rose through the ranks of Assistant Professor and Associate Professor to become a full Professor in 1988.
         </p>
         <p>
-          The question that shaped IP-6 Research was simple: what would a wellness company look like if it applied the communication standards of academic science to a retail product line? Fewer claims. Narrower language. More testing. More disclosure. A willingness to say: <em>we don't know yet, and until we do, we won't say we do.</em>
+          For excellence in teaching, Professor Shamsuddin received the Best Teacher award from the medical students on multiple occasions, including the Golden Apple Award from the American Medical Students&apos; Association in 1999.
         </p>
         <p>
-          That discipline shaped every product we ship. The supplement is standardized to a research-grade purity specification. The skincare line is built without cortisone because we believe long-term use of a compound that thins the skin is the wrong trade-off, even when it gives a faster short-term result. The water filter is engineered without electricity because the communities who most need it can't rely on a power grid.
+          Beginning in the mid-1980s, Prof. Shamsuddin initiated a program of research into inositol hexaphosphate and inositol, natural constituents of cereals and legumes such as rice, corn, and beans. Over the following decades, his laboratory contributed extensively to the peer-reviewed literature characterizing these compounds. He was instrumental in organizing the First International Symposium of IP6 and Other Rice Components in Kyoto, Japan, in June 1998. He has authored over 200 scientific publications and contributed numerous book chapters across his career.
         </p>
         <p>
-          None of this is marketing. It's the product of asking, at every decision point, what would hold up in front of a reviewer.
+          A veteran of the Bangladesh Liberation War, Prof. Shamsuddin is the founding President of the IP-6 Foundation, Inc. in Baltimore and the Komolpur Janakallyan Trust in Dhaka, Bangladesh. Both are non-profit organizations supporting health care and economic empowerment in rural Bangladesh.
+        </p>
+        <p>
+          IP-6 Research, Inc. is the commercial extension of that body of work: consumer products formulated to the research-grade purity standards Prof. Shamsuddin has held his own laboratory to for most of his career.
         </p>
       </section>
 
@@ -57,7 +63,7 @@ export default function FounderPage() {
             Featured product
           </h2>
           <p className="text-ink/75 leading-relaxed mb-8">
-            Our founder personally oversaw the formulation of IP6 Original Supplement. The 95%+ purity specification, the capsule design, the cGMP partner — every decision runs back through a research lens.
+            Prof. Shamsuddin personally oversaw the formulation of IP6 Original Supplement. The 95%+ purity specification, the capsule design, and the cGMP manufacturing partner were chosen to the same standards his laboratory held.
           </p>
           <Link href="/shop/ip6-original-supplement" className="btn-primary">
             View IP6 Original Supplement
