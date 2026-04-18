@@ -16,14 +16,14 @@ export default function FounderPage() {
   return (
     <>
       <section className="container py-16 lg:py-24 grid lg:grid-cols-[1fr_1.2fr] gap-12 items-center">
-        <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-ivory-200">
+        <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-ivory-200">
           <Image
             src={asset("founder/shamsuddin.png")}
             alt="Portrait of Dr. AbulKalam M. Shamsuddin, Professor of Pathology at the University of Maryland School of Medicine."
             fill
             priority
             sizes="(min-width:1024px) 480px, 100vw"
-            className="object-cover"
+            className="object-cover object-top"
           />
         </div>
         <div>

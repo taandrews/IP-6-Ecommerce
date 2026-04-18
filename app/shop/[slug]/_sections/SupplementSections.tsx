@@ -14,7 +14,7 @@ export function SupplementSections() {
               alt="Portrait of Dr. AbulKalam M. Shamsuddin, founder of IP-6 Research."
               fill
               sizes="(min-width:1024px) 360px, 192px"
-              className="object-cover"
+              className="object-cover object-top"
             />
           </div>
           <div>
