@@ -9,9 +9,9 @@ import { Wordmark } from "@/components/layout/Wordmark";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/shop/ip6-original-supplement", label: "Supplement" },
-  { href: "/shop/ip6-la-sante-cream", label: "Skincare" },
-  { href: "/shop/ip6-citrate-water-filter", label: "Water Filter" },
+  { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
+  { href: "/shop/ip6-la-sante-cream", label: "IP6 La Santé" },
+  { href: "/shop/ip6-citrate-water-filter", label: "IP6-Citrate Filter" },
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Support" },
 ];
