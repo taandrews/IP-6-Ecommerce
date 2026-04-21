@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Figtree, Fraunces } from "next/font/google";
+import { IBM_Plex_Sans } from "next/font/google";
 import { headers } from "next/headers";
-import Link from "next/link";
 import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
 import { CookieBanner } from "@/components/layout/CookieBanner";
@@ -10,16 +9,11 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { isEuOrUk } from "@/lib/utils";
 import { hreflangAlternates } from "@/lib/i18n";
 
-const body = Figtree({
+const sans = IBM_Plex_Sans({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-body",
   display: "swap",
-});
-const display = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-  axes: ["opsz", "SOFT"],
 });
 
 const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "IP-6 Research, Inc.";
@@ -45,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1B4332",
+  themeColor: "#002C5C",
   width: "device-width",
   initialScale: 1,
 };
@@ -68,12 +62,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" className={`${body.variable} ${display.variable}`}>
+    <html lang="en" className={`${sans.variable}`} style={{ ["--font-display" as string]: "var(--font-body)" }}>
       <body>
-        <div className="grain-overlay" aria-hidden />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-forest-800 focus:text-ivory-100 focus:px-3 focus:py-2 focus:rounded"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-navy-800 focus:text-surface focus:px-3 focus:py-2 focus:rounded"
         >
           Skip to main content
         </a>
