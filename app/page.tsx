@@ -71,7 +71,7 @@ export default function HomePage() {
               <div className="absolute bottom-5 left-5 bg-surface rounded-md px-5 py-4 shadow-card border border-cloud-300">
                 <p className="text-[10px] uppercase tracking-[0.22em] text-ink/55 font-semibold">Verified</p>
                 <p className="font-sans font-bold text-navy-800 leading-none mt-1.5" style={{ fontSize: "2.25rem", letterSpacing: "-0.025em" }}>
-                  95.3<span className="text-coral-500">%</span>
+                  95.3<span className="text-sky-600">%</span>
                 </p>
                 <p className="text-[11px] text-ink/60 mt-1">IP6 intact · HPLC</p>
               </div>
@@ -140,7 +140,7 @@ export default function HomePage() {
             { n: "<60s", l: "Filtration contact time for heavy metals" },
             { n: "50,000+", l: "Subscriptions managed" },
           ].map((i) => (
-            <div key={i.l} className="border-l-2 border-coral-500 pl-5">
+            <div key={i.l} className="border-l-2 border-sky-400 pl-5">
               <p className="font-sans font-bold text-surface leading-none" style={{ fontSize: "clamp(2.25rem, 4vw, 3rem)", letterSpacing: "-0.025em" }}>
                 {i.n}
               </p>
@@ -297,7 +297,7 @@ function ProductBand({
           <h2 className="font-sans font-semibold text-navy-800 text-balance" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", letterSpacing: "-0.025em", lineHeight: 1.05 }}>
             {product.name}
           </h2>
-          <p className="mt-4 font-sans font-medium text-coral-600 text-lg">
+          <p className="mt-4 font-sans font-semibold text-sky-700 text-lg">
             {outcomeLine}
           </p>
           <p className="mt-5 text-ink/70 leading-relaxed text-lg max-w-xl">
