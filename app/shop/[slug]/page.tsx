@@ -10,6 +10,7 @@ import { DsheaDisclaimer } from "@/components/product/Dshea";
 import { ProductCard } from "@/components/product/ProductCard";
 import { SignatureVisual } from "@/components/product/SignatureVisual";
 import { Footer } from "@/components/layout/Footer";
+import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { Grain } from "@/components/ui/Grain";
 import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
@@ -293,6 +294,7 @@ export default function ProductPage({ params }: Params) {
 
       <ProductSchema product={product} currency={currency} reviewAggregate={reviewAggregate} />
       <EditorialCursor />
+      {product.requiresDsheaDisclaimer ? <StickyDisclaimer /> : null}
       <Footer showDshea={product.requiresDsheaDisclaimer} />
     </>
   );

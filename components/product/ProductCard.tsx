@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Product, Currency } from "@/types";
 import { formatPrice } from "@/lib/utils";
 
@@ -11,80 +11,74 @@ export function ProductCard({ product, currency }: { product: Product; currency:
   const categoryLabel = {
     supplement: "Supplement",
     skincare: "Skincare",
-    filter: "Water filtration",
+    filter: "Water filter",
   }[product.category];
 
+  // First 3 highlights as benefit bullets.
+  const bullets = product.highlights.slice(0, 3);
+
   return (
-    <Link
-      href={`/shop/${product.slug}`}
-      className="group relative block rounded-lg overflow-hidden bg-ivory-200 border border-ivory-300/60 hover:border-forest-300 transition-colors duration-500 ease-brand"
-    >
-      {/* Image area fills the card; copy overlays from the bottom on hover */}
-      <div className="relative aspect-[3/4] overflow-hidden">
+    <article className="group rounded-lg overflow-hidden border border-ivory-300 bg-surface hover:shadow-card transition-shadow duration-300 flex flex-col">
+      <Link href={`/shop/${product.slug}`} className="block relative aspect-[4/3] overflow-hidden bg-ivory-200">
         {image ? (
           <Image
             src={image.url}
             alt={image.alt}
             fill
             sizes="(min-width: 1024px) 420px, 50vw"
-            className="object-cover transition-transform duration-[900ms] ease-brand group-hover:scale-[1.06]"
+            className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.04]"
           />
         ) : null}
-
-        {/* Darkening veil for contrast on hover */}
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-forest-900/70 via-forest-900/10 to-transparent opacity-50 group-hover:opacity-95 transition-opacity duration-500"
-        />
-
-        {/* Top corner: serial number */}
-        <div className="absolute top-5 left-5 right-5 flex items-start justify-between text-ivory-100">
-          <p className="text-[10px] uppercase tracking-[0.32em] opacity-75">
-            <span className="opacity-60">№&nbsp;</span>
-            {product.sku}
-          </p>
-          <div className="opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
-            <ArrowUpRight className="size-5" />
-          </div>
+        <div className="absolute top-3 left-3 bg-surface/95 backdrop-blur-sm rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.24em] font-medium text-forest-800">
+          {categoryLabel}
         </div>
+      </Link>
 
-        {/* Bottom copy — shifts up and gains detail on hover */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-ivory-100">
-          <p className="text-[11px] uppercase tracking-[0.28em] opacity-80 mb-2">
-            {categoryLabel}
-          </p>
+      <div className="p-6 flex-1 flex flex-col">
+        <Link href={`/shop/${product.slug}`}>
           <h3
-            className="font-display text-balance leading-[1.05]"
-            style={{ fontSize: "clamp(1.4rem, 2vw, 1.75rem)", fontVariationSettings: '"opsz" 96, "SOFT" 40' }}
+            className="font-display text-2xl text-forest-800 leading-tight hover:text-forest-700 transition-colors"
+            style={{ fontVariationSettings: '"opsz" 72, "SOFT" 40' }}
           >
             {product.name}
           </h3>
+        </Link>
 
-          <div className="h-px bg-gold-400/70 w-12 my-4 origin-left group-hover:w-24 transition-all duration-500 ease-brand" />
+        <p
+          className="mt-2 text-sm font-medium"
+          style={{ color: "rgb(176 142 53)" }}
+        >
+          {product.heroClaim}
+        </p>
 
-          <p className="text-sm leading-relaxed opacity-0 group-hover:opacity-90 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-500 ease-brand">
-            {product.shortDescription}
-          </p>
+        <ul className="mt-4 space-y-1.5 text-sm text-ink/80 flex-1">
+          {bullets.map((b) => (
+            <li key={b} className="flex items-start gap-2">
+              <span className="mt-2 size-1 rounded-full bg-gold-400 shrink-0" aria-hidden />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
 
-          <div className="mt-5 flex items-end justify-between">
-            <p>
-              <span className="text-[10px] uppercase tracking-[0.28em] opacity-70 block">From</span>
-              <span
-                className="font-display"
-                style={{ fontSize: "1.3rem", fontVariationSettings: '"opsz" 72, "SOFT" 50' }}
-              >
-                {formatPrice(startingFrom, currency)}
-              </span>
-            </p>
+        <div className="mt-6 flex items-end justify-between gap-4 pt-5 border-t border-ivory-300">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-ink/55 mb-0.5">From</p>
             <p
-              className="font-display italic text-gold-300"
-              style={{ fontSize: "0.85rem", fontVariationSettings: '"opsz" 24, "SOFT" 90' }}
+              className="font-display text-xl text-forest-800"
+              style={{ fontVariationSettings: '"opsz" 48, "SOFT" 30' }}
             >
-              {product.heroClaim}
+              {formatPrice(startingFrom, currency)}
             </p>
           </div>
+          <Link
+            href={`/shop/${product.slug}`}
+            className="btn-primary text-sm px-4 py-2.5 group/btn"
+          >
+            Shop
+            <ArrowRight className="size-4 transition-transform group-hover/btn:translate-x-0.5" />
+          </Link>
         </div>
       </div>
-    </Link>
+    </article>
   );
 }
