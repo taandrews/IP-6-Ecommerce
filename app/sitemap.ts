@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { products } from "@/content/products";
-import { blogPosts } from "@/content/blog-posts";
 
 const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com";
 
@@ -8,17 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPaths = [
     "",
     "/shop",
-    "/why-ip6",
-    "/why-ip6/what-is-ip6",
-    "/why-ip6/how-it-works",
-    "/why-ip6/comparison",
-    "/how-to-take",
-    "/savings",
-    "/lifestyle",
-    "/founder",
-    "/testimonials",
     "/faq",
-    "/blog",
     "/contact",
     "/international-shipping",
     "/legal/privacy",
@@ -43,12 +32,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.9,
-    })),
-    ...blogPosts.map((p) => ({
-      url: `${base}/blog/${p.slug}`,
-      lastModified: new Date(p.publishedAt),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
     })),
   ];
 }

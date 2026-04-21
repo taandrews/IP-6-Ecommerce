@@ -9,12 +9,11 @@ import { Wordmark } from "@/components/layout/Wordmark";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/why-ip6", label: "Why IP6" },
-  { href: "/how-to-take", label: "How to Take" },
-  { href: "/savings", label: "Savings & Support" },
-  { href: "/lifestyle", label: "Lifestyle" },
-  { href: "/faq", label: "FAQs" },
-  { href: "/shop", label: "Shop" },
+  { href: "/shop/ip6-original-supplement", label: "Supplement" },
+  { href: "/shop/ip6-la-sante-cream", label: "Skincare" },
+  { href: "/shop/ip6-citrate-water-filter", label: "Water Filter" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/contact", label: "Support" },
 ];
 
 export function Navigation() {

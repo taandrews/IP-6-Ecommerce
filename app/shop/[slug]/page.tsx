@@ -8,14 +8,12 @@ import { Reviews } from "@/components/product/Reviews";
 import { ProductSchema } from "@/components/product/ProductSchema";
 import { DsheaDisclaimer } from "@/components/product/Dshea";
 import { ProductCard } from "@/components/product/ProductCard";
-import { SignatureVisual } from "@/components/product/SignatureVisual";
 import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { Grain } from "@/components/ui/Grain";
 import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Stars } from "@/components/ui/Stars";
-import { EditorialCursor } from "@/components/ui/EditorialCursor";
 import { FileText } from "lucide-react";
 import { products, getProductBySlug, getProductsBySkus } from "@/content/products";
 import { testimonials } from "@/content/testimonials";
@@ -132,34 +130,6 @@ export default function ProductPage({ params }: Params) {
               </a>
             ) : null}
           </div>
-        </div>
-      </section>
-
-      {/* Signature visual: unique per category */}
-      <section className="relative bg-atmosphere py-20 overflow-hidden">
-        <Grain intensity="medium" blend="multiply" />
-        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.2fr] gap-14 items-center relative">
-          <div>
-            <p className="eyebrow mb-4">The measurement</p>
-            <h2 className="font-display text-display-lg text-forest-800 text-balance">
-              {product.category === "supplement" ? (
-                <>The number we refuse to compromise.</>
-              ) : product.category === "skincare" ? (
-                <>A formulation, <span className="italic">in cross-section.</span></>
-              ) : (
-                <>Sixty seconds, <span className="italic">verified.</span></>
-              )}
-            </h2>
-            <span className="hairline-gold-left bg-gold-400 mt-5 mb-5" />
-            <p className="text-ink/80 leading-relaxed text-lg max-w-md">
-              {product.category === "supplement"
-                ? "Research-grade IP6 requires 95% or more of the molecules in a batch to have all six phosphate groups intact. Our contract partner isolates it to that specification. Every batch is verified by HPLC."
-                : product.category === "skincare"
-                  ? "Five concentric layers. Each ingredient plays a specific, named role in the barrier system. Nothing is decorative. Nothing is there for scent or color."
-                  : "Contact time is the specification that matters for heavy-metal removal. Our IP6-Citrate media chelates lead and arsenic fully within 60 seconds of flow. No electricity. No plumbing."}
-            </p>
-          </div>
-          <SignatureVisual category={product.category} />
         </div>
       </section>
 
@@ -293,7 +263,6 @@ export default function ProductPage({ params }: Params) {
       ) : null}
 
       <ProductSchema product={product} currency={currency} reviewAggregate={reviewAggregate} />
-      <EditorialCursor />
       {product.requiresDsheaDisclaimer ? <StickyDisclaimer /> : null}
       <Footer showDshea={product.requiresDsheaDisclaimer} />
     </>
