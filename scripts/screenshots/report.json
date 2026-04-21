@@ -3,11 +3,11 @@
     "viewport": "desktop",
     "dimensions": "1440x900",
     "status": 200,
-    "loadMs": 11062,
+    "loadMs": 8941,
     "title": "IP-6 Research, Inc. · Science-backed wellness",
-    "h1": "IP6 Original.95%+ purity, verified.",
+    "h1": "There's only one IP6 Original.",
     "h2Count": 2,
-    "imgCount": 4,
+    "imgCount": 5,
     "brokenImages": [],
     "consoleErrors": [],
     "failedRequests": [],
@@ -21,9 +21,9 @@
       "Support",
       "USD",
       "Shop the products",
+      "See how it's made",
       "IP6 Original Supplement",
-      "Shop",
-      "IP6 La Santé Cream"
+      "Shop"
     ],
     "screenshot": "scripts/screenshots/desktop.png"
   },
@@ -31,11 +31,11 @@
     "viewport": "mobile",
     "dimensions": "390x844",
     "status": 200,
-    "loadMs": 4634,
+    "loadMs": 3549,
     "title": "IP-6 Research, Inc. · Science-backed wellness",
-    "h1": "IP6 Original.95%+ purity, verified.",
+    "h1": "There's only one IP6 Original.",
     "h2Count": 2,
-    "imgCount": 4,
+    "imgCount": 5,
     "brokenImages": [],
     "consoleErrors": [],
     "failedRequests": [],
@@ -49,9 +49,9 @@
       "Support",
       "Account",
       "Shop the products",
+      "See how it's made",
       "IP6 Original Supplement",
-      "Shop",
-      "IP6 La Santé Cream"
+      "Shop"
     ],
     "screenshot": "scripts/screenshots/mobile.png"
   }
