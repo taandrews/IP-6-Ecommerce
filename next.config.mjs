@@ -31,6 +31,12 @@ const nextConfig = {
   experimental: {
     serverActions: { bodySizeLimit: "2mb" },
   },
+  async redirects() {
+    return [
+      { source: "/science", destination: "/why-ip6/how-it-works", permanent: false },
+      { source: "/about", destination: "/founder", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;

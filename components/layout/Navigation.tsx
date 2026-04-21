@@ -9,12 +9,12 @@ import { Wordmark } from "@/components/layout/Wordmark";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
+  { href: "/why-ip6", label: "Why IP6" },
+  { href: "/how-to-take", label: "How to Take" },
+  { href: "/savings", label: "Savings & Support" },
+  { href: "/lifestyle", label: "Lifestyle" },
+  { href: "/faq", label: "FAQs" },
   { href: "/shop", label: "Shop" },
-  { href: "/science", label: "How it works" },
-  { href: "/testimonials", label: "Reviews" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/founder", label: "About" },
-  { href: "/contact", label: "Contact" },
 ];
 
 export function Navigation() {
