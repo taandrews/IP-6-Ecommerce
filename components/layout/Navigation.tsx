@@ -5,11 +5,12 @@ import Link from "next/link";
 import { Menu, ShoppingBag, User, Search, X } from "lucide-react";
 import { useCart } from "@/components/cart/CartStore";
 import { CurrencySwitcher } from "@/components/layout/CurrencySwitcher";
+import { Wordmark } from "@/components/layout/Wordmark";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/shop", label: "Shop" },
-  { href: "/about", label: "About" },
+  { href: "/science", label: "The Science" },
   { href: "/founder", label: "The Founder" },
   { href: "/blog", label: "Journal" },
   { href: "/faq", label: "FAQ" },
@@ -23,13 +24,8 @@ export function Navigation() {
   return (
     <header className="sticky top-0 z-40 border-b border-ivory-300/80 bg-surface/90 backdrop-blur">
       <div className="container flex items-center justify-between h-16 lg:h-20">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="inline-block size-8 rounded-full bg-forest-700 grid place-items-center text-ivory-100 font-display text-sm">
-            IP6
-          </span>
-          <span className="font-display text-lg text-forest-800 hidden sm:inline">
-            IP-6 Research
-          </span>
+        <Link href="/" aria-label="IP-6 Research — Home" className="block">
+          <Wordmark size="sm" />
         </Link>
 
         <nav aria-label="Primary" className="hidden lg:flex items-center gap-8">

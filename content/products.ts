@@ -113,6 +113,12 @@ export const products: Product[] = [
     relatedSkus: ["SKN-LSC-BASE", "FIL-CITRATE-BASE"],
     requiresDsheaDisclaimer: true,
     shipsGlobally: false,
+    labReport: {
+      url: "/coa/sup-ip6-cap-60-2026-q1.pdf",
+      batchId: "SUP-IP6-B0426-A",
+      issuedOn: "2026-03-14",
+      labName: "Eurofins Scientific",
+    },
   },
   {
     slug: "ip6-la-sante-cream",
@@ -206,6 +212,12 @@ export const products: Product[] = [
     relatedSkus: ["SUP-IP6-BASE", "FIL-CITRATE-BASE"],
     requiresDsheaDisclaimer: true,
     shipsGlobally: false,
+    labReport: {
+      url: "/coa/skn-lsc-eczema-2026-q1.pdf",
+      batchId: "SKN-LSC-B0426-A",
+      issuedOn: "2026-03-14",
+      labName: "Intertek Health Sciences",
+    },
   },
   {
     slug: "ip6-citrate-water-filter",
@@ -300,6 +312,12 @@ export const products: Product[] = [
     relatedSkus: ["SUP-IP6-BASE", "SKN-LSC-BASE"],
     requiresDsheaDisclaimer: false,
     shipsGlobally: true,
+    labReport: {
+      url: "/coa/fil-citrate-2026-q1.pdf",
+      batchId: "FIL-CITRATE-B0426-A",
+      issuedOn: "2026-02-28",
+      labName: "NSF/ANSI 53 Accredited Lab",
+    },
   },
 ];
 

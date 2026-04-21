@@ -16,10 +16,19 @@ export function CartDrawer() {
   return (
     <Drawer open={drawerOpen} onClose={closeDrawer} title="Your cart">
       {lines.length === 0 ? (
-        <div className="p-6 text-center">
-          <p className="text-ink/70 mb-6">Your cart is empty.</p>
+        <div className="px-6 py-14 text-center">
+          <p
+            className="font-display italic text-forest-700 text-balance leading-tight"
+            style={{ fontSize: "clamp(1.6rem, 3vw, 2.1rem)", fontVariationSettings: '"opsz" 96, "SOFT" 80' }}
+          >
+            Nothing here yet.
+          </p>
+          <span className="inline-block hairline-gold-left bg-gold-400 my-5" />
+          <p className="text-ink/70 mb-8 max-w-[28ch] mx-auto leading-relaxed">
+            Three products, each built to a single research-grade specification. Start with whichever feels right.
+          </p>
           <Link href="/shop" onClick={closeDrawer} className="btn-primary">
-            Browse products
+            Browse the collection
           </Link>
         </div>
       ) : (

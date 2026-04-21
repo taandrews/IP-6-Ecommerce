@@ -8,10 +8,14 @@ import { Reviews } from "@/components/product/Reviews";
 import { ProductSchema } from "@/components/product/ProductSchema";
 import { DsheaDisclaimer } from "@/components/product/Dshea";
 import { ProductCard } from "@/components/product/ProductCard";
+import { SignatureVisual } from "@/components/product/SignatureVisual";
 import { Footer } from "@/components/layout/Footer";
+import { Grain } from "@/components/ui/Grain";
 import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Stars } from "@/components/ui/Stars";
+import { EditorialCursor } from "@/components/ui/EditorialCursor";
+import { FileText } from "lucide-react";
 import { products, getProductBySlug, getProductsBySkus } from "@/content/products";
 import { testimonials } from "@/content/testimonials";
 import { resolveCurrency } from "@/lib/currency";
@@ -102,7 +106,59 @@ export default function ProductPage({ params }: Params) {
           </div>
 
             <PurchasePanel product={product} currency={currency} />
+
+            {product.labReport ? (
+              <a
+                href={product.labReport.url}
+                className="mt-8 group flex items-start gap-4 p-5 rounded-md border border-ivory-300 hover:border-forest-400 hover:bg-ivory-100 transition-colors"
+                data-cursor="Download"
+              >
+                <FileText className="size-5 text-gold-500 mt-0.5 shrink-0" aria-hidden />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 mb-1">
+                    Certificate of analysis · batch {product.labReport.batchId}
+                  </p>
+                  <p className="font-display text-forest-800 text-lg leading-tight">
+                    Third-party batch report
+                  </p>
+                  <p className="text-xs text-ink/60 mt-1">
+                    {product.labReport.labName} · issued {new Date(product.labReport.issuedOn).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                  </p>
+                </div>
+                <span className="text-xs uppercase tracking-[0.22em] text-forest-700 group-hover:text-gold-500 self-center">
+                  PDF →
+                </span>
+              </a>
+            ) : null}
           </div>
+        </div>
+      </section>
+
+      {/* Signature visual: unique per category */}
+      <section className="relative bg-atmosphere py-20 overflow-hidden">
+        <Grain intensity="medium" blend="multiply" />
+        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.2fr] gap-14 items-center relative">
+          <div>
+            <p className="eyebrow mb-4">The measurement</p>
+            <h2 className="font-display text-display-lg text-forest-800 text-balance">
+              {product.category === "supplement" ? (
+                <>The number we refuse to compromise.</>
+              ) : product.category === "skincare" ? (
+                <>A formulation, <span className="italic">in cross-section.</span></>
+              ) : (
+                <>Sixty seconds, <span className="italic">verified.</span></>
+              )}
+            </h2>
+            <span className="hairline-gold-left bg-gold-400 mt-5 mb-5" />
+            <p className="text-ink/80 leading-relaxed text-lg max-w-md">
+              {product.category === "supplement"
+                ? "Research-grade IP6 requires 95% or more of the molecules in a batch to have all six phosphate groups intact. Our contract partner isolates it to that specification. Every batch is verified by HPLC."
+                : product.category === "skincare"
+                  ? "Five concentric layers. Each ingredient plays a specific, named role in the barrier system. Nothing is decorative. Nothing is there for scent or color."
+                  : "Contact time is the specification that matters for heavy-metal removal. Our IP6-Citrate media chelates lead and arsenic fully within 60 seconds of flow. No electricity. No plumbing."}
+            </p>
+          </div>
+          <SignatureVisual category={product.category} />
         </div>
       </section>
 
@@ -236,6 +292,7 @@ export default function ProductPage({ params }: Params) {
       ) : null}
 
       <ProductSchema product={product} currency={currency} reviewAggregate={reviewAggregate} />
+      <EditorialCursor />
       <Footer showDshea={product.requiresDsheaDisclaimer} />
     </>
   );

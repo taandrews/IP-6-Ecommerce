@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Footer } from "@/components/layout/Footer";
+import { EditorialCursor } from "@/components/ui/EditorialCursor";
 import { hreflangAlternates } from "@/lib/i18n";
 import { asset } from "@/lib/assets";
 
@@ -72,6 +73,7 @@ export default function FounderPage() {
         </div>
       </section>
 
+      <EditorialCursor />
       <Footer showDshea />
     </>
   );

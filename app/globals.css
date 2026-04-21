@@ -213,3 +213,12 @@
     animation: none;
   }
 }
+
+/* When the editorial cursor is mounted, hide the native cursor on interactive
+   elements so the custom one reads clean. */
+.editorial-cursor-active,
+.editorial-cursor-active a,
+.editorial-cursor-active button,
+.editorial-cursor-active [data-cursor] {
+  cursor: none;
+}

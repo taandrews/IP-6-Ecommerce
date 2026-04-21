@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import type { Product, Currency } from "@/types";
 import { formatPrice } from "@/lib/utils";
 
@@ -16,68 +17,72 @@ export function ProductCard({ product, currency }: { product: Product; currency:
   return (
     <Link
       href={`/shop/${product.slug}`}
-      className="group relative block rounded-lg overflow-hidden border border-ivory-300/70 bg-surface hover:shadow-card transition-all duration-500 ease-brand"
+      className="group relative block rounded-lg overflow-hidden bg-ivory-200 border border-ivory-300/60 hover:border-forest-300 transition-colors duration-500 ease-brand"
     >
-      {/* Image with rotated vertical claim badge on the right edge */}
-      <div className="relative aspect-[4/5] bg-ivory-200 overflow-hidden">
+      {/* Image area fills the card; copy overlays from the bottom on hover */}
+      <div className="relative aspect-[3/4] overflow-hidden">
         {image ? (
           <Image
             src={image.url}
             alt={image.alt}
             fill
-            sizes="(min-width: 1024px) 360px, 50vw"
-            className="object-cover transition-transform duration-700 ease-brand group-hover:scale-[1.04]"
+            sizes="(min-width: 1024px) 420px, 50vw"
+            className="object-cover transition-transform duration-[900ms] ease-brand group-hover:scale-[1.06]"
           />
         ) : null}
 
-        {/* Soft gradient wash on hover to add depth */}
+        {/* Darkening veil for contrast on hover */}
         <div
           aria-hidden
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(to top, rgba(27,67,50,0.25), transparent 55%)",
-          }}
+          className="absolute inset-0 bg-gradient-to-t from-forest-900/70 via-forest-900/10 to-transparent opacity-50 group-hover:opacity-95 transition-opacity duration-500"
         />
 
-        {/* Vertical hero claim — runs along right edge of image */}
-        <div className="absolute top-4 right-4 pointer-events-none">
-          <div
-            className="origin-top-right"
-            style={{ writingMode: "vertical-rl" }}
-          >
-            <span className="inline-block bg-gold-400/95 text-forest-900 text-[10px] uppercase tracking-[0.28em] font-medium px-2.5 py-1.5 rounded-sm">
-              {product.heroClaim}
-            </span>
+        {/* Top corner: serial number */}
+        <div className="absolute top-5 left-5 right-5 flex items-start justify-between text-ivory-100">
+          <p className="text-[10px] uppercase tracking-[0.32em] opacity-75">
+            <span className="opacity-60">№&nbsp;</span>
+            {product.sku}
+          </p>
+          <div className="opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
+            <ArrowUpRight className="size-5" />
           </div>
         </div>
 
-        {/* Category tag — bottom left */}
-        <div className="absolute bottom-3 left-3">
-          <span className="inline-block bg-ivory-100/95 text-forest-800 text-[10px] uppercase tracking-[0.24em] font-medium px-2 py-1 rounded-sm backdrop-blur-sm">
+        {/* Bottom copy — shifts up and gains detail on hover */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-ivory-100">
+          <p className="text-[11px] uppercase tracking-[0.28em] opacity-80 mb-2">
             {categoryLabel}
-          </span>
-        </div>
-      </div>
-
-      <div className="p-6">
-        <h3 className="font-display text-xl text-forest-800 group-hover:text-forest-700 transition-colors">
-          {product.name}
-        </h3>
-        <span className="hairline-gold mt-3 mb-4" />
-        <p className="text-sm text-ink/70 line-clamp-2 leading-relaxed">
-          {product.shortDescription}
-        </p>
-        <div className="mt-5 flex items-end justify-between">
-          <p className="text-forest-800">
-            <span className="text-[10px] uppercase tracking-[0.24em] text-ink/55 block mb-1">
-              From
-            </span>
-            <span className="font-display text-xl">
-              {formatPrice(startingFrom, currency)}
-            </span>
           </p>
-          <p className="sku-serial">{product.sku}</p>
+          <h3
+            className="font-display text-balance leading-[1.05]"
+            style={{ fontSize: "clamp(1.4rem, 2vw, 1.75rem)", fontVariationSettings: '"opsz" 96, "SOFT" 40' }}
+          >
+            {product.name}
+          </h3>
+
+          <div className="h-px bg-gold-400/70 w-12 my-4 origin-left group-hover:w-24 transition-all duration-500 ease-brand" />
+
+          <p className="text-sm leading-relaxed opacity-0 group-hover:opacity-90 max-h-0 group-hover:max-h-40 overflow-hidden transition-all duration-500 ease-brand">
+            {product.shortDescription}
+          </p>
+
+          <div className="mt-5 flex items-end justify-between">
+            <p>
+              <span className="text-[10px] uppercase tracking-[0.28em] opacity-70 block">From</span>
+              <span
+                className="font-display"
+                style={{ fontSize: "1.3rem", fontVariationSettings: '"opsz" 72, "SOFT" 50' }}
+              >
+                {formatPrice(startingFrom, currency)}
+              </span>
+            </p>
+            <p
+              className="font-display italic text-gold-300"
+              style={{ fontSize: "0.85rem", fontVariationSettings: '"opsz" 24, "SOFT" 90' }}
+            >
+              {product.heroClaim}
+            </p>
+          </div>
         </div>
       </div>
     </Link>

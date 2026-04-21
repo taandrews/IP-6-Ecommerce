@@ -52,22 +52,35 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Image breaks out slightly to overlap text on desktop */}
+            {/* Image/video slot breaks out slightly to overlap text on desktop.
+                NEXT_PUBLIC_HERO_VIDEO_URL can be set to a CloudFront-hosted MP4
+                (h.264 baseline, muted, looping) once brand footage exists. */}
             <div className="relative lg:col-span-5 lg:-mr-12 xl:-mr-24">
-              <div className="relative aspect-[4/5] lg:aspect-[3/4] rounded-xl overflow-hidden shadow-card">
-                <Image
-                  src={asset("hero/home.jpg")}
-                  alt="Soft natural light on a studio arrangement of IP-6 Research products."
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 540px, 100vw"
-                  className="object-cover"
-                />
+              <div className="relative aspect-[4/5] lg:aspect-[3/4] rounded-xl overflow-hidden shadow-card bg-ivory-200">
+                {process.env.NEXT_PUBLIC_HERO_VIDEO_URL ? (
+                  <video
+                    src={process.env.NEXT_PUBLIC_HERO_VIDEO_URL}
+                    poster={asset("hero/home.jpg")}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={asset("hero/home.jpg")}
+                    alt="Soft natural light on a studio arrangement of IP-6 Research products."
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 540px, 100vw"
+                    className="object-cover"
+                  />
+                )}
               </div>
-              {/* Decorative gold rule */}
               <div className="absolute -left-4 -bottom-4 hidden lg:block">
                 <div className="w-24 h-[2px] bg-gold-400" />
-                <p className="sku-serial mt-3 text-forest-800/70">IP6–CAT–25</p>
+                <p className="sku-serial mt-3 text-forest-800/70">IP6–CAT–26</p>
               </div>
             </div>
           </div>

@@ -34,6 +34,7 @@ export interface Product {
   relatedSkus: string[];
   requiresDsheaDisclaimer: boolean;
   shipsGlobally: boolean;
+  labReport?: { url: string; batchId: string; issuedOn: string; labName: string };
 }
 
 export interface CartLine {
