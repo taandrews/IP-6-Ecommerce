@@ -36,8 +36,9 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
   return (
     <footer className="mt-20 bg-navy-800 text-surface">
       <div className="container py-12">
-        <div className="grid gap-8 md:grid-cols-[1fr_repeat(3,1fr)]">
-          <div>
+        {/* Brand block on top for mobile, inline on desktop */}
+        <div className="md:grid md:grid-cols-[1fr_2.4fr] md:gap-10">
+          <div className="mb-10 md:mb-0">
             <Wordmark variant="dark" size="sm" />
             <p className="mt-4 text-xs uppercase tracking-[0.18em] text-surface/55">
               15 Charles Plaza, Baltimore MD
@@ -48,22 +49,26 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
               </a>
             </p>
           </div>
-          {COL.map((c) => (
-            <div key={c.heading}>
-              <h3 className="text-[11px] uppercase tracking-[0.22em] text-surface/55 mb-3 font-semibold">
-                {c.heading}
-              </h3>
-              <ul className="space-y-2">
-                {c.links.map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} className="text-sm text-surface/85 hover:text-sky-300">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+
+          {/* Link groups — always side-by-side (3 columns on every viewport) */}
+          <div className="grid grid-cols-3 gap-4 sm:gap-8">
+            {COL.map((c) => (
+              <div key={c.heading}>
+                <h3 className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-surface/55 mb-3 font-semibold">
+                  {c.heading}
+                </h3>
+                <ul className="space-y-2">
+                  {c.links.map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-xs sm:text-sm text-surface/85 hover:text-sky-300 leading-snug block">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
 
         {showDshea ? (
