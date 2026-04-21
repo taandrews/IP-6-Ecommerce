@@ -13,94 +13,126 @@ export default function HomePage() {
 
   return (
     <>
-      {/* HERO — Ozempic-style: text left, lifestyle photo right with floating badge + product overlay */}
-      <section className="relative bg-surface overflow-hidden">
-        <div className="container pt-12 lg:pt-20 pb-16 lg:pb-28 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* TEXT */}
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
-              The only IP6 you ask for by name
-            </p>
-            <h1
-              className="font-sans font-bold text-navy-800 text-balance"
-              style={{
-                fontSize: "clamp(3rem, 6vw, 5.75rem)",
-                lineHeight: 0.95,
-                letterSpacing: "-0.035em",
-              }}
-            >
-              There&apos;s only one <span className="text-sky-700">IP6 Original</span>.
-            </h1>
-            <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-lg">
-              Your routine is unique. Take the next step with the only inositol hexaphosphate supplement standardized to 95%+ purity and verified by HPLC every batch.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-5">
-              <Link href="#shop" className="btn-primary text-base">
-                Shop the products
+      {/* =================== HERO ===================
+          Mirrors ozempic.com: sky-blue gradient ground, tiny qualifier line
+          on top, MASSIVE typographic brand statement stacked over it,
+          red circular callout, teal+red color pair, subscribe-side tab. */}
+
+      {/* Red news/announcement band — pharma-style alert strip */}
+      <div className="bg-brandRed-500 text-surface text-center text-xs py-2.5 font-medium">
+        <Link href="/why-ip6/comparison" className="underline underline-offset-4 decoration-surface/60 hover:decoration-surface">
+          Click here
+        </Link>
+        <span className="opacity-90"> for information about commodity-grade IP6 supplements on the market.</span>
+      </div>
+
+      <section
+        className="relative overflow-hidden"
+        style={{
+          background: "linear-gradient(180deg, #EAF6FA 0%, #D5ECF1 55%, #B9DEE7 100%)",
+        }}
+      >
+        {/* Sticky side "Savings & Support" tab on right edge */}
+        <Link
+          href="#shop"
+          className="hidden lg:flex fixed top-1/2 right-0 -translate-y-1/2 z-30 bg-brandRed-500 hover:bg-brandRed-600 text-surface font-semibold px-3 py-5 rounded-l-lg shadow-card text-[11px] uppercase tracking-[0.18em]"
+          style={{ writingMode: "vertical-rl" }}
+          aria-label="Savings and support"
+        >
+          Subscribe & Save
+        </Link>
+
+        <div className="container relative pt-6 pb-10 lg:pt-10 lg:pb-16">
+          {/* Tiny audience qualifier line, Ozempic-style */}
+          <p className="text-[13px] lg:text-sm text-teal-600 font-semibold text-center">
+            For adults seeking research-grade wellness
+          </p>
+
+          {/* Huge typographic centerpiece */}
+          <h1
+            className="mt-3 lg:mt-4 font-sans font-black text-teal-600 text-center leading-[0.85] tracking-[-0.045em]"
+            style={{ fontSize: "clamp(3rem, 9vw, 8rem)" }}
+          >
+            <span className="block text-brandRed-500" style={{ fontSize: "0.42em", letterSpacing: "0.02em" }}>
+              THERE&apos;S ONLY ONE
+            </span>
+            <span className="block mt-1" style={{ fontSize: "1.25em" }}>
+              IP
+              <span className="text-brandRed-500">·</span>
+              6 ORIGINAL
+            </span>
+            <span className="block mt-3 text-teal-500 font-normal" style={{ fontSize: "0.28em", letterSpacing: "0.05em" }}>
+              inositol hexaphosphate · 500mg
+            </span>
+          </h1>
+
+          {/* Composition row below headline: (left) product image, (center) benefit line, (right) pen/product overlay */}
+          <div className="mt-10 lg:mt-14 grid lg:grid-cols-[1fr_1.1fr_1fr] gap-6 lg:gap-10 items-center">
+            {/* LEFT — hero lifestyle/product illustration with red "#1" badge */}
+            <div className="relative order-2 lg:order-1">
+              <div className="relative aspect-square max-w-sm mx-auto">
+                <Image
+                  src={asset("hero/lifestyle.jpg")}
+                  alt="A wellness routine with IP6 Original."
+                  fill
+                  priority
+                  sizes="(min-width:1024px) 420px, 60vw"
+                  className="object-cover rounded-full shadow-card"
+                />
+                {/* Red #1 badge — Ozempic-style callout */}
+                <div className="absolute -top-2 -right-2 size-24 lg:size-28 rounded-full bg-brandRed-500 text-surface grid place-items-center text-center shadow-card border-4 border-surface">
+                  <div>
+                    <p className="text-[9px] uppercase tracking-[0.22em] font-bold opacity-95">
+                      Only
+                    </p>
+                    <p className="font-sans font-black leading-none mt-0.5" style={{ fontSize: "2rem", letterSpacing: "-0.04em" }}>
+                      95%+
+                    </p>
+                    <p className="text-[9px] uppercase tracking-[0.22em] font-bold opacity-95 mt-0.5">
+                      pure
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* CENTER — headline copy + CTA */}
+            <div className="order-1 lg:order-2 text-center">
+              <p className="text-base lg:text-lg text-ink/80 leading-relaxed max-w-md mx-auto">
+                Your routine is unique. Take the next step with the only inositol hexaphosphate supplement standardized to 95%+ purity and verified by HPLC every batch.
+              </p>
+              <Link href="#shop" className="btn-primary mt-7 text-base lg:text-lg px-8 py-4">
+                See how IP6 could help
                 <ArrowRight className="size-4" />
               </Link>
-              <Link href="/faq" className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2">
-                See how it&apos;s made
-              </Link>
-            </div>
-            <p className="mt-7 text-xs text-ink/55 max-w-md leading-relaxed">
-              <span className="font-semibold text-ink/75">Research-grade.</span> 95%+ intact IP6 verified by HPLC every batch. Manufactured in a cGMP facility, tested by an ISO 17025-accredited lab.
-            </p>
-          </div>
-
-          {/* IMAGE COMPOSITION */}
-          <div className="relative">
-            {/* Lifestyle photo as primary visual */}
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-card bg-cloud-200">
-              <Image
-                src={asset("hero/lifestyle.jpg")}
-                alt="A daily wellness routine with IP6 Original Supplement."
-                fill
-                priority
-                sizes="(min-width:1024px) 580px, 100vw"
-                className="object-cover"
-              />
+              <p className="mt-5 text-[13px] text-ink/60 max-w-sm mx-auto">
+                <span className="font-bold text-ink/80">Research-grade.</span> cGMP manufactured. Third-party tested.
+              </p>
             </div>
 
-            {/* Floating circular "95%+ pure" badge */}
-            <div className="absolute -top-4 -right-4 lg:-top-6 lg:-right-6 size-32 lg:size-40 rounded-full bg-sky-600 text-surface grid place-items-center text-center shadow-card border-4 border-surface">
-              <div>
-                <p className="font-sans font-bold leading-none" style={{ fontSize: "clamp(1.75rem, 2.6vw, 2.25rem)", letterSpacing: "-0.03em" }}>
-                  95%+
-                </p>
-                <p className="text-[10px] uppercase tracking-[0.22em] mt-1 font-semibold opacity-90">
-                  IP6 Pure
-                </p>
-                <div className="h-px w-6 bg-surface/40 mx-auto my-1.5" />
-                <p className="text-[8px] uppercase tracking-[0.22em] opacity-75 font-medium">
-                  HPLC verified
-                </p>
-              </div>
-            </div>
-
-            {/* Floating product card overlay (bottom-left) */}
-            <div className="absolute -bottom-6 -left-4 lg:-bottom-8 lg:-left-8 bg-surface rounded-lg shadow-card border border-cloud-300 p-3 flex items-center gap-3 max-w-[260px]">
-              <div className="relative size-16 shrink-0 rounded-md overflow-hidden bg-cloud-100">
+            {/* RIGHT — product hero shot */}
+            <div className="relative order-3 hidden lg:block">
+              <div className="relative aspect-[3/4] max-w-xs mx-auto">
                 <Image
                   src={asset("products/supplement-1.jpg")}
-                  alt=""
+                  alt="IP6 Original Supplement bottle."
                   fill
-                  sizes="64px"
-                  className="object-cover"
+                  sizes="320px"
+                  className="object-contain drop-shadow-xl"
                 />
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-ink/55 font-semibold">
-                  Featured product
-                </p>
-                <p className="font-sans font-bold text-navy-800 text-sm leading-tight mt-0.5">
-                  IP6 Original Supplement
-                </p>
-                <p className="text-xs text-sky-700 font-semibold mt-0.5">
-                  From $49 →
-                </p>
-              </div>
+              <p className="text-center mt-4 text-xs uppercase tracking-[0.22em] text-teal-600 font-bold">
+                60-count · starter
+              </p>
             </div>
+          </div>
+        </div>
+
+        {/* FDA-approved-uses strip bottom of hero, Ozempic-style */}
+        <div className="bg-teal-500 text-surface">
+          <div className="container py-3 text-center text-sm font-semibold">
+            IP6 Original is the only consumer IP6 supplement standardized to a 95%+ purity specification.
+            <span className="opacity-80 font-normal"> All claims structure-function only.</span>
           </div>
         </div>
       </section>

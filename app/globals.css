@@ -59,15 +59,15 @@
   }
 
   .btn-primary {
-    @apply btn bg-sky-600 text-surface hover:bg-sky-700 px-6 py-3.5 rounded-full;
+    @apply btn bg-teal-500 text-surface hover:bg-teal-600 px-6 py-3.5 rounded-full font-semibold;
   }
 
   .btn-secondary {
-    @apply btn border border-sky-600 text-sky-600 hover:bg-sky-50 px-6 py-3.5 rounded-full;
+    @apply btn border-2 border-teal-500 text-teal-500 hover:bg-teal-50 px-6 py-3.5 rounded-full font-semibold;
   }
 
   .btn-gold {
-    @apply btn bg-sky-600 text-surface hover:bg-sky-700 px-6 py-3.5 rounded-full;
+    @apply btn bg-brandRed-500 text-surface hover:bg-brandRed-600 px-6 py-3.5 rounded-full font-semibold;
   }
 
   .btn-ghost {

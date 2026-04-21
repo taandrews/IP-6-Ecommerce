@@ -1,0 +1,23 @@
+{
+  "rect": {
+    "top": 130,
+    "width": 1440,
+    "height": 7
+  },
+  "background": "rgb(218, 8, 18)",
+  "padding": "0px",
+  "heroHTML": "<section id=\"section-4b9b8b32b1\" class=\"cope-core-section cope-core-section-1776712187478   \" data-floating-isi-open=\"false\">\n\n        \n        <div class=\"cope-core-scrolling-content cope-core-section-scrolling-content-1776712187478\">\n            <div>\n\n\n<div class=\"aem-Grid aem-Grid--12 aem-Grid--default--12 \">\n    \n    \n    \n</div>\n</div>\n        </div>\n    </section>",
+  "h1": {
+    "text": "Important Safety Information",
+    "fontFamily": "noto-sans, sans-serif",
+    "fontSize": "18px",
+    "fontWeight": "700",
+    "lineHeight": "20.7px",
+    "letterSpacing": "normal",
+    "color": "rgb(0, 96, 114)",
+    "rectWidth": 0,
+    "rectHeight": 0
+  },
+  "imgs": [],
+  "ctas": []
+}
