@@ -144,12 +144,12 @@
     }
   }
 
-  /* Light, near-white surfaces with subtle blue tint. */
+  /* Soft White surfaces with subtle Scientific Cyan tint. */
   .bg-atmosphere {
-    background: linear-gradient(180deg, #FBFCFD 0%, #F5F7FA 100%);
+    background: linear-gradient(180deg, #FFFFFF 0%, #F7F9FB 100%);
   }
   .bg-atmosphere-deep {
-    background: linear-gradient(180deg, #FBFCFD 0%, #EBF1F8 100%);
+    background: linear-gradient(180deg, #F7F9FB 0%, #E5F8FC 100%);
   }
 
   .text-hero {

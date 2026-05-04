@@ -94,12 +94,12 @@ export const emailTemplates = {
 
 function baseEmail(body: string) {
   return `<!doctype html><html><head><meta charset="utf-8"><title>IP-6 Research</title></head>
-<body style="font-family:system-ui,Arial,sans-serif;color:#1A1A1A;max-width:560px;margin:0 auto;padding:24px;">
-  <div style="border-bottom:2px solid #1B4332;padding-bottom:12px;margin-bottom:24px;">
-    <strong style="color:#1B4332;font-size:20px;">IP-6 Research, Inc.</strong>
+<body style="font-family:system-ui,Arial,sans-serif;color:#0B1F3A;max-width:560px;margin:0 auto;padding:24px;background:#F7F9FB;">
+  <div style="border-bottom:2px solid #C9A961;padding-bottom:12px;margin-bottom:24px;">
+    <strong style="color:#0B1F3A;font-size:20px;">IP-6 Research, Inc.</strong>
   </div>
   ${body}
-  <hr style="margin:32px 0;border:none;border-top:1px solid #EFE8DB;">
+  <hr style="margin:32px 0;border:none;border-top:1px solid #E8EDF3;">
   <p style="font-size:12px;color:#666;">IP-6 Research, Inc. · ip6original.com</p>
 </body></html>`;
 }

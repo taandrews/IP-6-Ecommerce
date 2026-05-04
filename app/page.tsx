@@ -18,18 +18,18 @@ export default function HomePage() {
           on top, MASSIVE typographic brand statement stacked over it,
           red circular callout, teal+red color pair, subscribe-side tab. */}
 
-      {/* Red news/announcement band — pharma-style alert strip */}
-      <div className="bg-brandRed-500 text-surface text-center text-xs py-2.5 font-medium">
-        <Link href="/why-ip6/comparison" className="underline underline-offset-4 decoration-surface/60 hover:decoration-surface">
-          Click here
+      {/* Announcement strip — navy ground, gold link */}
+      <div className="bg-navy-800 text-surface text-center text-xs py-2.5 font-medium">
+        <Link href="/faq" className="text-gold-300 hover:text-gold-200 underline underline-offset-4 decoration-gold-400/60 hover:decoration-gold-300">
+          See the certificate of analysis
         </Link>
-        <span className="opacity-90"> for information about commodity-grade IP6 supplements on the market.</span>
+        <span className="opacity-85"> &nbsp;·&nbsp; Every batch verified by HPLC at 95%+ purity.</span>
       </div>
 
       <section
         className="relative overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #EAF6FA 0%, #D5ECF1 55%, #B9DEE7 100%)",
+          background: "linear-gradient(180deg, #F7F9FB 0%, #ECF6FA 55%, #D8EFF7 100%)",
         }}
       >
         {/* Sticky side "Savings & Support" tab on right edge */}

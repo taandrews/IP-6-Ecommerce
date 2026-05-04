@@ -7,14 +7,14 @@ export function SupplementSections() {
     <>
       {/* Founder endorsement, compliant structure-function language only */}
       <section className="bg-ivory-200 py-20">
-        <div className="container max-w-4xl grid lg:grid-cols-[1fr_1.4fr] gap-10 items-center">
-          <div className="relative aspect-square rounded-full overflow-hidden mx-auto w-48 lg:w-full">
+        <div className="container max-w-5xl grid lg:grid-cols-[1fr_1.4fr] gap-10 items-center">
+          <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-cloud-200 max-w-xs lg:max-w-none mx-auto w-full">
             <Image
               src={asset("founder/shamsuddin.png")}
               alt="Portrait of Dr. AbulKalam M. Shamsuddin, founder of IP-6 Research."
               fill
-              sizes="(min-width:1024px) 360px, 192px"
-              className="object-cover object-top"
+              sizes="(min-width:1024px) 420px, 320px"
+              className="object-cover"
             />
           </div>
           <div>

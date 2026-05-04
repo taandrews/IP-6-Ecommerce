@@ -1,7 +1,8 @@
 import type { Product } from "@/types";
 import { asset } from "@/lib/assets";
 
-const HERO_SUPPLEMENT = asset("products/supplement-1.jpg");
+// Real product photo, served from /public/products/ locally (not yet on S3).
+const HERO_SUPPLEMENT = "/products/supplement-real.png";
 const HERO_CREAM = asset("products/cream-1.jpg");
 const HERO_FILTER = asset("products/filter-1.jpg");
 
@@ -88,9 +89,7 @@ export const products: Product[] = [
       { days: 90, discountPct: 20 },
     ],
     images: [
-      { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement bottle on a neutral studio backdrop.", width: 1600, height: 1200 },
-      { url: DETAIL_SUPPLEMENT_2, alt: "IP6 capsules arranged beside the amber glass bottle.", width: 1600, height: 1200 },
-      { url: DETAIL_SUPPLEMENT_3, alt: "Close-up of IP6 powder texture in a glass dish.", width: 1600, height: 1200 },
+      { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement — navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
     ],
     faq: [
       {

@@ -105,9 +105,9 @@ export function CheckoutFlow() {
                   appearance: {
                     theme: "stripe",
                     variables: {
-                      colorPrimary: "#1B4332",
-                      colorText: "#1A1A1A",
-                      fontFamily: "Inter, system-ui, sans-serif",
+                      colorPrimary: "#0B1F3A",
+                      colorText: "#0B1F3A",
+                      fontFamily: "IBM Plex Sans, system-ui, sans-serif",
                       borderRadius: "6px",
                     },
                   },
