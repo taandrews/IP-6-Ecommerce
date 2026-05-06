@@ -167,8 +167,17 @@ export default function HomePage() {
                       alt={image.alt}
                       fill
                       sizes="(min-width: 1024px) 420px, 50vw"
-                      className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.04]"
+                      className={`transition-transform duration-500 ease-brand group-hover:scale-[1.04] ${
+                        image.width / image.height < 1
+                          ? "object-contain p-4"
+                          : "object-cover"
+                      }`}
                     />
+                  ) : null}
+                  {p.comingSoon ? (
+                    <span className="absolute top-3 left-3 bg-navy-800 text-surface text-[10px] uppercase tracking-[0.22em] font-semibold px-2.5 py-1 rounded-full">
+                      Coming Soon
+                    </span>
                   ) : null}
                 </Link>
                 <div className="p-6 flex-1 flex flex-col">
@@ -180,16 +189,31 @@ export default function HomePage() {
                   <p className="mt-1.5 text-sm font-semibold text-sky-700">{p.heroClaim}</p>
                   <p className="mt-3 text-sm text-ink/70 leading-relaxed flex-1">{p.shortDescription}</p>
                   <div className="mt-6 pt-4 border-t border-cloud-300 flex items-end justify-between">
-                    <p>
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-ink/55 font-semibold block mb-0.5">From</span>
-                      <span className="font-sans font-bold text-navy-800 text-lg">
-                        {formatPrice(from, currency)}
-                      </span>
-                    </p>
-                    <Link href={`/shop/${p.slug}`} className="btn-primary text-sm px-4 py-2.5">
-                      Shop
-                      <ArrowRight className="size-3.5" />
-                    </Link>
+                    {p.comingSoon ? (
+                      <>
+                        <p>
+                          <span className="text-[10px] uppercase tracking-[0.2em] text-ink/55 font-semibold block mb-0.5">Status</span>
+                          <span className="font-sans font-bold text-navy-800 text-lg">Coming Soon</span>
+                        </p>
+                        <Link href={`/shop/${p.slug}`} className="btn-secondary text-sm px-4 py-2.5">
+                          Notify me
+                          <ArrowRight className="size-3.5" />
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <p>
+                          <span className="text-[10px] uppercase tracking-[0.2em] text-ink/55 font-semibold block mb-0.5">From</span>
+                          <span className="font-sans font-bold text-navy-800 text-lg">
+                            {formatPrice(from, currency)}
+                          </span>
+                        </p>
+                        <Link href={`/shop/${p.slug}`} className="btn-primary text-sm px-4 py-2.5">
+                          Shop
+                          <ArrowRight className="size-3.5" />
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </article>

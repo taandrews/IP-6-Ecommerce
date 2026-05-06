@@ -35,6 +35,7 @@ export interface Product {
   requiresDsheaDisclaimer: boolean;
   shipsGlobally: boolean;
   labReport?: { url: string; batchId: string; issuedOn: string; labName: string };
+  comingSoon?: boolean;
 }
 
 export interface CartLine {

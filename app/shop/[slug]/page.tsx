@@ -86,7 +86,14 @@ export default function ProductPage({ params }: Params) {
           <div className="flex flex-col">
             <div className="mb-5">
               <p className="eyebrow mb-4">{product.category === "supplement" ? "Supplement" : product.category === "skincare" ? "Skincare" : "Water filtration"}</p>
-              <Badge variant="gold" className="mb-4">{product.heroClaim}</Badge>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge variant="gold">{product.heroClaim}</Badge>
+                {product.comingSoon ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-navy-800 text-surface px-3 py-0.5 text-xs font-semibold uppercase tracking-[0.18em]">
+                    Coming Soon
+                  </span>
+                ) : null}
+              </div>
               <h1 className="font-display text-balance text-forest-800 mb-4" style={{ fontSize: "clamp(2rem, 4vw, 3.25rem)", lineHeight: 1.05, letterSpacing: "-0.025em", fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
                 {product.name}
               </h1>
@@ -104,9 +111,48 @@ export default function ProductPage({ params }: Params) {
             ) : null}
           </div>
 
-            <PurchasePanel product={product} currency={currency} />
+            {product.comingSoon ? (
+              <div className="rounded-lg border border-cloud-300 bg-cloud-100 p-8">
+                <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
+                  Status
+                </p>
+                <p className="font-sans font-bold text-navy-800 mb-3" style={{ fontSize: "clamp(2rem, 3.5vw, 2.75rem)", lineHeight: 1.05, letterSpacing: "-0.025em" }}>
+                  Coming Soon
+                </p>
+                <p className="text-ink/70 leading-relaxed mb-6">
+                  {product.name} is currently in final formulation and certification. Join the notification list and we&apos;ll email you the moment it&apos;s ready to ship.
+                </p>
+                <form
+                  className="flex flex-col sm:flex-row gap-3 max-w-md"
+                  aria-label={`Notify me when ${product.name} launches`}
+                  action="/api/newsletter"
+                  method="post"
+                >
+                  <label htmlFor={`notify-${product.sku}`} className="sr-only">
+                    Email address
+                  </label>
+                  <input
+                    id={`notify-${product.sku}`}
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="you@example.com"
+                    className="input flex-1"
+                  />
+                  <input type="hidden" name="sku" value={product.sku} />
+                  <button type="submit" className="btn-primary whitespace-nowrap">
+                    Notify me
+                  </button>
+                </form>
+                <p className="mt-4 text-xs text-ink/55">
+                  No spam, no other emails. We&apos;ll send you one note when {product.name} is in stock.
+                </p>
+              </div>
+            ) : (
+              <PurchasePanel product={product} currency={currency} />
+            )}
 
-            {product.labReport ? (
+            {product.labReport && !product.comingSoon ? (
               <a
                 href={product.labReport.url}
                 className="mt-8 group flex items-start gap-4 p-5 rounded-md border border-ivory-300 hover:border-forest-400 hover:bg-ivory-100 transition-colors"

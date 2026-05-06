@@ -26,12 +26,21 @@ export function ProductCard({ product, currency }: { product: Product; currency:
             alt={image.alt}
             fill
             sizes="(min-width: 1024px) 420px, 50vw"
-            className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.04]"
+            className={`transition-transform duration-500 ease-brand group-hover:scale-[1.04] ${
+              image.width / image.height < 1
+                ? "object-contain p-4"
+                : "object-cover"
+            }`}
           />
         ) : null}
         <div className="absolute top-3 left-3 bg-surface/95 backdrop-blur-sm rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.24em] font-medium text-forest-800">
           {categoryLabel}
         </div>
+        {product.comingSoon ? (
+          <div className="absolute top-3 right-3 bg-navy-800 text-surface rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-semibold">
+            Coming Soon
+          </div>
+        ) : null}
       </Link>
 
       <div className="p-6 flex-1 flex flex-col">
@@ -61,22 +70,45 @@ export function ProductCard({ product, currency }: { product: Product; currency:
         </ul>
 
         <div className="mt-6 flex items-end justify-between gap-4 pt-5 border-t border-ivory-300">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.24em] text-ink/55 mb-0.5">From</p>
-            <p
-              className="font-display text-xl text-forest-800"
-              style={{ fontVariationSettings: '"opsz" 48, "SOFT" 30' }}
-            >
-              {formatPrice(startingFrom, currency)}
-            </p>
-          </div>
-          <Link
-            href={`/shop/${product.slug}`}
-            className="btn-primary text-sm px-4 py-2.5 group/btn"
-          >
-            Shop
-            <ArrowRight className="size-4 transition-transform group-hover/btn:translate-x-0.5" />
-          </Link>
+          {product.comingSoon ? (
+            <>
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.24em] text-ink/55 mb-0.5">Status</p>
+                <p
+                  className="font-display text-xl text-forest-800"
+                  style={{ fontVariationSettings: '"opsz" 48, "SOFT" 30' }}
+                >
+                  Coming Soon
+                </p>
+              </div>
+              <Link
+                href={`/shop/${product.slug}`}
+                className="btn-secondary text-sm px-4 py-2.5 group/btn"
+              >
+                Notify me
+                <ArrowRight className="size-4 transition-transform group-hover/btn:translate-x-0.5" />
+              </Link>
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.24em] text-ink/55 mb-0.5">From</p>
+                <p
+                  className="font-display text-xl text-forest-800"
+                  style={{ fontVariationSettings: '"opsz" 48, "SOFT" 30' }}
+                >
+                  {formatPrice(startingFrom, currency)}
+                </p>
+              </div>
+              <Link
+                href={`/shop/${product.slug}`}
+                className="btn-primary text-sm px-4 py-2.5 group/btn"
+              >
+                Shop
+                <ArrowRight className="size-4 transition-transform group-hover/btn:translate-x-0.5" />
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </article>

@@ -1,8 +1,9 @@
 import type { Product } from "@/types";
 import { asset } from "@/lib/assets";
 
-// Real product photo, served from /public/products/ locally (not yet on S3).
+// Real product photos, served from /public/products/ locally (not yet on S3).
 const HERO_SUPPLEMENT = "/products/supplement-real.png";
+const DETAIL_SUPPLEMENT_BACK = "/products/supplement-real-back.png";
 const HERO_CREAM = asset("products/cream-1.jpg");
 const HERO_FILTER = asset("products/filter-1.jpg");
 
@@ -90,6 +91,7 @@ export const products: Product[] = [
     ],
     images: [
       { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement — navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
+      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label — Supplement Facts panel showing 1000 mg Inositol Hexaphosphate per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP / lab-tested / third-party verified / non-GMO / gluten-free / vegan certifications.", width: 674, height: 912 },
     ],
     faq: [
       {
@@ -211,6 +213,7 @@ export const products: Product[] = [
     relatedSkus: ["SUP-IP6-BASE", "FIL-CITRATE-BASE"],
     requiresDsheaDisclaimer: true,
     shipsGlobally: false,
+    comingSoon: true,
     labReport: {
       url: "/coa/skn-lsc-eczema-2026-q1.pdf",
       batchId: "SKN-LSC-B0426-A",
@@ -311,6 +314,7 @@ export const products: Product[] = [
     relatedSkus: ["SUP-IP6-BASE", "SKN-LSC-BASE"],
     requiresDsheaDisclaimer: false,
     shipsGlobally: true,
+    comingSoon: true,
     labReport: {
       url: "/coa/fil-citrate-2026-q1.pdf",
       batchId: "FIL-CITRATE-B0426-A",
