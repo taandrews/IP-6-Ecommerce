@@ -59,9 +59,12 @@ export default function FaqPage() {
       <article className="container pb-16 max-w-4xl space-y-12">
         {faqCategories.map((c) => (
           <section key={c.id} id={c.id} className="scroll-mt-24">
-            <h2 className="font-sans font-semibold text-navy-800 mb-4" style={{ fontSize: "clamp(1.25rem, 2vw, 1.5rem)" }}>
+            <h2 className="font-sans font-semibold text-navy-800 mb-2" style={{ fontSize: "clamp(1.25rem, 2vw, 1.5rem)" }}>
               {c.label}
             </h2>
+            {c.intro ? (
+              <p className="text-xs text-ink/55 italic mb-4">{c.intro}</p>
+            ) : null}
             <Accordion
               items={c.items.map((f, i) => ({
                 id: `${c.id}-${i}`,

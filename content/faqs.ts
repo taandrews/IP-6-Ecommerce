@@ -5,105 +5,109 @@ export interface FaqItem {
 export interface FaqCategory {
   id: string;
   label: string;
+  intro?: string;
   items: FaqItem[];
 }
 
 export const faqCategories: FaqCategory[] = [
   {
-    id: "considering",
-    label: "Considering IP6",
-    items: [
-      {
-        q: "What makes IP-6 Research different?",
-        a: "IP-6 Research, Inc. is the only consumer brand that standardizes inositol hexaphosphate to a 95%+ purity specification, verified by HPLC on every batch. Most commodity material ships at 50–80% intact.",
-      },
-      {
-        q: "Who is IP6 Original for?",
-        a: "Adults looking for a research-grade IP6 supplement to support immune health and healthy cell function as part of a daily routine. As with any supplement, consult your healthcare professional before starting.",
-      },
-      {
-        q: "Is IP6 Original a drug?",
-        a: "No. IP6 Original is a dietary supplement under DSHEA. It is not intended to diagnose, treat, cure, or prevent any disease.",
-      },
-    ],
-  },
-  {
-    id: "taking",
-    label: "Taking IP6",
-    items: [
-      {
-        q: "What is the correct dose?",
-        a: "Start with 1 capsule daily for the first week, then move to 2 capsules daily. Always discuss new supplements with your healthcare professional.",
-      },
-      {
-        q: "When should I take it?",
-        a: "On an empty stomach, with at least 8 oz of water, away from mineral-rich meals for the best absorption.",
-      },
-      {
-        q: "Can I take it with other supplements?",
-        a: "IP6 is commonly taken alongside other wellness routines. Please coordinate with your healthcare professional.",
-      },
-      {
-        q: "What if I miss a dose?",
-        a: "Take it as soon as you remember unless it is close to your next scheduled dose. Do not double up.",
-      },
-    ],
-  },
-  {
-    id: "how-it-works",
-    label: "How it works",
+    id: "what-is-ip6",
+    label: "What is IP6",
+    intro: "Reinforces Chapter 1 of the story. Final Q&A copy to be provided by Client.",
     items: [
       {
         q: "What is IP6?",
-        a: "Inositol hexaphosphate (IP6) is a naturally occurring compound found in whole grains, legumes, seeds, and nuts. It is the primary storage form of phosphorus in plants.",
+        a: "IP6 (inositol hexaphosphate) is a naturally occurring compound found in seeds, grains, and legumes. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD has spent more than 40 years researching at the University of Maryland School of Medicine.",
+      },
+      {
+        q: "Where does IP6 come from?",
+        a: "Final source and extraction copy to be provided by Client.",
+      },
+      {
+        q: "Who discovered IP6's potential?",
+        a: "Professor Shamsuddin published his first paper on inositol hexaphosphate in 1985 and has since authored more than 200 peer-reviewed studies on the molecule.",
+      },
+    ],
+  },
+  {
+    id: "why-this-brand",
+    label: "Why this brand",
+    intro: "Reinforces Chapter 2 of the story. Final Q&A copy to be provided by Client.",
+    items: [
+      {
+        q: "What makes IP6 Original different from other IP6 supplements?",
+        a: "Most IP6 on the market is manufactured at 50 to 80 percent purity with no connection to the original research. IP6 Original is standardized to 95 percent or greater purity and is the only IP6 supplement formulated by the scientist who holds the patents.",
       },
       {
         q: "Why does purity matter?",
-        a: "Research protocols typically require 90 to 95%+ pure material to produce consistent, reproducible outcomes. Partial forms (IP5, IP4, IP3) behave differently than the intact molecule and cannot be treated as a dilute version.",
+        a: "If the molecule is not intact, it is not the molecule the research describes. Final detailed copy to be provided by Client.",
+      },
+      {
+        q: "Is IP6 Original FDA approved?",
+        a: "IP6 Original is a dietary supplement, not a drug. Under DSHEA, dietary supplements are regulated differently from pharmaceuticals. Final regulatory copy to be confirmed by Client.",
+      },
+    ],
+  },
+  {
+    id: "how-is-it-made",
+    label: "How is it made",
+    intro: "Reinforces Chapter 3 of the story. Final Q&A copy to be provided by Client.",
+    items: [
+      {
+        q: "How is IP6 Original manufactured?",
+        a: "IP6 Original is manufactured in a cGMP-certified facility at 95 percent or greater purity. Every batch is HPLC-tested. Final manufacturing copy to be provided by Client.",
       },
       {
         q: "Is every batch tested?",
-        a: "Yes. Every batch is independently tested by an ISO 17025-accredited laboratory for purity, potency, heavy metals, and microbial contamination. Certificates of analysis are downloadable on each product page.",
+        a: "Yes. Every batch is verified by HPLC for IP6 purity and screened for heavy metals against USP <232> standards. A certificate of analysis is available on the product page.",
+      },
+      {
+        q: "Where is IP6 Original made?",
+        a: "Final manufacturing-location copy to be confirmed by Client.",
       },
     ],
   },
   {
-    id: "savings",
-    label: "Savings & support",
+    id: "subscriptions-and-shipping",
+    label: "Subscriptions and shipping",
     items: [
       {
         q: "How do subscriptions work?",
-        a: "Choose your delivery cycle (30, 60, or 90 days). Save 15% to 20%. Skip, pause, change frequency, or cancel from your account in one click.",
+        a: "Choose your delivery cycle at checkout. Subscriptions are managed entirely from your account dashboard — pause, skip, change frequency, or cancel anytime in one click.",
       },
       {
-        q: "Where do you ship?",
-        a: "The IP6-Citrate Water Filter ships worldwide. The supplement and skincare ship to a curated list of countries listed on our International Shipping page.",
+        q: "Where does IP6 Original ship?",
+        a: "At launch, IP6 Original ships to the United States and Canada. Additional country availability and shipping rates to be confirmed by Client.",
       },
       {
-        q: "What is your return policy?",
-        a: "Unopened products may be returned within 30 days for a full refund. Opened supplements and skincare may be exchanged for store credit. The water filter has a 60-day window.",
+        q: "What is the return policy?",
+        a: "Final return-policy copy to be confirmed by Client. See our Refund Policy page for the current terms.",
       },
       {
-        q: "How do I contact support?",
-        a: "Email support@ip6original.com. We respond within one business day.",
+        q: "When will my order arrive?",
+        a: "Standard US delivery is 3–6 business days. Canadian delivery 7–14 business days. Tracking is emailed when your order ships.",
       },
     ],
   },
   {
-    id: "company",
-    label: "About the company",
+    id: "safety",
+    label: "Safety",
     items: [
       {
-        q: "Who founded IP-6 Research, Inc.?",
-        a: "Dr. AbulKalam M. Shamsuddin, Professor of Pathology at the University of Maryland School of Medicine, with over 200 peer-reviewed publications on inositol hexaphosphate.",
+        q: "Is IP6 Original safe to take daily?",
+        a: "Always consult your physician before beginning any supplement regimen, including IP6 Original. Final safety profile to be provided by Client.",
       },
       {
-        q: "Where are you located?",
-        a: "15 Charles Plaza, Suite 2508, Baltimore, MD 21201, United States.",
+        q: "Are there any side effects?",
+        a: "Final side-effect copy to be provided by Client. Stop taking IP6 Original and contact your physician if you experience any adverse reaction.",
       },
       {
-        q: "Are your products tested on animals?",
-        a: "No. Our skincare line is cruelty-free. The supplement is third-party tested on physical and chemical specifications only.",
+        q: "Can I take IP6 Original with other medications or supplements?",
+        a: "IP6 chelates multivalent cations, which means timing and pairing matter. Coordinate any new supplement with your healthcare professional. Final detailed interactions copy to be provided by Client.",
+      },
+      {
+        q: "Is IP6 Original safe during pregnancy or nursing?",
+        a: "Final pregnancy and nursing guidance to be provided by Client. Always consult your physician.",
       },
     ],
   },

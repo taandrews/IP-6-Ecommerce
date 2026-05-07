@@ -4,11 +4,20 @@ import { Wordmark } from "@/components/layout/Wordmark";
 
 const COL = [
   {
-    heading: "Products",
+    heading: "Shop",
     links: [
-      { href: "/shop/ip6-original-supplement", label: "IP6 Original Supplement" },
-      { href: "/shop/ip6-la-sante-cream", label: "IP6 La Santé Cream" },
-      { href: "/shop/ip6-citrate-water-filter", label: "IP6-Citrate Water Filter" },
+      { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
+      { href: "/how-to-take", label: "How to Take" },
+      { href: "/account", label: "My Account" },
+    ],
+  },
+  {
+    heading: "Story",
+    links: [
+      { href: "/story", label: "The Story" },
+      { href: "/the-difference", label: "The Difference" },
+      { href: "/founder", label: "The Founder" },
+      { href: "#", label: "IP-6 Research Foundation", external: true },
     ],
   },
   {
@@ -16,8 +25,8 @@ const COL = [
     links: [
       { href: "/faq", label: "FAQ" },
       { href: "/contact", label: "Contact" },
-      { href: "/account", label: "My account" },
       { href: "/international-shipping", label: "Shipping" },
+      { href: "/legal/refund-policy", label: "Returns" },
     ],
   },
   {
@@ -26,7 +35,6 @@ const COL = [
       { href: "/legal/privacy", label: "Privacy" },
       { href: "/legal/terms", label: "Terms" },
       { href: "/legal/cookie-policy", label: "Cookies" },
-      { href: "/legal/refund-policy", label: "Returns" },
       { href: "/legal/accessibility", label: "Accessibility" },
     ],
   },
@@ -50,21 +58,37 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
             </p>
           </div>
 
-          {/* Link groups — always side-by-side (3 columns on every viewport) */}
-          <div className="grid grid-cols-3 gap-4 sm:gap-8">
+          {/* Link groups — always side-by-side. Four columns on sm+, two on mobile. */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {COL.map((c) => (
               <div key={c.heading}>
                 <h3 className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] text-surface/55 mb-3 font-semibold">
                   {c.heading}
                 </h3>
                 <ul className="space-y-2">
-                  {c.links.map((l) => (
-                    <li key={l.href}>
-                      <Link href={l.href} className="text-xs sm:text-sm text-surface/85 hover:text-sky-300 leading-snug block">
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {c.links.map((l) =>
+                    "external" in l && l.external ? (
+                      <li key={l.href + l.label}>
+                        <a
+                          href={l.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs sm:text-sm text-surface/85 hover:text-sky-300 leading-snug block"
+                        >
+                          {l.label} ↗
+                        </a>
+                      </li>
+                    ) : (
+                      <li key={l.href + l.label}>
+                        <Link
+                          href={l.href}
+                          className="text-xs sm:text-sm text-surface/85 hover:text-sky-300 leading-snug block"
+                        >
+                          {l.label}
+                        </Link>
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             ))}
@@ -78,8 +102,9 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
           </p>
         ) : null}
 
-        <div className="mt-6 pt-4 border-t border-navy-600 text-xs text-surface/55">
-          © {new Date().getFullYear()} IP-6 Research, Inc.
+        <div className="mt-6 pt-4 border-t border-navy-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-surface/55">
+          <span>© {new Date().getFullYear()} IP-6 Research, Inc.</span>
+          <span className="text-surface/45">Ships to the US and Canada at launch · Manufactured in Baltimore, MD</span>
         </div>
       </div>
     </footer>

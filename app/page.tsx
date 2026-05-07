@@ -1,224 +1,395 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Award, Truck, RefreshCw } from "lucide-react";
+import {
+  ArrowRight,
+  ShieldCheck,
+  Award,
+  RefreshCw,
+  Truck,
+  CheckCircle2,
+  FlaskConical,
+  Beaker,
+  AlertTriangle,
+} from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { products } from "@/content/products";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
-import { asset } from "@/lib/assets";
 
 export default function HomePage() {
   const currency = resolveCurrency();
+  const supplement = products.find((p) => p.slug === "ip6-original-supplement")!;
+  const supplementFrom = Math.min(
+    ...supplement.variants.map((v) => v.priceCents[currency]),
+  );
 
   return (
     <>
-      {/* =================== HERO ===================
-          Mirrors ozempic.com: sky-blue gradient ground, tiny qualifier line
-          on top, MASSIVE typographic brand statement stacked over it,
-          red circular callout, teal+red color pair, subscribe-side tab. */}
-
-      {/* Announcement strip — navy ground, gold link */}
-      <div className="bg-navy-800 text-surface text-center text-xs py-2.5 font-medium">
-        <Link href="/faq" className="text-gold-300 hover:text-gold-200 underline underline-offset-4 decoration-gold-400/60 hover:decoration-gold-300">
-          See the certificate of analysis
-        </Link>
-        <span className="opacity-85"> &nbsp;·&nbsp; Every batch verified by HPLC at 95%+ purity.</span>
-      </div>
-
-      <section
-        className="relative overflow-hidden"
-        style={{
-          background: "linear-gradient(180deg, #F7F9FB 0%, #ECF6FA 55%, #D8EFF7 100%)",
-        }}
-      >
-        {/* Sticky side "Savings & Support" tab on right edge */}
-        <Link
-          href="#shop"
-          className="hidden lg:flex fixed top-1/2 right-0 -translate-y-1/2 z-30 bg-brandRed-500 hover:bg-brandRed-600 text-surface font-semibold px-3 py-5 rounded-l-lg shadow-card text-[11px] uppercase tracking-[0.18em]"
-          style={{ writingMode: "vertical-rl" }}
-          aria-label="Savings and support"
-        >
-          Subscribe & Save
-        </Link>
-
-        <div className="container relative pt-6 pb-10 lg:pt-10 lg:pb-16">
-          {/* Tiny audience qualifier line, Ozempic-style */}
-          <p className="text-[13px] lg:text-sm text-teal-600 font-semibold text-center">
-            For adults seeking research-grade wellness
-          </p>
-
-          {/* Huge typographic centerpiece */}
-          <h1
-            className="mt-3 lg:mt-4 font-sans font-black text-teal-600 text-center leading-[0.85] tracking-[-0.045em]"
-            style={{ fontSize: "clamp(3rem, 9vw, 8rem)" }}
-          >
-            <span className="block text-brandRed-500" style={{ fontSize: "0.42em", letterSpacing: "0.02em" }}>
-              THERE&apos;S ONLY ONE
-            </span>
-            <span className="block mt-1" style={{ fontSize: "1.25em" }}>
-              IP
-              <span className="text-brandRed-500">·</span>
-              6 ORIGINAL
-            </span>
-            <span className="block mt-3 text-teal-500 font-normal" style={{ fontSize: "0.28em", letterSpacing: "0.05em" }}>
-              inositol hexaphosphate · 500mg
-            </span>
-          </h1>
-
-          {/* Composition row below headline: (left) product image, (center) benefit line, (right) pen/product overlay */}
-          <div className="mt-10 lg:mt-14 grid lg:grid-cols-[1fr_1.1fr_1fr] gap-6 lg:gap-10 items-center">
-            {/* LEFT — hero lifestyle/product illustration with red "#1" badge */}
-            <div className="relative order-2 lg:order-1">
-              <div className="relative aspect-square max-w-sm mx-auto">
-                <Image
-                  src={asset("hero/lifestyle.jpg")}
-                  alt="A wellness routine with IP6 Original."
-                  fill
-                  priority
-                  sizes="(min-width:1024px) 420px, 60vw"
-                  className="object-cover rounded-full shadow-card"
-                />
-                {/* Red #1 badge — Ozempic-style callout */}
-                <div className="absolute -top-2 -right-2 size-24 lg:size-28 rounded-full bg-brandRed-500 text-surface grid place-items-center text-center shadow-card border-4 border-surface">
-                  <div>
-                    <p className="text-[9px] uppercase tracking-[0.22em] font-bold opacity-95">
-                      Only
-                    </p>
-                    <p className="font-sans font-black leading-none mt-0.5" style={{ fontSize: "2rem", letterSpacing: "-0.04em" }}>
-                      95%+
-                    </p>
-                    <p className="text-[9px] uppercase tracking-[0.22em] font-bold opacity-95 mt-0.5">
-                      pure
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* CENTER — headline copy + CTA */}
-            <div className="order-1 lg:order-2 text-center">
-              <p className="text-base lg:text-lg text-ink/80 leading-relaxed max-w-md mx-auto">
-                Your routine is unique. Take the next step with the only inositol hexaphosphate supplement standardized to 95%+ purity and verified by HPLC every batch.
-              </p>
-              <Link href="#shop" className="btn-primary mt-7 text-base lg:text-lg px-8 py-4">
-                See how IP6 could help
+      {/* =============================================
+         CHAPTER 1 — HOOK
+         "There is only one IP6 Original."
+         From the lab of Prof. Shamsuddin. 40 years. One supplement.
+      ============================================== */}
+      <section className="relative bg-cloud-100">
+        <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
+              From the lab of Prof. AbulKalam M. Shamsuddin, MD, PhD
+            </p>
+            <h1
+              className="font-serif text-navy-800 text-balance"
+              style={{
+                fontFamily: "var(--font-display), Georgia, serif",
+                fontSize: "clamp(2.75rem, 5.5vw, 5.5rem)",
+                lineHeight: 1,
+                letterSpacing: "-0.025em",
+                fontWeight: 400,
+              }}
+            >
+              There is only one <span className="text-sky-700">IP6 Original</span>.
+            </h1>
+            <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
+              Forty years of research. Two hundred peer-reviewed publications. Six US patents. One supplement, formulated by the scientist who holds them.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-5">
+              <Link
+                href={`/shop/${supplement.slug}`}
+                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
+              >
+                Shop IP6 Original · {formatPrice(supplementFrom, currency)}
                 <ArrowRight className="size-4" />
               </Link>
-              <p className="mt-5 text-[13px] text-ink/60 max-w-sm mx-auto">
-                <span className="font-bold text-ink/80">Research-grade.</span> cGMP manufactured. Third-party tested.
-              </p>
+              <Link
+                href="/story"
+                className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2"
+              >
+                Read the story
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cloud-200 shadow-card">
+              <Image
+                src="/products/supplement-real.png"
+                alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
+                fill
+                priority
+                sizes="(min-width: 1024px) 540px, 100vw"
+                className="object-contain p-8"
+              />
+            </div>
+            {/* Floating verified badge */}
+            <div className="absolute -top-4 -right-4 lg:-top-6 lg:-right-6 size-32 lg:size-40 rounded-full bg-gold-500 text-navy-800 grid place-items-center text-center shadow-card border-4 border-surface">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.22em] font-bold opacity-90">
+                  Purity
+                </p>
+                <p
+                  className="font-serif leading-none mt-1"
+                  style={{
+                    fontFamily: "var(--font-display), Georgia, serif",
+                    fontSize: "clamp(1.75rem, 2.5vw, 2.25rem)",
+                    letterSpacing: "-0.025em",
+                    fontWeight: 400,
+                  }}
+                >
+                  95%+
+                </p>
+                <div className="h-px w-6 bg-navy-800/40 mx-auto my-1.5" />
+                <p className="text-[8px] uppercase tracking-[0.22em] font-semibold opacity-80">
+                  HPLC verified
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust strip */}
+        <div className="border-t border-cloud-300 bg-surface">
+          <div className="container py-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.2em] text-ink/65 font-semibold">
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="size-3.5 text-sky-700" /> Made in Baltimore, MD
+            </span>
+            <span className="flex items-center gap-2">
+              <Award className="size-3.5 text-sky-700" /> cGMP manufactured
+            </span>
+            <span className="flex items-center gap-2">
+              <FlaskConical className="size-3.5 text-sky-700" /> ISO 17025 tested
+            </span>
+            <span className="flex items-center gap-2">
+              <Truck className="size-3.5 text-sky-700" /> Ships US &amp; Canada
+            </span>
+            <span className="flex items-center gap-2">
+              <CheckCircle2 className="size-3.5 text-sky-700" /> 30-day returns
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* =============================================
+         CHAPTER 2 — STAKES
+         "Most IP6 on shelves is not the molecule his research described."
+         Side by side purity bar.
+      ============================================== */}
+      <section className="bg-surface py-20 lg:py-28">
+        <div className="container max-w-5xl">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+            The Stakes
+          </p>
+          <h2
+            className="font-serif text-navy-800 text-balance"
+            style={{
+              fontFamily: "var(--font-display), Georgia, serif",
+              fontSize: "clamp(2rem, 4vw, 3.25rem)",
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              fontWeight: 400,
+            }}
+          >
+            Most IP6 on shelves is not the molecule his research described.
+          </h2>
+          <p className="mt-6 text-lg text-ink/75 leading-relaxed max-w-3xl">
+            Most IP6 supplements are manufactured at 50 to 80 percent purity with no connection to the original research. IP6 Original is standardized at 95 percent or greater. That is not a marketing claim. It is the specification the research requires.
+          </p>
+
+          {/* Side-by-side purity bar */}
+          <div className="mt-12 lg:mt-16 grid gap-10 lg:gap-12">
+            {/* Commodity bar */}
+            <div>
+              <div className="flex items-baseline justify-between mb-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55 font-bold">
+                  Commodity IP6
+                </p>
+                <p className="text-sm text-ink/55">No connection to the research</p>
+              </div>
+              <div className="relative h-12 rounded-full bg-cloud-300 overflow-hidden">
+                <div
+                  className="absolute inset-y-0 left-0 bg-cloud-400 flex items-center justify-end pr-4"
+                  style={{ width: "65%" }}
+                >
+                  <span className="text-sm font-bold text-ink/70">50–80%</span>
+                </div>
+              </div>
             </div>
 
-            {/* RIGHT — product hero shot */}
-            <div className="relative order-3 hidden lg:block">
-              <div className="relative aspect-[3/4] max-w-xs mx-auto">
+            {/* IP6 Original bar */}
+            <div>
+              <div className="flex items-baseline justify-between mb-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold">
+                  IP6 Original
+                </p>
+                <p className="text-sm text-ink/55">The specification the research requires</p>
+              </div>
+              <div className="relative h-12 rounded-full bg-cloud-300 overflow-hidden">
+                <div
+                  className="absolute inset-y-0 left-0 bg-sky-500 flex items-center justify-end pr-4"
+                  style={{ width: "95%" }}
+                >
+                  <span className="text-sm font-bold text-surface">95% or greater</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12">
+            <Link
+              href="/the-difference"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 hover:text-sky-800 underline underline-offset-4 decoration-sky-300 decoration-2"
+            >
+              See the full comparison
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =============================================
+         CHAPTER 4 — PROOF (4-tile credential strip)
+         200+ Pubs, 6+ US Patents, 40 Years, Formulated by the Inventor
+      ============================================== */}
+      <section className="bg-navy-800 text-surface py-20 lg:py-24">
+        <div className="container max-w-6xl">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-500 font-bold mb-5">
+            The Proof
+          </p>
+          <h2
+            className="font-serif text-balance mb-12 lg:mb-14"
+            style={{
+              fontFamily: "var(--font-display), Georgia, serif",
+              fontSize: "clamp(1.75rem, 3vw, 2.75rem)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+              fontWeight: 400,
+            }}
+          >
+            The research exists. The patents exist. The founder exists.
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { n: "200+", l: "Peer-Reviewed Publications" },
+              { n: "6+", l: "US Patents" },
+              { n: "40 yrs", l: "of Research" },
+              { n: "Inventor", l: "Formulated by the Inventor" },
+            ].map((c) => (
+              <div key={c.l} className="border-l-2 border-gold-500 pl-5">
+                <p
+                  className="font-serif leading-none"
+                  style={{
+                    fontFamily: "var(--font-display), Georgia, serif",
+                    fontSize: "clamp(2.25rem, 4vw, 3rem)",
+                    letterSpacing: "-0.025em",
+                    fontWeight: 400,
+                  }}
+                >
+                  {c.n}
+                </p>
+                <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-surface/85 font-semibold leading-snug">
+                  {c.l}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-12">
+            <Link
+              href="/founder"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-500 hover:text-gold-300 underline underline-offset-4 decoration-gold-500 decoration-2"
+            >
+              Meet Prof. Shamsuddin
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =============================================
+         CHAPTER 3 EXIT-RAMP — The Solution (product card link)
+         The first IP6 supplement standardized to research-grade purity.
+      ============================================== */}
+      <section className="bg-cloud-100 py-20 lg:py-24">
+        <div className="container max-w-5xl">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+            The Solution
+          </p>
+          <h2
+            className="font-serif text-navy-800 text-balance"
+            style={{
+              fontFamily: "var(--font-display), Georgia, serif",
+              fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              fontWeight: 400,
+            }}
+          >
+            The first IP6 supplement standardized to research-grade purity.
+          </h2>
+          <p className="mt-5 text-lg text-ink/75 leading-relaxed max-w-3xl">
+            Manufactured at 95 percent or greater purity. cGMP facility. Formulated by the scientist who holds the patents. Every batch produced to the specification his research requires.
+          </p>
+
+          <Link
+            href={`/shop/${supplement.slug}`}
+            className="mt-10 group block bg-surface border border-cloud-300 hover:border-sky-500 rounded-xl overflow-hidden transition-colors max-w-2xl"
+          >
+            <div className="grid sm:grid-cols-[200px_1fr]">
+              <div className="relative aspect-square sm:aspect-auto bg-cloud-100">
                 <Image
-                  src={asset("products/supplement-1.jpg")}
-                  alt="IP6 Original Supplement bottle."
+                  src="/products/supplement-real.png"
+                  alt=""
                   fill
-                  sizes="320px"
-                  className="object-contain drop-shadow-xl"
+                  sizes="200px"
+                  className="object-contain p-4"
                 />
               </div>
-              <p className="text-center mt-4 text-xs uppercase tracking-[0.22em] text-teal-600 font-bold">
-                60-count · starter
-              </p>
+              <div className="p-6 lg:p-7 flex flex-col">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold mb-2">
+                  IP6 Original Supplement
+                </p>
+                <h3 className="font-serif text-navy-800 text-xl lg:text-2xl mb-2"
+                  style={{ fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 }}>
+                  Pioneer in IP6 Research and Cellular Health
+                </h3>
+                <p className="text-sm text-ink/65 mb-5 flex-1">
+                  Two-month supply, 60 capsules, 1,000 mg per serving. cGMP manufactured. Third-party tested.
+                </p>
+                <div className="flex items-center justify-between">
+                  <p>
+                    <span className="text-[10px] uppercase tracking-[0.22em] text-ink/55 font-semibold block">
+                      From
+                    </span>
+                    <span className="font-serif text-navy-800 text-2xl"
+                      style={{ fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 }}>
+                      {formatPrice(supplementFrom, currency)}
+                    </span>
+                  </p>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 group-hover:text-sky-800">
+                    Shop now
+                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* =============================================
+         CHAPTER 5 — ACTION
+         Take it. Here is exactly how.
+      ============================================== */}
+      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+        <div className="container max-w-5xl grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+              The Action
+            </p>
+            <h2
+              className="font-serif text-navy-800 text-balance"
+              style={{
+                fontFamily: "var(--font-display), Georgia, serif",
+                fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
+                lineHeight: 1.05,
+                letterSpacing: "-0.02em",
+                fontWeight: 400,
+              }}
+            >
+              Take it. Here is exactly how.
+            </h2>
+            <p className="mt-5 text-lg text-ink/75 leading-relaxed">
+              Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                href={`/shop/${supplement.slug}`}
+                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
+              >
+                Shop IP6 Original
+                <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                href="/how-to-take"
+                className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2"
+              >
+                Full dosing guide →
+              </Link>
             </div>
           </div>
-        </div>
-
-        {/* FDA-approved-uses strip bottom of hero, Ozempic-style */}
-        <div className="bg-teal-500 text-surface">
-          <div className="container py-3 text-center text-sm font-semibold">
-            IP6 Original is the only consumer IP6 supplement standardized to a 95%+ purity specification.
-            <span className="opacity-80 font-normal"> All claims structure-function only.</span>
-          </div>
-        </div>
-      </section>
-
-      {/* TRUST STRIP */}
-      <section className="border-y border-cloud-300 bg-surface">
-        <div className="container py-5 flex flex-wrap items-center justify-between gap-x-10 gap-y-3 text-[11px] uppercase tracking-[0.2em] text-ink/65 font-semibold">
-          <span className="flex items-center gap-2"><ShieldCheck className="size-3.5 text-sky-600" /> cGMP manufactured</span>
-          <span className="flex items-center gap-2"><Award className="size-3.5 text-sky-600" /> ISO 17025 tested</span>
-          <span className="flex items-center gap-2"><RefreshCw className="size-3.5 text-sky-600" /> Save up to 20%</span>
-          <span className="flex items-center gap-2"><Truck className="size-3.5 text-sky-600" /> Worldwide shipping</span>
-        </div>
-      </section>
-
-      {/* PRODUCTS */}
-      <section id="shop" className="container py-20 lg:py-24">
-        <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-          <h2 className="font-sans font-semibold text-navy-800" style={{ fontSize: "clamp(1.75rem, 3vw, 2.25rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
-            Shop the products.
-          </h2>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {products.map((p) => {
-            const from = Math.min(...p.variants.map((v) => v.priceCents[currency]));
-            const image = p.images[0];
-            return (
-              <article key={p.sku} className="group rounded-lg overflow-hidden border border-cloud-300 bg-surface hover:shadow-card transition-shadow flex flex-col">
-                <Link href={`/shop/${p.slug}`} className="block relative aspect-[4/3] overflow-hidden bg-cloud-200">
-                  {image ? (
-                    <Image
-                      src={image.url}
-                      alt={image.alt}
-                      fill
-                      sizes="(min-width: 1024px) 420px, 50vw"
-                      className={`transition-transform duration-500 ease-brand group-hover:scale-[1.04] ${
-                        image.width / image.height < 1
-                          ? "object-contain p-4"
-                          : "object-cover"
-                      }`}
-                    />
-                  ) : null}
-                  {p.comingSoon ? (
-                    <span className="absolute top-3 left-3 bg-navy-800 text-surface text-[10px] uppercase tracking-[0.22em] font-semibold px-2.5 py-1 rounded-full">
-                      Coming Soon
-                    </span>
-                  ) : null}
-                </Link>
-                <div className="p-6 flex-1 flex flex-col">
-                  <Link href={`/shop/${p.slug}`}>
-                    <h3 className="font-sans font-semibold text-navy-800 text-xl hover:text-sky-700 transition-colors">
-                      {p.name}
-                    </h3>
-                  </Link>
-                  <p className="mt-1.5 text-sm font-semibold text-sky-700">{p.heroClaim}</p>
-                  <p className="mt-3 text-sm text-ink/70 leading-relaxed flex-1">{p.shortDescription}</p>
-                  <div className="mt-6 pt-4 border-t border-cloud-300 flex items-end justify-between">
-                    {p.comingSoon ? (
-                      <>
-                        <p>
-                          <span className="text-[10px] uppercase tracking-[0.2em] text-ink/55 font-semibold block mb-0.5">Status</span>
-                          <span className="font-sans font-bold text-navy-800 text-lg">Coming Soon</span>
-                        </p>
-                        <Link href={`/shop/${p.slug}`} className="btn-secondary text-sm px-4 py-2.5">
-                          Notify me
-                          <ArrowRight className="size-3.5" />
-                        </Link>
-                      </>
-                    ) : (
-                      <>
-                        <p>
-                          <span className="text-[10px] uppercase tracking-[0.2em] text-ink/55 font-semibold block mb-0.5">From</span>
-                          <span className="font-sans font-bold text-navy-800 text-lg">
-                            {formatPrice(from, currency)}
-                          </span>
-                        </p>
-                        <Link href={`/shop/${p.slug}`} className="btn-primary text-sm px-4 py-2.5">
-                          Shop
-                          <ArrowRight className="size-3.5" />
-                        </Link>
-                      </>
-                    )}
-                  </div>
+          <ol className="space-y-4">
+            {[
+              { icon: Beaker, t: "On an empty stomach", b: "30 minutes before food, or 2 hours after." },
+              { icon: RefreshCw, t: "With water only", b: "8 oz minimum. Avoid mineral-rich beverages within an hour." },
+              { icon: AlertTriangle, t: "Consult your physician", b: "Always discuss new supplements with your healthcare professional." },
+            ].map((s, i) => (
+              <li key={i} className="bg-cloud-100 border border-cloud-300 rounded-xl p-5 flex items-start gap-4">
+                <s.icon className="size-5 text-sky-700 shrink-0 mt-0.5" aria-hidden />
+                <div>
+                  <p className="font-semibold text-navy-800">{s.t}</p>
+                  <p className="text-sm text-ink/65 mt-1 leading-relaxed">{s.b}</p>
                 </div>
-              </article>
-            );
-          })}
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

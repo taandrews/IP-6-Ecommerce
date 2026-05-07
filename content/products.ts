@@ -22,14 +22,14 @@ export const products: Product[] = [
     sku: "SUP-IP6-BASE",
     name: "IP6 Original Supplement",
     shortDescription:
-      "Pharmaceutical-grade inositol hexaphosphate at 95%+ purity, manufactured to research-grade specifications.",
+      "The first IP6 supplement standardized to research-grade purity. Manufactured at 95%+ in a cGMP facility, formulated by the scientist who holds the patents.",
     category: "supplement",
     heroClaim: "95%+ purity",
     highlights: [
-      "95%+ purity IP6 (inositol hexaphosphate)",
-      "Supports immune health and healthy cell function",
-      "Manufactured in a cGMP-certified facility",
-      "Third-party tested for purity and heavy metals",
+      "95% or greater IP6 purity, HPLC verified every batch",
+      "Formulated by Prof. Shamsuddin, the scientist who holds the patents",
+      "cGMP-certified manufacturing in the United States",
+      "Third-party tested for purity and heavy metals (USP <232>)",
       "Vegan, non-GMO, gluten-free",
     ],
     ingredients: [

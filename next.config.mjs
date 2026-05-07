@@ -33,8 +33,12 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      { source: "/science", destination: "/why-ip6/how-it-works", permanent: false },
+      { source: "/science", destination: "/story", permanent: false },
       { source: "/about", destination: "/founder", permanent: false },
+      { source: "/why-ip6", destination: "/the-difference", permanent: false },
+      { source: "/why-ip6/:path*", destination: "/the-difference", permanent: false },
+      { source: "/lifestyle", destination: "/story", permanent: false },
+      { source: "/savings", destination: "/shop/ip6-original-supplement", permanent: false },
     ];
   },
 };

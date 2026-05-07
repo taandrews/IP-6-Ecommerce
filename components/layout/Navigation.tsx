@@ -10,10 +10,11 @@ import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
-  { href: "/shop/ip6-la-sante-cream", label: "IP6 La Santé" },
-  { href: "/shop/ip6-citrate-water-filter", label: "IP6-Citrate Filter" },
+  { href: "/story", label: "Story" },
+  { href: "/the-difference", label: "The Difference" },
+  { href: "/founder", label: "Founder" },
+  { href: "/how-to-take", label: "How to Take" },
   { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Support" },
 ];
 
 export function Navigation() {

@@ -12,7 +12,6 @@ import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { products } from "../content/products";
 import { testimonials } from "../content/testimonials";
-import { blogPosts } from "../content/blog-posts";
 import { lintContent } from "../lib/compliance/claim-linter";
 
 const ROOT = process.cwd();
@@ -90,17 +89,7 @@ async function main() {
     }
   }
 
-  // 4) Lint blog post bodies
-  for (const p of blogPosts) {
-    const blob = [p.title, p.excerpt, ...p.content.flatMap((b) => [b.heading ?? "", b.paragraph])].join("\n");
-    const findings = lintContent(blob, "general");
-    for (const f of findings) {
-      if (f.severity === "error") {
-        console.error(`[compliance] blog ${p.slug} · ${f.rule}: ${f.match}`);
-        errors++;
-      }
-    }
-  }
+  // 4) (Blog content removed — placeholder for future Sanity-backed content lint)
 
   if (errors > 0) {
     console.error(`\nCompliance check failed with ${errors} error(s).`);

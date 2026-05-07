@@ -94,10 +94,32 @@ export default function ProductPage({ params }: Params) {
                   </span>
                 ) : null}
               </div>
-              <h1 className="font-display text-balance text-forest-800 mb-4" style={{ fontSize: "clamp(2rem, 4vw, 3.25rem)", lineHeight: 1.05, letterSpacing: "-0.025em", fontVariationSettings: '"opsz" 144, "SOFT" 50' }}>
+              <h1
+                className="font-serif text-balance text-navy-800 mb-4"
+                style={{
+                  fontFamily: "var(--font-display), Georgia, serif",
+                  fontSize: "clamp(2rem, 4vw, 3.25rem)",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.025em",
+                  fontWeight: 400,
+                }}
+              >
                 {product.name}
               </h1>
-              <span className="hairline-gold-left bg-gold-400 mb-5" />
+              {product.category === "supplement" ? (
+                <p
+                  className="font-serif text-sky-700 mb-4"
+                  style={{
+                    fontFamily: "var(--font-display), Georgia, serif",
+                    fontSize: "clamp(1.05rem, 1.4vw, 1.25rem)",
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  The first IP6 supplement standardized to research-grade purity.
+                </p>
+              ) : null}
               <p className="text-lg text-ink/75 leading-relaxed">{product.shortDescription}</p>
               <p className="sku-serial mt-6 text-ink/55">{product.sku}</p>
             {reviewAggregate ? (
