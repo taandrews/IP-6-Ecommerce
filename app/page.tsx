@@ -70,8 +70,10 @@ export default function HomePage() {
           </div>
 
           <div className="relative">
-            {/* Bottle floats on the page — no box, no shadow, no fill behind it. */}
-            <div className="relative aspect-[3/4]">
+            {/* Bottle floats on the page — no box, no shadow, no fill behind it.
+               Height is capped so the bottle stays a reasonable size in the hero
+               instead of filling a tall aspect box. */}
+            <div className="relative h-[340px] sm:h-[420px] lg:h-[520px]">
               <Image
                 src="/products/supplement-real.png"
                 alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
