@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 import { Wordmark } from "@/components/layout/Wordmark";
-import { NewsletterSignup } from "@/components/marketing/NewsletterSignup";
 
 const COL = [
   {
@@ -45,9 +44,6 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
   return (
     <footer className="mt-20 bg-navy-800 text-surface">
       <div className="container py-12">
-        {/* Waitlist capture — pre-launch email signup, on every page */}
-        <NewsletterSignup />
-
         {/* Brand block on top for mobile, inline on desktop */}
         <div className="md:grid md:grid-cols-[1fr_2.4fr] md:gap-10">
           <div className="mb-10 md:mb-0">
