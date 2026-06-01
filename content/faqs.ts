@@ -17,7 +17,7 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "What is IP6?",
-        a: "IP6 is inositol hexaphosphate — a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD, has spent more than 40 years researching at the University of Maryland School of Medicine.",
+        a: "IP6 is inositol hexaphosphate — a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD, has spent his career researching at the University of Maryland School of Medicine.",
       },
       {
         q: "What is Inositol, and how is it related to IP6?",
@@ -29,11 +29,11 @@ export const faqCategories: FaqCategory[] = [
       },
       {
         q: "Where does IP6 come from?",
-        a: "IP6 occurs naturally in the bran of seeds, grains, and legumes. The IP6 in IP6 Original is produced and standardized to 95 percent or greater purity. Final source and extraction copy to be provided by Client.",
+        a: "IP6 occurs naturally in the bran of seeds, grains, and legumes. The IP6 in IP6 Original is produced as a high-purity formula and third-party tested. Final source and extraction copy to be provided by Client.",
       },
       {
         q: "Who discovered IP6's potential?",
-        a: "Professor Shamsuddin published his first paper on inositol hexaphosphate in 1985 and has since authored more than 200 peer-reviewed studies on the molecule.",
+        a: "Professor Shamsuddin pioneered the published research on inositol hexaphosphate and has authored a substantial body of peer-reviewed work on the molecule. Final publication details to be confirmed by Client.",
       },
     ],
   },
@@ -44,7 +44,7 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "What makes IP6 Original different from other IP6 supplements?",
-        a: "Most IP6 on the market is manufactured at 50 to 80 percent purity with no connection to the original research. IP6 Original is standardized to 95 percent or greater purity and is the only IP6 supplement formulated by the scientist who holds the patents.",
+        a: "Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is a high-purity formula, third-party tested, formulated by the scientist who pioneered that research.",
       },
       {
         q: "Why does purity matter?",
@@ -63,11 +63,11 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "How is IP6 Original manufactured?",
-        a: "IP6 Original is manufactured in a cGMP-certified facility at 95 percent or greater purity. Every batch is HPLC-tested. Final manufacturing copy to be provided by Client.",
+        a: "IP6 Original is manufactured in a cGMP-certified facility and third-party tested. Final manufacturing copy to be provided by Client.",
       },
       {
         q: "Is every batch tested?",
-        a: "Yes. Every batch is verified by HPLC for IP6 purity and screened for heavy metals against USP <232> standards. A certificate of analysis is available on the product page.",
+        a: "Yes. IP6 Original is independently third-party tested for purity, potency, and quality. A certificate of analysis is available on the product page.",
       },
       {
         q: "Where is IP6 Original made?",

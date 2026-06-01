@@ -10,7 +10,7 @@ import { asset } from "@/lib/assets";
 export const metadata: Metadata = {
   title: "The molecule a scientist spent his career on",
   description:
-    "Forty years of research at the University of Maryland School of Medicine. 200+ publications. 6+ US patents. One supplement formulated by the scientist who holds them.",
+    "A career of research at the University of Maryland School of Medicine. One supplement, formulated by the physician-scientist who pioneered the research behind it.",
   alternates: hreflangAlternates("/story"),
 };
 
@@ -36,12 +36,12 @@ export default function StoryPage() {
             The molecule a scientist spent his career on.
           </h1>
           <p className="mt-8 text-lg text-ink/65 leading-relaxed max-w-2xl">
-            Forty years. 200+ peer-reviewed publications. 6+ US patents. One supplement, formulated by the scientist who holds them.
+            A career spent on a single molecule. One supplement, formulated by the physician-scientist who pioneered the research behind it.
           </p>
           <div className="mt-12 h-px w-24 bg-gold-500" />
         </section>
 
-        {/* 1985 */}
+        {/* 1998 — the first paper */}
         <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-3xl py-20 lg:py-28">
             <div className="flex items-baseline gap-6 mb-8">
@@ -54,7 +54,7 @@ export default function StoryPage() {
                   fontStyle: "italic",
                 }}
               >
-                1985
+                1998
               </span>
               <span className="h-px flex-1 bg-cloud-300" />
             </div>
@@ -71,39 +71,15 @@ export default function StoryPage() {
           </div>
         </section>
 
-        {/* The next forty years */}
+        {/* The years that followed */}
         <section className="bg-surface">
           <div className="container max-w-3xl py-20 lg:py-28">
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-4">
-              The next forty years
+              The years that followed
             </p>
             <p className="text-xl lg:text-2xl text-ink/85 leading-relaxed">
-              Publication after publication. More than 200 peer-reviewed studies. Patents issued in the United States, the European Union, Japan, and Singapore. A research foundation founded in Baltimore to keep the work going. Forty years spent proving that a molecule found in seeds and grains holds properties the world has not yet paid attention to.
+              Publication after publication. A growing body of peer-reviewed research. A research foundation in Baltimore to keep the work going. A career spent proving that a molecule found in seeds and grains holds properties the world has not yet paid attention to.
             </p>
-            <div className="mt-12 grid sm:grid-cols-4 gap-4 max-w-3xl">
-              {[
-                { n: "200+", l: "Peer-reviewed publications" },
-                { n: "6+", l: "Issued US patents" },
-                { n: "EU · JP · SG", l: "International patents" },
-                { n: "1985–today", l: "Forty years of research" },
-              ].map((s) => (
-                <div key={s.l} className="border-l-2 border-gold-500 pl-4 py-1">
-                  <p
-                    className="font-serif text-navy-800 leading-none"
-                    style={{
-                      fontFamily: "var(--font-display), Georgia, serif",
-                      fontSize: "clamp(1.5rem, 2vw, 1.75rem)",
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    {s.n}
-                  </p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.18em] text-ink/60 font-semibold leading-tight">
-                    {s.l}
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
         </section>
 
@@ -115,7 +91,7 @@ export default function StoryPage() {
                 The supplement
               </p>
               <p className="text-xl lg:text-2xl text-ink/85 leading-relaxed">
-                After four decades, Professor Shamsuddin formulated IP6 Original. Not a commodity product. Not a licensed name. The supplement built to the specification his own research describes, manufactured at 95 percent or greater purity, sold directly by the scientist who holds the patents.
+                At the end of that work, Professor Shamsuddin formulated IP6 Original. Not a commodity product. Not a licensed name. A high-purity formula built to the specification his own research describes — third-party tested, made in a cGMP-certified facility, and sold directly by the scientist who pioneered the research behind it.
               </p>
               <span className="block h-px w-12 bg-gold-500 mt-8 mb-8" />
               <Link

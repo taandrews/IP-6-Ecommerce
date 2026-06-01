@@ -22,24 +22,23 @@ export const products: Product[] = [
     sku: "SUP-IP6-BASE",
     name: "IP6 Original Supplement",
     shortDescription:
-      "The first IP6 supplement standardized to research-grade purity. Manufactured at 95%+ in a cGMP facility, formulated by the scientist who holds the patents.",
+      "The original IP6 formula — a high-purity blend of IP6 and Inositol, formulated by the physician-scientist who pioneered the research behind it.",
     category: "supplement",
-    heroClaim: "95%+ purity",
+    heroClaim: "High-purity formula",
     highlights: [
-      "95% or greater IP6 purity, HPLC verified every batch",
-      "Formulated by Prof. Shamsuddin, the scientist who holds the patents",
-      "cGMP-certified manufacturing in the United States",
-      "Third-party tested for purity and heavy metals (USP <232>)",
-      "Vegan, non-GMO, gluten-free",
+      "High-Purity Formula, third-party tested",
+      "Formulated by Prof. Shamsuddin, founder and formulator",
+      "Manufactured in a cGMP-certified facility",
+      "No magnesium stearate, no silicon dioxide, no unnecessary additives",
+      "Plant-based capsule (cellulose)",
     ],
     ingredients: [
-      "Inositol hexaphosphate (IP6), 500 mg",
-      "Vegetable cellulose (capsule)",
-      "Rice flour",
-      "No artificial colors, flavors, or preservatives",
+      "IP6 (Calcium-Magnesium Inositol Hexaphosphate), 800 mg per 2-capsule serving",
+      "Inositol, 220 mg per serving",
+      "Other ingredients: plant-based capsule (cellulose)",
     ],
     howToUse: [
-      "Take 2 capsules daily, between meals, with 8 oz of water.",
+      "Take 2 capsules once or twice daily with water, or as directed by your healthcare professional.",
       "For best absorption, take on an empty stomach when possible.",
       "Consult a healthcare professional before starting any supplement regimen.",
     ],
@@ -91,12 +90,12 @@ export const products: Product[] = [
     ],
     images: [
       { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement — navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
-      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label — Supplement Facts panel showing 1000 mg Inositol Hexaphosphate per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP / lab-tested / third-party verified / non-GMO / gluten-free / vegan certifications.", width: 674, height: 912 },
+      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label — Supplement Facts panel showing 800 mg IP6 (Calcium-Magnesium Inositol Hexaphosphate) and 220 mg Inositol per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP Certified / Third-Party Tested / High-Purity Formula badges.", width: 674, height: 912 },
     ],
     faq: [
       {
         q: "What is IP6?",
-        a: "IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. Our formulation delivers 95%+ purity IP6 standardized to research-grade specifications.",
+        a: "IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. IP6 Original pairs it with Inositol in a high-purity formula, third-party tested for purity, potency, and quality.",
       },
       {
         q: "Why take IP6 between meals?",
@@ -104,7 +103,7 @@ export const products: Product[] = [
       },
       {
         q: "Is this product third-party tested?",
-        a: "Yes. Every batch is tested for purity, potency, and heavy-metal contamination by an independent ISO-accredited laboratory.",
+        a: "Yes. IP6 Original is independently third-party tested for purity, potency, and quality.",
       },
       {
         q: "Can I take IP6 with other supplements?",

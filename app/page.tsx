@@ -29,7 +29,7 @@ export default function HomePage() {
       {/* =============================================
          CHAPTER 1 — HOOK
          "There is only one IP6 Original."
-         From the lab of Prof. Shamsuddin. 40 years. One supplement.
+         From the lab of Prof. Shamsuddin. One supplement.
       ============================================== */}
       <section className="relative bg-surface">
         <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
@@ -50,7 +50,7 @@ export default function HomePage() {
               There is only one <span className="text-sky-700">IP6 Original</span>.
             </h1>
             <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
-              Forty years of research. Two hundred peer-reviewed publications. Six US patents. One supplement, formulated by the scientist who holds them.
+              The original IP6 formula — formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-5">
               <Link
@@ -81,26 +81,14 @@ export default function HomePage() {
                 className="object-contain"
               />
             </div>
-            {/* Verified specification, set in type — not a circle of color. */}
-            <div className="absolute bottom-2 left-0 lg:left-2 max-w-[220px]">
-              <p className="text-[10px] uppercase tracking-[0.28em] text-navy-800/55 font-bold">
-                Verified
-              </p>
-              <p
-                className="font-serif text-navy-800 leading-none mt-2"
-                style={{
-                  fontFamily: "var(--font-display), Georgia, serif",
-                  fontSize: "clamp(2rem, 3vw, 2.5rem)",
-                  letterSpacing: "-0.03em",
-                  fontWeight: 400,
-                }}
-              >
-                95.3<span className="text-gold-500">%</span>
-              </p>
-              <span className="block h-px w-10 bg-gold-500 my-2" />
-              <p className="text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">
-                IP6 intact · HPLC
-              </p>
+            {/* Label badges — taken verbatim from the packaging, no invented stats.
+               Sits beneath the bottle so it never overlaps the image. */}
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">
+              <span>cGMP Certified</span>
+              <span aria-hidden className="text-gold-500">·</span>
+              <span>Third-Party Tested</span>
+              <span aria-hidden className="text-gold-500">·</span>
+              <span>High-Purity Formula</span>
             </div>
           </div>
         </div>
@@ -109,13 +97,13 @@ export default function HomePage() {
         <div className="border-t border-cloud-300 bg-surface">
           <div className="container py-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.2em] text-ink/65 font-semibold">
             <span className="flex items-center gap-2">
-              <ShieldCheck className="size-3.5 text-sky-700" /> Made in Baltimore, MD
+              <Award className="size-3.5 text-sky-700" /> cGMP Certified
             </span>
             <span className="flex items-center gap-2">
-              <Award className="size-3.5 text-sky-700" /> cGMP manufactured
+              <ShieldCheck className="size-3.5 text-sky-700" /> Third-Party Tested
             </span>
             <span className="flex items-center gap-2">
-              <FlaskConical className="size-3.5 text-sky-700" /> ISO 17025 tested
+              <FlaskConical className="size-3.5 text-sky-700" /> High-Purity Formula
             </span>
             <span className="flex items-center gap-2">
               <Truck className="size-3.5 text-sky-700" /> Ships US &amp; Canada
@@ -169,45 +157,30 @@ export default function HomePage() {
             Most IP6 on shelves is not the molecule his research described.
           </h2>
           <p className="mt-6 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            Most IP6 supplements are manufactured at 50 to 80 percent purity with no connection to the original research. IP6 Original is standardized at 95 percent or greater. That is not a marketing claim. It is the specification the research requires.
+            Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself — a high-purity formula, third-party tested, manufactured in a cGMP-certified facility.
           </p>
 
-          {/* Side-by-side purity bar */}
-          <div className="mt-12 lg:mt-16 grid gap-10 lg:gap-12">
-            {/* Commodity bar */}
-            <div>
-              <div className="flex items-baseline justify-between mb-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55 font-bold">
-                  Commodity IP6
-                </p>
-                <p className="text-sm text-ink/55">No connection to the research</p>
-              </div>
-              <div className="relative h-12 rounded-full bg-cloud-300 overflow-hidden">
-                <div
-                  className="absolute inset-y-0 left-0 bg-cloud-400 flex items-center justify-end pr-4"
-                  style={{ width: "65%" }}
-                >
-                  <span className="text-sm font-bold text-ink/70">50–80%</span>
-                </div>
-              </div>
+          {/* Qualitative contrast — no invented purity figures */}
+          <div className="mt-12 lg:mt-16 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
+            <div className="bg-surface p-7 lg:p-8">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55 font-bold mb-4">
+                Commodity IP6
+              </p>
+              <ul className="space-y-3 text-sm text-ink/70 leading-relaxed">
+                <li>No connection to the original research</li>
+                <li>Purity and testing vary by vendor</li>
+                <li>No named formulator behind it</li>
+              </ul>
             </div>
-
-            {/* IP6 Original bar */}
-            <div>
-              <div className="flex items-baseline justify-between mb-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold">
-                  IP6 Original
-                </p>
-                <p className="text-sm text-ink/55">The specification the research requires</p>
-              </div>
-              <div className="relative h-12 rounded-full bg-cloud-300 overflow-hidden">
-                <div
-                  className="absolute inset-y-0 left-0 bg-sky-500 flex items-center justify-end pr-4"
-                  style={{ width: "95%" }}
-                >
-                  <span className="text-sm font-bold text-surface">95% or greater</span>
-                </div>
-              </div>
+            <div className="bg-surface p-7 lg:p-8">
+              <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold mb-4">
+                IP6 Original
+              </p>
+              <ul className="space-y-3 text-sm text-navy-800 leading-relaxed">
+                <li>High-Purity Formula</li>
+                <li>Third-party tested, cGMP-certified manufacturing</li>
+                <li>Formulated by the scientist who pioneered the research</li>
+              </ul>
             </div>
           </div>
 
@@ -242,30 +215,29 @@ export default function HomePage() {
               fontWeight: 400,
             }}
           >
-            The research exists. The patents exist. The founder exists.
+            Made to the standard the research describes.
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-10">
             {[
-              { n: "200", suffix: "+", l: "Peer-Reviewed Publications" },
-              { n: "6", suffix: "+", l: "US Patents" },
-              { n: "40", suffix: " yrs", l: "of Research" },
-              { n: "Inventor", suffix: "", l: "Formulated by the Inventor" },
+              { t: "Pioneer in IP6 Research", l: "Built on the founder's body of published work" },
+              { t: "Founder & Formulator", l: "Formulated by Prof. Shamsuddin himself" },
+              { t: "cGMP Certified", l: "Manufactured in a cGMP-certified facility" },
+              { t: "Third-Party Tested", l: "Independently tested for purity, potency, and quality" },
             ].map((c) => (
-              <div key={c.l}>
+              <div key={c.t}>
                 <span aria-hidden className="block h-px w-12 bg-gold-500 mb-5" />
                 <p
-                  className="font-serif text-navy-800 leading-none"
+                  className="font-serif text-navy-800 leading-snug"
                   style={{
                     fontFamily: "var(--font-display), Georgia, serif",
-                    fontSize: "clamp(2.25rem, 4vw, 3rem)",
-                    letterSpacing: "-0.025em",
+                    fontSize: "clamp(1.35rem, 2vw, 1.6rem)",
+                    letterSpacing: "-0.015em",
                     fontWeight: 400,
                   }}
                 >
-                  {c.n}
-                  {c.suffix ? <span className="text-gold-500">{c.suffix}</span> : null}
+                  {c.t}
                 </p>
-                <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
+                <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
                   {c.l}
                 </p>
               </div>
@@ -305,7 +277,7 @@ export default function HomePage() {
             The first IP6 supplement standardized to research-grade purity.
           </h2>
           <p className="mt-5 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            Manufactured at 95 percent or greater purity. cGMP facility. Formulated by the scientist who holds the patents. Every batch produced to the specification his research requires.
+            A high-purity formula, third-party tested, manufactured in a cGMP-certified facility — formulated by the scientist who pioneered the research behind it.
           </p>
 
           <Link
@@ -331,7 +303,7 @@ export default function HomePage() {
                   Pioneer in IP6 Research and Cellular Health
                 </h3>
                 <p className="text-sm text-ink/65 mb-5 flex-1">
-                  Two-month supply, 60 capsules, 1,000 mg per serving. cGMP manufactured. Third-party tested.
+                  120 capsules · 60 servings · 800 mg IP6 and 220 mg Inositol per serving. cGMP manufactured. Third-party tested.
                 </p>
                 <div className="flex items-center justify-between">
                   <p>

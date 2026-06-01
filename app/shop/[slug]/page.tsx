@@ -266,9 +266,9 @@ export default function ProductPage({ params }: Params) {
       <section className="bg-forest-800 text-ivory-100 py-14">
         <div className="container grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {[
-            { icon: Leaf, title: "Third-party tested", body: "Every batch." },
-            { icon: ShieldCheck, title: "cGMP manufactured", body: "Pharmaceutical-grade standards." },
-            { icon: Award, title: "Institutional spec", body: "Research-grade purity." },
+            { icon: Leaf, title: "Third-party tested", body: "Independently verified." },
+            { icon: ShieldCheck, title: "cGMP certified", body: "Manufactured to cGMP standards." },
+            { icon: Award, title: "High-purity formula", body: "No magnesium stearate or silicon dioxide." },
             { icon: Zap, title: "Fast shipping", body: "Tracked worldwide." },
           ].map((f) => (
             <div key={f.title} className="flex items-start gap-3">

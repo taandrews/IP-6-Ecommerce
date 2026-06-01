@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 };
 
 const ROWS: { label: string; commodity: string; original: string }[] = [
-  { label: "Purity", commodity: "50–80 percent", original: "95 percent or greater" },
-  { label: "Verification", commodity: "Vendor declaration", original: "HPLC tested every batch" },
-  { label: "Heavy metal panel", commodity: "Variable", original: "USP <232> standard" },
-  { label: "Manufacturing", commodity: "Varies", original: "cGMP facility" },
-  { label: "Formulated by", commodity: "Unknown", original: "The scientist who holds the patents" },
+  { label: "Purity", commodity: "Varies by vendor", original: "High-Purity Formula" },
+  { label: "Verification", commodity: "Vendor declaration", original: "Third-party tested" },
+  { label: "Formulation", commodity: "Common processing additives", original: "No magnesium stearate or silicon dioxide" },
+  { label: "Manufacturing", commodity: "Varies", original: "cGMP-certified facility" },
+  { label: "Formulated by", commodity: "Unknown", original: "Prof. Shamsuddin, founder & formulator" },
 ];
 
 export default function TheDifferencePage() {

@@ -10,7 +10,7 @@ import { asset } from "@/lib/assets";
 export const metadata: Metadata = {
   title: "The scientist behind IP6 Original",
   description:
-    "Professor AbulKalam M. Shamsuddin, MD, PhD — physician-scientist at the University of Maryland School of Medicine. 40+ years researching inositol hexaphosphate. 200+ publications. 6+ US patents. Founder of IP-6 Research, Inc.",
+    "Professor AbulKalam M. Shamsuddin, MD, PhD — physician-scientist at the University of Maryland School of Medicine and a pioneer in inositol hexaphosphate research. Founder of IP-6 Research, Inc., and the formulator of IP6 Original.",
   alternates: hreflangAlternates("/founder"),
 };
 
@@ -71,7 +71,7 @@ export default function FounderPage() {
         <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-3xl py-16 lg:py-20 space-y-8 text-lg text-ink/85 leading-relaxed">
             <p>
-              Professor AbulKalam M. Shamsuddin, MD, PhD is a physician-scientist who has spent his career at the University of Maryland School of Medicine researching the health properties of inositol hexaphosphate. His work spans more than 40 years, more than 200 peer-reviewed publications, and more than 6 issued US patents with additional international patents in the EU, Japan, and Singapore. He founded IP-6 Research, Inc. in Baltimore, Maryland to bring the product of that research directly to consumers. IP6 Original is his formulation.
+              Professor AbulKalam M. Shamsuddin, MD, PhD is a physician-scientist who has spent his career at the University of Maryland School of Medicine researching the health properties of inositol hexaphosphate, and a pioneer of the published research on the molecule. He founded IP-6 Research, Inc. in Baltimore, Maryland to bring the product of that research directly to consumers. IP6 Original is his formulation.
             </p>
 
             {/* Foundation bridge */}
@@ -96,26 +96,25 @@ export default function FounderPage() {
         <section className="bg-surface border-b border-cloud-300">
           <div className="container py-16 lg:py-20 grid sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-10 max-w-6xl">
             {[
-              { n: "200", suffix: "+", l: "Peer-Reviewed Publications" },
-              { n: "6", suffix: "+", l: "US Patents" },
-              { n: "40", suffix: " yrs", l: "of Research" },
-              { n: "Inventor", suffix: "", l: "Formulated It Himself" },
+              { t: "Physician-Scientist", l: "University of Maryland School of Medicine" },
+              { t: "Pioneer in IP6 Research", l: "A body of published, peer-reviewed work" },
+              { t: "Founder", l: "IP-6 Research, Inc., Baltimore, MD" },
+              { t: "Formulator", l: "Formulated IP6 Original himself" },
             ].map((c) => (
-              <div key={c.l}>
+              <div key={c.t}>
                 <span aria-hidden className="block h-px w-12 bg-gold-500 mb-5" />
                 <p
-                  className="font-serif text-navy-800 leading-none"
+                  className="font-serif text-navy-800 leading-snug"
                   style={{
                     fontFamily: "var(--font-display), Georgia, serif",
-                    fontSize: "clamp(2rem, 3.5vw, 2.75rem)",
-                    letterSpacing: "-0.025em",
+                    fontSize: "clamp(1.35rem, 2vw, 1.6rem)",
+                    letterSpacing: "-0.015em",
                     fontWeight: 400,
                   }}
                 >
-                  {c.n}
-                  {c.suffix ? <span className="text-gold-500">{c.suffix}</span> : null}
+                  {c.t}
                 </p>
-                <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
+                <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
                   {c.l}
                 </p>
               </div>
@@ -140,7 +139,7 @@ export default function FounderPage() {
             Issued patents on inositol hexaphosphate.
           </h2>
           <p className="text-sm text-ink/55 mb-8">
-            6+ issued US patents and additional international patents in the EU, Japan, and Singapore. Full title and number list to be confirmed by Client.
+            Full patent titles, numbers, and jurisdictions to be confirmed by Client.
           </p>
           <ul className="divide-y divide-cloud-300 border-y border-cloud-300">
             {PATENTS.map((p, i) => (

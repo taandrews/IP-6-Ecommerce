@@ -20,10 +20,10 @@ export function SupplementSections() {
           <div>
             <p className="eyebrow mb-3">From the founder</p>
             <h2 className="font-display text-display-md text-forest-800 mb-5">
-              Why we stake the company on 95%+ purity.
+              Why we stake the company on purity.
             </h2>
             <blockquote className="text-ink/85 leading-relaxed italic border-l-4 border-gold-400 pl-5">
-              “We could have shipped an IP6 supplement years earlier if we'd been willing to ship commodity-purity material. We weren't, and we still aren't. The 95%+ specification is the difference between consumer-grade and research-grade — and our customers can feel the difference.”
+              “We could have shipped an IP6 supplement years earlier if we'd been willing to ship commodity-purity material. We weren't, and we still aren't. Purity is the difference between a commodity ingredient and the molecule the research describes — and our customers can feel the difference.”
             </blockquote>
             <p className="mt-6 text-sm text-ink/70">
               — IP-6 Research, Inc. founder. Read more on the{" "}
