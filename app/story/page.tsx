@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function StoryPage() {
   return (
     <>
-      <article className="bg-cloud-100">
+      <article className="bg-surface">
         {/* Title page */}
         <section className="container max-w-3xl pt-20 pb-16 lg:pt-32 lg:pb-24">
           <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
@@ -72,7 +72,7 @@ export default function StoryPage() {
         </section>
 
         {/* The next forty years */}
-        <section className="bg-cloud-100">
+        <section className="bg-surface">
           <div className="container max-w-3xl py-20 lg:py-28">
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-4">
               The next forty years
@@ -108,18 +108,19 @@ export default function StoryPage() {
         </section>
 
         {/* The supplement */}
-        <section className="bg-navy-800 text-surface">
+        <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-5xl py-20 lg:py-28 grid lg:grid-cols-[1.4fr_1fr] gap-12 items-center">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.28em] text-gold-500 font-bold mb-4">
+              <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-4">
                 The supplement
               </p>
-              <p className="text-xl lg:text-2xl leading-relaxed">
+              <p className="text-xl lg:text-2xl text-ink/85 leading-relaxed">
                 After four decades, Professor Shamsuddin formulated IP6 Original. Not a commodity product. Not a licensed name. The supplement built to the specification his own research describes, manufactured at 95 percent or greater purity, sold directly by the scientist who holds the patents.
               </p>
+              <span className="block h-px w-12 bg-gold-500 mt-8 mb-8" />
               <Link
                 href="/shop/ip6-original-supplement"
-                className="mt-10 inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
+                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
               >
                 Shop IP6 Original
                 <ArrowRight className="size-4" />

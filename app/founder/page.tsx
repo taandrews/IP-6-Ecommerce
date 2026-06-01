@@ -68,7 +68,7 @@ export default function FounderPage() {
         </section>
 
         {/* Body */}
-        <section className="bg-cloud-100 border-y border-cloud-300">
+        <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-3xl py-16 lg:py-20 space-y-8 text-lg text-ink/85 leading-relaxed">
             <p>
               Professor AbulKalam M. Shamsuddin, MD, PhD is a physician-scientist who has spent his career at the University of Maryland School of Medicine researching the health properties of inositol hexaphosphate. His work spans more than 40 years, more than 200 peer-reviewed publications, and more than 6 issued US patents with additional international patents in the EU, Japan, and Singapore. He founded IP-6 Research, Inc. in Baltimore, Maryland to bring the product of that research directly to consumers. IP6 Original is his formulation.
@@ -93,17 +93,18 @@ export default function FounderPage() {
         </section>
 
         {/* Credential strip */}
-        <section className="bg-navy-800 text-surface">
-          <div className="container py-16 lg:py-20 grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl">
+        <section className="bg-surface border-b border-cloud-300">
+          <div className="container py-16 lg:py-20 grid sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-10 max-w-6xl">
             {[
-              { n: "200+", l: "Peer-Reviewed Publications" },
-              { n: "6+", l: "US Patents" },
-              { n: "40 yrs", l: "of Research" },
-              { n: "Inventor", l: "Formulated It Himself" },
+              { n: "200", suffix: "+", l: "Peer-Reviewed Publications" },
+              { n: "6", suffix: "+", l: "US Patents" },
+              { n: "40", suffix: " yrs", l: "of Research" },
+              { n: "Inventor", suffix: "", l: "Formulated It Himself" },
             ].map((c) => (
-              <div key={c.l} className="border-l-2 border-gold-500 pl-5">
+              <div key={c.l}>
+                <span aria-hidden className="block h-px w-12 bg-gold-500 mb-5" />
                 <p
-                  className="font-serif leading-none"
+                  className="font-serif text-navy-800 leading-none"
                   style={{
                     fontFamily: "var(--font-display), Georgia, serif",
                     fontSize: "clamp(2rem, 3.5vw, 2.75rem)",
@@ -112,8 +113,9 @@ export default function FounderPage() {
                   }}
                 >
                   {c.n}
+                  {c.suffix ? <span className="text-gold-500">{c.suffix}</span> : null}
                 </p>
-                <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-surface/80 font-semibold">
+                <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
                   {c.l}
                 </p>
               </div>
@@ -156,7 +158,7 @@ export default function FounderPage() {
         </section>
 
         {/* Books */}
-        <section className="bg-cloud-100 border-t border-cloud-300">
+        <section className="bg-surface border-t border-cloud-300">
           <div className="container max-w-4xl py-16 lg:py-20">
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
               Books

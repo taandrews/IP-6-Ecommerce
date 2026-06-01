@@ -17,7 +17,7 @@ export default function HowToTakePage() {
     <>
       <article>
         {/* Hero */}
-        <section className="bg-cloud-100 border-b border-cloud-300">
+        <section className="bg-surface border-b border-cloud-300">
           <div className="container max-w-3xl py-20 lg:py-24">
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
               How to Take
@@ -36,6 +36,20 @@ export default function HowToTakePage() {
             </h1>
             <p className="mt-6 text-lg text-ink/70 leading-relaxed max-w-2xl">
               Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after eating. Always consult your physician before beginning any supplement regimen.
+            </p>
+          </div>
+        </section>
+
+        {/* Primer — how IP6 and Inositol work together, framing the dosing that follows */}
+        <section className="bg-surface">
+          <div className="container max-w-3xl pt-14 lg:pt-16">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-4">
+              How IP6 and Inositol work together
+            </p>
+            <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
+              IP6 is{" "}
+              <strong className="text-navy-800 font-semibold">inositol</strong> carrying six phosphate groups;{" "}
+              <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original includes both — the pairing Prof. Shamsuddin&rsquo;s research is built around. Because IP6 readily binds minerals, taking it on an empty stomach gives the compound the cleanest path to absorption, which is why the timing below matters.
             </p>
           </div>
         </section>
@@ -89,7 +103,7 @@ export default function HowToTakePage() {
         </section>
 
         {/* Detailed protocol — placeholder for Client copy */}
-        <section className="bg-cloud-100 border-y border-cloud-300">
+        <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-3xl py-16 lg:py-20">
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
               Dosing protocol
@@ -132,7 +146,7 @@ export default function HowToTakePage() {
           >
             Cautions and contraindications.
           </h2>
-          <div className="rounded-lg border border-dashed border-cloud-400 bg-cloud-100 p-5 text-sm text-ink/65 leading-relaxed">
+          <div className="rounded-lg border border-dashed border-cloud-400 bg-surface p-5 text-sm text-ink/65 leading-relaxed">
             <p className="font-semibold text-navy-800 mb-2">
               When-not-to-take guidance to be provided by Client.
             </p>
@@ -146,10 +160,10 @@ export default function HowToTakePage() {
         </section>
 
         {/* Closing CTA */}
-        <section className="bg-navy-800 text-surface">
+        <section className="bg-surface border-t border-cloud-300">
           <div className="container max-w-3xl py-16 lg:py-20 text-center">
             <p
-              className="font-serif text-balance leading-tight mb-8"
+              className="font-serif text-navy-800 text-balance leading-tight mb-3"
               style={{
                 fontFamily: "var(--font-display), Georgia, serif",
                 fontSize: "clamp(1.5rem, 2.5vw, 2rem)",
@@ -159,13 +173,16 @@ export default function HowToTakePage() {
             >
               Ready when you are.
             </p>
-            <Link
-              href="/shop/ip6-original-supplement"
-              className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-8 py-4 rounded-full font-semibold"
-            >
-              Shop IP6 Original
-              <ArrowRight className="size-4" />
-            </Link>
+            <span className="inline-block h-px w-12 bg-gold-500 mb-7" aria-hidden />
+            <div>
+              <Link
+                href="/shop/ip6-original-supplement"
+                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-8 py-4 rounded-full font-semibold"
+              >
+                Shop IP6 Original
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
           </div>
         </section>
       </article>

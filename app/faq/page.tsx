@@ -27,7 +27,7 @@ export default function FaqPage() {
 
   return (
     <>
-      <section className="bg-cloud-100 border-b border-cloud-300 py-14 lg:py-20">
+      <section className="bg-surface border-b border-cloud-300 py-14 lg:py-20">
         <div className="container max-w-4xl">
           <p className="eyebrow">FAQs</p>
           <h1 className="font-sans font-semibold text-navy-800 text-balance mt-4" style={{ fontSize: "clamp(2.25rem, 4.5vw, 3.5rem)", lineHeight: 1.05, letterSpacing: "-0.025em" }}>

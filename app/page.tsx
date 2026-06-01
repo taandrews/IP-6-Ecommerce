@@ -31,7 +31,7 @@ export default function HomePage() {
          "There is only one IP6 Original."
          From the lab of Prof. Shamsuddin. 40 years. One supplement.
       ============================================== */}
-      <section className="relative bg-cloud-100">
+      <section className="relative bg-surface">
         <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
           <div>
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
@@ -70,38 +70,37 @@ export default function HomePage() {
           </div>
 
           <div className="relative">
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cloud-200 shadow-card">
+            {/* Bottle floats on the page — no box, no shadow, no fill behind it. */}
+            <div className="relative aspect-[3/4]">
               <Image
                 src="/products/supplement-real.png"
                 alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
                 fill
                 priority
                 sizes="(min-width: 1024px) 540px, 100vw"
-                className="object-contain p-8"
+                className="object-contain"
               />
             </div>
-            {/* Floating verified badge */}
-            <div className="absolute -top-4 -right-4 lg:-top-6 lg:-right-6 size-32 lg:size-40 rounded-full bg-gold-500 text-navy-800 grid place-items-center text-center shadow-card border-4 border-surface">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.22em] font-bold opacity-90">
-                  Purity
-                </p>
-                <p
-                  className="font-serif leading-none mt-1"
-                  style={{
-                    fontFamily: "var(--font-display), Georgia, serif",
-                    fontSize: "clamp(1.75rem, 2.5vw, 2.25rem)",
-                    letterSpacing: "-0.025em",
-                    fontWeight: 400,
-                  }}
-                >
-                  95%+
-                </p>
-                <div className="h-px w-6 bg-navy-800/40 mx-auto my-1.5" />
-                <p className="text-[8px] uppercase tracking-[0.22em] font-semibold opacity-80">
-                  HPLC verified
-                </p>
-              </div>
+            {/* Verified specification, set in type — not a circle of color. */}
+            <div className="absolute bottom-2 left-0 lg:left-2 max-w-[220px]">
+              <p className="text-[10px] uppercase tracking-[0.28em] text-navy-800/55 font-bold">
+                Verified
+              </p>
+              <p
+                className="font-serif text-navy-800 leading-none mt-2"
+                style={{
+                  fontFamily: "var(--font-display), Georgia, serif",
+                  fontSize: "clamp(2rem, 3vw, 2.5rem)",
+                  letterSpacing: "-0.03em",
+                  fontWeight: 400,
+                }}
+              >
+                95.3<span className="text-gold-500">%</span>
+              </p>
+              <span className="block h-px w-10 bg-gold-500 my-2" />
+              <p className="text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">
+                IP6 intact · HPLC
+              </p>
             </div>
           </div>
         </div>
@@ -125,6 +124,25 @@ export default function HomePage() {
               <CheckCircle2 className="size-3.5 text-sky-700" /> 30-day returns
             </span>
           </div>
+        </div>
+      </section>
+
+      {/* =============================================
+         PRIMER — What IP6 and Inositol are.
+         A short orientation that lands before the purity argument,
+         so a first-time visitor knows the molecule before comparing it.
+      ============================================== */}
+      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-20">
+        <div className="container max-w-3xl">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+            First, the molecule
+          </p>
+          <p className="text-lg lg:text-xl text-ink/75 leading-relaxed">
+            IP6 is{" "}
+            <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>{" "}
+            — a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
+            <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question — how pure is it — the one that matters.
+          </p>
         </div>
       </section>
 
@@ -207,15 +225,15 @@ export default function HomePage() {
 
       {/* =============================================
          CHAPTER 4 — PROOF (4-tile credential strip)
-         200+ Pubs, 6+ US Patents, 40 Years, Formulated by the Inventor
+         Soft white ground. Color lives in the gold rule and serif numerals.
       ============================================== */}
-      <section className="bg-navy-800 text-surface py-20 lg:py-24">
+      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
         <div className="container max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-500 font-bold mb-5">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
             The Proof
           </p>
           <h2
-            className="font-serif text-balance mb-12 lg:mb-14"
+            className="font-serif text-navy-800 text-balance mb-14 lg:mb-16 max-w-3xl"
             style={{
               fontFamily: "var(--font-display), Georgia, serif",
               fontSize: "clamp(1.75rem, 3vw, 2.75rem)",
@@ -226,16 +244,17 @@ export default function HomePage() {
           >
             The research exists. The patents exist. The founder exists.
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-10">
             {[
-              { n: "200+", l: "Peer-Reviewed Publications" },
-              { n: "6+", l: "US Patents" },
-              { n: "40 yrs", l: "of Research" },
-              { n: "Inventor", l: "Formulated by the Inventor" },
+              { n: "200", suffix: "+", l: "Peer-Reviewed Publications" },
+              { n: "6", suffix: "+", l: "US Patents" },
+              { n: "40", suffix: " yrs", l: "of Research" },
+              { n: "Inventor", suffix: "", l: "Formulated by the Inventor" },
             ].map((c) => (
-              <div key={c.l} className="border-l-2 border-gold-500 pl-5">
+              <div key={c.l}>
+                <span aria-hidden className="block h-px w-12 bg-gold-500 mb-5" />
                 <p
-                  className="font-serif leading-none"
+                  className="font-serif text-navy-800 leading-none"
                   style={{
                     fontFamily: "var(--font-display), Georgia, serif",
                     fontSize: "clamp(2.25rem, 4vw, 3rem)",
@@ -244,17 +263,18 @@ export default function HomePage() {
                   }}
                 >
                   {c.n}
+                  {c.suffix ? <span className="text-gold-500">{c.suffix}</span> : null}
                 </p>
-                <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-surface/85 font-semibold leading-snug">
+                <p className="mt-4 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
                   {c.l}
                 </p>
               </div>
             ))}
           </div>
-          <div className="mt-12">
+          <div className="mt-14">
             <Link
               href="/founder"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-500 hover:text-gold-300 underline underline-offset-4 decoration-gold-500 decoration-2"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-gold-500 decoration-2"
             >
               Meet Prof. Shamsuddin
               <ArrowRight className="size-3.5" />
@@ -267,7 +287,7 @@ export default function HomePage() {
          CHAPTER 3 EXIT-RAMP — The Solution (product card link)
          The first IP6 supplement standardized to research-grade purity.
       ============================================== */}
-      <section className="bg-cloud-100 py-20 lg:py-24">
+      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
         <div className="container max-w-5xl">
           <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
             The Solution
@@ -290,16 +310,16 @@ export default function HomePage() {
 
           <Link
             href={`/shop/${supplement.slug}`}
-            className="mt-10 group block bg-surface border border-cloud-300 hover:border-sky-500 rounded-xl overflow-hidden transition-colors max-w-2xl"
+            className="mt-10 group block border-y border-cloud-300 hover:border-gold-500 transition-colors max-w-2xl"
           >
-            <div className="grid sm:grid-cols-[200px_1fr]">
-              <div className="relative aspect-square sm:aspect-auto bg-cloud-100">
+            <div className="grid sm:grid-cols-[180px_1fr]">
+              <div className="relative aspect-square sm:aspect-auto">
                 <Image
                   src="/products/supplement-real.png"
                   alt=""
                   fill
-                  sizes="200px"
-                  className="object-contain p-4"
+                  sizes="180px"
+                  className="object-contain p-3"
                 />
               </div>
               <div className="p-6 lg:p-7 flex flex-col">
@@ -375,14 +395,14 @@ export default function HomePage() {
               </Link>
             </div>
           </div>
-          <ol className="space-y-4">
+          <ol className="divide-y divide-cloud-300 border-y border-cloud-300">
             {[
               { icon: Beaker, t: "On an empty stomach", b: "30 minutes before food, or 2 hours after." },
               { icon: RefreshCw, t: "With water only", b: "8 oz minimum. Avoid mineral-rich beverages within an hour." },
               { icon: AlertTriangle, t: "Consult your physician", b: "Always discuss new supplements with your healthcare professional." },
             ].map((s, i) => (
-              <li key={i} className="bg-cloud-100 border border-cloud-300 rounded-xl p-5 flex items-start gap-4">
-                <s.icon className="size-5 text-sky-700 shrink-0 mt-0.5" aria-hidden />
+              <li key={i} className="py-5 flex items-start gap-4">
+                <s.icon className="size-5 text-gold-500 shrink-0 mt-0.5" aria-hidden />
                 <div>
                   <p className="font-semibold text-navy-800">{s.t}</p>
                   <p className="text-sm text-ink/65 mt-1 leading-relaxed">{s.b}</p>

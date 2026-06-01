@@ -13,15 +13,23 @@ export const faqCategories: FaqCategory[] = [
   {
     id: "what-is-ip6",
     label: "What is IP6",
-    intro: "Reinforces Chapter 1 of the story. Final Q&A copy to be provided by Client.",
+    intro: "An introduction to the molecule at the center of everything we make — what IP6 and Inositol are, and why they are paired.",
     items: [
       {
         q: "What is IP6?",
-        a: "IP6 (inositol hexaphosphate) is a naturally occurring compound found in seeds, grains, and legumes. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD has spent more than 40 years researching at the University of Maryland School of Medicine.",
+        a: "IP6 is inositol hexaphosphate — a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD, has spent more than 40 years researching at the University of Maryland School of Medicine.",
+      },
+      {
+        q: "What is Inositol, and how is it related to IP6?",
+        a: "Inositol is the simple compound at the core of IP6 — the same molecule, without the six phosphate groups attached. It is found naturally in the body and in many everyday foods. When IP6 is metabolized, it gives up phosphate groups and yields inositol and its lower phosphate forms, which is why the two are so closely linked.",
+      },
+      {
+        q: "Why are IP6 and Inositol taken together?",
+        a: "Professor Shamsuddin's research centers on IP6 and Inositol as a pair rather than IP6 alone, and IP6 Original reflects that approach by combining both in one formula. Final detail on the ratio and the rationale to be provided by Client.",
       },
       {
         q: "Where does IP6 come from?",
-        a: "Final source and extraction copy to be provided by Client.",
+        a: "IP6 occurs naturally in the bran of seeds, grains, and legumes. The IP6 in IP6 Original is produced and standardized to 95 percent or greater purity. Final source and extraction copy to be provided by Client.",
       },
       {
         q: "Who discovered IP6's potential?",
