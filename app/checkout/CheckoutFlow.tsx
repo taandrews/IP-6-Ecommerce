@@ -92,7 +92,7 @@ export function CheckoutFlow() {
                     setOrderId(data.orderId);
                     setStep("payment");
                   } catch {
-                    /* noop — user can retry */
+                    /* noop - user can retry */
                   }
                 }}
               />
@@ -226,7 +226,7 @@ function Stepper({ current }: { current: number }) {
               {done ? <Check className="size-4" /> : i + 1}
             </span>
             <span className={cn("text-ink/75", active && "text-forest-800 font-medium")}>{label}</span>
-            {i < labels.length - 1 ? <span className="text-ink/30">—</span> : null}
+            {i < labels.length - 1 ? <span className="text-ink/30">·</span> : null}
           </li>
         );
       })}

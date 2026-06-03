@@ -27,7 +27,7 @@ export default function HomePage() {
   return (
     <>
       {/* =============================================
-         CHAPTER 1 — HOOK
+         CHAPTER 1 - HOOK
          "There is only one IP6 Original."
          From the lab of Prof. Shamsuddin. One supplement.
       ============================================== */}
@@ -50,7 +50,7 @@ export default function HomePage() {
               There is only one <span className="text-sky-700">IP6 Original</span>.
             </h1>
             <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
-              The original IP6 formula — formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
+              The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-5">
               <Link
@@ -70,7 +70,7 @@ export default function HomePage() {
           </div>
 
           <div className="relative">
-            {/* Bottle floats on the page — no box, no shadow, no fill behind it.
+            {/* Bottle floats on the page - no box, no shadow, no fill behind it.
                Height is capped so the bottle stays a reasonable size in the hero
                instead of filling a tall aspect box. */}
             <div className="relative h-[340px] sm:h-[420px] lg:h-[520px]">
@@ -83,7 +83,7 @@ export default function HomePage() {
                 className="object-contain"
               />
             </div>
-            {/* Label badges — taken verbatim from the packaging, no invented stats.
+            {/* Label badges - taken verbatim from the packaging, no invented stats.
                Sits beneath the bottle so it never overlaps the image. */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">
               <span>cGMP Certified</span>
@@ -118,7 +118,7 @@ export default function HomePage() {
       </section>
 
       {/* =============================================
-         PRIMER — What IP6 and Inositol are.
+         PRIMER - What IP6 and Inositol are.
          A short orientation that lands before the purity argument,
          so a first-time visitor knows the molecule before comparing it.
       ============================================== */}
@@ -129,15 +129,14 @@ export default function HomePage() {
           </p>
           <p className="text-lg lg:text-xl text-ink/75 leading-relaxed">
             IP6 is{" "}
-            <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>{" "}
-            — a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
-            <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question — how pure is it — the one that matters.
+            <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
+            <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
           </p>
         </div>
       </section>
 
       {/* =============================================
-         CHAPTER 2 — STAKES
+         CHAPTER 2 - STAKES
          "Most IP6 on shelves is not the molecule his research described."
          Side by side purity bar.
       ============================================== */}
@@ -159,10 +158,10 @@ export default function HomePage() {
             Most IP6 on shelves is not the molecule his research described.
           </h2>
           <p className="mt-6 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself — a high-purity formula, third-party tested, manufactured in a cGMP-certified facility.
+            Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself: a high-purity formula, third-party tested, manufactured in a cGMP-certified facility.
           </p>
 
-          {/* Qualitative contrast — no invented purity figures */}
+          {/* Qualitative contrast - no invented purity figures */}
           <div className="mt-12 lg:mt-16 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
             <div className="bg-surface p-7 lg:p-8">
               <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55 font-bold mb-4">
@@ -199,7 +198,7 @@ export default function HomePage() {
       </section>
 
       {/* =============================================
-         CHAPTER 4 — PROOF (4-tile credential strip)
+         CHAPTER 4 - PROOF (4-tile credential strip)
          Soft white ground. Color lives in the gold rule and serif numerals.
       ============================================== */}
       <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
@@ -258,7 +257,7 @@ export default function HomePage() {
       </section>
 
       {/* =============================================
-         CHAPTER 3 EXIT-RAMP — The Solution (product card link)
+         CHAPTER 3 EXIT-RAMP - The Solution (product card link)
          The first IP6 supplement standardized to research-grade purity.
       ============================================== */}
       <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
@@ -279,7 +278,7 @@ export default function HomePage() {
             The first IP6 supplement standardized to research-grade purity.
           </h2>
           <p className="mt-5 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            A high-purity formula, third-party tested, manufactured in a cGMP-certified facility — formulated by the scientist who pioneered the research behind it.
+            A high-purity formula, third-party tested, manufactured in a cGMP-certified facility, formulated by the scientist who pioneered the research behind it.
           </p>
 
           <Link
@@ -329,7 +328,7 @@ export default function HomePage() {
       </section>
 
       {/* =============================================
-         CHAPTER 5 — ACTION
+         CHAPTER 5 - ACTION
          Take it. Here is exactly how.
       ============================================== */}
       <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">

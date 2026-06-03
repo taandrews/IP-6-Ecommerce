@@ -54,7 +54,7 @@ export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[]
               </span>
             </div>
           ) : (
-            <p className="text-sm text-ink/60">No reviews yet — be the first.</p>
+            <p className="text-sm text-ink/60">No reviews yet. Be the first.</p>
           )}
         </div>
         <button onClick={() => setOpen(true)} className="btn-secondary">

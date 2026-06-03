@@ -10,14 +10,14 @@ import { asset } from "@/lib/assets";
 export const metadata: Metadata = {
   title: "The scientist behind IP6 Original",
   description:
-    "Professor AbulKalam M. Shamsuddin, MD, PhD — physician-scientist at the University of Maryland School of Medicine and a pioneer in inositol hexaphosphate research. Founder of IP-6 Research, Inc., and the formulator of IP6 Original.",
+    "Professor AbulKalam M. Shamsuddin, MD, PhD, physician-scientist at the University of Maryland School of Medicine and a pioneer in inositol hexaphosphate research. Founder of IP-6 Research, Inc., and the formulator of IP6 Original.",
   alternates: hreflangAlternates("/founder"),
 };
 
 // Patent and book details to be confirmed by Client. Placeholders below
 // so the layout is in place when copy lands.
 const PATENTS: { number: string; title: string; jurisdiction: string }[] = [
-  { number: "Pending — Client to confirm", title: "Patent title to be provided", jurisdiction: "United States" },
+  { number: "Pending, Client to confirm", title: "Patent title to be provided", jurisdiction: "United States" },
 ];
 
 const BOOKS: { title: string }[] = [
@@ -174,7 +174,7 @@ export default function FounderPage() {
               Published books by Prof. Shamsuddin.
             </h2>
             <p className="text-sm text-ink/55 mb-8">
-              Final list and ISBNs to be confirmed by Client. Titles only — no excerpts shown on this page.
+              Final list and ISBNs to be confirmed by Client. Titles only, no excerpts shown on this page.
             </p>
             <ul className="divide-y divide-cloud-300 border-y border-cloud-300">
               {BOOKS.map((b, i) => (

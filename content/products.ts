@@ -22,7 +22,7 @@ export const products: Product[] = [
     sku: "SUP-IP6-BASE",
     name: "IP6 Original Supplement",
     shortDescription:
-      "The original IP6 formula — a high-purity blend of IP6 and Inositol, formulated by the physician-scientist who pioneered the research behind it.",
+      "The original IP6 formula, a high-purity blend of IP6 and Inositol, formulated by the physician-scientist who pioneered the research behind it.",
     category: "supplement",
     heroClaim: "High-purity formula",
     highlights: [
@@ -89,8 +89,8 @@ export const products: Product[] = [
       { days: 90, discountPct: 20 },
     ],
     images: [
-      { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement — navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
-      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label — Supplement Facts panel showing 800 mg IP6 (Calcium-Magnesium Inositol Hexaphosphate) and 220 mg Inositol per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP Certified / Third-Party Tested / High-Purity Formula badges.", width: 674, height: 912 },
+      { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement. Navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
+      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label. Supplement Facts panel showing 800 mg IP6 (Calcium-Magnesium Inositol Hexaphosphate) and 220 mg Inositol per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP Certified / Third-Party Tested / High-Purity Formula badges.", width: 674, height: 912 },
     ],
     faq: [
       {

@@ -24,7 +24,7 @@ export function Navigation() {
   return (
     <header className="sticky top-0 z-40 border-b border-ivory-300/80 bg-surface/90 backdrop-blur">
       <div className="container flex items-center justify-between h-16 lg:h-20">
-        <Link href="/" aria-label="IP-6 Research — Home" className="block">
+        <Link href="/" aria-label="IP-6 Research, Home" className="block">
           <Wordmark size="sm" />
         </Link>
 

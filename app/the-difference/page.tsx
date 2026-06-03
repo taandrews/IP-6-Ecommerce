@@ -8,7 +8,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Not all IP6 is the same",
   description:
-    "Most IP6 on the market has no connection to the research that identified its potential. The specification, verification, and source of IP6 Original — line by line.",
+    "Most IP6 on the market has no connection to the research that identified its potential. The specification, verification, and source of IP6 Original, line by line.",
   alternates: hreflangAlternates("/the-difference"),
 };
 
@@ -45,14 +45,13 @@ export default function TheDifferencePage() {
           </p>
         </section>
 
-        {/* Primer — what IP6 is, and why the purity of the compound is the measure of it */}
+        {/* Primer - what IP6 is, and why the purity of the compound is the measure of it */}
         <section className="container max-w-3xl pb-10 lg:pb-12">
           <div className="border-l-2 border-gold-500 pl-5 lg:pl-6">
             <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
-              First, what it is. IP6 —{" "}
-              <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>{" "}
-              — is a naturally occurring molecule of inositol carrying six phosphate groups, found in the bran of seeds and grains.{" "}
-              <strong className="text-navy-800 font-semibold">Inositol</strong> is the simpler compound at its core, and IP6 Original pairs the two as Prof. Shamsuddin&rsquo;s research describes them. Because IP6 is defined by those six phosphate groups, the purity of the compound — how much of it remains the intact molecule rather than broken-down fragments — is what determines its quality. That is what the comparison below measures.
+              First, what it is. IP6, or{" "}
+              <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, is a naturally occurring molecule of inositol carrying six phosphate groups, found in the bran of seeds and grains.{" "}
+              <strong className="text-navy-800 font-semibold">Inositol</strong> is the simpler compound at its core, and IP6 Original pairs the two as Prof. Shamsuddin&rsquo;s research describes them. Because IP6 is defined by those six phosphate groups, the purity of the compound, how much of it remains the intact molecule rather than broken-down fragments, is what determines its quality. That is what the comparison below measures.
             </p>
           </div>
         </section>

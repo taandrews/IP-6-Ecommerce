@@ -58,7 +58,7 @@ export default function InternationalShippingPage() {
               ))}
             </ul>
             <p className="text-sm text-ink/60 mt-4">
-              If your country isn't listed, please contact customer support — we review our shipping destinations quarterly.
+              If your country isn't listed, please contact customer support. We review our shipping destinations quarterly.
             </p>
           </section>
 

@@ -1,5 +1,5 @@
 /**
- * Compliance claim linter — enforces the regulatory firewall between
+ * Compliance claim linter - enforces the regulatory firewall between
  * ip6original.com and ip-6.net, and blocks disease-treatment language on
  * supplement + skincare content.
  *
@@ -94,7 +94,7 @@ export function lintContent(
             rule: "BANNED_VERB",
             match: word,
             context: excerpt(text, word),
-            suggestion: "Review phrasing — avoid disease-claim verbs on supplement/skincare pages.",
+            suggestion: "Review phrasing - avoid disease-claim verbs on supplement/skincare pages.",
           });
         }
       }

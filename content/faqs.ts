@@ -13,15 +13,15 @@ export const faqCategories: FaqCategory[] = [
   {
     id: "what-is-ip6",
     label: "What is IP6",
-    intro: "An introduction to the molecule at the center of everything we make — what IP6 and Inositol are, and why they are paired.",
+    intro: "An introduction to the molecule at the center of everything we make: what IP6 and Inositol are, and why they are paired.",
     items: [
       {
         q: "What is IP6?",
-        a: "IP6 is inositol hexaphosphate — a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD, has spent his career researching at the University of Maryland School of Medicine.",
+        a: "IP6 is inositol hexaphosphate, a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD, has spent his career researching at the University of Maryland School of Medicine.",
       },
       {
         q: "What is Inositol, and how is it related to IP6?",
-        a: "Inositol is the simple compound at the core of IP6 — the same molecule, without the six phosphate groups attached. It is found naturally in the body and in many everyday foods. When IP6 is metabolized, it gives up phosphate groups and yields inositol and its lower phosphate forms, which is why the two are so closely linked.",
+        a: "Inositol is the simple compound at the core of IP6: the same molecule, without the six phosphate groups attached. It is found naturally in the body and in many everyday foods. When IP6 is metabolized, it gives up phosphate groups and yields inositol and its lower phosphate forms, which is why the two are so closely linked.",
       },
       {
         q: "Why are IP6 and Inositol taken together?",
@@ -81,7 +81,7 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "How do subscriptions work?",
-        a: "Choose your delivery cycle at checkout. Subscriptions are managed entirely from your account dashboard — pause, skip, change frequency, or cancel anytime in one click.",
+        a: "Choose your delivery cycle at checkout. Subscriptions are managed entirely from your account dashboard. Pause, skip, change frequency, or cancel anytime in one click.",
       },
       {
         q: "Where does IP6 Original ship?",

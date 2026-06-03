@@ -58,7 +58,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
             </p>
           </div>
 
-          {/* Link groups — always side-by-side. Four columns on sm+, two on mobile. */}
+          {/* Link groups - always side-by-side. Four columns on sm+, two on mobile. */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {COL.map((c) => (
               <div key={c.heading}>

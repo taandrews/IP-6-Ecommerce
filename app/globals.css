@@ -123,7 +123,7 @@
   .scrollbar-none::-webkit-scrollbar { display: none; }
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 
-  /* Grain overlay disabled — clinical surfaces. */
+  /* Grain overlay disabled. Clinical surfaces. */
   .grain-overlay { display: none; }
 
   .stagger > * {

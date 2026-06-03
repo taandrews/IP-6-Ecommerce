@@ -41,7 +41,7 @@ export default function StoryPage() {
           <div className="mt-12 h-px w-24 bg-gold-500" />
         </section>
 
-        {/* 1998 — the first paper */}
+        {/* 1998 - the first paper */}
         <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-3xl py-20 lg:py-28">
             <div className="flex items-baseline gap-6 mb-8">
@@ -91,7 +91,7 @@ export default function StoryPage() {
                 The supplement
               </p>
               <p className="text-xl lg:text-2xl text-ink/85 leading-relaxed">
-                At the end of that work, Professor Shamsuddin formulated IP6 Original. Not a commodity product. Not a licensed name. A high-purity formula built to the specification his own research describes — third-party tested, made in a cGMP-certified facility, and sold directly by the scientist who pioneered the research behind it.
+                At the end of that work, Professor Shamsuddin formulated IP6 Original. Not a commodity product. Not a licensed name. A high-purity formula built to the specification his own research describes. Third-party tested, made in a cGMP-certified facility, and sold directly by the scientist who pioneered the research behind it.
               </p>
               <span className="block h-px w-12 bg-gold-500 mt-8 mb-8" />
               <Link

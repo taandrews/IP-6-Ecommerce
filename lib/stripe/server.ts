@@ -19,13 +19,13 @@ async function init() {
   return { stripe: _stripe, webhookSecret: _webhookSecret };
 }
 
-// Legacy synchronous export — uses env var only, falls back to a failing stub.
+// Legacy synchronous export - uses env var only, falls back to a failing stub.
 // Prefer `getStripe()` in new code.
 const syncKey = process.env.STRIPE_SECRET_KEY;
 if (!syncKey) {
   // eslint-disable-next-line no-console
   console.warn(
-    "[stripe] STRIPE_SECRET_KEY not set — synchronous `stripe` export will fail. Use getStripe() instead.",
+    "[stripe] STRIPE_SECRET_KEY not set - synchronous `stripe` export will fail. Use getStripe() instead.",
   );
 }
 export const stripe = new Stripe(syncKey ?? "sk_test_missing", {
@@ -41,6 +41,6 @@ export async function getStripeWebhookSecret() {
   return (await init()).webhookSecret;
 }
 
-// Legacy export — prefer getStripeWebhookSecret() in new code.
+// Legacy export - prefer getStripeWebhookSecret() in new code.
 export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET ?? "";
 export const STRIPE_TAX_ENABLED = process.env.STRIPE_TAX_ENABLED === "true";

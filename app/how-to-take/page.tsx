@@ -40,7 +40,7 @@ export default function HowToTakePage() {
           </div>
         </section>
 
-        {/* Primer — how IP6 and Inositol work together, framing the dosing that follows */}
+        {/* Primer - how IP6 and Inositol work together, framing the dosing that follows */}
         <section className="bg-surface">
           <div className="container max-w-3xl pt-14 lg:pt-16">
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-4">
@@ -49,7 +49,7 @@ export default function HowToTakePage() {
             <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
               IP6 is{" "}
               <strong className="text-navy-800 font-semibold">inositol</strong> carrying six phosphate groups;{" "}
-              <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original includes both — the pairing Prof. Shamsuddin&rsquo;s research is built around. Because IP6 readily binds minerals, taking it on an empty stomach gives the compound the cleanest path to absorption, which is why the timing below matters.
+              <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original includes both, the pairing Prof. Shamsuddin&rsquo;s research is built around. Because IP6 readily binds minerals, taking it on an empty stomach gives the compound the cleanest path to absorption, which is why the timing below matters.
             </p>
           </div>
         </section>
@@ -102,7 +102,7 @@ export default function HowToTakePage() {
           </ol>
         </section>
 
-        {/* Detailed protocol — placeholder for Client copy */}
+        {/* Detailed protocol - placeholder for Client copy */}
         <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-3xl py-16 lg:py-20">
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">

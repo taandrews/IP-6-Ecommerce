@@ -51,7 +51,7 @@ export function ReviewStep({
       <section>
         <h3 className="font-medium text-forest-800 mb-2">Shipping method</h3>
         <p className="text-sm text-ink/75">
-          {rate.label} · {rate.carrier} · {rate.etaDays[0]}–{rate.etaDays[1]} business days — {formatPrice(shippingCents, currency)}
+          {rate.label} · {rate.carrier} · {rate.etaDays[0]}–{rate.etaDays[1]} business days · {formatPrice(shippingCents, currency)}
         </p>
       </section>
 

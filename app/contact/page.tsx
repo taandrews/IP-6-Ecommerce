@@ -6,7 +6,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact IP-6 Research, Inc. — customer support, wholesale inquiries, and humanitarian program contacts.",
+    "Contact IP-6 Research, Inc. for customer support, wholesale inquiries, and humanitarian program contacts.",
   alternates: hreflangAlternates("/contact"),
 };
 

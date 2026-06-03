@@ -37,7 +37,7 @@ export default function PrivacyPage() {
             <li>Fulfilling orders, managing subscriptions, and providing customer support.</li>
             <li>Legal and regulatory compliance, including tax reporting.</li>
             <li>Product improvement and aggregated analytics (consent-based).</li>
-            <li>Marketing communications you have opted into — unsubscribe at any time.</li>
+            <li>Marketing communications you have opted into. Unsubscribe at any time.</li>
           </ul>
         </section>
         <section>

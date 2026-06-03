@@ -52,7 +52,7 @@ export function ContactForm() {
         <option value="press">Press</option>
         <option value="other">Other</option>
       </Select>
-      <Input id="order" name="order" label="Order number" hint="Optional — for order-specific questions." />
+      <Input id="order" name="order" label="Order number" hint="Optional. For order-specific questions." />
       <Textarea id="message" name="message" label="Message" required maxLength={2000} />
       {error ? <p className="text-sm text-danger" role="alert">{error}</p> : null}
       <button type="submit" className="btn-primary" disabled={status === "submitting"}>

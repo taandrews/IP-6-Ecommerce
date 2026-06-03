@@ -35,7 +35,7 @@ export async function sendEmail(to: string, subject: string, html: string, text?
 
 export const emailTemplates = {
   orderConfirmation: (name: string, orderId: string, total: string, eta: string) => ({
-    subject: `Order ${orderId} confirmed — IP-6 Research`,
+    subject: `Order ${orderId} confirmed · IP-6 Research`,
     html: baseEmail(`
       <h1>Thank you, ${escapeHtml(name)}.</h1>
       <p>Your order <strong>${escapeHtml(orderId)}</strong> has been received.</p>
@@ -53,7 +53,7 @@ export const emailTemplates = {
     `),
   }),
   subscriptionRenewalReminder: (name: string, product: string, chargeDate: string) => ({
-    subject: `Upcoming renewal — ${product}`,
+    subject: `Upcoming renewal · ${product}`,
     html: baseEmail(`
       <h1>Heads up, ${escapeHtml(name)}.</h1>
       <p>Your ${escapeHtml(product)} subscription renews on ${escapeHtml(chargeDate)}.</p>
@@ -61,14 +61,14 @@ export const emailTemplates = {
     `),
   }),
   subscriptionChargeSuccess: (name: string, product: string, amount: string) => ({
-    subject: `Payment received — ${product}`,
+    subject: `Payment received · ${product}`,
     html: baseEmail(`
       <h1>Thank you, ${escapeHtml(name)}.</h1>
       <p>We've successfully charged ${escapeHtml(amount)} for your ${escapeHtml(product)} subscription.</p>
     `),
   }),
   subscriptionChargeFailed: (name: string, product: string) => ({
-    subject: `Payment issue — ${product}`,
+    subject: `Payment issue · ${product}`,
     html: baseEmail(`
       <h1>Hi ${escapeHtml(name)},</h1>
       <p>We had trouble charging your payment method for ${escapeHtml(product)}.</p>

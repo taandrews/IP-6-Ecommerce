@@ -12,7 +12,7 @@ export default function PaymentMethodsPage() {
       </header>
       <div className="card p-8 space-y-4">
         <div className="flex items-center gap-2 text-xs text-ink/60">
-          <Lock className="size-3.5" /> Stored securely by Stripe — never on our servers.
+          <Lock className="size-3.5" /> Stored securely by Stripe. Never on our servers.
         </div>
         <p className="text-ink/70">
           You don't have any saved payment methods. Add one at checkout or through Stripe's hosted customer portal.

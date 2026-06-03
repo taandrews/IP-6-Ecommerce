@@ -90,7 +90,7 @@ export function DiscountManager() {
                   <td className="px-4 py-3">
                     {c.usesCount}/{c.maxUses ?? "∞"}
                   </td>
-                  <td className="px-4 py-3">{c.expiresAt ? formatDate(c.expiresAt) : "—"}</td>
+                  <td className="px-4 py-3">{c.expiresAt ? formatDate(c.expiresAt) : "Never"}</td>
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => remove(c.code)}

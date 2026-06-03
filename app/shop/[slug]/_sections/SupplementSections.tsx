@@ -23,10 +23,10 @@ export function SupplementSections() {
               Why we stake the company on purity.
             </h2>
             <blockquote className="text-ink/85 leading-relaxed italic border-l-4 border-gold-400 pl-5">
-              “We could have shipped an IP6 supplement years earlier if we'd been willing to ship commodity-purity material. We weren't, and we still aren't. Purity is the difference between a commodity ingredient and the molecule the research describes — and our customers can feel the difference.”
+              “We could have shipped an IP6 supplement years earlier if we'd been willing to ship commodity-purity material. We weren't, and we still aren't. Purity is the difference between a commodity ingredient and the molecule the research describes, and our customers can feel the difference.”
             </blockquote>
             <p className="mt-6 text-sm text-ink/70">
-              — IP-6 Research, Inc. founder. Read more on the{" "}
+              IP-6 Research, Inc. founder. Read more on the{" "}
               <Link href="/founder" className="underline text-forest-700">
                 founder's page
               </Link>
