@@ -1,0 +1,46 @@
+{%- assign p = section.settings.product -%}
+<style>
+  #petpromo-{{ section.id }} { background: var(--bg,#fff); }
+  #petpromo-{{ section.id }} .wrap { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(28px,5vw,72px); align-items: center; }
+  #petpromo-{{ section.id }} .media { border-radius: 16px; overflow: hidden; aspect-ratio: 16/11; background: var(--surface); }
+  #petpromo-{{ section.id }} .media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #petpromo-{{ section.id }} .ip6-eyebrow { color: var(--gold-deep); }
+  #petpromo-{{ section.id }} h2 { color: var(--ink); font-size: clamp(30px,4vw,48px); line-height: 1.06; letter-spacing: -0.02em; margin: 16px 0 0; max-width: 14ch; }
+  #petpromo-{{ section.id }} p { font-size: 18px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 46ch; }
+  #petpromo-{{ section.id }} .specs { display: flex; gap: 32px; margin: 26px 0 0; flex-wrap: wrap; padding-top: 22px; border-top: 1px solid var(--line); }
+  #petpromo-{{ section.id }} .specs .n { font-weight: 700; font-size: 22px; color: var(--ink); }
+  #petpromo-{{ section.id }} .specs .l { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  #petpromo-{{ section.id }} .act { margin-top: 30px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  #petpromo-{{ section.id }} .alt { color: var(--ink); font-weight: 600; font-size: 15px; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+  #petpromo-{{ section.id }} .alt:hover { opacity: .7; }
+  @media (max-width: 860px) { #petpromo-{{ section.id }} .wrap { grid-template-columns: 1fr; } #petpromo-{{ section.id }} .media { order: -1; } }
+</style>
+<section id="petpromo-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+  <div class="ip6-wrap wrap">
+    <div class="media ip6-rise d1">
+      <img src="{{ 'ip6-pet-life2.jpg' | asset_url }}" alt="A family with their dogs" width="1200" height="800" loading="lazy">
+    </div>
+    <div class="copy ip6-rise d2">
+      <span class="ip6-eyebrow">New · IP6 Original Pet</span>
+      <h2>Now for the whole family.</h2>
+      <p>The same research-grade IP6 standard behind the Original formula, made for dogs and cats, available as capsules or an easy-mix powder. Daily cellular and immune support for single-pet and multi-pet households.</p>
+      <div class="specs">
+        <div><div class="n">500 mg</div><div class="l">IP6 / serving</div></div>
+        <div><div class="n">150 mg</div><div class="l">Inositol / serving</div></div>
+        <div><div class="n">Dogs &amp; cats</div><div class="l">Vet-formulated</div></div>
+      </div>
+      <div class="act">
+        <a class="ip6-btn ip6-btn--primary" href="/products/ip6-original-pet-capsules">Shop Pet Capsules</a>
+        <a class="alt" href="/products/ip6-original-pet-powder">Shop Pet Powder &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "IP6 Pet Promo",
+  "tag": "section",
+  "settings": [ { "type": "product", "id": "product", "label": "Pet product" } ],
+  "presets": [{ "name": "IP6 Pet Promo" }]
+}
+{% endschema %}

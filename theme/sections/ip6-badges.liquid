@@ -1,0 +1,24 @@
+<style>
+ #trust-{{ section.id }} { background: var(--paper); }
+ #trust-{{ section.id }} .inner { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 22px 0; }
+ #trust-{{ section.id }} ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0; }
+ #trust-{{ section.id }} li { font-family: var(--sans); font-size: 12.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 4px 26px; position: relative; }
+ #trust-{{ section.id }} li + li::before { content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 14px; background: var(--line); }
+ @media (max-width: 749px) { #trust-{{ section.id }} li { padding: 6px 16px; font-size: 11px; } #trust-{{ section.id }} li + li::before { display: none; } }
+</style>
+<section id="trust-{{ section.id }}" class="ip6">
+ <div class="ip6-wrap">
+ <div class="inner">
+ <ul>
+ <li>cGMP Certified</li>
+ <li>Third-Party Tested</li>
+ <li>High-Purity Formula</li>
+ <li>Ships US &amp; Canada</li>
+ <li>30-Day Returns</li>
+ </ul>
+ </div>
+ </div>
+</section>
+{% schema %}
+{ "name": "IP6 Trust Row", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Trust Row" }] }
+{% endschema %}

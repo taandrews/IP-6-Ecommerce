@@ -1,0 +1,24 @@
+<style>
+ #pf-{{ section.id }} { background: #fff; }
+ #pf-{{ section.id }} .box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: clamp(32px,5vw,72px); text-align: center; max-width: 880px; margin: 0 auto; }
+ #pf-{{ section.id }} .quote { font-family: var(--serif); font-weight: 500; font-size: clamp(24px,3.2vw,38px); line-height: 1.22; letter-spacing: -0.01em; color: var(--ink); margin: 18px 0 0; }
+ #pf-{{ section.id }} .body { font-size: 17px; line-height: 1.65; color: var(--ink-2); max-width: 60ch; margin: 22px auto 0; }
+ #pf-{{ section.id }} .who { margin-top: 24px; font-size: 14px; color: var(--muted); }
+ #pf-{{ section.id }} .who b { color: var(--ink); font-weight: 700; }
+ #pf-{{ section.id }} .link { margin-top: 22px; display: inline-block; }
+ #pf-{{ section.id }} .link a { color: var(--ink); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+</style>
+<section id="pf-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="box ip6-rise d1">
+ <span class="ip6-eyebrow">The founder</span>
+ <p class="quote">“Decades of research, in every capsule.”</p>
+ <p class="body">IP6 Original was developed by Prof. AbulKalam M. Shamsuddin, MD, PhD, the pioneer of IP6 research. It is made to the standard his work defined, so what reaches you reflects the science, without compromise.</p>
+ <p class="who"><b>Prof. AbulKalam M. Shamsuddin, MD, PhD</b><br>Founder &amp; Formulator</p>
+ <p class="link"><a href="/pages/founder">Meet Prof. Shamsuddin →</a></p>
+ </div>
+ </div>
+</section>
+{% schema %}
+{ "name": "IP6 PDP Founder", "tag": "section", "settings": [], "presets": [{ "name": "IP6 PDP Founder" }] }
+{% endschema %}

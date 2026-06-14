@@ -1,0 +1,49 @@
+<style>
+ #pc-{{ section.id }} { background: var(--surface); }
+ #pc-{{ section.id }} .head { text-align: center; max-width: 680px; margin: 0 auto clamp(32px,4vw,52px); }
+ #pc-{{ section.id }} .head h2 { font-size: clamp(28px,3.4vw,42px); line-height: 1.12; margin: 14px 0 0; }
+ #pc-{{ section.id }} .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 980px; margin: 0 auto; }
+ #pc-{{ section.id }} .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: clamp(22px,2.6vw,32px); }
+ #pc-{{ section.id }} .card.win { border-color: var(--ink); box-shadow: 0 10px 30px -18px rgba(11,31,58,.35); }
+ #pc-{{ section.id }} .ct { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+ #pc-{{ section.id }} .ct h3 { font-size: 19px; }
+ #pc-{{ section.id }} .card.base h3 { color: var(--muted); }
+ #pc-{{ section.id }} .pill { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 5px 11px; border-radius: 100px; }
+ #pc-{{ section.id }} .pill.dark { background: var(--ink); color: #fff; } #pc-{{ section.id }} .pill.gray { background: #eef1f5; color: var(--muted); }
+ #pc-{{ section.id }} ul { list-style: none; margin: 0; padding: 0; }
+ #pc-{{ section.id }} li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
+ #pc-{{ section.id }} li svg { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+ #pc-{{ section.id }} .win li svg { color: var(--success); } #pc-{{ section.id }} .base li svg { color: #b6402f; }
+ @media (max-width:749px){ #pc-{{ section.id }} .cards { grid-template-columns: 1fr; } }
+</style>
+<section id="pc-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="head ip6-rise d1">
+ <span class="ip6-eyebrow">The difference</span>
+ <h2>Most IP6 isn't the molecule the research described.</h2>
+ </div>
+ <div class="cards">
+ <div class="card base ip6-rise d2">
+ <div class="ct"><h3>Commodity IP6</h3><span class="pill gray">Typical</span></div>
+ <ul>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> Unstandardized, source varies</li>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> Not verified to research grade</li>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> Often padded with fillers &amp; flow agents</li>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg> Rarely third-party tested</li>
+ </ul>
+ </div>
+ <div class="card win ip6-rise d3">
+ <div class="ct"><h3>IP6 Original</h3><span class="pill dark">The original</span></div>
+ <ul>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 7"/></svg> Standardized Calcium-Magnesium IP6 + Inositol</li>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 7"/></svg> Research-grade, high-purity</li>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 7"/></svg> No magnesium stearate or silicon dioxide</li>
+ <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l4 4L19 7"/></svg> cGMP-certified · third-party tested</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+</section>
+{% schema %}
+{ "name": "IP6 PDP Compare", "tag": "section", "settings": [], "presets": [{ "name": "IP6 PDP Compare" }] }
+{% endschema %}

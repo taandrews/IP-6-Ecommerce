@@ -1,0 +1,163 @@
+{%- liquid
+ assign product = section.settings.product | default: product
+ assign cv = product.selected_or_first_available_variant
+ assign has_plans = false
+ if product.selling_plan_groups.size > 0
+ assign has_plans = true
+ endif
+ assign sub = cv.price | times: 0.85 | round
+-%}
+<style>
+ #pdp-{{ section.id }} { background: var(--bg, #fff); }
+ /* Sticky offer bar */
+ #pdp-{{ section.id }} .offerbar { position: sticky; top: 0; z-index: 30; background: var(--ink); color: #fff; }
+ #pdp-{{ section.id }} .offerbar .in { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 11px 24px; font-size: 13.5px; font-weight: 500; letter-spacing: .01em; flex-wrap: wrap; }
+ #pdp-{{ section.id }} .offerbar b { font-weight: 700; }
+ #pdp-{{ section.id }} .offerbar .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
+ #pdp-{{ section.id }} .offerbar a { color: var(--gold); text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; }
+ #pdp-{{ section.id }} .offerbar a:hover { border-color: var(--gold); }
+
+ #pdp-{{ section.id }} .pdp-grid { display: flex; flex-direction: row; gap: clamp(28px,4vw,64px); align-items: flex-start; padding: clamp(28px,4vw,56px) 0 clamp(40px,5vw,72px); }
+ #pdp-{{ section.id }} .gallery { flex: 1 1 0; min-width: 0; position: sticky; top: 64px; }
+ #pdp-{{ section.id }} .buybox { flex: 0 0 clamp(360px, 44%, 540px); }
+
+ #pdp-{{ section.id }} .stage { aspect-ratio: 4/5; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; display: grid; place-items: center; overflow: hidden; }
+ #pdp-{{ section.id }} .stage img { width: 86%; height: 86%; object-fit: contain; }
+ #pdp-{{ section.id }} .thumbs { display: flex; gap: 12px; margin-top: 14px; }
+ #pdp-{{ section.id }} .thumbs button { width: 86px; aspect-ratio: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px; cursor: pointer; transition: border-color .15s; }
+ #pdp-{{ section.id }} .thumbs button[aria-pressed="true"] { border-color: var(--ink); }
+ #pdp-{{ section.id }} .thumbs img { width: 100%; height: 100%; object-fit: contain; }
+
+ #pdp-{{ section.id }} h1 { font-size: clamp(32px,3.4vw,46px); line-height: 1.06; margin: 12px 0 0; }
+ #pdp-{{ section.id }} .vline { font-size: clamp(17px,1.5vw,20px); color: var(--ink-2); margin: 14px 0 0; max-width: 36ch; }
+ #pdp-{{ section.id }} .rating { margin: 16px 0 22px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+ #pdp-{{ section.id }} .rating .stars { color: var(--gold); letter-spacing: 2px; }
+
+ #pdp-{{ section.id }} .opt-label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
+ #pdp-{{ section.id }} .formats { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+ #pdp-{{ section.id }} .formats button { background: #fff; color: var(--ink); border: 1.5px solid var(--line); border-radius: 100px; padding: 10px 18px; font-family: var(--sans); font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s; }
+ #pdp-{{ section.id }} .formats button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
+
+ #pdp-{{ section.id }} .plans { display: grid; gap: 12px; margin-bottom: 20px; }
+ #pdp-{{ section.id }} .plan { position: relative; display: grid; grid-template-columns: 22px 1fr auto; gap: 14px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: border-color .15s, background .15s; }
+ #pdp-{{ section.id }} .plan[data-active="true"] { border-color: var(--ink); background: #f7fafe; }
+ #pdp-{{ section.id }} .plan .dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #c7cedb; display: grid; place-items: center; }
+ #pdp-{{ section.id }} .plan[data-active="true"] .dot { border-color: var(--ink); }
+ #pdp-{{ section.id }} .plan[data-active="true"] .dot::after { content:""; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); }
+ #pdp-{{ section.id }} .plan .title { font-weight: 700; font-size: 16px; color: var(--ink); }
+ #pdp-{{ section.id }} .plan .note { font-size: 13px; color: var(--muted); margin-top: 2px; }
+ #pdp-{{ section.id }} .plan .price { text-align: right; }
+ #pdp-{{ section.id }} .plan .price .now { font-weight: 800; font-size: 20px; color: var(--ink); }
+ #pdp-{{ section.id }} .plan .price .was { font-size: 13px; color: var(--muted); text-decoration: line-through; }
+ #pdp-{{ section.id }} .plan .save { position: absolute; top: -10px; right: 18px; background: var(--success); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .03em; padding: 4px 10px; border-radius: 100px; }
+
+ #pdp-{{ section.id }} .atc { width: 100%; justify-content: center; }
+ #pdp-{{ section.id }} .ship { margin-top: 14px; text-align: center; font-size: 13px; color: var(--muted); }
+ #pdp-{{ section.id }} .ship b { color: var(--success); }
+ #pdp-{{ section.id }} .micro { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+ #pdp-{{ section.id }} .micro span::before { content: "✓ "; color: var(--success); font-weight: 700; }
+ #pdp-{{ section.id }} .note-sub { font-size: 12px; color: var(--muted); margin-top: 12px; text-align: center; }
+
+ /* Trust row band */
+ #trustband-{{ section.id }} { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+ #trustband-{{ section.id }} ul { list-style: none; margin: 0; padding: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; }
+ #trustband-{{ section.id }} li { font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding: 4px 24px; position: relative; }
+ #trustband-{{ section.id }} li + li::before { content:""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 13px; background: var(--line); }
+ @media (max-width: 860px) {
+ #pdp-{{ section.id }} .pdp-grid { flex-direction: column; }
+ #pdp-{{ section.id }} .gallery { position: static; width: 100%; }
+ #pdp-{{ section.id }} .buybox { flex: none; width: 100%; }
+ #trustband-{{ section.id }} li + li::before { display: none; }
+ }
+</style>
+
+<section id="pdp-{{ section.id }}" class="ip6 ip6-bright" data-ip6-pdp data-onetime="{{ cv.price }}">
+ <div class="offerbar">
+ <div class="in">
+ <span><b>Subscribe &amp; save 15%</b>, free shipping, cancel anytime</span>
+ <span class="dot"></span>
+ <a href="#buy-{{ section.id }}">Shop now →</a>
+ </div>
+ </div>
+
+ <div class="ip6-wrap pdp-grid" id="buy-{{ section.id }}">
+ <div class="gallery">
+ <div class="stage">
+ {%- if product.featured_image -%}
+ <img id="pmain-{{ section.id }}" data-main-img src="{{ product.featured_image | image_url: width: 1000 }}" alt="{{ product.title }}" width="500" height="625">
+ {%- else -%}
+ <img id="pmain-{{ section.id }}" data-main-img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original" width="500" height="625">
+ {%- endif -%}
+ </div>
+ <div class="thumbs">
+ {%- if product.images.size > 0 -%}
+ {%- for image in product.images limit: 4 -%}
+ <button type="button" aria-label="View product image {{ forloop.index }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" data-src="{{ image | image_url: width: 1000 }}"><img src="{{ image | image_url: width: 200 }}" alt="" width="86" height="86"></button>
+ {%- endfor -%}
+ {%- else -%}
+ <button type="button" aria-label="View front of bottle" aria-pressed="true" data-src="{{ 'ip6-bottle-front.png' | asset_url }}"><img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="" width="86" height="86"></button>
+ <button type="button" aria-label="View back of bottle" aria-pressed="false" data-src="{{ 'ip6-bottle-back.png' | asset_url }}"><img src="{{ 'ip6-bottle-back.png' | asset_url }}" alt="" width="86" height="86"></button>
+ {%- endif -%}
+ </div>
+ </div>
+
+ <div class="buybox">
+ <span class="ip6-eyebrow">From the lab of Prof. AbulKalam M. Shamsuddin, MD, PhD</span>
+ <h1>{{ product.title | default: 'IP6 Original' }}</h1>
+ <p class="vline">The original IP6 formula, standardized to research-grade purity, 800 mg IP6 + 220 mg Inositol per serving.</p>
+ <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested by Eurofins</div>
+
+ {%- if product.variants.size > 1 -%}
+ <p class="opt-label">Format</p>
+ <div class="formats" id="fmt-{{ section.id }}">
+ {%- for v in product.variants -%}
+ <button type="button" data-vid="{{ v.id }}" data-price="{{ v.price }}" aria-pressed="{% if v.id == cv.id %}true{% else %}false{% endif %}">{{ v.title }}</button>
+ {%- endfor -%}
+ </div>
+ {%- endif -%}
+
+ <form method="post" action="/cart/add" id="form-{{ section.id }}">
+ <input type="hidden" name="id" id="vid-{{ section.id }}" data-vid-input value="{{ cv.id }}">
+ <input type="hidden" name="selling_plan" id="plan-{{ section.id }}" data-plan-input value="" disabled>
+ <input type="hidden" name="return_to" value="/cart">
+ <p class="opt-label">Choose your plan</p>
+ <div class="plans" role="radiogroup" aria-label="Purchase option">
+ <label class="plan" data-plan="subscribe"{% if has_plans %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans.first.id }}"{% endif %} data-active="true" role="radio" aria-checked="true" tabindex="0">
+ <span class="save">Save 15%</span>
+ <span class="dot"></span>
+ <span><span class="title">Subscribe &amp; Save</span><br><span class="note">Delivered monthly · skip or cancel anytime</span></span>
+ <span class="price"><span class="now" data-sub-now>{{ sub | money }}</span><br><span class="was" data-sub-was>{{ cv.price | money }}</span></span>
+ </label>
+ <label class="plan" data-plan="onetime" data-active="false" role="radio" aria-checked="false" tabindex="0">
+ <span class="dot"></span>
+ <span><span class="title">One-Time Purchase</span><br><span class="note">No commitment</span></span>
+ <span class="price"><span class="now" data-ot-now>{{ cv.price | money }}</span></span>
+ </label>
+ </div>
+ <button type="submit" class="ip6-btn ip6-btn--primary atc">Add to Cart, <span data-atc>{{ sub | money }}</span></button>
+ <p class="ship"><b>Free shipping</b> across the US &amp; Canada · 30-day returns</p>
+ <div class="micro"><span>cGMP Certified</span><span>Third-Party Tested</span><span>High-Purity</span></div>
+ {%- unless has_plans -%}<p class="note-sub">Subscribe pricing is illustrative until Recharge is connected.</p>{%- endunless -%}
+ </form>
+ </div>
+ </div>
+</section>
+
+<section id="trustband-{{ section.id }}" class="ip6 ip6-bright">
+ <div class="ip6-wrap">
+ <ul>
+ <li>cGMP Certified</li><li>Third-Party Tested</li><li>High-Purity</li><li>Ships US &amp; CA</li><li>30-Day Returns</li>
+ </ul>
+ </div>
+</section>
+
+<script src="{{ 'ip6-pdp.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+ "name": "IP6 Product",
+ "tag": "section",
+ "settings": [ { "type": "product", "id": "product", "label": "Product (defaults to current product)" } ],
+ "presets": [{ "name": "IP6 Product" }]
+}
+{% endschema %}

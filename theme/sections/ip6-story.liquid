@@ -1,0 +1,115 @@
+<style>
+ #st-{{ section.id }} { background: #fff; color: var(--ink-2); }
+ #st-{{ section.id }} .wrap2 { max-width: 940px; margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+
+ /* Hero */
+ #st-{{ section.id }} .hero { padding: clamp(48px,7vw,104px) 0 clamp(32px,4vw,56px); max-width: 20ch; }
+ #st-{{ section.id }} .hero-wide { max-width: 940px; }
+ #st-{{ section.id }} h1 { font-family: var(--sans); font-weight: 400; font-size: clamp(40px,6vw,76px); line-height: 1.02; letter-spacing: -0.03em; color: var(--ink); margin: 18px 0 0; }
+ #st-{{ section.id }} .lead { color: var(--muted); font-size: clamp(18px,1.6vw,21px); line-height: 1.55; max-width: 50ch; margin: 22px 0 0; }
+
+ /* Timeline */
+ #st-{{ section.id }} .timeline { position: relative; padding: clamp(24px,3vw,40px) 0 clamp(40px,5vw,72px); }
+ #st-{{ section.id }} .timeline::before { content: ""; position: absolute; left: 7px; top: 18px; bottom: 18px; width: 2px; background: linear-gradient(var(--line), var(--line)); }
+ #st-{{ section.id }} .entry { position: relative; padding-left: 48px; padding-block: clamp(28px,4vw,52px); }
+ #st-{{ section.id }} .entry::before { content: ""; position: absolute; left: 0; top: calc(clamp(28px,4vw,52px) + 6px); width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid var(--teal); box-shadow: 0 0 0 5px #fff; }
+ #st-{{ section.id }} .entry.gold::before { border-color: var(--gold); }
+ #st-{{ section.id }} .entry + .entry { border-top: 1px solid var(--line); }
+ #st-{{ section.id }} .year { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: clamp(34px,4.5vw,56px); color: var(--gold); line-height: 1; margin-bottom: 10px; }
+ #st-{{ section.id }} .label { display: block; font-family: var(--sans); font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
+ #st-{{ section.id }} .statement { font-family: var(--sans); font-weight: 400; font-size: clamp(22px,2.6vw,30px); line-height: 1.34; color: var(--ink); max-width: 30ch; letter-spacing: -0.01em; }
+ #st-{{ section.id }} .entry p { font-size: 18px; line-height: 1.72; color: var(--ink-2); max-width: 60ch; margin: 0; }
+ #st-{{ section.id }} .cite { display: block; font-size: 13.5px; font-style: italic; color: var(--muted); margin-top: 10px; }
+
+ /* Closing band */
+ #st-{{ section.id }} .close { background: var(--surface); border-top: 1px solid var(--line); }
+ #st-{{ section.id }} .close .inner { max-width: 760px; margin: 0 auto; padding: clamp(56px,7vw,104px) var(--gutter); text-align: center; }
+ #st-{{ section.id }} .close .q { font-family: var(--serif); font-style: italic; font-size: clamp(24px,3.2vw,38px); line-height: 1.25; color: var(--ink); max-width: 24ch; margin: 18px auto 0; }
+ #st-{{ section.id }} .close .acts { margin-top: 32px; display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+
+ @media (max-width: 600px) {
+ #st-{{ section.id }} .timeline::before { left: 6px; }
+ #st-{{ section.id }} .entry { padding-left: 36px; }
+ }
+</style>
+
+<section id="st-{{ section.id }}" class="ip6 ip6-bright ip6-reveal">
+ <div class="wrap2 hero hero-wide ip6-rise d1">
+ <span class="ip6-eyebrow">The Story</span>
+ <h1>The molecule a scientist spent his career on.</h1>
+ <p class="lead">A career spent on a single molecule, one supplement, formulated by the physician-scientist who pioneered the research behind it.</p>
+ </div>
+
+ <div class="wrap2">
+ <div class="timeline">
+ <div class="entry gold ip6-rise d2">
+ <div class="year">1987</div>
+ <p>First Report in a scientific meeting: Seventy-first Annual Meeting of the Federation of American Societies for Experimental Biology, Washington, D.C., March 29-April 3, 1987.<span class="cite">Federation Proceedings 46: 585, 1987.</span></p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">1988</div>
+ <p>First Publication in a peer-reviewed scientific journal.<span class="cite">Carcinogenesis 9: 577-580, 1988.</span></p>
+ <p>First patent applied June 30, 1998</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">1992</div>
+ <p>US Patent 5,082,833 awarded January 21, 1992</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">1998</div>
+ <p>Supplement formulation marketed as "Cell Forte' with IP6 &amp; Inositol" by Enzymatic Therapy, Green Bay, WI.</p>
+ <p>First International Symposium on IP6 Organized in Kyoto, Japan.</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">2000</div>
+ <p>IP-6 Research, Inc. founded June 5, 2000</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">2006</div>
+ <p>IP6 Citrate Patent US 7,009,067 acquired.</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">2007</div>
+ <p>IP-6 Foundation registered as a non-profit and dissolved in 2013</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">2009</div>
+ <p>IP6 Citrate Patent US 7,517,868 awarded</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">2011</div>
+ <p>IP6 Citrate Patent US 7,989,435 awarded</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">2017</div>
+ <p>International Symposium on Health Benefits and Other Applications of IP &amp; Inositol in Xi'an, PRC.</p>
+ </div>
+ <div class="entry gold ip6-rise d2">
+ <div class="year">2021</div>
+ <p>Patent application (US2025/0228877) filed for use of IP6 in various skin ailments</p>
+ </div>
+ <div class="entry gold ip6-rise d3">
+ <div class="year">2022</div>
+ <p>Patent application (US 2024/0123424) filed for use of IP6-citrate for removal of toxic heavy metals from water</p>
+ </div>
+ <div class="entry ip6-rise d3">
+ <span class="label">Media exposure</span>
+ <p>Associated Press covered the story which was then picked by Washington Post and other newspapers. Galen Tetherow, the medical reporter of Christian Broadcasting Network (CBN) of 700 Club, ran a big story around 1999; you might want to see if you can get some clippings.</p>
+ </div>
+ </div>
+ </div>
+
+ <div class="close ip6-reveal">
+ <div class="inner ip6-rise d1">
+ <span class="ip6-eyebrow">One supplement</span>
+ <p class="q">&ldquo;Research-grade IP6, from the scientist who pioneered it.&rdquo;</p>
+ <div class="acts">
+ <a class="ip6-btn ip6-btn--primary" href="/products/ip-6-original">Shop IP6 Original</a>
+ <a class="ip6-textlink" href="/pages/the-difference">See the difference →</a>
+ </div>
+ </div>
+ </div>
+</section>
+{% schema %}
+{ "name": "IP6 Story", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Story" }] }
+{% endschema %}

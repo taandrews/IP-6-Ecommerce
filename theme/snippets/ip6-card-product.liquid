@@ -1,0 +1,25 @@
+{%- comment -%} Shop product card (spec: .pcard). Vars: product, badge_text, badge_kind ('save'|'best') {%- endcomment -%}
+<div class="pcard">
+  <a class="pcard__media" href="{{ product.url }}">
+    {%- if badge_text != blank -%}<div class="pcard__badges"><span class="badge badge--{{ badge_kind | default: 'save' }}">{{ badge_text }}</span></div>{%- endif -%}
+    <img src="{{ product.featured_image | image_url: width: 700 }}" alt="{{ product.title }}" loading="lazy">
+    {%- unless product.tags contains 'pet' -%}
+      <img class="pcard__media-hover" src="{{ 'ip6-family.jpg' | asset_url }}" alt="" aria-hidden="true" loading="lazy">
+    {%- endunless -%}
+  </a>
+  <div class="pcard__body">
+    <h3 class="pcard__title">{{ product.title }}</h3>
+    <div class="pcard__desc">{{ product.type | default: 'Dietary Supplement' }}</div>
+    <div class="pcard__features">
+      <span>{% if product.tags contains 'pet' %}Vet-Formulated{% else %}Founder-Formulated{% endif %}</span>
+    </div>
+    <div class="pcard__sub">Subscribe &amp; Save</div>
+    {%- assign disc = product.price | times: 0.85 | round -%}
+    <div class="pcard__price">{% if product.price_varies %}<span class="from">From</span>{% endif %}<span class="now">{{ disc | money_without_trailing_zeros }}</span> <s class="was">{{ product.price | money_without_trailing_zeros }}</s></div>
+    {%- if product.variants.size > 1 -%}
+      <a class="pcard__cta" href="{{ product.url }}">View</a>
+    {%- else -%}
+      <form method="post" action="/cart/add"><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="return_to" value="/cart"><button class="pcard__cta" type="submit">Add to cart</button></form>
+    {%- endif -%}
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<style>
+ #mol-{{ section.id }} { background: var(--surface); border-top: 1px solid var(--line); }
+ #mol-{{ section.id }} .inner { max-width: 760px; margin: 0 auto; text-align: center; }
+ #mol-{{ section.id }} .statement { font-size: clamp(22px,2.6vw,30px); line-height: 1.4; color: var(--ink); letter-spacing: -0.01em; margin: 18px 0 0; }
+ #mol-{{ section.id }} .statement strong { font-weight: 600; }
+ #mol-{{ section.id }} .stats { display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(28px,5vw,72px); margin-top: clamp(36px,4vw,56px); padding-top: clamp(28px,3vw,40px); border-top: 1px solid var(--line); }
+ #mol-{{ section.id }} .stat .n { font-size: clamp(28px,3vw,38px); font-weight: 600; color: var(--ink); line-height: 1; }
+ #mol-{{ section.id }} .stat .l { margin-top: 8px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+</style>
+<section id="mol-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="inner">
+ <span class="ip6-eyebrow ip6-rise d1">First, the molecule</span>
+ <p class="statement ip6-rise d2">IP6 is <strong>inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with <strong>Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin's research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.</p>
+ <div class="stats ip6-rise d3">
+ <div class="stat"><div class="n">800 mg</div><div class="l">IP6 / serving</div></div>
+ <div class="stat"><div class="n">220 mg</div><div class="l">Inositol / serving</div></div>
+ <div class="stat"><div class="n">60</div><div class="l">Servings</div></div>
+ </div>
+ </div>
+ </div>
+</section>
+{% schema %}
+{ "name": "IP6 Molecule", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Molecule" }] }
+{% endschema %}

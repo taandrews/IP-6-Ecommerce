@@ -1,0 +1,120 @@
+<style>
+  #htt-{{ section.id }} { background: var(--bg,#fff); }
+
+  #htt-{{ section.id }} .head { max-width: 760px; }
+  #htt-{{ section.id }} .head h1 { font-size: clamp(34px,4.4vw,56px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 16px 0 0; }
+  #htt-{{ section.id }} .head .lead { font-size: 19px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 60ch; }
+
+  #htt-{{ section.id }} .seg { display: flex; align-items: center; gap: 18px; margin: clamp(40px,5vw,64px) 0 30px; }
+  #htt-{{ section.id }} .seg .l { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+  #htt-{{ section.id }} .seg .rule { flex: 1; height: 1px; background: var(--line); }
+
+  /* For you: supporting image beside the step list */
+  #htt-{{ section.id }} .you { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(32px,5vw,64px); align-items: center; }
+  #htt-{{ section.id }} .you .img { border-radius: 18px; overflow: hidden; aspect-ratio: 1757 / 1187; background: var(--surface); }
+  #htt-{{ section.id }} .you .img img { width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block; }
+  #htt-{{ section.id }} .list { display: flex; flex-direction: column; }
+  #htt-{{ section.id }} .item { display: grid; grid-template-columns: 46px 1fr; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  #htt-{{ section.id }} .item:first-child { padding-top: 0; }
+  #htt-{{ section.id }} .item:last-child { border-bottom: 0; padding-bottom: 0; }
+  #htt-{{ section.id }} .item .ic { width: 46px; height: 46px; border-radius: 11px; background: var(--surface); display: grid; place-items: center; color: var(--ink); }
+  #htt-{{ section.id }} .item .ic svg { width: 23px; height: 23px; }
+  #htt-{{ section.id }} .item h3 { font-family: var(--sans); font-size: 18px; font-weight: 600; color: var(--ink); margin: 4px 0 0; }
+  #htt-{{ section.id }} .item p { font-size: 15px; line-height: 1.55; color: var(--ink-2); margin: 6px 0 0; max-width: 52ch; }
+
+  /* For your pets */
+  #htt-{{ section.id }} .petsimg { margin: 0 0 clamp(24px,3vw,38px); }
+  #htt-{{ section.id }} .petsimg img { width: 100%; height: auto; display: block; }
+  #htt-{{ section.id }} .pets { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  #htt-{{ section.id }} .petcard { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: clamp(24px,3vw,38px); }
+  #htt-{{ section.id }} .petcard .k { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-deep); }
+  #htt-{{ section.id }} .petcard h3 { font-size: 22px; color: var(--ink); margin: 8px 0 0; }
+  #htt-{{ section.id }} .petcard .dose { margin: 20px 0 0; }
+  #htt-{{ section.id }} .petcard .row { display: flex; justify-content: space-between; gap: 16px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  #htt-{{ section.id }} .petcard .row:last-child { border-bottom: 0; }
+  #htt-{{ section.id }} .petcard .row .a { font-weight: 600; color: var(--ink); }
+  #htt-{{ section.id }} .petcard .row .b { color: var(--ink-2); text-align: right; }
+  #htt-{{ section.id }} .petcard .how { font-size: 14.5px; line-height: 1.55; color: var(--muted); margin: 18px 0 0; }
+
+  #htt-{{ section.id }} .note { margin-top: clamp(36px,5vw,56px); background: var(--surface); border-radius: 14px; padding: 24px 28px; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+  #htt-{{ section.id }} .note b { color: var(--ink); }
+  #htt-{{ section.id }} .cta-row { margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 860px) {
+    #htt-{{ section.id }} .you { grid-template-columns: 1fr; gap: 28px; }
+    #htt-{{ section.id }} .you .img { aspect-ratio: 1757 / 1187; max-height: none; }
+    #htt-{{ section.id }} .pets { grid-template-columns: 1fr; }
+  }
+</style>
+
+<section id="htt-{{ section.id }}" class="ip6 ip6-bright ip6-section">
+  <div class="ip6-wrap">
+    <div class="head ip6-reveal">
+      <span class="ip6-eyebrow">How to take</span>
+      <h1>How to take IP6 Original.</h1>
+      <p class="lead">IP6 (inositol hexaphosphate) is absorbed best on its own. A few simple habits help you get the most from every serving, for you and for your pets.</p>
+    </div>
+
+    <div class="seg ip6-reveal"><span class="l">For you</span><span class="rule"></span></div>
+    <div class="you ip6-reveal">
+      <div class="img ip6-rise d1">
+        <img src="{{ 'ip6-how-to-take.jpg' | asset_url }}" alt="A woman taking IP6 Original with a glass of water" width="1200" height="811" loading="lazy">
+      </div>
+      <div class="list ip6-rise d2">
+        <div class="item">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <div><h3>On an empty stomach</h3><p>Take at least 30 minutes before eating, or two hours after, so IP6 absorbs without competing with food.</p></div>
+        </div>
+        <div class="item">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3s6 6.5 6 10.5a6 6 0 01-12 0C6 9.5 12 3 12 3z"/></svg></div>
+          <div><h3>With a full glass of water</h3><p>Swallow with water to help the formula disperse and move comfortably through your system.</p></div>
+        </div>
+        <div class="item">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4M9 14l2 2 4-4"/></svg></div>
+          <div><h3>Once daily, consistently</h3><p>Follow the serving size on your bottle. The same time each day makes it easy to keep up.</p></div>
+        </div>
+        <div class="item">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 2h12M6 22h12M8 2c0 5 8 5 8 10s-8 5-8 10M16 2c0 5-8 5-8 10"/></svg></div>
+          <div><h3>Give it time</h3><p>Cellular support builds gradually. Stay consistent for several weeks to let the routine do its work.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="seg ip6-reveal"><span class="l">For your pets</span><span class="rule"></span></div>
+    <div class="petsimg ip6-reveal">
+      <img src="{{ 'ip6-pets-dogs.jpg' | asset_url }}" alt="Three dogs — IP6 Original is for pets too" width="2000" height="709" loading="lazy">
+    </div>
+    <div class="pets ip6-reveal">
+      <div class="petcard ip6-rise d1">
+        <span class="k">IP6 Original Pet Capsules</span>
+        <h3>Capsules</h3>
+        <div class="dose">
+          <div class="row"><span class="a">Dogs</span><span class="b">1 capsule per 25 lbs of body weight, daily</span></div>
+          <div class="row"><span class="a">Cats</span><span class="b">1 capsule daily</span></div>
+        </div>
+        <p class="how">Give directly or tuck into a treat or a little food. Plant-based capsule, easy to handle.</p>
+      </div>
+      <div class="petcard ip6-rise d2">
+        <span class="k">IP6 Original Pet Powder</span>
+        <h3>Powder</h3>
+        <div class="dose">
+          <div class="row"><span class="a">Dogs</span><span class="b">1 scoop (2 g) per 25 lbs of body weight, daily</span></div>
+          <div class="row"><span class="a">Cats</span><span class="b">1 scoop (2 g) daily</span></div>
+        </div>
+        <p class="how">Unflavored and easy to mix. Stir the included scoop into wet or dry food at mealtime.</p>
+      </div>
+    </div>
+
+    <div class="note ip6-reveal">
+      <b>Always follow the label.</b> Servings are a general guide. If you are pregnant, nursing, taking medication, or managing a health condition, consult your healthcare provider before use, and your veterinarian before giving IP6 to a pet.
+    </div>
+
+    <div class="cta-row ip6-reveal">
+      <a class="ip6-btn ip6-btn--primary" href="/collections/shop">Shop IP6 Original</a>
+      <a class="ip6-btn ip6-btn--ghost" href="/pages/faq">Read the FAQ</a>
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "IP6 How To Take", "tag": "section", "settings": [], "presets": [{ "name": "IP6 How To Take" }] }
+{% endschema %}

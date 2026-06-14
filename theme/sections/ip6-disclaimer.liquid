@@ -1,0 +1,22 @@
+<style>
+ #disc-{{ section.id }} { background: var(--paper); }
+ #disc-{{ section.id }} .inner { border-top: 1px solid var(--line); padding: 28px 0; }
+ #disc-{{ section.id }} p { margin: 0 auto; max-width: 80ch; text-align: center; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+</style>
+<section id="disc-{{ section.id }}" class="ip6">
+ <div class="ip6-wrap">
+ <div class="inner">
+ <p>{{ section.settings.text }}</p>
+ </div>
+ </div>
+</section>
+{% schema %}
+{
+ "name": "IP6 Disclaimer",
+ "tag": "section",
+ "settings": [
+ { "type": "textarea", "id": "text", "label": "Disclaimer", "default": "*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare professional before use." }
+ ],
+ "presets": [{ "name": "IP6 Disclaimer" }]
+}
+{% endschema %}

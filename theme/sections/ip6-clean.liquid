@@ -1,0 +1,65 @@
+<style>
+ #stakes-{{ section.id }} { background: var(--paper); }
+ #stakes-{{ section.id }} .head { max-width: 720px; margin: 0 auto clamp(36px, 5vw, 56px); text-align: center; }
+ #stakes-{{ section.id }} .head h2 { margin-top: 14px; }
+ #stakes-{{ section.id }} .head .intro { margin: 16px auto 0; max-width: 58ch; font-size: 17px; line-height: 1.6; color: var(--ink-2); }
+ #stakes-{{ section.id }} .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 920px; margin: 0 auto; }
+ #stakes-{{ section.id }} .card { padding: clamp(24px, 3vw, 36px); border-radius: 14px; }
+ #stakes-{{ section.id }} .card.commodity { background: #fff; border: 1px solid var(--line); }
+ #stakes-{{ section.id }} .card.original { background: #fff; border: 1px solid var(--ink); position: relative; box-shadow: 0 12px 32px -22px rgba(11,31,58,.4); }
+ #stakes-{{ section.id }} .card .label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+ #stakes-{{ section.id }} .card .title { font-weight: 700; font-size: 19px; color: var(--ink); }
+ #stakes-{{ section.id }} .card.commodity .title { color: var(--muted); }
+ #stakes-{{ section.id }} .tag { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 5px 11px; border-radius: 100px; }
+ #stakes-{{ section.id }} .tag.gold { background: var(--ink); color: #fff; }
+ #stakes-{{ section.id }} dl { margin: 0; }
+ #stakes-{{ section.id }} .row { display: grid; grid-template-columns: 96px 1fr; gap: 16px; align-items: baseline; padding: 13px 0; border-top: 1px solid var(--line); }
+ #stakes-{{ section.id }} .row dt { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+ #stakes-{{ section.id }} .row dd { margin: 0; font-size: 15px; color: var(--ink-2); line-height: 1.45; }
+ #stakes-{{ section.id }} .original .row dd { font-weight: 500; color: var(--ink); }
+ #stakes-{{ section.id }} .foot { margin-top: 32px; text-align: center; }
+ @media (max-width: 749px) { #stakes-{{ section.id }} .cards { grid-template-columns: 1fr; } #stakes-{{ section.id }} .row { grid-template-columns: 1fr; gap: 2px; } }
+</style>
+<section id="stakes-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="head ip6-rise d1">
+ <span class="ip6-eyebrow">The stakes</span>
+ <h2 class="ip6-h2">{{ section.settings.heading }}</h2>
+ <p class="intro">Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself.</p>
+ </div>
+ <div class="cards">
+ <div class="card commodity ip6-rise d2">
+ <div class="label"><span class="title">Commodity IP6</span><span class="tag" style="color:var(--muted);border:1px solid var(--line)">Typical</span></div>
+ <dl>
+ <div class="row"><dt>Form</dt><dd>Unstandardized, source varies</dd></div>
+ <div class="row"><dt>Purity</dt><dd>Not verified to research grade</dd></div>
+ <div class="row"><dt>Additives</dt><dd>Often includes flow agents &amp; fillers</dd></div>
+ <div class="row"><dt>Testing</dt><dd>Rarely third-party tested</dd></div>
+ <div class="row"><dt>Source</dt><dd>No connection to the original research</dd></div>
+ </dl>
+ </div>
+ <div class="card original ip6-rise d3">
+ <div class="label"><span class="title">IP6 Original</span><span class="tag gold">The original</span></div>
+ <dl>
+ <div class="row"><dt>Form</dt><dd>Standardized Calcium-Magnesium IP6 + Inositol</dd></div>
+ <div class="row"><dt>Purity</dt><dd>Research-grade, high-purity</dd></div>
+ <div class="row"><dt>Additives</dt><dd>No magnesium stearate or silicon dioxide</dd></div>
+ <div class="row"><dt>Testing</dt><dd>cGMP-certified · third-party tested</dd></div>
+ <div class="row"><dt>Source</dt><dd>Formulated by the pioneer of IP6 research</dd></div>
+ </dl>
+ </div>
+ </div>
+ <div class="foot ip6-rise d4"><a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/the-difference' }}">See the full comparison →</a></div>
+ </div>
+</section>
+{% schema %}
+{
+ "name": "IP6 Stakes",
+ "tag": "section",
+ "settings": [
+ { "type": "text", "id": "heading", "label": "Heading", "default": "Most IP6 on shelves is not the molecule his research described." },
+ { "type": "url", "id": "link", "label": "Comparison link" }
+ ],
+ "presets": [{ "name": "IP6 Stakes" }]
+}
+{% endschema %}

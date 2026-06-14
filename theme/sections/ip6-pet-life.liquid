@@ -1,0 +1,28 @@
+<style>
+  #petlife-{{ section.id }} { background: #fff; }
+  #petlife-{{ section.id }} .head { text-align: center; max-width: 640px; margin: 0 auto clamp(32px,4vw,52px); }
+  #petlife-{{ section.id }} .head h2 { font-size: clamp(28px,3.6vw,44px); line-height: 1.1; margin: 14px 0 0; }
+  #petlife-{{ section.id }} .head p { font-size: 17px; line-height: 1.6; color: var(--ink-2); margin: 14px auto 0; max-width: 52ch; }
+  #petlife-{{ section.id }} .imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  #petlife-{{ section.id }} figure { margin: 0; }
+  #petlife-{{ section.id }} .ph { aspect-ratio: 3/2; border-radius: 16px; overflow: hidden; background: var(--surface); }
+  #petlife-{{ section.id }} .ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #petlife-{{ section.id }} figcaption { margin-top: 12px; font-size: 14px; color: var(--muted); text-align: center; }
+  @media (max-width: 749px) { #petlife-{{ section.id }} .imgs { grid-template-columns: 1fr; } }
+</style>
+<section id="petlife-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+  <div class="ip6-wrap">
+    <div class="head ip6-rise d1">
+      <span class="ip6-eyebrow">For dogs &amp; cats</span>
+      <h2>Daily wellness for the whole household.</h2>
+      <p>The same research-grade IP6 standard behind the Original formula, made for the pets who share your life, single-pet homes and multi-pet households alike.</p>
+    </div>
+    <div class="imgs">
+      <figure class="ip6-rise d2"><div class="ph"><img src="{{ 'ip6-pet-life1.jpg' | asset_url }}" alt="Woman and her dog at the beach" width="900" height="600" loading="lazy"></div><figcaption>Companionship, supported daily.</figcaption></figure>
+      <figure class="ip6-rise d3"><div class="ph"><img src="{{ 'ip6-pet-life2.jpg' | asset_url }}" alt="Family with their dogs" width="1200" height="800" loading="lazy"></div><figcaption>One standard for every pet in the home.</figcaption></figure>
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "IP6 Pet Lifestyle", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Pet Lifestyle" }] }
+{% endschema %}

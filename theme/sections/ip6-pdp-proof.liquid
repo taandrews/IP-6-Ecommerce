@@ -1,0 +1,27 @@
+<style>
+ #pp-{{ section.id }} { background: var(--surface); }
+ #pp-{{ section.id }} .head { text-align: center; margin-bottom: clamp(28px,3vw,44px); }
+ #pp-{{ section.id }} .head h2 { font-size: clamp(28px,3.4vw,42px); margin: 14px 0 0; }
+ #pp-{{ section.id }} .ip6-grid {display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+ #pp-{{ section.id }} .c { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px; }
+ #pp-{{ section.id }} .c .ic { width: 40px; height: 40px; border-radius: 10px; background: #eef3f8; display: grid; place-items: center; margin-bottom: 16px; }
+ #pp-{{ section.id }} .c svg { width: 22px; height: 22px; color: var(--blue); }
+ #pp-{{ section.id }} .c h3 { font-size: 17px; margin: 0 0 6px; }
+ #pp-{{ section.id }} .c p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
+ @media (max-width:900px){ #pp-{{ section.id }} .ip6-grid {grid-template-columns: 1fr 1fr; } }
+ @media (max-width:520px){ #pp-{{ section.id }} .ip6-grid {grid-template-columns: 1fr; } }
+</style>
+<section id="pp-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="head ip6-rise d1"><span class="ip6-eyebrow">Purity &amp; proof</span><h2>Made to a standard you can verify.</h2></div>
+ <div class="ip6-grid">
+ <div class="c ip6-rise d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>cGMP Certified</h3><p>Made in a facility held to current Good Manufacturing Practices.</p></div>
+ <div class="c ip6-rise d2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v6l9 4 9-4V7"/></svg></div><h3>Third-Party Tested</h3><p>Independently verified for purity and potency by Eurofins.</p></div>
+ <div class="c ip6-rise d3"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg></div><h3>Founder-Formulated</h3><p>Developed by Prof. Shamsuddin, not licensed or white-labeled.</p></div>
+ <div class="c ip6-rise d4"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3v18M5 8h14M7 21h10"/><circle cx="12" cy="6" r="2"/></svg></div><h3>Pioneer in Research</h3><p>Decades of published work establishing IP6 in cellular health.</p></div>
+ </div>
+ </div>
+</section>
+{% schema %}
+{ "name": "IP6 PDP Proof", "tag": "section", "settings": [], "presets": [{ "name": "IP6 PDP Proof" }] }
+{% endschema %}

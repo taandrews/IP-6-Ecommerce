@@ -1,0 +1,44 @@
+<style>
+ #pq-{{ section.id }} { background: #fff; }
+ #pq-{{ section.id }} .wrap2 { max-width: 800px; margin: 0 auto; }
+ #pq-{{ section.id }} .head { text-align: center; margin-bottom: clamp(24px,3vw,40px); }
+ #pq-{{ section.id }} .head h2 { font-size: clamp(28px,3.4vw,42px); margin: 14px 0 0; }
+ #pq-{{ section.id }} details { border-bottom: 1px solid var(--line); }
+ #pq-{{ section.id }} details:first-of-type { border-top: 1px solid var(--line); }
+ #pq-{{ section.id }} summary { list-style: none; cursor: pointer; padding: 22px 0; font-size: 18px; font-weight: 600; color: var(--ink); display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+ #pq-{{ section.id }} summary::-webkit-details-marker { display: none; }
+ #pq-{{ section.id }} summary::after { content: "+"; color: var(--gold-deep); font-size: 22px; font-weight: 400; transition: transform .2s ease-out; }
+ #pq-{{ section.id }} details[open] summary::after { content: "\2013"; }
+ #pq-{{ section.id }} .a { padding: 0 0 22px; font-size: 16px; line-height: 1.65; color: var(--ink-2); max-width: 64ch; }
+ #pq-{{ section.id }} .disc { margin-top: clamp(36px,5vw,64px); padding-top: 24px; border-top: 1px solid var(--line); }
+ #pq-{{ section.id }} .disc p { margin: 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); text-align: center; }
+</style>
+<section id="pq-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap wrap2">
+ <div class="head ip6-rise d1"><span class="ip6-eyebrow">FAQ</span><h2>Questions, answered.</h2></div>
+ <div class="ip6-rise d2">
+ <details open><summary>How do I take IP6 Original?</summary><div class="a">Take 2 capsules once or twice daily with water on an empty stomach, away from meals, for optimal absorption, or as directed by your healthcare professional.</div></details>
+ <details><summary>Is it third-party tested?</summary><div class="a">Yes. IP6 Original is made in a cGMP-certified facility and independently tested by Eurofins Scientific for purity and potency.</div></details>
+ <details><summary>How does the subscription work?</summary><div class="a">Subscribe &amp; Save ships automatically at 15% off with free shipping. You can skip, modify, or cancel anytime, no fees, no lock-in.</div></details>
+ <details><summary>Where do you ship?</summary><div class="a">We ship across the United States and Canada at launch, with more regions to follow.</div></details>
+ <details><summary>Can I take it with other supplements?</summary><div class="a">Generally yes, though we recommend spacing IP6 away from mineral supplements. Consult your healthcare professional for guidance specific to you.</div></details>
+ </div>
+ <div class="disc ip6-rise d3"><p>*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare professional before use.</p></div>
+ </div>
+</section>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How do I take IP6 Original?", "acceptedAnswer": { "@type": "Answer", "text": "Take 2 capsules once or twice daily with water on an empty stomach, away from meals, for optimal absorption, or as directed by your healthcare professional." } },
+    { "@type": "Question", "name": "Is it third-party tested?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. IP6 Original is made in a cGMP-certified facility and independently tested by Eurofins Scientific for purity and potency." } },
+    { "@type": "Question", "name": "How does the subscription work?", "acceptedAnswer": { "@type": "Answer", "text": "Subscribe & Save ships automatically at 15% off with free shipping. You can skip, modify, or cancel anytime, no fees, no lock-in." } },
+    { "@type": "Question", "name": "Where do you ship?", "acceptedAnswer": { "@type": "Answer", "text": "We ship across the United States and Canada at launch, with more regions to follow." } },
+    { "@type": "Question", "name": "Can I take it with other supplements?", "acceptedAnswer": { "@type": "Answer", "text": "Generally yes, though we recommend spacing IP6 away from mineral supplements. Consult your healthcare professional for guidance specific to you." } }
+  ]
+}
+</script>
+{% schema %}
+{ "name": "IP6 PDP FAQ", "tag": "section", "settings": [], "presets": [{ "name": "IP6 PDP FAQ" }] }
+{% endschema %}

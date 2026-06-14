@@ -1,0 +1,18 @@
+{%- comment -%} Reusable product card for the Shop collection. Expects: product, badge (optional label) {%- endcomment -%}
+<div class="card ip6-rise d2">
+  <a class="ph" href="{{ product.url }}">
+    <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.title }}" loading="lazy">
+    {%- if badge != blank -%}<span class="badge tag navy">{{ badge }}</span>{%- endif -%}
+  </a>
+  <div class="body">
+    <div class="ttl">{{ product.title }}</div>
+    <div class="desc">{{ product.type | default: 'Dietary Supplement' }}</div>
+    <div class="subtag">Subscribe &amp; save 15%</div>
+    <div class="price">{% if product.price_varies %}<span class="from">From</span>{% endif %}{{ product.price | money_without_trailing_zeros }}</div>
+    {%- if product.variants.size > 1 -%}
+      <a class="cta" href="{{ product.url }}">Choose size</a>
+    {%- else -%}
+      <form method="post" action="/cart/add"><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="return_to" value="/cart"><button class="cta" type="submit">Add to cart</button></form>
+    {%- endif -%}
+  </div>
+</div>

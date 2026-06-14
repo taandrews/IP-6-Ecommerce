@@ -1,0 +1,284 @@
+{%- comment -%} IP6 lead-capture quiz funnel (50% off). Styled to IP6 tokens. {%- endcomment -%}
+{%- assign quiz_code = 'IP6FIRST50' -%}
+{%- assign quiz_url = '/discount/' | append: quiz_code | append: '?redirect=/products/ip-6-original' -%}
+{%- assign quiz_product = all_products['ip-6-original'] -%}
+{%- assign quiz_full = quiz_product.price | default: 4900 -%}
+{%- assign quiz_half = quiz_full | times: 0.5 | round -%}
+
+<style>
+  #ip6quiz { position: fixed; inset: 0; z-index: 9999; display: none; }
+  #ip6quiz.open { display: block; }
+  #ip6quiz .ovl { position: absolute; inset: 0; background: rgba(8,18,32,.55); backdrop-filter: blur(3px); }
+  #ip6quiz .panel { position: absolute; inset: 0; background: var(--bg,#fff); color: var(--ink,#0b1f3a); font-family: var(--sans); display: flex; flex-direction: row; overflow: hidden; }
+  #ip6quiz .media { flex: 0 0 42%; position: relative; background: #d7e3ef url('{{ 'ip6-quiz.jpg' | asset_url }}') center 26% / cover no-repeat; }
+  #ip6quiz .media::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 72%; background: linear-gradient(to top, rgba(8,18,32,.9) 0%, rgba(8,18,32,.45) 38%, rgba(8,18,32,0) 100%); }
+  #ip6quiz .media .mtag { position: absolute; left: 28px; right: 28px; bottom: 26px; z-index: 1; color: #fff; text-shadow: 0 2px 16px rgba(8,18,32,.95); }
+  #ip6quiz .media .mtag .e { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; opacity: .95; }
+  #ip6quiz .media .mtag .h { font-family: var(--serif); font-style: italic; font-size: 26px; margin-top: 6px; line-height: 1.15; max-width: 16ch; }
+  #ip6quiz .side { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; }
+  @media (max-width: 860px) {
+    #ip6quiz .panel { flex-direction: column; }
+    #ip6quiz .media { flex: 0 0 190px; background-position: center 24%; }
+    #ip6quiz .media::after { height: 85%; }
+    #ip6quiz .media .mtag { bottom: 18px; }
+    #ip6quiz .media .mtag .h { font-size: 20px; }
+  }
+  #ip6quiz .bar { height: 3px; background: var(--line,#e6eaf0); }
+  #ip6quiz .bar i { display: block; height: 100%; width: 0; background: var(--cyan,#00b4d8); transition: width .35s ease-out; }
+  #ip6quiz .top { display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(20px,4vw,48px); }
+  #ip6quiz .brand { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--teal,#006c82); }
+  #ip6quiz .close { background: none; border: 0; font-size: 14px; color: var(--muted,#5b6470); cursor: pointer; }
+  #ip6quiz .body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px clamp(20px,5vw,48px) 40px; }
+  #ip6quiz .inner { width: 100%; max-width: 640px; text-align: center; }
+  #ip6quiz .step { display: none; }
+  #ip6quiz .step.active { display: block; animation: qf .4s ease-out; }
+  @keyframes qf { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  #ip6quiz .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--teal,#006c82); }
+  #ip6quiz .badge { display: inline-block; margin: 18px 0 8px; background: #ecfbfe; color: var(--teal); border: 1px solid #bdeaf2; border-radius: 100px; padding: 7px 16px; font-size: 13px; font-weight: 600; }
+  #ip6quiz .badge b { color: var(--ink); }
+  #ip6quiz h2 { font-family: var(--sans); font-weight: 500; font-size: clamp(26px,4vw,40px); line-height: 1.1; letter-spacing: -0.02em; margin: 14px 0 0; color: var(--ink); }
+  #ip6quiz .sub { color: var(--muted); font-size: 16px; line-height: 1.55; margin: 14px auto 0; max-width: 46ch; }
+  #ip6quiz .opts { display: grid; gap: 12px; margin: 28px auto 0; max-width: 520px; text-align: left; }
+  #ip6quiz .opt { display: flex; align-items: center; justify-content: space-between; gap: 14px; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; font-size: 16px; font-weight: 500; color: var(--ink); cursor: pointer; transition: border-color .15s, background .15s; }
+  #ip6quiz .opt:hover { border-color: var(--ink); background: #f7fafe; }
+  #ip6quiz .opt .arw { color: var(--cyan); opacity: 0; transition: opacity .15s; }
+  #ip6quiz .opt:hover .arw { opacity: 1; }
+  #ip6quiz form { max-width: 460px; margin: 28px auto 0; text-align: left; }
+  #ip6quiz input[type=email] { width: 100%; padding: 16px 18px; border: 1.5px solid var(--line); border-radius: 12px; font-size: 16px; font-family: var(--sans); }
+  #ip6quiz input[type=email]:focus { outline: none; border-color: var(--ink); }
+  #ip6quiz .consent { display: flex; gap: 10px; align-items: flex-start; margin: 16px 0 0; font-size: 13.5px; color: var(--ink-2,#1a2a40); line-height: 1.45; }
+  #ip6quiz .consent input { margin-top: 3px; }
+  #ip6quiz .btn { width: 100%; margin-top: 18px; background: var(--cyan,#00b4d8); color: #fff; border: 0; border-radius: 100px; padding: 16px; font-size: 16px; font-weight: 600; font-family: var(--sans); cursor: pointer; transition: background .15s; }
+  #ip6quiz .btn:hover { background: #09182d; }
+  #ip6quiz .btn[disabled] { opacity: .5; cursor: not-allowed; }
+  #ip6quiz .micro { font-size: 12px; color: var(--muted); margin-top: 12px; text-align: center; }
+  #ip6quiz .err { color: #b6402f; font-size: 13px; margin-top: 8px; display: none; }
+  #ip6quiz .reveal .price { margin: 20px 0 6px; font-size: 17px; color: var(--muted); }
+  #ip6quiz .reveal .price b { font-size: 30px; color: var(--ink); font-weight: 700; }
+  #ip6quiz .reveal .price s { color: #97a0b3; margin-left: 8px; font-weight: 400; font-size: 18px; }
+  #ip6quiz .reveal .cta { display: inline-block; margin-top: 18px; background: var(--cyan); color: #fff; text-decoration: none; border-radius: 100px; padding: 17px 36px; font-weight: 600; font-size: 16px; }
+  #ip6quiz .reveal .nudge { margin-top: 16px; font-size: 14px; color: var(--ink-2); }
+  #ip6quiz .reveal .reassure { margin-top: 24px; display: flex; gap: 8px 20px; justify-content: center; flex-wrap: wrap; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  #ip6quiz .reveal .reassure span::before { content: "\2713  "; color: var(--teal); }
+  #ip6quiz .disc { padding: 14px clamp(20px,5vw,48px) 24px; text-align: center; font-size: 11px; line-height: 1.5; color: var(--muted); border-top: 1px solid var(--line); }
+  @media (max-width: 600px) { #ip6quiz h2 { font-size: 26px; } }
+</style>
+
+<div id="ip6quiz" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Get 50% off your first IP6 Original order">
+  <div class="ovl" data-close></div>
+  <div class="panel">
+    <div class="media" aria-hidden="true">
+      <div class="mtag"><div class="e">Science Driven · Purity First</div><div class="h">Strengthen your cellular health</div></div>
+    </div>
+    <div class="side">
+    <div class="bar"><i id="ip6q-bar"></i></div>
+    <div class="top">
+      <span class="brand">IP6 Original</span>
+      <button class="close" data-close type="button">No thanks &times;</button>
+    </div>
+    <div class="body">
+      <div class="inner">
+
+        <!-- Step 0: intent -->
+        <div class="step active" data-step="intent">
+          <span class="eyebrow">From the lab of Prof. AbulKalam M. Shamsuddin, MD, PhD</span>
+          <div class="badge">You've got <b>50% off</b> your first order</div>
+          <h2>Strengthen your cellular health</h2>
+          <p class="sub">What brings you to IP6 Original?</p>
+          <div class="opts">
+            <button class="opt" data-q="intent" data-v="everyday" type="button">Everyday cellular health &amp; longevity <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="intent" data-v="immune" type="button">Immune &amp; antioxidant support <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="intent" data-v="research" type="button">I follow the research <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="intent" data-v="family" type="button">For a family member <span class="arw">&rarr;</span></button>
+          </div>
+        </div>
+
+        <!-- Step 1: email -->
+        <div class="step" data-step="email">
+          <h2>Where should we send your 50% off?</h2>
+          <p class="sub">Your code is reserved. Answer a few quick questions and it's yours.</p>
+          <form id="ip6q-form">
+            <label for="ip6q-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+            <input type="email" id="ip6q-email" placeholder="Email address" aria-label="Email address" required>
+            <label class="consent"><input type="checkbox" id="ip6q-consent" required> Email me my code and occasional research-backed updates.</label>
+            <div class="err" id="ip6q-err">Please enter your email and check the box to continue.</div>
+            <button class="btn" type="submit">Continue</button>
+            <p class="micro">Unsubscribe anytime. No spam.</p>
+          </form>
+        </div>
+
+        <!-- Q2 -->
+        <div class="step" data-step="q2">
+          <p class="eyebrow">A quick question</p>
+          <h2>Have you taken IP6 before?</h2>
+          <div class="opts">
+            <button class="opt" data-q="experience" data-v="regular" type="button">I take it regularly <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="experience" data-v="tried" type="button">I've tried it <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="experience" data-v="new" type="button">No, I'm new to IP6 <span class="arw">&rarr;</span></button>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="step" data-step="q3">
+          <p class="eyebrow">What matters most</p>
+          <h2>What matters most to you in a supplement?</h2>
+          <div class="opts">
+            <button class="opt" data-q="values" data-v="purity" type="button">Purity &amp; third-party testing <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="values" data-v="research" type="button">Research-backed ingredients <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="values" data-v="founder" type="button">Formulated by the scientist behind the research <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="values" data-v="clean" type="button">Clean formulation, no fillers <span class="arw">&rarr;</span></button>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="step" data-step="q4">
+          <p class="eyebrow">Your goal</p>
+          <h2>What's your main goal right now?</h2>
+          <div class="opts">
+            <button class="opt" data-q="goal" data-v="cellular" type="button">General cellular health &amp; longevity <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="goal" data-v="immune" type="button">Immune &amp; antioxidant support <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="goal" data-v="aging" type="button">Healthy aging <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="goal" data-v="protocol" type="button">Following a protocol / my doctor's guidance <span class="arw">&rarr;</span></button>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="step" data-step="q5">
+          <p class="eyebrow">Your routine</p>
+          <h2>How would you describe your supplement routine?</h2>
+          <div class="opts">
+            <button class="opt" data-q="routine" data-v="daily" type="button">Daily, I'm consistent <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="routine" data-v="onoff" type="button">On and off <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="routine" data-v="starting" type="button">Just getting started <span class="arw">&rarr;</span></button>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="step" data-step="q6">
+          <p class="eyebrow">Almost done</p>
+          <h2>Your age range</h2>
+          <div class="opts">
+            <button class="opt" data-q="age" data-v="18-34" type="button">18 to 34 <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="age" data-v="35-49" type="button">35 to 49 <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="age" data-v="50-64" type="button">50 to 64 <span class="arw">&rarr;</span></button>
+            <button class="opt" data-q="age" data-v="65+" type="button">65+ <span class="arw">&rarr;</span></button>
+          </div>
+        </div>
+
+        <!-- Reveal -->
+        <div class="step reveal" data-step="reveal">
+          <span class="eyebrow">Your match</span>
+          <h2>IP6 Original is your match.</h2>
+          <p class="sub" id="ip6q-result">A high-purity IP6 and Inositol formula, made to the standard the research describes.</p>
+          <p class="price">Your 50% off is applied: <b>{{ quiz_half | money }}</b> <s>{{ quiz_full | money }}</s></p>
+          <a class="cta" href="{{ quiz_url }}">Claim 50% off &rarr;</a>
+          <p class="nudge" id="ip6q-nudge">Subscribe &amp; save to keep the discount going.</p>
+          <div class="reassure"><span>cGMP Certified</span><span>Third-Party Tested</span><span>30-Day Returns</span></div>
+        </div>
+
+      </div>
+    </div>
+    <div class="disc">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var root = document.getElementById('ip6quiz'); if(!root) return;
+  var KEY = 'ip6quiz_seen_v1';
+  var order = ['intent','email','q2','q3','q4','q5','q6','reveal'];
+  var steps = {}; root.querySelectorAll('.step').forEach(function(s){ steps[s.getAttribute('data-step')] = s; });
+  var bar = document.getElementById('ip6q-bar');
+  var answers = {};
+  var idx = 0;
+
+  function show(name){
+    idx = order.indexOf(name);
+    Object.keys(steps).forEach(function(k){ steps[k].classList.toggle('active', k===name); });
+    // progress bar only across questionnaire (email..q6)
+    var qStart = order.indexOf('email'), qEnd = order.indexOf('reveal');
+    var pct = idx < qStart ? 0 : Math.min(100, Math.round((idx-qStart)/(qEnd-qStart)*100));
+    bar.style.width = pct + '%';
+    root.querySelector('.body').scrollTop = 0;
+  }
+  var dismissed = false;
+  function seen(){ try { if(localStorage.getItem(KEY)) return true; } catch(e){} return dismissed || document.cookie.indexOf(KEY+'=1') >= 0; }
+  function markSeen(){ dismissed = true; try{ localStorage.setItem(KEY,'1'); }catch(e){} document.cookie = KEY+'=1;path=/;max-age=2592000'; document.removeEventListener('mouseout', onMouseOut); }
+  var lastFocused = null;
+  function focusables(){ return Array.prototype.slice.call(root.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter(function(el){ return el.offsetParent !== null && !el.disabled; }); }
+  function open(){ if(seen()) return; lastFocused = document.activeElement; root.classList.add('open'); document.body.style.overflow='hidden'; root.setAttribute('aria-hidden','false'); var c=root.querySelector('.close'); if(c) c.focus(); }
+  function close(){ root.classList.remove('open'); document.body.style.overflow=''; root.setAttribute('aria-hidden','true'); markSeen(); if(lastFocused && lastFocused.focus){ lastFocused.focus(); } }
+  var onMouseOut = function(e){ if(e.clientY <= 0) open(); };
+
+  root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', close); });
+  var ctaBtn = root.querySelector('.reveal .cta'); if(ctaBtn){ ctaBtn.addEventListener('click', markSeen); }
+  document.addEventListener('keydown', function(e){
+    if(!root.classList.contains('open')) return;
+    if(e.key==='Escape'){ close(); return; }
+    if(e.key==='Tab'){
+      var f = focusables(); if(!f.length) return;
+      var first=f[0], last=f[f.length-1];
+      if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }
+  });
+
+  // option selects
+  root.querySelectorAll('.opt').forEach(function(b){
+    b.addEventListener('click', function(){
+      answers[b.getAttribute('data-q')] = b.getAttribute('data-v');
+      var cur = order[idx];
+      if(cur==='intent'){ show('email'); }
+      else { var nx = order[idx+1]; if(nx==='reveal'){ doReveal(); } show(nx); }
+    });
+  });
+
+  // email submit
+  var form = document.getElementById('ip6q-form');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = document.getElementById('ip6q-email').value.trim();
+    var ok = document.getElementById('ip6q-consent').checked;
+    var valid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+    if(!valid || !ok){ document.getElementById('ip6q-err').style.display='block'; return; }
+    document.getElementById('ip6q-err').style.display='none';
+    answers.email = email;
+    // Capture to Shopify customer list (marketing) - fire and forget
+    try {
+      var fd = new FormData();
+      fd.append('form_type','customer'); fd.append('utf8','✓');
+      fd.append('contact[email]', email); fd.append('contact[tags]','quiz-lead,'+(answers.intent||''));
+      fetch('/contact', { method:'POST', body: fd, headers:{'Accept':'application/json'} }).then(function(r){ if(!r.ok && window.console){ console.warn('IP6 lead capture failed:', r.status); } }).catch(function(){});
+    } catch(e){}
+    {% comment %}Optional Klaviyo: set window.IP6_KLAVIYO_LIST + public key to enable.{% endcomment %}
+    show('q2');
+  });
+
+  function doReveal(){
+    var intent = answers.intent || 'everyday';
+    var copy = {
+      everyday: "A high-purity IP6 and Inositol formula for daily cellular health support, made to the standard the research describes.",
+      immune: "IP6 is a naturally occurring antioxidant. IP6 Original delivers it at research-grade purity, third-party tested.",
+      research: "The original formula, built by the physician-scientist who pioneered the research, formulated to his specification.",
+      family: "A clean, third-party-tested formula you can feel good about sharing."
+    };
+    var t = copy[intent] || copy.everyday;
+    if(answers.experience==='new'){ t += " New to IP6? Take it on an empty stomach, with water."; }
+    document.getElementById('ip6q-result').textContent = t;
+    var nudge = document.getElementById('ip6q-nudge');
+    if(answers.routine==='daily' || answers.experience==='regular'){ nudge.innerHTML = "You take it daily, <b>Subscribe &amp; Save</b> keeps your 50% rolling into a standing 15% off, free shipping, cancel anytime."; }
+  }
+
+  // QA/build: ?quiz=1 or #quiz force-opens it, ignoring the once-per-30-days rule.
+  if(/[?&]quiz=1/.test(location.search) || location.hash==='#quiz'){
+    try{ localStorage.removeItem(KEY); }catch(e){} dismissed=false; document.cookie=KEY+'=;path=/;max-age=0';
+    setTimeout(open, 300);
+  } else if(!seen()){
+    // trigger: first visit after delay + exit intent (only if not already seen)
+    setTimeout(open, 5000);
+    document.addEventListener('mouseout', onMouseOut);
+  }
+  show('intent');
+})();
+</script>

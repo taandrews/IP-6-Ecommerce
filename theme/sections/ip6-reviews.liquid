@@ -1,0 +1,56 @@
+{%- assign p = section.settings.product -%}
+<style>
+ #offer-{{ section.id }} { background: var(--paper); }
+ #offer-{{ section.id }} .card { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(28px, 5vw, 72px); align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); padding: clamp(28px, 4vw, 56px); }
+ #offer-{{ section.id }} .media { aspect-ratio: 4/5; background: linear-gradient(180deg,#fff,#eef3f8); border-radius: var(--radius-card); display: grid; place-items: center; }
+ #offer-{{ section.id }} .media img { width: 78%; height: auto; }
+ #offer-{{ section.id }} h2 { margin: 14px 0 0; max-width: 18ch; }
+ #offer-{{ section.id }} .specs { margin: 28px 0; display: grid; grid-template-columns: repeat(3,auto); gap: 36px; justify-content: start; }
+ #offer-{{ section.id }} .specs .n { font-family: var(--serif); font-size: 24px; color: var(--ink); line-height: 1; }
+ #offer-{{ section.id }} .specs .l { margin-top: 6px; }
+ #offer-{{ section.id }} .price { display: flex; align-items: baseline; gap: 10px; margin-bottom: 24px; }
+ #offer-{{ section.id }} .price .from { color: var(--muted); font-size: 14px; }
+ #offer-{{ section.id }} .price .amt { font-family: var(--serif); font-size: 32px; color: var(--ink); }
+ #offer-{{ section.id }} .actions { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+ @media (max-width: 749px) { #offer-{{ section.id }} .card { grid-template-columns: 1fr; } #offer-{{ section.id }} .media { max-width: 300px; } #offer-{{ section.id }} h2 { max-width: none; } #offer-{{ section.id }} .specs { gap: 24px; } }
+</style>
+<section id="offer-{{ section.id }}" class="ip6 ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="card">
+ <div class="media ip6-rise d1">
+ <img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="{{ p.title | default: 'IP6 Original' }}" width="420" height="525" loading="lazy">
+ </div>
+ <div class="ip6-rise d2">
+ <span class="ip6-eyebrow">The solution</span>
+ <h2 class="ip6-h2">{{ section.settings.heading }}</h2>
+ <div class="specs">
+ <div><div class="n">120</div><div class="l ip6-caption">Capsules</div></div>
+ <div><div class="n">60</div><div class="l ip6-caption">Servings</div></div>
+ <div><div class="n">800<span style="font-size:14px">mg</span></div><div class="l ip6-caption">IP6 / serving</div></div>
+ </div>
+ <hr class="ip6-rule">
+ <div class="price" style="margin-top:24px">
+ <span class="from">From</span>
+ <span class="amt">{%- if p != blank -%}{{ p.price | money_without_trailing_zeros }}{%- else -%}$49{%- endif -%}</span>
+ <span class="from">· subscribe &amp; save 15%</span>
+ </div>
+ <div class="actions">
+ {%- if p != blank -%}<a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Shop now</a>{%- else -%}<a class="ip6-btn ip6-btn--primary" href="#">Shop now</a>{%- endif -%}
+ <a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/how-to-take' }}">How to take it</a>
+ </div>
+ </div>
+ </div>
+ </div>
+</section>
+{% schema %}
+{
+ "name": "IP6 Offer",
+ "tag": "section",
+ "settings": [
+ { "type": "product", "id": "product", "label": "Product" },
+ { "type": "text", "id": "heading", "label": "Heading", "default": "The first IP6 supplement standardized to research-grade purity." },
+ { "type": "url", "id": "link", "label": "Secondary link" }
+ ],
+ "presets": [{ "name": "IP6 Offer" }]
+}
+{% endschema %}

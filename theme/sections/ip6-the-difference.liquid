@@ -1,0 +1,110 @@
+<style>
+  #diff-{{ section.id }} { background: var(--bg,#fff); }
+  #diff-{{ section.id }} .head { max-width: 760px; }
+  #diff-{{ section.id }} .head h1 { font-size: clamp(34px,4.4vw,56px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 16px 0 0; }
+  #diff-{{ section.id }} .head .lead { font-size: 19px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 62ch; }
+
+  #diff-{{ section.id }} .seg { display: flex; align-items: center; gap: 18px; margin: clamp(44px,6vw,72px) 0 30px; }
+  #diff-{{ section.id }} .seg .l { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+  #diff-{{ section.id }} .seg .rule { flex: 1; height: 1px; background: var(--line); }
+
+  /* Comparison */
+  #diff-{{ section.id }} .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  #diff-{{ section.id }} .col { border-radius: 16px; padding: clamp(24px,3vw,36px); border: 1px solid var(--line); }
+  #diff-{{ section.id }} .col.commodity { background: var(--surface); }
+  #diff-{{ section.id }} .col.original { background: #fdfaf3; border-color: var(--gold); }
+  #diff-{{ section.id }} .col .k { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  #diff-{{ section.id }} .col.commodity .k { color: var(--muted); }
+  #diff-{{ section.id }} .col.original .k { color: var(--gold-deep); }
+  #diff-{{ section.id }} .col h3 { font-size: 23px; margin: 8px 0 18px; }
+  #diff-{{ section.id }} .col.commodity h3 { color: var(--ink); }
+  #diff-{{ section.id }} .col.original h3 { color: var(--ink); }
+  #diff-{{ section.id }} .col ul { list-style: none; margin: 0; padding: 0; }
+  #diff-{{ section.id }} .col li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; padding: 12px 0; font-size: 15px; line-height: 1.5; }
+  #diff-{{ section.id }} .col.commodity li { color: var(--ink-2); border-top: 1px solid var(--line); }
+  #diff-{{ section.id }} .col.original li { color: var(--ink-2); border-top: 1px solid #ece4d4; }
+  #diff-{{ section.id }} .col li:first-child { border-top: 0; }
+  #diff-{{ section.id }} .col .ic { width: 20px; height: 20px; }
+  #diff-{{ section.id }} .col.commodity .ic { color: var(--muted); }
+  #diff-{{ section.id }} .col.original .ic { color: var(--gold-deep); }
+
+  /* Pillars */
+  #diff-{{ section.id }} .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  #diff-{{ section.id }} .pillar { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px; }
+  #diff-{{ section.id }} .pillar .ic { width: 44px; height: 44px; border-radius: 11px; background: var(--surface); display: grid; place-items: center; color: var(--ink); margin-bottom: 18px; }
+  #diff-{{ section.id }} .pillar .ic svg { width: 22px; height: 22px; }
+  #diff-{{ section.id }} .pillar h3 { font-family: var(--sans); font-size: 17px; font-weight: 600; color: var(--ink); margin: 0; }
+  #diff-{{ section.id }} .pillar p { font-size: 14.5px; line-height: 1.55; color: var(--muted); margin: 8px 0 0; }
+
+  #diff-{{ section.id }} .cta-row { margin-top: clamp(40px,5vw,64px); display: flex; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) { #diff-{{ section.id }} .pillars { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 760px) { #diff-{{ section.id }} .compare { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { #diff-{{ section.id }} .pillars { grid-template-columns: 1fr; } }
+</style>
+
+<section id="diff-{{ section.id }}" class="ip6 ip6-bright ip6-section">
+  <div class="ip6-wrap">
+    <div class="head ip6-reveal">
+      <span class="ip6-eyebrow">The difference</span>
+      <h1>Not all IP6 is the same.</h1>
+      <p class="lead">Most IP6 on the shelf isn't the molecule the published research describes. IP6 Original is standardized to research-grade purity and formulated by the scientist who pioneered the work, so what you take matches what the science studied.</p>
+    </div>
+
+    <div class="seg ip6-reveal"><span class="l">Commodity IP6 vs IP6 Original</span><span class="rule"></span></div>
+    <div class="compare ip6-reveal">
+      <div class="col commodity ip6-rise d1">
+        <div class="k">Commodity IP6</div>
+        <h3>What's usually on the shelf</h3>
+        <ul>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Variable source and form, not standardized to the research</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Often blended with fillers and flow agents</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Magnesium stearate and silicon dioxide common</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Rarely third-party tested for purity and potency</span></li>
+        </ul>
+      </div>
+      <div class="col original ip6-rise d2">
+        <div class="k">IP6 Original</div>
+        <h3>Built to the research</h3>
+        <ul>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>Standardized to the research-grade molecule</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>IP6 and Inositol, no unnecessary fillers</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>No magnesium stearate, no silicon dioxide</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>cGMP-certified and independently third-party tested</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="seg ip6-reveal"><span class="l">Why it matters</span><span class="rule"></span></div>
+    <div class="pillars ip6-reveal">
+      <div class="pillar ip6-rise d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="7" r="2"/><circle cx="12" cy="20" r="2"/><path d="M7 8l3 3M17 8l-3 3M12 15v3"/></svg></div>
+        <h3>The right molecule</h3>
+        <p>Standardized to the inositol hexaphosphate form the published research actually studied.</p>
+      </div>
+      <div class="pillar ip6-rise d2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7z"/></svg></div>
+        <h3>Clean formulation</h3>
+        <p>IP6 and Inositol only, no magnesium stearate, silicon dioxide, or unnecessary additives.</p>
+      </div>
+      <div class="pillar ip6-rise d3">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></div>
+        <h3>Founder-formulated</h3>
+        <p>Created by Prof. AbulKalam M. Shamsuddin, the physician-scientist who pioneered the IP6 research.</p>
+      </div>
+      <div class="pillar ip6-rise d4">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 11l2 2 4-4"/><path d="M12 3l7 3v6c0 4-3 7-7 8-4-1-7-4-7-8V6z"/></svg></div>
+        <h3>Independently tested</h3>
+        <p>Manufactured under cGMP and verified by third-party labs for purity, potency, and quality.</p>
+      </div>
+    </div>
+
+    <div class="cta-row ip6-reveal">
+      <a class="ip6-btn ip6-btn--primary" href="/collections/shop">Shop IP6 Original</a>
+      <a class="ip6-btn ip6-btn--ghost" href="/pages/how-to-take">How to take it</a>
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "IP6 The Difference", "tag": "section", "settings": [], "presets": [{ "name": "IP6 The Difference" }] }
+{% endschema %}

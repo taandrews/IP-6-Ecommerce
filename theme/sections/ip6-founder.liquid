@@ -1,0 +1,38 @@
+<style>
+  #proof-{{ section.id }} { background: var(--surface); border-top: 1px solid var(--line); }
+  #proof-{{ section.id }} .top { text-align: center; margin-bottom: clamp(36px, 4vw, 56px); }
+  #proof-{{ section.id }} .top h2 { margin-top: 14px; }
+  #proof-{{ section.id }} .list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  #proof-{{ section.id }} .item { background: #fff; border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 12px; padding: 28px 24px; }
+  #proof-{{ section.id }} .item h3 { font-size: 18px; color: var(--ink); margin: 0 0 8px; font-weight: 600; }
+  #proof-{{ section.id }} .item p { margin: 0; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
+  #proof-{{ section.id }} .foot { margin-top: 36px; text-align: center; }
+  @media (max-width: 900px) { #proof-{{ section.id }} .list { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { #proof-{{ section.id }} .list { grid-template-columns: 1fr; } }
+</style>
+<section id="proof-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+  <div class="ip6-wrap">
+    <div class="top ip6-rise d1">
+      <span class="ip6-eyebrow">The proof</span>
+      <h2 class="ip6-h2">{{ section.settings.heading }}</h2>
+    </div>
+    <div class="list">
+      <div class="item ip6-rise d1"><h3>Pioneer in IP6 Research</h3><p>Decades of published work establishing IP6's role in cellular health.</p></div>
+      <div class="item ip6-rise d2"><h3>Founder &amp; Formulator</h3><p>Developed by Prof. Shamsuddin himself, not licensed or white-labeled.</p></div>
+      <div class="item ip6-rise d3"><h3>cGMP Certified</h3><p>Manufactured in a facility held to current Good Manufacturing Practices.</p></div>
+      <div class="item ip6-rise d4"><h3>Third-Party Tested</h3><p>Independently verified for purity and potency by Eurofins Scientific.</p></div>
+    </div>
+    <div class="foot ip6-rise d4"><a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/founder' }}">Meet Prof. Shamsuddin</a></div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "IP6 Proof",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Why this is the original." },
+    { "type": "url", "id": "link", "label": "Founder link" }
+  ],
+  "presets": [{ "name": "IP6 Proof" }]
+}
+{% endschema %}

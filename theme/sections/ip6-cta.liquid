@@ -1,0 +1,42 @@
+{%- assign p = section.settings.product -%}
+<style>
+ #act-{{ section.id }} { background: var(--surface); }
+ #act-{{ section.id }} .head { margin-bottom: clamp(28px,3vw,44px); }
+ #act-{{ section.id }} h2 { font-size: clamp(30px,4vw,42px); margin: 14px 0 0; }
+ #act-{{ section.id }} .head p { margin: 14px 0 0; max-width: 60ch; font-size: 17px; line-height: 1.6; color: var(--ink-2); }
+ #act-{{ section.id }} .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-bottom: clamp(32px,4vw,48px); }
+ #act-{{ section.id }} .step { background: #fff; border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 12px; padding: 28px; }
+ #act-{{ section.id }} .step h3 { font-size: 19px; margin: 0 0 8px; }
+ #act-{{ section.id }} .step p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+ #act-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+ @media (max-width: 749px){ #act-{{ section.id }} .steps { grid-template-columns: 1fr; } }
+</style>
+<section id="act-{{ section.id }}" class="ip6 ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="head ip6-rise d1">
+ <span class="ip6-eyebrow">The action</span>
+ <h2>Take it. Here is exactly how.</h2>
+ <p>Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.</p>
+ </div>
+ <div class="steps">
+ <div class="step ip6-rise d1"><h3>On an empty stomach</h3><p>30 minutes before food, or 2 hours after, for optimal absorption.</p></div>
+ <div class="step ip6-rise d2"><h3>With water only</h3><p>8 oz minimum. Avoid mineral-rich beverages within an hour.</p></div>
+ <div class="step ip6-rise d3"><h3>Consult your physician</h3><p>Always discuss new supplements with your healthcare professional.</p></div>
+ </div>
+ <div class="actions ip6-rise d4">
+ {%- if p != blank -%}<a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Shop IP6 Original</a>{%- else -%}<a class="ip6-btn ip6-btn--primary" href="#">Shop IP6 Original</a>{%- endif -%}
+ <a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/how-to-take' }}">Full dosing guide →</a>
+ </div>
+ </div>
+</section>
+{% schema %}
+{
+ "name": "IP6 Action",
+ "tag": "section",
+ "settings": [
+ { "type": "product", "id": "product", "label": "Product" },
+ { "type": "url", "id": "link", "label": "Dosing guide link" }
+ ],
+ "presets": [{ "name": "IP6 Action" }]
+}
+{% endschema %}

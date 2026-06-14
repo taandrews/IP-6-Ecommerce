@@ -1,0 +1,76 @@
+<style>
+ #ftr-{{ section.id }} { background: var(--ink); color: #aeb9cb; }
+ #ftr-{{ section.id }} .top { display: grid; grid-template-columns: 1.3fr repeat(4, 1fr); gap: 40px; padding: clamp(48px,6vw,80px) 0 56px; }
+ #ftr-{{ section.id }} .brand .mark { font-family: var(--serif); font-size: 26px; color: #fff; letter-spacing: -0.01em; }
+ #ftr-{{ section.id }} .brand p { margin: 16px 0 0; font-size: 14px; line-height: 1.7; max-width: 34ch; }
+ #ftr-{{ section.id }} .brand a { color: var(--gold); text-decoration: none; }
+ #ftr-{{ section.id }} .col h4 { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #7e8aa0; margin: 0 0 18px; }
+ #ftr-{{ section.id }} .col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+ #ftr-{{ section.id }} .col a { color: #cdd6e6; text-decoration: none; font-size: 15px; transition: color .15s ease-out; }
+ #ftr-{{ section.id }} .col a:hover { color: #fff; }
+ #ftr-{{ section.id }} .bottom { border-top: 1px solid rgba(255,255,255,.12); padding: 24px 0 40px; display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; align-items: center; }
+ #ftr-{{ section.id }} .bottom p { margin: 0; font-size: 12.5px; color: #7e8aa0; }
+ #ftr-{{ section.id }} .disclaimer { padding: 22px 0; border-top: 1px solid rgba(255,255,255,.08); }
+ #ftr-{{ section.id }} .disclaimer p { margin: 0; font-size: 12px; line-height: 1.6; color: #6b7790; max-width: 90ch; }
+ @media (max-width: 749px) { #ftr-{{ section.id }} .top { grid-template-columns: 1fr 1fr; gap: 32px 24px; } #ftr-{{ section.id }} .brand { grid-column: 1 / -1; } }
+</style>
+<footer id="ftr-{{ section.id }}" class="ip6">
+ <div class="ip6-wrap">
+ <div class="top">
+ <div class="brand">
+ <div class="mark">IP·6 Research</div>
+ <p>15 Charles Plaza<br>Baltimore, MD<br><a href="mailto:hello@ip6original.com">hello@ip6original.com</a></p>
+ </div>
+ <div class="col">
+ <h4>Shop</h4>
+ <ul>
+ <li><a href="/products/ip-6-original">IP6 Original</a></li>
+ <li><a href="/pages/how-to-take">How to Take</a></li>
+ <li><a href="/account">My Account</a></li>
+ </ul>
+ </div>
+ <div class="col">
+ <h4>Story</h4>
+ <ul>
+ <li><a href="/pages/story">The Story</a></li>
+ <li><a href="/pages/the-difference">The Difference</a></li>
+ <li><a href="/pages/founder">The Founder</a></li>
+ <li><a href="https://ip-6.net" rel="noopener" target="_blank">IP-6 Research Foundation</a></li>
+ </ul>
+ </div>
+ <div class="col">
+ <h4>Support</h4>
+ <ul>
+ <li><a href="/pages/faq">FAQ</a></li>
+ <li><a href="/pages/contact">Contact</a></li>
+ <li><a href="/pages/international-shipping">Shipping</a></li>
+ <li><a href="/pages/refund-policy">Returns</a></li>
+ </ul>
+ </div>
+ <div class="col">
+ <h4>Legal</h4>
+ <ul>
+ <li><a href="/pages/privacy-policy">Privacy</a></li>
+ <li><a href="/pages/terms-of-service">Terms</a></li>
+ <li><a href="/pages/cookie-policy">Cookies</a></li>
+ <li><a href="/pages/accessibility">Accessibility</a></li>
+ </ul>
+ </div>
+ </div>
+ <div class="disclaimer">
+ <p>{{ section.settings.disclaimer }}</p>
+ </div>
+ <div class="bottom">
+ <p>© 2026 IP-6 Research, Inc. All rights reserved.</p>
+ <p>Ships to US &amp; Canada at launch · Manufactured in Baltimore, MD</p>
+ </div>
+ </div>
+</footer>
+{% schema %}
+{
+ "name": "IP6 Footer",
+ "settings": [
+ { "type": "textarea", "id": "disclaimer", "label": "FDA disclaimer", "default": "*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare professional before use." }
+ ]
+}
+{% endschema %}

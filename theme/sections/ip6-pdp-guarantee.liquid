@@ -1,0 +1,25 @@
+<style>
+ #pg2-{{ section.id }} { background: var(--surface); }
+ #pg2-{{ section.id }} .head { text-align: center; margin-bottom: clamp(28px,3vw,44px); }
+ #pg2-{{ section.id }} .head h2 { font-size: clamp(28px,3.4vw,42px); margin: 14px 0 0; }
+ #pg2-{{ section.id }} .ip6-grid {display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+ #pg2-{{ section.id }} .c { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 30px 26px; text-align: center; }
+ #pg2-{{ section.id }} .c .ic { width: 44px; height: 44px; border-radius: 50%; background: #ecf5f0; display: grid; place-items: center; margin: 0 auto 16px; }
+ #pg2-{{ section.id }} .c svg { width: 22px; height: 22px; color: var(--success); }
+ #pg2-{{ section.id }} .c h3 { font-size: 18px; margin: 0 0 8px; }
+ #pg2-{{ section.id }} .c p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--muted); }
+ @media (max-width:749px){ #pg2-{{ section.id }} .ip6-grid {grid-template-columns: 1fr; } }
+</style>
+<section id="pg2-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap">
+ <div class="head ip6-rise d1"><span class="ip6-eyebrow">Risk-free</span><h2>Why subscribe, and why it's safe to try.</h2></div>
+ <div class="ip6-grid">
+ <div class="c ip6-rise d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div><h3>30-Day Guarantee</h3><p>If IP6 Original isn't right for you, return it within 30 days.</p></div>
+ <div class="c ip6-rise d2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12a8 8 0 0114-5l2-2M20 12a8 8 0 01-14 5l-2 2"/></svg></div><h3>Skip, Modify or Cancel</h3><p>Manage your subscription anytime, no fees, no lock-in.</p></div>
+ <div class="c ip6-rise d3"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 13h11V6H3zM14 9h4l3 3v1h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg></div><h3>Free Shipping</h3><p>Subscriptions ship free across the US &amp; Canada, every time.</p></div>
+ </div>
+ </div>
+</section>
+{% schema %}
+{ "name": "IP6 PDP Guarantee", "tag": "section", "settings": [], "presets": [{ "name": "IP6 PDP Guarantee" }] }
+{% endschema %}
