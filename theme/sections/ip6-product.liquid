@@ -104,7 +104,7 @@
  <div class="buybox">
  <span class="ip6-eyebrow">From the lab of Prof. AbulKalam M. Shamsuddin, MD, PhD</span>
  <h1>{{ product.title | default: 'IP6 Original' }}</h1>
- <p class="vline">The original IP6 formula, standardized to research-grade purity, 800 mg IP6 + 220 mg Inositol per serving.</p>
+ <p class="vline">The original IP6 formula, standardized to research-grade purity, <span data-spec-ip6>{{ cv.metafields.ip6.ip6_mg.value | default: 800 }}</span> mg IP6 + <span data-spec-inositol>{{ cv.metafields.ip6.inositol_mg.value | default: 220 }}</span> mg Inositol per serving.</p>
  <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested by Eurofins</div>
 
  {%- if product.variants.size > 1 -%}
@@ -115,6 +115,23 @@
  {%- endfor -%}
  </div>
  {%- endif -%}
+
+ {%- comment -%} Per-size supplement specs: update facts on variant change {%- endcomment -%}
+ <script>
+ window.IP6_SPECS = window.IP6_SPECS || {
+ {%- for v in product.variants -%}
+   "{{ v.id }}":{ip6:"{{ v.metafields.ip6.ip6_mg.value | default: 800 }}",inositol:"{{ v.metafields.ip6.inositol_mg.value | default: 220 }}",servings:"{{ v.metafields.ip6.servings.value | default: 60 }}"}{% unless forloop.last %},{% endunless %}
+ {%- endfor -%}
+ };
+ (function(){
+   function apply(vid){var s=window.IP6_SPECS[vid];if(!s)return;
+     document.querySelectorAll('[data-spec-ip6]').forEach(function(e){e.textContent=s.ip6;});
+     document.querySelectorAll('[data-spec-inositol]').forEach(function(e){e.textContent=s.inositol;});
+     document.querySelectorAll('[data-spec-servings]').forEach(function(e){e.textContent=s.servings;});}
+   document.addEventListener('click',function(ev){var b=ev.target.closest('#fmt-{{ section.id }} [data-vid]');if(b)apply(b.getAttribute('data-vid'));});
+   apply("{{ cv.id }}");
+ })();
+ </script>
 
  <form method="post" action="/cart/add" id="form-{{ section.id }}">
  <input type="hidden" name="id" id="vid-{{ section.id }}" data-vid-input value="{{ cv.id }}">
