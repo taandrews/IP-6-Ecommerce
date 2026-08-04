@@ -2,6 +2,8 @@
 
 Follow-up from the optimization pass. Audit basis: Lighthouse (SEO 100, A11y 93, LCP 0.6 s, CLS 0), Shopify theme-check (3 errors fixed, 46 warnings remain), asset inventory.
 
+**Status 2026-08-04: Section 1 complete and live (commit f6d57b1). The gold-contrast item from Section 2 was also fixed on owner instruction ("fix all"): text gold darkened to #8A6A1F, 5.05:1. Bonus: IBM Plex is now self-hosted from theme assets, replacing the render-blocking Google Fonts CSS.**
+
 ## Section 1: Will fix
 
 1. **Delete unused heavy assets from the theme** (local + live via Assets API):
