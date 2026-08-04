@@ -85,17 +85,17 @@
       <span class="ip6-eyebrow">The original IP6 formula, for pets</span>
       <h1>{{ product.title | default: 'IP6 Original Pet' }}</h1>
       <p class="vline">A precise blend of IP6 and Inositol to support daily cellular health and immune function in dogs and cats.</p>
-      <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Veterinarian-formulated · third-party tested</div>
+      <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested for purity and potency</div>
       {%- if product.variants.size > 1 -%}
         <p class="opt-label">Format</p>
         <div class="formats" id="petfmt-{{ section.id }}">
           {%- for v in product.variants -%}<button type="button" data-vid="{{ v.id }}" data-price="{{ v.price }}" aria-pressed="{% if v.id == cv.id %}true{% else %}false{% endif %}">{{ v.title }}</button>{%- endfor -%}
         </div>
       {%- endif -%}
-      <form method="post" action="/cart/add" id="petform-{{ section.id }}">
+      <form method="post" action="{{ routes.cart_add_url }}" id="petform-{{ section.id }}">
         <input type="hidden" name="id" id="petvid-{{ section.id }}" data-vid-input value="{{ cv.id }}">
         <input type="hidden" name="selling_plan" id="petplan-{{ section.id }}" data-plan-input value="" disabled>
-        <input type="hidden" name="return_to" value="/cart">
+        <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
         <p class="opt-label">Choose your plan</p>
         <div class="plans" role="radiogroup" aria-label="Purchase option">
           <label class="plan" data-plan="subscribe"{% if has_plans %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans.first.id }}"{% endif %} data-active="true" role="radio" aria-checked="true" tabindex="0">
@@ -110,17 +110,15 @@
         </div>
         <button type="submit" class="ip6-btn ip6-btn--primary atc">Add to Cart, <span data-atc>{{ sub | money }}</span></button>
         <p class="ship"><b>Free shipping</b> across the US &amp; Canada · 30-day returns</p>
-        <div class="micro"><span>cGMP Certified</span><span>Vet-Formulated</span><span>Third-Party Tested</span></div>
+        <div class="micro"><span>cGMP Certified</span><span>Third-Party Tested</span></div>
         {%- unless has_plans -%}<p class="note-sub">Subscribe pricing is illustrative until Recharge is connected.</p>{%- endunless -%}
       </form>
       <div class="acc">
         <details open><summary>Supplement Facts</summary><div class="body">
           <table class="facts">
             <tr><th>Serving size</th><td>{% if product.tags contains 'powder' %}1 scoop (2 g){% else %}1 capsule{% endif %}</td></tr>
-            <tr><th>IP6 (Inositol Hexaphosphate)</th><td>500 mg</td></tr>
-            <tr><th>Inositol</th><td>150 mg</td></tr>
           </table>
-          <p style="margin-top:12px">No magnesium stearate, no silicon dioxide, no unnecessary additives. Capsules use a plant-based (cellulose) shell.</p>
+          <p style="margin-top:12px">No magnesium stearate, no silicon dioxide, no unnecessary additives.{% unless product.tags contains 'powder' %} Capsules use a plant-based (cellulose) shell.{% endunless %}</p>
         </div></details>
         <details><summary>Suggested Use</summary><div class="body">{% assign unit = '1 capsule' %}{% if product.tags contains 'powder' %}{% assign unit = '1 scoop (2 g)' %}{% endif %}Dogs: {{ unit }} per 25 lbs of body weight daily. Cats: {{ unit }} daily, or as directed by your veterinarian.</div></details>
         <details><summary>What is IP6?</summary><div class="body">IP6 (inositol hexaphosphate) is a naturally occurring compound found in plants and grains. Combined with Inositol, it supports cellular health, immune function, and overall wellness in pets.</div></details>
@@ -129,7 +127,7 @@
     </div>
   </div>
 </section>
-<section id="trustpet-{{ section.id }}" class="ip6 ip6-bright"><div class="ip6-wrap"><ul><li>cGMP Certified</li><li>Third-Party Tested</li><li>Veterinarian-Formulated</li><li>Dogs &amp; Cats</li><li>30-Day Returns</li></ul></div></section>
+<section id="trustpet-{{ section.id }}" class="ip6 ip6-bright"><div class="ip6-wrap"><ul><li>cGMP Certified</li><li>Third-Party Tested</li><li>Dogs &amp; Cats</li><li>30-Day Returns</li></ul></div></section>
 
 <script src="{{ 'ip6-pdp.js' | asset_url }}" defer></script>
 

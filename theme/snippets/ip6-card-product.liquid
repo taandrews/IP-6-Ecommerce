@@ -2,16 +2,16 @@
 <div class="pcard">
   <a class="pcard__media" href="{{ product.url }}">
     {%- if badge_text != blank -%}<div class="pcard__badges"><span class="badge badge--{{ badge_kind | default: 'save' }}">{{ badge_text }}</span></div>{%- endif -%}
-    <img src="{{ product.featured_image | image_url: width: 700 }}" alt="{{ product.title }}" loading="lazy">
+    <img src="{{ product.featured_image | image_url: width: 700 }}" alt="{{ product.title }}" width="{{ product.featured_image.width }}" height="{{ product.featured_image.height }}" loading="lazy">
     {%- unless product.tags contains 'pet' -%}
-      <img class="pcard__media-hover" src="{{ 'ip6-family.jpg' | asset_url }}" alt="" aria-hidden="true" loading="lazy">
+      <img class="pcard__media-hover" src="{{ 'ip6-family.jpg' | asset_url }}" alt="" aria-hidden="true" width="1100" height="880" loading="lazy">
     {%- endunless -%}
   </a>
   <div class="pcard__body">
     <h3 class="pcard__title">{{ product.title }}</h3>
     <div class="pcard__desc">{{ product.type | default: 'Dietary Supplement' }}</div>
     <div class="pcard__features">
-      <span>{% if product.tags contains 'pet' %}Vet-Formulated{% else %}Founder-Formulated{% endif %}</span>
+      <span>{% if product.tags contains 'pet' %}Third-Party Tested{% else %}Founder-Formulated{% endif %}</span>
     </div>
     <div class="pcard__sub">Subscribe &amp; Save</div>
     {%- assign disc = product.price | times: 0.85 | round -%}
@@ -19,7 +19,7 @@
     {%- if product.variants.size > 1 -%}
       <a class="pcard__cta" href="{{ product.url }}">View</a>
     {%- else -%}
-      <form method="post" action="/cart/add"><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="return_to" value="/cart"><button class="pcard__cta" type="submit">Add to cart</button></form>
+      <form method="post" action="{{ routes.cart_add_url }}"><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="return_to" value="{{ routes.cart_url }}"><button class="pcard__cta" type="submit">Add to cart</button></form>
     {%- endif -%}
   </div>
 </div>

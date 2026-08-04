@@ -133,10 +133,10 @@
  })();
  </script>
 
- <form method="post" action="/cart/add" id="form-{{ section.id }}">
+ <form method="post" action="{{ routes.cart_add_url }}" id="form-{{ section.id }}">
  <input type="hidden" name="id" id="vid-{{ section.id }}" data-vid-input value="{{ cv.id }}">
  <input type="hidden" name="selling_plan" id="plan-{{ section.id }}" data-plan-input value="" disabled>
- <input type="hidden" name="return_to" value="/cart">
+ <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
  <p class="opt-label">Choose your plan</p>
  <div class="plans" role="radiogroup" aria-label="Purchase option">
  <label class="plan" data-plan="subscribe"{% if has_plans %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans.first.id }}"{% endif %} data-active="true" role="radio" aria-checked="true" tabindex="0">
