@@ -85,7 +85,7 @@
       <span class="ip6-eyebrow">The original IP6 formula, for pets</span>
       <h1>{{ product.title | default: 'IP6 Original Pet' }}</h1>
       <p class="vline">A precise blend of IP6 and Inositol to support daily cellular health and immune function in dogs and cats.</p>
-      <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested for purity and potency</div>
+      <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Veterinarian-formulated · third-party tested</div>
       {%- if product.variants.size > 1 -%}
         <p class="opt-label">Format</p>
         <div class="formats" id="petfmt-{{ section.id }}">
@@ -110,7 +110,7 @@
         </div>
         <button type="submit" class="ip6-btn ip6-btn--primary atc">Add to Cart, <span data-atc>{{ sub | money }}</span></button>
         <p class="ship"><b>Free shipping</b> across the US &amp; Canada · 30-day returns</p>
-        <div class="micro"><span>cGMP Certified</span><span>Third-Party Tested</span></div>
+        <div class="micro"><span>cGMP Certified</span><span>Vet-Formulated</span><span>Third-Party Tested</span></div>
         {%- unless has_plans -%}<p class="note-sub">Subscribe pricing is illustrative until Recharge is connected.</p>{%- endunless -%}
       </form>
       <div class="acc">
@@ -127,7 +127,7 @@
     </div>
   </div>
 </section>
-<section id="trustpet-{{ section.id }}" class="ip6 ip6-bright"><div class="ip6-wrap"><ul><li>cGMP Certified</li><li>Third-Party Tested</li><li>Dogs &amp; Cats</li><li>30-Day Returns</li></ul></div></section>
+<section id="trustpet-{{ section.id }}" class="ip6 ip6-bright"><div class="ip6-wrap"><ul><li>cGMP Certified</li><li>Third-Party Tested</li><li>Veterinarian-Formulated</li><li>Dogs &amp; Cats</li><li>30-Day Returns</li></ul></div></section>
 
 <script src="{{ 'ip6-pdp.js' | asset_url }}" defer></script>
 

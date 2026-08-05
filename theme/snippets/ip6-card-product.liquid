@@ -11,7 +11,7 @@
     <h3 class="pcard__title">{{ product.title }}</h3>
     <div class="pcard__desc">{{ product.type | default: 'Dietary Supplement' }}</div>
     <div class="pcard__features">
-      <span>{% if product.tags contains 'pet' %}Third-Party Tested{% else %}Founder-Formulated{% endif %}</span>
+      <span>{% if product.tags contains 'pet' %}Vet-Formulated{% else %}Founder-Formulated{% endif %}</span>
     </div>
     <div class="pcard__sub">Subscribe &amp; Save</div>
     {%- assign disc = product.price | times: 0.85 | round -%}
