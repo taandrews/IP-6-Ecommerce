@@ -11,6 +11,8 @@
  #hero-{{ section.id }} .hero-grid > .hero-copy { flex: 1 1 auto; min-width: 0; }
  #hero-{{ section.id }} .hero-grid > .frame-wrap { flex: 0 0 clamp(300px, 34vw, 440px); }
  #hero-{{ section.id }} .eyebrow-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+ #hero-{{ section.id }} .prebook { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 20px; padding: 10px 18px; border: 1px solid var(--gold); border-radius: 100px; background: #fdfaf3; font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--gold-deep); }
+ #hero-{{ section.id }} .prebook .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold-deep); }
  #hero-{{ section.id }} .eyebrow-row .line { height: 1px; width: 44px; background: var(--gold); }
  #hero-{{ section.id }} h1 { margin: 0 0 24px; max-width: 14ch; }
  #hero-{{ section.id }} .sub { max-width: 46ch; margin: 0 0 36px; color: var(--muted); }
@@ -30,11 +32,12 @@
  <div class="ip6-wrap hero-grid">
  <div class="hero-copy">
  <div class="eyebrow-row ip6-rise d1"><span class="line"></span><span class="ip6-eyebrow">{{ section.settings.eyebrow }}</span></div>
+ <p class="prebook ip6-rise d1"><span class="dot" aria-hidden="true"></span>Coming October 3, 2026 · Pre-Book Now &amp; Receive 20% Off</p>
  <h1 class="ip6-display ip6-rise d2">{{ section.settings.heading }}</h1>
  <p class="sub ip6-body-lg ip6-rise d3">{{ section.settings.subheading }}</p>
  <div class="actions ip6-rise d4">
  {%- if p != blank -%}
- <a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Shop IP6 Original · {{ p.price | money_without_trailing_zeros }}</a>
+ <a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Pre-Book Now · 20% Off</a>
  {%- else -%}
  <a class="ip6-btn ip6-btn--primary" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label }}</a>
  {%- endif -%}

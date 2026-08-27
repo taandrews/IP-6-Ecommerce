@@ -19,7 +19,7 @@
     {%- if product.variants.size > 1 -%}
       <a class="pcard__cta" href="{{ product.url }}">View</a>
     {%- else -%}
-      <form method="post" action="{{ routes.cart_add_url }}"><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="return_to" value="{{ routes.cart_url }}"><button class="pcard__cta" type="submit">Add to cart</button></form>
+      <form method="post" action="{{ routes.cart_add_url }}"><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="return_to" value="{{ routes.cart_url }}"><button class="pcard__cta" type="submit">Pre-Order</button></form>
     {%- endif -%}
   </div>
 </div>

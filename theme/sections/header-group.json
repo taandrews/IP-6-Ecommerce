@@ -14,6 +14,19 @@
     "header_announcements_9jGBFp": {
       "type": "header-announcements",
       "blocks": {
+        "announcement_prebook": {
+          "type": "_announcement",
+          "settings": {
+            "text": "IP6 Original – Coming October 3, 2026. Pre-Book Now &amp; Receive 20% Off.",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        },
         "announcement_BxgCk9": {
           "type": "_announcement",
           "settings": {
@@ -29,6 +42,7 @@
         }
       },
       "block_order": [
+        "announcement_prebook",
         "announcement_BxgCk9"
       ],
       "name": "t:names.announcement_bar",
