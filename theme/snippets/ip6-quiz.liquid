@@ -1,9 +1,8 @@
-{%- comment -%} IP6 lead-capture quiz funnel (50% off). Styled to IP6 tokens. {%- endcomment -%}
-{%- assign quiz_code = 'IP6FIRST50' -%}
-{%- assign quiz_url = '/discount/' | append: quiz_code | append: '?redirect=/products/ip-6-original' -%}
+{%- comment -%} IP6 lead-capture quiz funnel (pre-book 20% off; discount applies automatically at checkout). Styled to IP6 tokens. {%- endcomment -%}
 {%- assign quiz_product = all_products['ip-6-original'] -%}
+{%- assign quiz_url = quiz_product.url | default: '/products/ip-6-original' -%}
 {%- assign quiz_full = quiz_product.price | default: 4900 -%}
-{%- assign quiz_half = quiz_full | times: 0.5 | round -%}
+{%- assign quiz_pre = quiz_full | times: 0.8 | round -%}
 
 <style>
   #ip6quiz { position: fixed; inset: 0; z-index: 9999; display: none; }
@@ -64,7 +63,7 @@
   @media (max-width: 600px) { #ip6quiz h2 { font-size: 26px; } }
 </style>
 
-<div id="ip6quiz" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Get 50% off your first IP6 Original order">
+<div id="ip6quiz" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Pre-book IP6 Original and receive 20% off">
   <div class="ovl" data-close></div>
   <div class="panel">
     <div class="media" aria-hidden="true">
@@ -82,7 +81,7 @@
         <!-- Step 0: intent -->
         <div class="step active" data-step="intent">
           <span class="eyebrow">From the lab of Prof. AbulKalam M. Shamsuddin, MD, PhD</span>
-          <div class="badge">You've got <b>50% off</b> your first order</div>
+          <div class="badge">Coming October 3, 2026 · Pre-Book Now &amp; Receive <b>20% Off</b></div>
           <h2>Strengthen your cellular health</h2>
           <p class="sub">What brings you to IP6 Original?</p>
           <div class="opts">
@@ -95,8 +94,8 @@
 
         <!-- Step 1: email -->
         <div class="step" data-step="email">
-          <h2>Where should we send your 50% off?</h2>
-          <p class="sub">Your code is reserved. Answer a few quick questions and it's yours.</p>
+          <h2>Where should we send your 20% off?</h2>
+          <p class="sub">Your pre-book discount is reserved. Answer a few quick questions and it's yours.</p>
           <form id="ip6q-form">
             <label for="ip6q-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
             <input type="email" id="ip6q-email" placeholder="Email address" aria-label="Email address" required>
@@ -170,8 +169,9 @@
           <span class="eyebrow">Your match</span>
           <h2>IP6 Original is your match.</h2>
           <p class="sub" id="ip6q-result">A high-purity IP6 and Inositol formula, made to the standard the research describes.</p>
-          <p class="price">Your 50% off is applied: <b>{{ quiz_half | money }}</b> <s>{{ quiz_full | money }}</s></p>
-          <a class="cta" href="{{ quiz_url }}">Claim 50% off &rarr;</a>
+          <p class="price">Your pre-book 20% off is applied at checkout: <b>{{ quiz_pre | money }}</b> <s>{{ quiz_full | money }}</s></p>
+          <a class="cta" href="{{ quiz_url }}">Pre-Book Now &rarr;</a>
+          <p class="micro">Ships on or after October 3, 2026.</p>
           <p class="nudge" id="ip6q-nudge">Subscribe &amp; save to keep the discount going.</p>
           <div class="reassure"><span>cGMP Certified</span><span>Third-Party Tested</span><span>30-Day Returns</span></div>
         </div>
@@ -267,7 +267,7 @@
     if(answers.experience==='new'){ t += " New to IP6? Take it on an empty stomach, with water."; }
     document.getElementById('ip6q-result').textContent = t;
     var nudge = document.getElementById('ip6q-nudge');
-    if(answers.routine==='daily' || answers.experience==='regular'){ nudge.innerHTML = "You take it daily, <b>Subscribe &amp; Save</b> keeps your 50% rolling into a standing 15% off, free shipping, cancel anytime."; }
+    if(answers.routine==='daily' || answers.experience==='regular'){ nudge.innerHTML = "You take it daily, <b>Subscribe &amp; Save</b> makes it a standing 15% off, free shipping, cancel anytime."; }
   }
 
   // QA/build: ?quiz=1 or #quiz force-opens it, ignoring the once-per-30-days rule.
