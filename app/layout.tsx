@@ -6,6 +6,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { CookieBanner } from "@/components/layout/CookieBanner";
 import { Analytics } from "@/components/layout/Analytics";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { PreBookPopup } from "@/components/layout/PreBookPopup";
 import { isEuOrUk } from "@/lib/utils";
 import { hreflangAlternates } from "@/lib/i18n";
 
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <CartDrawer />
         <CookieBanner isEuOrUk={isEuOrUk(country)} />
+        <PreBookPopup />
         <Analytics />
         <script
           type="application/ld+json"
