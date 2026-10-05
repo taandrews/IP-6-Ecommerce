@@ -224,7 +224,7 @@ export function PreBookPopup() {
             <div className={s.inner} key={step}>
               {step === "intent" && (
                 <>
-                  <span className={s.eyebrow}>From the lab of Prof. AbulKalam M. Shamsuddin, MD, PhD</span>
+                  <span className={s.eyebrow}>From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
                   <div className={s.launch}>
                     <div className={s.kicker}>Coming October 3, 2026</div>
                     <div className={s.offer}>

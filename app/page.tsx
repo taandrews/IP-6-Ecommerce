@@ -35,7 +35,7 @@ export default function HomePage() {
         <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
           <div>
             <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
-              From the lab of Prof. AbulKalam M. Shamsuddin, MD, PhD
+              From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
             </p>
             <h1
               className="font-serif text-navy-800 text-balance"
