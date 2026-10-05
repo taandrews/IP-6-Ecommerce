@@ -304,7 +304,7 @@ export default function HomePage() {
                   Pioneer in IP6 Research and Cellular Health
                 </h3>
                 <p className="text-sm text-ink/65 mb-5 flex-1">
-                  120 capsules · 60 servings · 800 mg IP6 and 220 mg Inositol per serving. cGMP manufactured. Third-party tested.
+                  120 capsules · 60 servings · 804 mg IP6 and 196 mg Inositol per serving. cGMP manufactured. Third-party tested.
                 </p>
                 <div className="flex items-center justify-between">
                   <p>

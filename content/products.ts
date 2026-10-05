@@ -33,8 +33,8 @@ export const products: Product[] = [
       "Plant-based capsule (cellulose)",
     ],
     ingredients: [
-      "IP6 (Calcium-Magnesium Inositol Hexaphosphate), 800 mg per 2-capsule serving",
-      "Inositol, 220 mg per serving",
+      "IP6 (Calcium-Magnesium Inositol Hexaphosphate), 804 mg per 2-capsule serving",
+      "Inositol, 196 mg per serving",
       "Other ingredients: plant-based capsule (cellulose)",
     ],
     howToUse: [
@@ -90,7 +90,7 @@ export const products: Product[] = [
     ],
     images: [
       { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement. Navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
-      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label. Supplement Facts panel showing 800 mg IP6 (Calcium-Magnesium Inositol Hexaphosphate) and 220 mg Inositol per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP Certified / Third-Party Tested / High-Purity Formula badges.", width: 674, height: 912 },
+      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label. Supplement Facts panel with serving size and amounts per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP Certified / Third-Party Tested / High-Purity Formula badges.", width: 674, height: 912 },
     ],
     faq: [
       {
