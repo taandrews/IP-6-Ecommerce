@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
-import { Wordmark } from "@/components/layout/Wordmark";
+import Image from "next/image";
 
 const COL = [
   {
@@ -16,7 +16,6 @@ const COL = [
     links: [
       { href: "/story", label: "The Story" },
       { href: "/the-difference", label: "The Difference" },
-      { href: "https://ip-6.net", label: "IP-6 Research Foundation", external: true },
     ],
   },
   {
@@ -46,7 +45,9 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
         {/* Brand block on top for mobile, inline on desktop */}
         <div className="md:grid md:grid-cols-[1fr_2.4fr] md:gap-10">
           <div className="mb-10 md:mb-0">
-            <Wordmark variant="dark" size="sm" />
+            <span className="inline-block bg-surface rounded-lg px-3 py-2">
+              <Image src="/brand/ip6-original-logo.png" alt="IP6 Original" width={324} height={216} className="h-12 w-auto" />
+            </span>
             <p className="mt-4 text-xs uppercase tracking-[0.18em] text-surface/55">
               15 Charles Plaza, Baltimore MD
             </p>
@@ -102,7 +103,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
         ) : null}
 
         <div className="mt-6 pt-4 border-t border-navy-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-surface/55">
-          <span>© {new Date().getFullYear()} IP-6 Research, Inc.</span>
+          <span>© {new Date().getFullYear()} IP6 Original</span>
           <span className="text-surface/45">Ships to the US and Canada at launch · Manufactured in Baltimore, MD</span>
         </div>
       </div>

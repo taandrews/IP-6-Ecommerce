@@ -35,7 +35,7 @@ export async function sendEmail(to: string, subject: string, html: string, text?
 
 export const emailTemplates = {
   orderConfirmation: (name: string, orderId: string, total: string, eta: string) => ({
-    subject: `Order ${orderId} confirmed · IP-6 Research`,
+    subject: `Order ${orderId} confirmed · IP6 Original`,
     html: baseEmail(`
       <h1>Thank you, ${escapeHtml(name)}.</h1>
       <p>Your order <strong>${escapeHtml(orderId)}</strong> has been received.</p>
@@ -93,14 +93,14 @@ export const emailTemplates = {
 };
 
 function baseEmail(body: string) {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>IP-6 Research</title></head>
+  return `<!doctype html><html><head><meta charset="utf-8"><title>IP6 Original</title></head>
 <body style="font-family:system-ui,Arial,sans-serif;color:#0B1F3A;max-width:560px;margin:0 auto;padding:24px;background:#F7F9FB;">
   <div style="border-bottom:2px solid #C9A961;padding-bottom:12px;margin-bottom:24px;">
-    <strong style="color:#0B1F3A;font-size:20px;">IP-6 Research, Inc.</strong>
+    <strong style="color:#0B1F3A;font-size:20px;">IP6 Original</strong>
   </div>
   ${body}
   <hr style="margin:32px 0;border:none;border-top:1px solid #E8EDF3;">
-  <p style="font-size:12px;color:#666;">IP-6 Research, Inc. · ip6original.com</p>
+  <p style="font-size:12px;color:#666;">IP6 Original · ip6original.com</p>
 </body></html>`;
 }
 

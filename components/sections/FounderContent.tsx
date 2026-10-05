@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { asset } from "@/lib/assets";
 
-const FOUNDATION_URL = "https://ip-6.net";
 
 export function FounderContent() {
   return (
@@ -39,7 +38,7 @@ export function FounderContent() {
             Prof. AbulKalam M. Shamsuddin, MD, PhD
           </p>
           <p className="text-sm text-ink/55">
-            Physician-scientist · University of Maryland School of Medicine · Founder, IP-6 Research, Inc.
+            Physician-scientist · University of Maryland School of Medicine · Founder and formulator, IP6 Original
           </p>
         </div>
       </section>
@@ -48,24 +47,9 @@ export function FounderContent() {
       <section className="bg-surface border-y border-cloud-300">
         <div className="container max-w-3xl py-16 lg:py-20 space-y-8 text-lg text-ink/85 leading-relaxed">
           <p>
-            Professor AbulKalam M. Shamsuddin, MD, PhD is a physician-scientist who has spent his career at the University of Maryland School of Medicine researching the health properties of inositol hexaphosphate, and a pioneer of the published research on the molecule. He founded IP-6 Research, Inc. in Baltimore, Maryland to bring the product of that research directly to consumers. IP6 Original is his formulation.
+            Professor AbulKalam M. Shamsuddin, MD, PhD is a physician-scientist who has spent his career at the University of Maryland School of Medicine researching the health properties of inositol hexaphosphate, and a pioneer of the published research on the molecule. He formulated IP6 Original to bring the product of that research directly to consumers.
           </p>
 
-          {/* Foundation bridge */}
-          <div className="border-l-2 border-gold-500 pl-5 py-2">
-            <p>
-              Dr. Shamsuddin is also the founding president of the IP-6 Research Foundation, the non-profit that continues to support peer-reviewed investigation into inositol hexaphosphate.
-            </p>
-            <a
-              href={FOUNDATION_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 hover:text-sky-800 underline underline-offset-4 decoration-sky-300 decoration-2"
-            >
-              Visit the IP-6 Research Foundation
-              <ExternalLink className="size-3.5" />
-            </a>
-          </div>
         </div>
       </section>
 
@@ -75,7 +59,7 @@ export function FounderContent() {
           {[
             { t: "Physician-Scientist", l: "University of Maryland School of Medicine" },
             { t: "Pioneer in IP6 Research", l: "A body of published, peer-reviewed work" },
-            { t: "Founder", l: "IP-6 Research, Inc., Baltimore, MD" },
+            { t: "Founder", l: "IP6 Original" },
             { t: "Formulator", l: "Formulated IP6 Original himself" },
           ].map((c) => (
             <div key={c.t}>

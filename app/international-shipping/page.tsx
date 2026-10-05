@@ -5,7 +5,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "International shipping",
   description:
-    "IP-6 Research international shipping policy. Where we ship supplements, skincare, and the IP6-Citrate water filter.",
+    "IP6 Original international shipping policy. Where we ship supplements, skincare, and the IP6-Citrate water filter.",
   alternates: hreflangAlternates("/international-shipping"),
 };
 

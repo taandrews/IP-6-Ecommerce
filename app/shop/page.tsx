@@ -9,7 +9,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Shop",
   description:
-    "Shop IP-6 Research supplements, cortisone-free skincare, and the IP6-Citrate water filter. Third-party tested. Held to institutional standards.",
+    "Shop IP6 Original supplements, cortisone-free skincare, and the IP6-Citrate water filter. Third-party tested. Held to institutional standards.",
   alternates: hreflangAlternates("/shop"),
 };
 

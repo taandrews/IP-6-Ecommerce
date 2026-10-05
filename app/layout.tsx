@@ -17,7 +17,7 @@ const sans = IBM_Plex_Sans({
   display: "swap",
 });
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "IP-6 Research, Inc.";
+const siteName = "IP6 Original";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com";
 
 export const metadata: Metadata = {
@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     "@type": "Organization",
     name: siteName,
     url: siteUrl,
-    logo: `${siteUrl}/logo.svg`,
+    logo: `${siteUrl}/brand/ip6-original-logo.png`,
     sameAs: [] as string[],
   };
 

@@ -21,7 +21,7 @@ export function ProductSchema({
     description: product.shortDescription,
     image: product.images.map((i) => i.url),
     sku: product.sku,
-    brand: { "@type": "Brand", name: "IP-6 Research, Inc." },
+    brand: { "@type": "Brand", name: "IP6 Original" },
     category: product.category,
     offers: {
       "@type": "AggregateOffer",

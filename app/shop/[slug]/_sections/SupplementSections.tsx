@@ -11,7 +11,7 @@ export function SupplementSections() {
           <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-cloud-200 max-w-xs lg:max-w-none mx-auto w-full">
             <Image
               src={asset("founder/shamsuddin.png")}
-              alt="Portrait of Dr. AbulKalam M. Shamsuddin, founder of IP-6 Research."
+              alt="Portrait of Dr. AbulKalam M. Shamsuddin, founder and formulator of IP6 Original."
               fill
               sizes="(min-width:1024px) 420px, 320px"
               className="object-cover"
@@ -26,7 +26,7 @@ export function SupplementSections() {
               “We could have shipped an IP6 supplement years earlier if we'd been willing to ship commodity-purity material. We weren't, and we still aren't. Purity is the difference between a commodity ingredient and the molecule the research describes, and our customers can feel the difference.”
             </blockquote>
             <p className="mt-6 text-sm text-ink/70">
-              IP-6 Research, Inc. founder. Read more on the{" "}
+              Founder and formulator of IP6 Original. Read more on the{" "}
               <Link href="/story#founder" className="underline text-forest-700">
                 founder's page
               </Link>

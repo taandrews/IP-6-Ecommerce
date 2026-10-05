@@ -11,7 +11,7 @@ export default function LoginPage() {
         <p className="eyebrow mb-2">Welcome back</p>
         <h1 className="font-display text-display-lg text-forest-800 mb-3">Sign in</h1>
         <p className="text-ink/70 text-sm">
-          New to IP-6 Research?{" "}
+          New to IP6 Original?{" "}
           <Link href="/account/register" className="underline text-forest-700">
             Create an account
           </Link>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Menu, ShoppingBag, User, Search, X } from "lucide-react";
 import { useCart } from "@/components/cart/CartStore";
 import { CurrencySwitcher } from "@/components/layout/CurrencySwitcher";
-import { Wordmark } from "@/components/layout/Wordmark";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -22,8 +22,8 @@ export function Navigation() {
   return (
     <header className="sticky top-0 z-40 border-b border-ivory-300/80 bg-surface/90 backdrop-blur">
       <div className="container flex items-center justify-between h-16 lg:h-20">
-        <Link href="/" aria-label="IP-6 Research, Home" className="block">
-          <Wordmark size="sm" />
+        <Link href="/" aria-label="IP6 Original, Home" className="block">
+          <Image src="/brand/ip6-original-logo.png" alt="IP6 Original" width={324} height={216} priority className="h-11 lg:h-14 w-auto" />
         </Link>
 
         <nav aria-label="Primary" className="hidden lg:flex items-center gap-8">

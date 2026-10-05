@@ -21,7 +21,7 @@
 <section id="pg-{{ section.id }}" class="ip6 ip6-section ip6-reveal">
  <div class="ip6-wrap">
  <div class="head ip6-rise d1">
- <span class="ip6-eyebrow">{{ page.metafields.custom.eyebrow | default: section.settings.eyebrow | default: 'IP-6 Research' }}</span>
+ <span class="ip6-eyebrow">{{ page.metafields.custom.eyebrow | default: section.settings.eyebrow | default: 'IP6 Original' }}</span>
  <h1 class="ip6-display">{{ page.title }}</h1>
  <div class="rule"></div>
  </div>
@@ -34,7 +34,7 @@
 {
  "name": "IP6 Page",
  "tag": "section",
- "settings": [ { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "IP-6 Research" } ],
+ "settings": [ { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "IP6 Original" } ],
  "presets": [{ "name": "IP6 Page" }]
 }
 {% endschema %}
