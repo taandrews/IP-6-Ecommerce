@@ -40,7 +40,7 @@ export default function TermsPage() {
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">5. Limitation of liability</h2>
           <p>
-            To the fullest extent permitted by law, IP-6 Research, Inc. is not liable for indirect or consequential damages arising from your use of our products or this website.
+            To the fullest extent permitted by law, IP6 Original is not liable for indirect or consequential damages arising from your use of our products or this website.
           </p>
         </section>
         <section>

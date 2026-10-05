@@ -4,7 +4,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How IP-6 Research, Inc. collects, uses, and safeguards your personal data.",
+  description: "How IP6 Original collects, uses, and safeguards your personal data.",
   alternates: hreflangAlternates("/legal/privacy"),
 };
 
@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">1. Who we are</h2>
           <p>
-            IP-6 Research, Inc. (“we,” “us,” “our”) operates ip6original.com. We are the data controller for personal information collected through this site.
+            IP6 Original (“we,” “us,” “our”) operates ip6original.com. We are the data controller for personal information collected through this site.
           </p>
         </section>
         <section>

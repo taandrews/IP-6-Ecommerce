@@ -16,7 +16,7 @@ export default function AccessibilityPage() {
       <div className="space-y-8 text-ink/85 leading-relaxed">
         <section>
           <p>
-            IP-6 Research, Inc. is committed to ensuring ip6original.com is accessible to people with disabilities. We target conformance with the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA.
+            IP6 Original is committed to ensuring ip6original.com is accessible to people with disabilities. We target conformance with the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA.
           </p>
         </section>
         <section>
