@@ -76,7 +76,7 @@ export function HowToTakeContent() {
         </ol>
       </section>
 
-      {/* Detailed protocol - placeholder for Client copy */}
+      {/* Dosing protocol */}
       <section className="bg-surface border-y border-cloud-300">
         <div className="container max-w-3xl py-16 lg:py-20">
           <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
@@ -93,12 +93,15 @@ export function HowToTakeContent() {
           >
             Daily dose, pairing, timing.
           </h2>
-          <div className="rounded-lg border border-dashed border-cloud-400 bg-surface p-5 text-sm text-ink/65 leading-relaxed">
-            <p className="font-semibold text-navy-800 mb-2">
-              Additional dosing protocol and pairing guidance to be provided by Client.
+          <div className="space-y-4 text-base lg:text-lg text-ink/80 leading-relaxed">
+            <p>
+              <strong className="text-navy-800 font-semibold">Serving size is 2 capsules.</strong> Take 2 capsules once or twice daily with water, or as directed by a healthcare professional. Each bottle holds 120 capsules, 60 servings.
             </p>
             <p>
-              This section will detail the recommended daily serving, how to scale up from a starter dose, what foods and supplements to take with or apart from IP6 Original, and how long to maintain a routine before evaluating fit. Final language pending Client confirmation.
+              Take each serving on an empty stomach, at least 30 minutes before eating or two hours after. IP6 binds minerals, so space it away from mineral supplements and mineral-rich food or drinks.
+            </p>
+            <p>
+              Take it at the same time each day so the routine is easy to keep, and stay consistent for several weeks.
             </p>
           </div>
         </div>
@@ -120,12 +123,12 @@ export function HowToTakeContent() {
         >
           Cautions and contraindications.
         </h2>
-        <div className="rounded-lg border border-dashed border-cloud-400 bg-surface p-5 text-sm text-ink/65 leading-relaxed">
-          <p className="font-semibold text-navy-800 mb-2">
-            When-not-to-take guidance to be provided by Client.
+        <div className="space-y-4 text-base lg:text-lg text-ink/80 leading-relaxed">
+          <p>
+            If you are pregnant, nursing, taking medication, or managing a health condition, consult your healthcare provider before use.
           </p>
           <p>
-            This section will list circumstances in which IP6 Original should not be taken or should be paused, including pregnancy, nursing, certain medications, and existing medical conditions. Final language pending Client confirmation.
+            Stop taking IP6 Original and contact your physician if you experience any adverse reaction.
           </p>
         </div>
         <p className="mt-8 text-sm text-ink/55 italic">

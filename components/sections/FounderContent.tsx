@@ -1,19 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ExternalLink, FileText, BookOpen } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import { asset } from "@/lib/assets";
 
-// Patent and book details to be confirmed by Client. Placeholders below
-// so the layout is in place when copy lands.
-const PATENTS: { number: string; title: string; jurisdiction: string }[] = [
-  { number: "Pending, Client to confirm", title: "Patent title to be provided", jurisdiction: "United States" },
-];
-
-const BOOKS: { title: string }[] = [
-  { title: "Book title to be provided by Client" },
-];
-
-const FOUNDATION_URL = "#"; // Placeholder until IP-6 Research Foundation URL is confirmed.
+const FOUNDATION_URL = "https://ip-6.net";
 
 export function FounderContent() {
   return (
@@ -106,71 +96,6 @@ export function FounderContent() {
               </p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Patents */}
-      <section className="container max-w-4xl py-16 lg:py-20">
-        <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
-          Patents
-        </p>
-        <h2
-          className="font-serif text-navy-800 mb-8"
-          style={{
-            fontFamily: "var(--font-display), Georgia, serif",
-            fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
-            lineHeight: 1.1,
-            fontWeight: 400,
-          }}
-        >
-          Issued patents on inositol hexaphosphate.
-        </h2>
-        <p className="text-sm text-ink/55 mb-8">
-          Full patent titles, numbers, and jurisdictions to be confirmed by Client.
-        </p>
-        <ul className="divide-y divide-cloud-300 border-y border-cloud-300">
-          {PATENTS.map((p, i) => (
-            <li key={i} className="py-5 flex items-start gap-4">
-              <FileText className="size-5 text-gold-500 shrink-0 mt-0.5" aria-hidden />
-              <div className="flex-1">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-ink/55 font-bold">
-                  {p.jurisdiction} · {p.number}
-                </p>
-                <p className="text-base text-navy-800 mt-1">{p.title}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Books */}
-      <section className="bg-surface border-t border-cloud-300">
-        <div className="container max-w-4xl py-16 lg:py-20">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
-            Books
-          </p>
-          <h2
-            className="font-serif text-navy-800 mb-8"
-            style={{
-              fontFamily: "var(--font-display), Georgia, serif",
-              fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
-              lineHeight: 1.1,
-              fontWeight: 400,
-            }}
-          >
-            Published books by Prof. Shamsuddin.
-          </h2>
-          <p className="text-sm text-ink/55 mb-8">
-            Final list and ISBNs to be confirmed by Client. Titles only, no excerpts shown on this page.
-          </p>
-          <ul className="divide-y divide-cloud-300 border-y border-cloud-300">
-            {BOOKS.map((b, i) => (
-              <li key={i} className="py-5 flex items-start gap-4">
-                <BookOpen className="size-5 text-gold-500 shrink-0 mt-0.5" aria-hidden />
-                <p className="text-base text-navy-800">{b.title}</p>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 

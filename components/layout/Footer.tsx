@@ -16,7 +16,7 @@ const COL = [
     links: [
       { href: "/story", label: "The Story" },
       { href: "/the-difference", label: "The Difference" },
-      { href: "#", label: "IP-6 Research Foundation", external: true },
+      { href: "https://ip-6.net", label: "IP-6 Research Foundation", external: true },
     ],
   },
   {
