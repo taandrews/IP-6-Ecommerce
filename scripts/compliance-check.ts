@@ -38,7 +38,7 @@ async function main() {
   let errors = 0;
 
   // 1) Scan source for forbidden-site references
-  // Skip the compliance module itself — it must contain the string to detect it.
+  // Skip the compliance module itself; it must contain the string to detect it.
   const SELF_EXCLUDE = new Set([
     "lib/compliance/claim-linter.ts",
     "scripts/compliance-check.ts",
@@ -89,7 +89,7 @@ async function main() {
     }
   }
 
-  // 4) (Blog content removed — placeholder for future Sanity-backed content lint)
+  // 4) (Blog content removed; placeholder for future Sanity-backed content lint)
 
   if (errors > 0) {
     console.error(`\nCompliance check failed with ${errors} error(s).`);

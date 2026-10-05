@@ -9,7 +9,22 @@
  */
 {
   "sections": {
-    "faq": { "type": "ip6-pdp-faq", "settings": {} }
+    "faq": {
+      "type": "ip6-pdp-faq",
+      "settings": {}
+    },
+    "htt": {
+      "type": "ip6-how-to-take",
+      "settings": {}
+    },
+    "disc": {
+      "type": "ip6-disclaimer",
+      "settings": {}
+    }
   },
-  "order": ["faq"]
+  "order": [
+    "faq",
+    "htt",
+    "disc"
+  ]
 }

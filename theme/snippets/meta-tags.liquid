@@ -123,9 +123,9 @@
   assign meta_description = page_description
   if meta_description == blank
     if request.page_type == 'page' and page.title != blank
-      assign meta_description = page.title | append: ' · IP6 Original — research-grade IP6 (inositol hexaphosphate) and Inositol, formulated by Prof. Shamsuddin, who pioneered the research.'
+      assign meta_description = page.title | append: ' · IP6 Original, research-grade IP6 (inositol hexaphosphate) and Inositol, formulated by Prof. Shamsuddin, who pioneered the research.'
     else
-      assign meta_description = shop.description | default: 'IP6 Original — research-grade IP6 (inositol hexaphosphate) and Inositol, formulated by the scientist who pioneered the research. cGMP-certified, third-party tested.'
+      assign meta_description = shop.description | default: 'IP6 Original, research-grade IP6 (inositol hexaphosphate) and Inositol, formulated by the scientist who pioneered the research. cGMP-certified, third-party tested.'
     endif
   endif
 -%}

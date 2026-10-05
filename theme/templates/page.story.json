@@ -9,8 +9,22 @@
  */
 {
   "sections": {
-    "story": { "type": "ip6-story", "settings": {} },
-    "disc": { "type": "ip6-disclaimer", "settings": {} }
+    "story": {
+      "type": "ip6-story",
+      "settings": {}
+    },
+    "disc": {
+      "type": "ip6-disclaimer",
+      "settings": {}
+    },
+    "founder_bio": {
+      "type": "ip6-founder-bio",
+      "settings": {}
+    }
   },
-  "order": ["story", "disc"]
+  "order": [
+    "story",
+    "founder_bio",
+    "disc"
+  ]
 }

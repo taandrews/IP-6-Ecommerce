@@ -7,7 +7,7 @@ const COL = [
     heading: "Shop",
     links: [
       { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
-      { href: "/how-to-take", label: "How to Take" },
+      { href: "/faq#how-to-take", label: "How to Take" },
       { href: "/account", label: "My Account" },
     ],
   },
@@ -16,7 +16,6 @@ const COL = [
     links: [
       { href: "/story", label: "The Story" },
       { href: "/the-difference", label: "The Difference" },
-      { href: "/founder", label: "The Founder" },
       { href: "#", label: "IP-6 Research Foundation", external: true },
     ],
   },

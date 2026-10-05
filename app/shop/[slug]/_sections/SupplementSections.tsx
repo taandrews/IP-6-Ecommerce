@@ -27,7 +27,7 @@ export function SupplementSections() {
             </blockquote>
             <p className="mt-6 text-sm text-ink/70">
               IP-6 Research, Inc. founder. Read more on the{" "}
-              <Link href="/founder" className="underline text-forest-700">
+              <Link href="/story#founder" className="underline text-forest-700">
                 founder's page
               </Link>
               .

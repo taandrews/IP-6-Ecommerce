@@ -218,7 +218,7 @@ export class Ip6Stack extends Stack {
     });
 
     // -----------------------
-    // SES — identity + templates
+    // SES: identity + templates
     // -----------------------
     new ses.EmailIdentity(this, "SesIdentity", {
       identity: ses.Identity.domain(props.domainName),
@@ -227,7 +227,7 @@ export class Ip6Stack extends Stack {
     const templates: Array<{ name: string; subject: string; html: string }> = [
       {
         name: `ip6-${props.environment}-order-confirmation`,
-        subject: "Order {{orderId}} confirmed — IP-6 Research",
+        subject: "IP-6 Research: Order {{orderId}} confirmed",
         html: "<h1>Thank you, {{name}}.</h1><p>Your order <strong>{{orderId}}</strong> has been received.</p><p><strong>Total:</strong> {{total}}</p>",
       },
       {
@@ -237,7 +237,7 @@ export class Ip6Stack extends Stack {
       },
       {
         name: `ip6-${props.environment}-subscription-renewal`,
-        subject: "Upcoming renewal — {{product}}",
+        subject: "Upcoming renewal: {{product}}",
         html: "<p>Hi {{name}}, your {{product}} subscription renews on {{chargeDate}}.</p>",
       },
       {

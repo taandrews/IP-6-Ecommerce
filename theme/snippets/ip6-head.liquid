@@ -1,7 +1,7 @@
 {%- comment -%} IP-6 global design system: tokens, fonts, base components, motion {%- endcomment -%}
 {%- comment -%}
   Caching note: Shopify does NOT let themes set HTTP cache headers, and a <meta> Cache-Control is
-  ignored by browsers for the document — so no-cache meta tags are ineffective and are intentionally
+  ignored by browsers for the document, so no-cache meta tags are ineffective and are intentionally
   NOT used here. The storefront already serves fresh HTML every request (cf-cache-status: DYNAMIC).
   "A normal refresh doesn't show my changes" is purely the BROWSER reusing its local copy, which no
   theme edit can override. Fix it browser-side: DevTools → Network → ☑ Disable cache (keep open), or
@@ -41,7 +41,7 @@
 
 <style>
   :root {
-    /* Color — bright/modern system */
+    /* Color: bright/modern system */
     --ink: #0B1F3A;        /* primary navy */
     --ink-2: #1A2A40;      /* body text */
     --blue: #0B1F3A;       /* navy (no blue accent) */
@@ -56,7 +56,7 @@
     --muted: #5B6470;
     --success: #2F8F66;
 
-    /* Type — IBM Plex (Amplify) */
+    /* Type: IBM Plex (Amplify) */
     --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
     --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -106,7 +106,7 @@
   .ip6-muted { color: var(--muted); }
   .ip6-caption { font-size: 13px; line-height: 1.5; color: var(--muted); }
 
-  /* Eyebrow — signature editorial label */
+  /* Eyebrow: signature editorial label */
   .ip6-eyebrow {
     font-family: var(--sans); font-size: 12.5px; font-weight: 600;
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal);

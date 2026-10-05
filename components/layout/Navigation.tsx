@@ -10,10 +10,8 @@ import { cn } from "@/lib/utils";
 
 const LINKS = [
   { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
-  { href: "/story", label: "Story" },
+  { href: "/story", label: "The Story" },
   { href: "/the-difference", label: "The Difference" },
-  { href: "/founder", label: "Founder" },
-  { href: "/how-to-take", label: "How to Take" },
   { href: "/faq", label: "FAQ" },
 ];
 

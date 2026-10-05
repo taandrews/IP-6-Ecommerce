@@ -6,6 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { hreflangAlternates } from "@/lib/i18n";
 import { asset } from "@/lib/assets";
+import { FounderContent } from "@/components/sections/FounderContent";
 
 export const metadata: Metadata = {
   title: "The molecule a scientist spent his career on",
@@ -114,6 +115,8 @@ export default function StoryPage() {
           </div>
         </section>
       </article>
+
+      <FounderContent />
 
       <StickyDisclaimer />
       <Footer showDshea />

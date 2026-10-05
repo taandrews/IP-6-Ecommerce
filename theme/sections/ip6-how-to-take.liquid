@@ -2,7 +2,7 @@
   #htt-{{ section.id }} { background: var(--bg,#fff); }
 
   #htt-{{ section.id }} .head { max-width: 760px; }
-  #htt-{{ section.id }} .head h1 { font-size: clamp(34px,4.4vw,56px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 16px 0 0; }
+  #htt-{{ section.id }} .head h2 { font-size: clamp(34px,4.4vw,56px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 16px 0 0; }
   #htt-{{ section.id }} .head .lead { font-size: 19px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 60ch; }
 
   #htt-{{ section.id }} .seg { display: flex; align-items: center; gap: 18px; margin: clamp(40px,5vw,64px) 0 30px; }
@@ -47,11 +47,12 @@
   }
 </style>
 
+<div id="how-to-take" aria-hidden="true"></div>
 <section id="htt-{{ section.id }}" class="ip6 ip6-bright ip6-section">
   <div class="ip6-wrap">
     <div class="head ip6-reveal">
       <span class="ip6-eyebrow">How to take</span>
-      <h1>How to take IP6 Original.</h1>
+      <h2>How to take IP6 Original.</h2>
       <p class="lead">IP6 (inositol hexaphosphate) is absorbed best on its own. A few simple habits help you get the most from every serving, for you and for your pets.</p>
     </div>
 
@@ -82,7 +83,7 @@
 
     <div class="seg ip6-reveal"><span class="l">For your pets</span><span class="rule"></span></div>
     <div class="petsimg ip6-reveal">
-      <img src="{{ 'ip6-pets-dogs.jpg' | asset_url }}" alt="Three dogs — IP6 Original is for pets too" width="2000" height="709" loading="lazy">
+      <img src="{{ 'ip6-pets-dogs.jpg' | asset_url }}" alt="Three dogs, because IP6 Original is for pets too" width="2000" height="709" loading="lazy">
     </div>
     <div class="pets ip6-reveal">
       <div class="petcard ip6-rise d1">

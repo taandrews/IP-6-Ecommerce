@@ -246,7 +246,7 @@ export default function HomePage() {
           </div>
           <div className="mt-14">
             <Link
-              href="/founder"
+              href="/story#founder"
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-gold-500 decoration-2"
             >
               Meet Prof. Shamsuddin
@@ -361,7 +361,7 @@ export default function HomePage() {
                 <ArrowRight className="size-4" />
               </Link>
               <Link
-                href="/how-to-take"
+                href="/faq#how-to-take"
                 className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2"
               >
                 Full dosing guide →

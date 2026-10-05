@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { Accordion } from "@/components/ui/Accordion";
 import { faqCategories } from "@/content/faqs";
+import { HowToTakeContent } from "@/components/sections/HowToTakeContent";
 import { hreflangAlternates } from "@/lib/i18n";
 
 export const metadata: Metadata = {
@@ -34,7 +35,7 @@ export default function FaqPage() {
             Frequent questions.
           </h1>
           <p className="mt-5 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            Common questions about IP6 Original, taking it, subscriptions, and the company.
+            Common questions about IP6 Original, how to take it, subscriptions, and the company.
           </p>
         </div>
       </section>
@@ -52,6 +53,12 @@ export default function FaqPage() {
               {c.label}
             </a>
           ))}
+          <a
+            href="#how-to-take"
+            className="text-sm font-medium px-4 py-2 rounded-full border border-cloud-300 text-navy-800 hover:border-sky-500 hover:text-sky-700 transition-colors"
+          >
+            How to Take
+          </a>
         </div>
       </section>
 
@@ -75,6 +82,8 @@ export default function FaqPage() {
           </section>
         ))}
       </article>
+
+      <HowToTakeContent />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <StickyDisclaimer />
