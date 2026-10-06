@@ -20,6 +20,7 @@ export function Navigation() {
   const { openDrawer, count } = useCart();
 
   return (
+    <>
     <header className="sticky top-0 z-40 border-b border-ivory-300/80 bg-surface/90 backdrop-blur">
       <div className="container flex items-center justify-between h-16 lg:h-20">
         <Link href="/" aria-label="IP6 Original, Home" className="block">
@@ -76,10 +77,12 @@ export function Navigation() {
         </div>
       </div>
 
-      {/* Mobile drawer */}
+    </header>
+
+      {/* Mobile drawer: outside the header, because backdrop-blur makes the header the containing block for fixed children */}
       <div
         className={cn(
-          "lg:hidden fixed inset-0 z-50 transition-opacity",
+          "lg:hidden fixed inset-0 z-50 overflow-hidden transition-opacity",
           mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
         )}
         aria-hidden={!mobileOpen}
@@ -118,6 +121,6 @@ export function Navigation() {
           </nav>
         </div>
       </div>
-    </header>
+    </>
   );
 }
