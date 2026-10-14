@@ -3,6 +3,8 @@ import { join } from "node:path";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
 import { Credibility } from "@/components/home/Credibility";
+import { Molecule } from "@/components/home/Molecule";
+import { Divider } from "@/components/home/MoleculeMark";
 import { products } from "@/content/products";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
@@ -50,6 +52,7 @@ export default function HomePage() {
     <>
       <Hero frames={assets.frames} price={formatPrice(supplementFrom, currency)} shopHref={shopHref} />
       <Credibility />
+      <Molecule />
       {/* @sections */}
       <Footer showDshea />
     </>
