@@ -1,0 +1,40 @@
+<style>
+ #cred-{{ section.id }} { background: var(--paper); color: var(--ink); }
+ #cred-{{ section.id }} .in { padding: 72px 0; }
+ #cred-{{ section.id }} ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 40px 24px; }
+ #cred-{{ section.id }} li { border-top: 1px solid rgba(197,162,83,.6); padding-top: 20px; }
+ #cred-{{ section.id }} .n { font-family: var(--serif); font-size: clamp(48px, 4.4vw, 64px); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; margin: 0; }
+ #cred-{{ section.id }} .n small { font-family: var(--mono); font-size: 14px; letter-spacing: 0; color: rgba(11,31,58,.6); margin-left: 4px; }
+ #cred-{{ section.id }} .l { margin: 16px 0 0; }
+ #cred-{{ section.id }} a { color: inherit; text-decoration: none; display: block; }
+ #cred-{{ section.id }} a .l { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 4px; }
+ #cred-{{ section.id }} a svg { width: 44px; height: 44px; color: var(--gold-deep); }
+ #cred-{{ section.id }} a:hover svg, #cred-{{ section.id }} a:hover .l { color: var(--ink); }
+ #cred-{{ section.id }} .badges { list-style: none; margin: 56px 0 0; padding: 24px 0 0; border-top: 1px solid rgba(11,31,58,.1); display: flex; flex-wrap: wrap; gap: 12px 40px; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: rgba(11,31,58,.7); }
+ #cred-{{ section.id }} .badges li { display: flex; align-items: center; gap: 8px; border: 0; padding: 0; }
+ #cred-{{ section.id }} .badges li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+ @media (max-width: 900px) { #cred-{{ section.id }} ol { grid-template-columns: repeat(2, 1fr); } }
+ @media (max-width: 749px) { #cred-{{ section.id }} .in { padding: 56px 0; } }
+</style>
+<section id="cred-{{ section.id }}" class="ip6 ip6-reveal" aria-label="Credibility">
+ <div class="ip6-wrap in">
+ <ol>
+ <li class="ip6-rise d1"><p class="n">1998</p><p class="l ip6-eyebrow">First paper</p></li>
+ <li class="ip6-rise d2"><p class="n">1,000<small>mg</small></p><p class="l ip6-eyebrow">Per serving</p></li>
+ <li class="ip6-rise d3"><p class="n">0</p><p class="l ip6-eyebrow">Processing additives</p></li>
+ <li class="ip6-rise d4"><p class="n">1</p><p class="l ip6-eyebrow">Named formulator</p></li>
+ <li class="ip6-rise d5"><a href="{{ section.settings.report_link | default: '/pages/the-difference#test-report' }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg><p class="l ip6-eyebrow">Batch tested</p></a></li>
+ </ol>
+ <ul class="badges">
+ <li>cGMP Certified</li><li>Third-Party Tested</li><li>High-Purity Formula</li><li>Ships US &amp; Canada</li><li>30-Day Returns</li>
+ </ul>
+ </div>
+</section>
+{% schema %}
+{
+ "name": "IP6 Credibility",
+ "tag": "section",
+ "settings": [ { "type": "url", "id": "report_link", "label": "Batch test report link" } ],
+ "presets": [{ "name": "IP6 Credibility" }]
+}
+{% endschema %}

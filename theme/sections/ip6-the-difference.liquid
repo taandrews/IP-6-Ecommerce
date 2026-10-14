@@ -80,6 +80,14 @@
       </div>
     </div>
 
+    <div id="test-report" class="ip6-reveal" style="margin-top: clamp(40px,5vw,64px); scroll-margin-top: 120px">
+      <div class="seg"><span class="l">Third-party test report</span><span class="rule"></span></div>
+      <a href="{{ section.settings.report_url | default: '#' }}" class="pillar" style="display:flex;gap:16px;align-items:center;text-decoration:none">
+        <span class="ic" style="margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></svg></span>
+        <span><h3>Certificate of analysis</h3><p>Independent batch report from the testing lab. Opens as a PDF.</p></span>
+      </a>
+    </div>
+
     <div class="cta-row ip6-reveal">
       <a class="ip6-btn ip6-btn--primary" href="{{ collections['shop'].url | default: '/collections/shop' }}">Shop IP6 Original</a>
       <a class="ip6-btn ip6-btn--ghost" href="/pages/faq#how-to-take">How to take it</a>
@@ -87,5 +95,5 @@
   </div>
 </section>
 {% schema %}
-{ "name": "IP6 The Difference", "tag": "section", "settings": [], "presets": [{ "name": "IP6 The Difference" }] }
+{ "name": "IP6 The Difference", "tag": "section", "settings": [ { "type": "url", "id": "report_url", "label": "Third-party test report (PDF)" } ], "presets": [{ "name": "IP6 The Difference" }] }
 {% endschema %}

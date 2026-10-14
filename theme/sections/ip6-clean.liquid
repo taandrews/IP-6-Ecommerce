@@ -1,22 +1,25 @@
 <style>
- #stakes-{{ section.id }} { background: var(--paper); }
- #stakes-{{ section.id }} .head { max-width: 720px; margin: 0 auto clamp(36px, 5vw, 56px); text-align: center; }
- #stakes-{{ section.id }} .head h2 { margin-top: 14px; }
- #stakes-{{ section.id }} .head .intro { font-family: var(--serif); margin: 16px auto 0; max-width: 58ch; font-size: 19px; line-height: 1.6; color: var(--ink-2); }
- #stakes-{{ section.id }} .tbl { max-width: 980px; margin: 0 auto; }
- #stakes-{{ section.id }} .foot { margin-top: 32px; text-align: center; }
+ #stakes-{{ section.id }} { background: var(--ink); color: #F6F2EA; }
+ #stakes-{{ section.id }} .head { max-width: 760px; margin: 0 0 clamp(36px, 5vw, 56px); }
+ #stakes-{{ section.id }} .head h2 { margin-top: 20px; color: #F6F2EA; }
+ #stakes-{{ section.id }} .head .intro { font-family: var(--serif); margin: 24px 0 0; max-width: 58ch; font-size: 18px; line-height: 1.6; color: rgba(246,242,234,.8); }
+ #stakes-{{ section.id }} .ip6-eyebrow { color: var(--gold); }
+ #stakes-{{ section.id }} .tbl { max-width: 980px; }
+ #stakes-{{ section.id }} .foot { margin-top: 40px; }
+ #stakes-{{ section.id }} .foot a { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); text-decoration: underline; text-decoration-color: rgba(197,162,83,.6); text-underline-offset: 4px; }
+ #stakes-{{ section.id }} .foot a:hover { color: #F6F2EA; }
 </style>
-<section id="stakes-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+<section id="stakes-{{ section.id }}" class="ip6 ip6-section ip6-reveal">
  <div class="ip6-wrap">
  <div class="head ip6-rise d1">
  <span class="ip6-eyebrow">The stakes</span>
  <h2 class="ip6-h2">{{ section.settings.heading }}</h2>
- <p class="intro">Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself.</p>
+ <p class="intro">Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself: a high-purity formula, third-party tested, manufactured in a cGMP-certified facility.</p>
  </div>
  <div class="tbl ip6-rise d2">
- {% render 'ip6-compare-table', id: section.id %}
+ {% render 'ip6-compare-table', id: section.id, dark: true %}
  </div>
- <div class="foot ip6-rise d3"><a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/the-difference' }}">See the full comparison →</a></div>
+ <div class="foot ip6-rise d3"><a href="{{ section.settings.link | default: '/pages/the-difference' }}">See the full comparison →</a></div>
  </div>
 </section>
 {% schema %}

@@ -10,15 +10,14 @@
 {
   "sections": {
     "hero":   { "type": "ip6-hero", "settings": { "product": "ip-6-original", "heading": "There is only one <em>IP6 Original</em>." } },
-    "trust":  { "type": "ip6-badges", "settings": {} },
+    "cred":   { "type": "ip6-credibility", "settings": {} },
     "mol":    { "type": "ip6-science", "settings": {} },
     "stakes": { "type": "ip6-clean", "settings": {} },
-    "proof":  { "type": "ip6-founder", "settings": { "heading": "Made to the standard the research describes." } },
     "founder": { "type": "ip6-home-founder", "settings": {} },
-    "offer":  { "type": "ip6-reviews", "settings": { "product": "ip-6-original" } },
+    "product": { "type": "ip6-home-product", "settings": { "product": "ip-6-original" } },
     "petpromo": { "type": "ip6-pet-promo", "settings": { "product": "ip6-original-pet" } },
     "action": { "type": "ip6-cta", "settings": { "product": "ip-6-original" } },
     "disc":   { "type": "ip6-disclaimer", "settings": {} }
   },
-  "order": ["hero", "trust", "mol", "stakes", "proof", "founder", "offer", "petpromo", "action", "disc"]
+  "order": ["hero", "cred", "mol", "stakes", "founder", "product", "petpromo", "action", "disc"]
 }
