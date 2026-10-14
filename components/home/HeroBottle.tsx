@@ -5,26 +5,10 @@ import { useEffect, useRef, type ReactNode } from "react";
 import styles from "./HeroBottle.module.css";
 
 /**
- * Home hero bottle sequence: drop-in with overshoot, wide float, molecule
- * spheres orbiting in 3D (the ball-and-stick motif from the label), gold rings,
- * pointer tilt and scroll parallax. Static under prefers-reduced-motion.
- * The photo is the client's 120-count bottle cut to a transparent PNG.
+ * Home hero bottle: rises in and sharpens, slow float, pointer tilt and scroll
+ * parallax. Static under prefers-reduced-motion. The photo is the client's
+ * 120-count bottle cut to a transparent PNG.
  */
-
-const RING_A = [
-  { a: 0, size: 26, tone: "gold" },
-  { a: 72, size: 16, tone: "navy" },
-  { a: 144, size: 22, tone: "gold" },
-  { a: 216, size: 14, tone: "navy" },
-  { a: 288, size: 20, tone: "gold" },
-] as const;
-
-const RING_B = [
-  { a: 30, size: 18, tone: "navy" },
-  { a: 120, size: 24, tone: "gold" },
-  { a: 210, size: 14, tone: "gold" },
-  { a: 300, size: 20, tone: "navy" },
-] as const;
 
 export function HeroBottle() {
   const ref = useRef<HTMLDivElement>(null);
@@ -43,10 +27,10 @@ export function HeroBottle() {
       const y = (e.clientY - r.top) / r.height - 0.5;
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        el.style.setProperty("--rx", `${(-y * 14).toFixed(2)}deg`);
-        el.style.setProperty("--ry", `${(x * 22).toFixed(2)}deg`);
-        el.style.setProperty("--tx", `${(x * 36).toFixed(1)}px`);
-        el.style.setProperty("--ty", `${(y * 24).toFixed(1)}px`);
+        el.style.setProperty("--rx", `${(-y * 8).toFixed(2)}deg`);
+        el.style.setProperty("--ry", `${(x * 12).toFixed(2)}deg`);
+        el.style.setProperty("--tx", `${(x * 20).toFixed(1)}px`);
+        el.style.setProperty("--ty", `${(y * 14).toFixed(1)}px`);
       });
     };
     const onLeave = () => {
@@ -55,7 +39,7 @@ export function HeroBottle() {
     };
     const onScroll = () => {
       const y = Math.min(window.scrollY, 900);
-      el.style.setProperty("--py", `${(y * 0.22).toFixed(1)}px`);
+      el.style.setProperty("--py", `${(y * 0.16).toFixed(1)}px`);
     };
 
     if (finePointer) {
@@ -75,19 +59,7 @@ export function HeroBottle() {
   return (
     <div ref={ref} className={styles.stage}>
       <div className={styles.glow} aria-hidden />
-      <div className={styles.ring} aria-hidden />
-      <div className={styles.ring} aria-hidden />
-      <div className={styles.ring} aria-hidden />
       <div className={styles.tilt}>
-        <div className={`${styles.orbit} ${styles.orbitA}`} aria-hidden>
-          {RING_A.map((n) => (
-            <span
-              key={n.a}
-              className={`${styles.node} ${n.tone === "gold" ? styles.gold : styles.navy}`}
-              style={{ ["--a" as string]: `${n.a}deg`, ["--size" as string]: `${n.size}px` }}
-            />
-          ))}
-        </div>
         <div className={styles.float}>
           <Image
             src="/products/supplement-hero.png"
@@ -98,15 +70,6 @@ export function HeroBottle() {
             sizes="(min-width: 1024px) 340px, (min-width: 640px) 280px, 220px"
             className={styles.img}
           />
-        </div>
-        <div className={`${styles.orbit} ${styles.orbitB}`} aria-hidden>
-          {RING_B.map((n) => (
-            <span
-              key={n.a}
-              className={`${styles.node} ${n.tone === "gold" ? styles.gold : styles.navy}`}
-              style={{ ["--a" as string]: `${n.a}deg`, ["--size" as string]: `${n.size}px` }}
-            />
-          ))}
         </div>
       </div>
       <div className={styles.shadow} aria-hidden />

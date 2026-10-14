@@ -18,31 +18,20 @@
  #hero-{{ section.id }} .sub { max-width: 46ch; margin: 0 0 36px; color: var(--muted); }
  #hero-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
  #hero-{{ section.id }} .frame-wrap { position: relative; width: 100%; }
- /* Hero bottle sequence: drop-in with overshoot, wide float, molecule spheres orbiting in 3D, gold rings, pointer tilt and scroll parallax. Static under reduced motion. */
- #hero-{{ section.id }} .stage { position: relative; height: clamp(340px, 38vw, 560px); display: flex; align-items: center; justify-content: center; --rx: 0deg; --ry: 0deg; --tx: 0px; --ty: 0px; --py: 0px; --r: clamp(150px, 16vw, 240px); perspective: 1400px; }
- #hero-{{ section.id }} .glow { position: absolute; inset: -4% -16%; border-radius: 50%; background: radial-gradient(closest-side, rgba(197,162,83,.55), rgba(197,162,83,.3) 55%, rgba(197,162,83,0) 100%); filter: blur(22px); animation: ip6-glow 6s ease-in-out infinite; pointer-events: none; }
- #hero-{{ section.id }} .ring { position: absolute; left: 50%; top: 50%; width: 70%; aspect-ratio: 1; border: 1px solid rgba(197,162,83,.55); border-radius: 50%; transform: translate(-50%,-50%) scale(.5); opacity: 0; animation: ip6-ring 7s cubic-bezier(.2,.6,.3,1) infinite; pointer-events: none; }
- #hero-{{ section.id }} .ring.r2 { animation-delay: 2.3s; }
- #hero-{{ section.id }} .ring.r3 { animation-delay: 4.6s; }
+ /* Hero bottle: rises in and sharpens, slow float, pointer tilt and scroll parallax. Static under reduced motion. */
+ #hero-{{ section.id }} .stage { position: relative; height: clamp(340px, 38vw, 560px); display: flex; align-items: center; justify-content: center; --rx: 0deg; --ry: 0deg; --tx: 0px; --ty: 0px; --py: 0px; perspective: 1400px; }
+ #hero-{{ section.id }} .glow { position: absolute; inset: -4% -16%; border-radius: 50%; background: radial-gradient(closest-side, rgba(197,162,83,.55), rgba(197,162,83,.3) 55%, rgba(197,162,83,0) 100%); filter: blur(22px); animation: ip6-glow-in 1.6s ease-out both, ip6-glow 7s ease-in-out 1.6s infinite; pointer-events: none; }
  #hero-{{ section.id }} .tilt { position: relative; height: 100%; transform-style: preserve-3d; transform: translateY(var(--py)) rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--tx), var(--ty)); transition: transform .9s cubic-bezier(.2,.7,.2,1); will-change: transform; }
- #hero-{{ section.id }} .float { height: 100%; transform-style: preserve-3d; animation: ip6-drop 1.3s cubic-bezier(.22,1.4,.36,1) both, ip6-float 5.5s ease-in-out 1.3s infinite; }
+ #hero-{{ section.id }} .float { height: 100%; transform-style: preserve-3d; animation: ip6-drop 1.4s cubic-bezier(.2,.7,.2,1) both, ip6-float 7s ease-in-out 1.4s infinite; }
  #hero-{{ section.id }} .float img { height: 100%; width: auto; display: block; filter: drop-shadow(0 34px 34px rgba(0,44,92,.28)); }
- #hero-{{ section.id }} .shadow { position: absolute; bottom: 1%; left: 50%; width: 46%; height: 20px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(0,44,92,.34), rgba(0,44,92,0)); filter: blur(7px); animation: ip6-shadow-in 1.3s ease-out both, ip6-shadow 5.5s ease-in-out 1.3s infinite; pointer-events: none; }
- #hero-{{ section.id }} .orbit { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; opacity: 0; animation: ip6-spin var(--speed, 22s) linear infinite, ip6-orbit-in 1.2s ease-out .9s forwards; }
- #hero-{{ section.id }} .orbit.a { --speed: 24s; --tiltX: 72deg; }
- #hero-{{ section.id }} .orbit.b { --speed: 34s; --tiltX: 64deg; animation-direction: reverse, normal; }
- #hero-{{ section.id }} .node { position: absolute; left: 0; top: 0; width: var(--size, 22px); height: var(--size, 22px); margin: calc(var(--size, 22px) / -2); border-radius: 50%; transform: rotateX(var(--tiltX)) rotateZ(var(--a)) translateX(var(--r)) rotateZ(calc(-1 * var(--a))) rotateX(calc(-1 * var(--tiltX))); box-shadow: 0 6px 14px rgba(0,44,92,.25); }
- #hero-{{ section.id }} .node.gold { background: radial-gradient(circle at 32% 28%, #f4e3a4 0%, #d9bb64 35%, #b48d3a 70%, #7d5d1b 100%); }
- #hero-{{ section.id }} .node.navy { background: radial-gradient(circle at 32% 28%, #4d6f9d 0%, #1f3f6f 40%, #0b2345 75%, #04142b 100%); }
- @keyframes ip6-drop { 0% { opacity: 0; transform: translateY(140px) scale(.72) rotate(-10deg); } 60% { opacity: 1; } 100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); } }
- @keyframes ip6-float { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-30px) rotate(2.5deg); } }
+ #hero-{{ section.id }} .shadow { position: absolute; bottom: 1%; left: 50%; width: 46%; height: 20px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(0,44,92,.34), rgba(0,44,92,0)); filter: blur(7px); animation: ip6-shadow-in 1.4s ease-out both, ip6-shadow 7s ease-in-out 1.4s infinite; pointer-events: none; }
+ @keyframes ip6-drop { 0% { opacity: 0; transform: translateY(70px) scale(.94); filter: blur(10px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+ @keyframes ip6-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
  @keyframes ip6-shadow-in { from { opacity: 0; transform: translateX(-50%) scaleX(.4); } to { opacity: .95; transform: translateX(-50%) scaleX(1); } }
- @keyframes ip6-shadow { 0%, 100% { transform: translateX(-50%) scaleX(1); opacity: .95; } 50% { transform: translateX(-50%) scaleX(.7); opacity: .45; } }
- @keyframes ip6-glow { 0%, 100% { opacity: .7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
- @keyframes ip6-ring { 0% { opacity: 0; transform: translate(-50%,-50%) scale(.5); } 12% { opacity: .9; } 100% { opacity: 0; transform: translate(-50%,-50%) scale(1.75); } }
- @keyframes ip6-spin { from { transform: rotateZ(0); } to { transform: rotateZ(360deg); } }
- @keyframes ip6-orbit-in { from { opacity: 0; } to { opacity: 1; } }
- @media (prefers-reduced-motion: reduce) { #hero-{{ section.id }} .float, #hero-{{ section.id }} .shadow, #hero-{{ section.id }} .glow, #hero-{{ section.id }} .orbit { animation: none; opacity: 1; } #hero-{{ section.id }} .ring { display: none; } #hero-{{ section.id }} .tilt { transition: none; transform: none; } }
+ @keyframes ip6-shadow { 0%, 100% { transform: translateX(-50%) scaleX(1); opacity: .95; } 50% { transform: translateX(-50%) scaleX(.84); opacity: .6; } }
+ @keyframes ip6-glow-in { from { opacity: 0; transform: scale(.8); } to { opacity: .7; transform: scale(1); } }
+ @keyframes ip6-glow { 0%, 100% { opacity: .7; transform: scale(1); } 50% { opacity: .95; transform: scale(1.05); } }
+ @media (prefers-reduced-motion: reduce) { #hero-{{ section.id }} .float, #hero-{{ section.id }} .shadow, #hero-{{ section.id }} .glow { animation: none; opacity: 1; } #hero-{{ section.id }} .tilt { transition: none; transform: none; } }
 </style>
 
 <section id="hero-{{ section.id }}" class="ip6 ip6-reveal">
@@ -64,20 +53,13 @@
  <div class="frame-wrap ip6-rise d3">
  <div class="stage" data-hero-stage>
  <div class="glow" aria-hidden="true"></div>
- <div class="ring" aria-hidden="true"></div><div class="ring r2" aria-hidden="true"></div><div class="ring r3" aria-hidden="true"></div>
  <div class="tilt">
- <div class="orbit a" aria-hidden="true">
- <span class="node gold" style="--a:0deg;--size:26px"></span><span class="node navy" style="--a:72deg;--size:16px"></span><span class="node gold" style="--a:144deg;--size:22px"></span><span class="node navy" style="--a:216deg;--size:14px"></span><span class="node gold" style="--a:288deg;--size:20px"></span>
- </div>
  <div class="float">
  {%- if img != blank -%}
  <img src="{{ img | image_url: width: 900 }}" alt="{{ p.title | default: 'IP6 Original' }}" width="532" height="900" loading="eager" fetchpriority="high">
  {%- else -%}
  <img src="{{ 'ip6-bottle-hero.png' | asset_url }}" alt="IP6 Original supplement bottle" width="532" height="900" loading="eager" fetchpriority="high">
  {%- endif -%}
- </div>
- <div class="orbit b" aria-hidden="true">
- <span class="node navy" style="--a:30deg;--size:18px"></span><span class="node gold" style="--a:120deg;--size:24px"></span><span class="node gold" style="--a:210deg;--size:14px"></span><span class="node navy" style="--a:300deg;--size:20px"></span>
  </div>
  </div>
  <div class="shadow" aria-hidden="true"></div>
@@ -92,17 +74,17 @@
  if (!stage || !window.matchMedia) return;
  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
  var area = stage.closest('section') || stage, raf = 0;
- var onScroll = function () { stage.style.setProperty('--py', (Math.min(window.scrollY, 900) * 0.22).toFixed(1) + 'px'); };
+ var onScroll = function () { stage.style.setProperty('--py', (Math.min(window.scrollY, 900) * 0.16).toFixed(1) + 'px'); };
  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
  if (!window.matchMedia('(pointer: fine)').matches) return;
  area.addEventListener('pointermove', function (e) {
   var r = area.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
   cancelAnimationFrame(raf);
   raf = requestAnimationFrame(function () {
-   stage.style.setProperty('--rx', (-y * 14).toFixed(2) + 'deg');
-   stage.style.setProperty('--ry', (x * 22).toFixed(2) + 'deg');
-   stage.style.setProperty('--tx', (x * 36).toFixed(1) + 'px');
-   stage.style.setProperty('--ty', (y * 24).toFixed(1) + 'px');
+   stage.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg');
+   stage.style.setProperty('--ry', (x * 12).toFixed(2) + 'deg');
+   stage.style.setProperty('--tx', (x * 20).toFixed(1) + 'px');
+   stage.style.setProperty('--ty', (y * 14).toFixed(1) + 'px');
   });
  });
  area.addEventListener('pointerleave', function () {
