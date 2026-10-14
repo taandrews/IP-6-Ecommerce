@@ -60,6 +60,7 @@ export default function HomePage() {
       <Stakes />
       <FounderBand hasVideo={assets.hasFounderVideo} />
       <ProductSection product={supplement} currency={currency} macros={assets.macros} />
+      <HowToTake hasLifestyle={assets.hasLifestyle} shopHref={shopHref} />
       {/* @sections */}
       <Footer showDshea />
     </>
