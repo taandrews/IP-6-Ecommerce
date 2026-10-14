@@ -18,13 +18,12 @@
  #hero-{{ section.id }} .sub { max-width: 46ch; margin: 0 0 36px; color: var(--muted); }
  #hero-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
  #hero-{{ section.id }} .frame-wrap { position: relative; width: 100%; }
- /* Hero bottle film: a short muted loop of the real bottle (slow push-in with a gold light sweep) blended into the white page. Fades in on load, parallaxes on scroll. Reduced motion shows the poster instead. */
- #hero-{{ section.id }} .stage { position: relative; height: clamp(360px, 38vw, 560px); display: flex; align-items: center; justify-content: center; --py: 0px; animation: ip6-hero-enter 1.4s cubic-bezier(.2,.7,.2,1) both; }
- #hero-{{ section.id }} .frame { position: relative; height: 100%; aspect-ratio: 3 / 4; transform: translateY(var(--py)); transition: transform .6s cubic-bezier(.2,.7,.2,1); will-change: transform; }
- #hero-{{ section.id }} .frame video, #hero-{{ section.id }} .frame .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; -webkit-mask-image: radial-gradient(ellipse 62% 60% at 50% 50%, #000 58%, transparent 100%); mask-image: radial-gradient(ellipse 62% 60% at 50% 50%, #000 58%, transparent 100%); }
- #hero-{{ section.id }} .frame .poster { display: none; }
+ /* Hero bottle: real-time 3D bottle built from the label print file (assets/ip6-hero-3d.js). Fades in on load. Still frame under reduced motion. */
+ #hero-{{ section.id }} .stage { position: relative; height: clamp(360px, 38vw, 560px); display: flex; align-items: center; justify-content: center; animation: ip6-hero-enter 1.4s cubic-bezier(.2,.7,.2,1) both; }
+ #hero-{{ section.id }} .gl { position: relative; width: 100%; height: 100%; }
+ #hero-{{ section.id }} .gl canvas { display: block; width: 100% !important; height: 100% !important; }
  @keyframes ip6-hero-enter { from { opacity: 0; transform: translateY(40px); filter: blur(10px); } to { opacity: 1; transform: none; filter: blur(0); } }
- @media (prefers-reduced-motion: reduce) { #hero-{{ section.id }} .stage { animation: none; } #hero-{{ section.id }} .frame { transition: none; transform: none; } #hero-{{ section.id }} .frame video { display: none; } #hero-{{ section.id }} .frame .poster { display: block; } }
+ @media (prefers-reduced-motion: reduce) { #hero-{{ section.id }} .stage { animation: none; } }
 </style>
 
 <section id="hero-{{ section.id }}" class="ip6 ip6-reveal">
@@ -44,27 +43,14 @@
  </div>
  </div>
  <div class="frame-wrap ip6-rise d3">
- <div class="stage" data-hero-stage>
- <div class="frame">
- <video autoplay muted loop playsinline preload="auto" poster="{{ 'ip6-hero-poster.jpg' | asset_url }}" aria-label="IP6 Original supplement bottle">
- <source src="{{ 'ip6-hero-loop.webm' | asset_url }}" type="video/webm">
- <source src="{{ 'ip6-hero-loop.mp4' | asset_url }}" type="video/mp4">
- </video>
- <img class="poster" src="{{ 'ip6-hero-poster.jpg' | asset_url }}" alt="IP6 Original supplement bottle" width="720" height="960">
- </div>
+ <div class="stage">
+ <div class="gl" data-hero-3d="{{ 'ip6-label.jpg' | asset_url }}" role="img" aria-label="IP6 Original supplement bottle"></div>
  </div>
  <p class="cap ip6-caption">120 capsules · 60 servings</p>
  </div>
  </div>
 </section>
-<script>
-(function () {
- var stage = document.querySelector('#hero-{{ section.id }} [data-hero-stage]');
- if (!stage || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
- var onScroll = function () { stage.style.setProperty('--py', (Math.min(window.scrollY, 900) * 0.12).toFixed(1) + 'px'); };
- window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-})();
-</script>
+<script type="module" src="{{ 'ip6-hero-3d.js' | asset_url }}"></script>
 
 {% schema %}
 {
