@@ -10,7 +10,7 @@ const config: Config = {
     container: {
       center: true,
       padding: { DEFAULT: "1rem", sm: "1.5rem", lg: "2rem" },
-      screens: { "2xl": "1320px" },
+      screens: { "2xl": "1280px" },
     },
     extend: {
       colors: {
@@ -94,11 +94,11 @@ const config: Config = {
         ink: "#0B1F3A",
         surface: "#FFFFFF",
         cream: {
-          DEFAULT: "#FBF6EA",
-          50: "#FDFBF4",
-          100: "#FBF6EA",
-          200: "#F5EBD3",
-          300: "#EBDDB8",
+          DEFAULT: "#F6F2EA",
+          50: "#FBF9F5",
+          100: "#F6F2EA",
+          200: "#EFE9DC",
+          300: "#E5DCC9",
         },
         cloud: {
           DEFAULT: "#F7F9FB",
@@ -133,6 +133,7 @@ const config: Config = {
         sans: ["var(--font-body)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "system-ui", "sans-serif"],
         serif: ["var(--font-serif)", "Georgia", "serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       fontSize: {
         "display-xl": ["clamp(2.75rem, 5.5vw, 5rem)", { lineHeight: "1.02", letterSpacing: "-0.025em" }],

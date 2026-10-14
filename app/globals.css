@@ -18,7 +18,7 @@
   }
 
   body {
-    @apply bg-surface text-ink font-sans antialiased;
+    @apply bg-cream text-ink font-sans antialiased text-[16px] lg:text-[18px];
   }
 
   h1, h2, h3, h4 {
@@ -113,9 +113,39 @@
     @apply badge bg-navy-50 text-navy-800;
   }
 
-  /* Eyebrow stripped of decorative rule for clinical look. */
+  /* Eyebrow: 12px mono, uppercase, tracked 0.12em */
   .eyebrow {
-    @apply inline-block text-[11px] uppercase tracking-[0.18em] text-gold-700 font-semibold;
+    @apply inline-block font-mono text-[12px] uppercase tracking-[0.12em] text-gold-700 font-medium;
+  }
+  .eyebrow-light {
+    @apply inline-block font-mono text-[12px] uppercase tracking-[0.12em] text-gold-400 font-medium;
+  }
+
+  /* Section rhythm: 120px desktop, 72px mobile */
+  .section-y {
+    @apply py-[72px] lg:py-[120px];
+  }
+
+  /* Type scale */
+  .h-statement {
+    @apply text-[44px] lg:text-[96px] leading-[0.98] tracking-[-0.03em] font-normal;
+  }
+  .h-section {
+    @apply text-[32px] lg:text-[48px] leading-[1.05] tracking-[-0.02em] font-normal;
+  }
+  .body-lg {
+    @apply text-[16px] lg:text-[18px] leading-relaxed;
+  }
+
+  /* Gold fill primary */
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 bg-gold-500 text-navy-900 hover:bg-gold-400 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
+  }
+  .btn-outline-cream {
+    @apply inline-flex items-center justify-center gap-2 border border-cream/70 text-cream hover:bg-cream hover:text-navy-900 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
+  }
+  .btn-outline-navy {
+    @apply inline-flex items-center justify-center gap-2 border border-navy-800 text-navy-800 hover:bg-navy-800 hover:text-cream px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
   }
 
   .hairline-gold,

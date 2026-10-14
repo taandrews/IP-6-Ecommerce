@@ -39,7 +39,7 @@ export function CurrencySwitcher() {
         aria-expanded={open}
         aria-label={`Currency: ${current}`}
         onClick={() => setOpen((o) => !o)}
-        className="hidden sm:inline-flex items-center gap-1 px-2 py-2 rounded-md hover:bg-ivory-200 text-xs font-medium"
+        className="hidden sm:inline-flex items-center gap-1 px-2 py-2 rounded-md hover:bg-surface/10 font-mono text-[11px] uppercase tracking-[0.12em] text-cream"
       >
         <Globe className="size-4" />
         {current}
@@ -47,7 +47,7 @@ export function CurrencySwitcher() {
       {open ? (
         <ul
           role="listbox"
-          className="absolute right-0 top-full mt-1 min-w-[120px] bg-surface shadow-card rounded-md border border-ivory-300 py-1 z-50"
+          className="absolute right-0 top-full mt-1 min-w-[120px] bg-surface text-ink shadow-card rounded-md border border-ivory-300 py-1 z-50"
         >
           {CURRENCIES.map((c) => (
             <li key={c}>
