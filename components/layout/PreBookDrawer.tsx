@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import s from "./PreBookPopup.module.css";
+import s from "./PreBookDrawer.module.css";
+import { OPEN_PREBOOK_EVENT } from "./AnnouncementBar";
 
-const KEY = "ip6quiz_seen_v1";
+const KEY = "ip6_prebook_seen";
 const LAUNCH_MS = Date.parse("2026-10-03T04:00:00Z");
 const PRODUCT_URL = "/shop/ip6-original-supplement";
 
@@ -56,18 +57,20 @@ const RESULT_COPY: Record<string, string> = {
   family: "A clean, third-party-tested formula you can feel good about sharing.",
 };
 
+/* Auto-open happens once per session (sessionStorage). The announcement
+   bar CTA can open the drawer at any time. */
 function seenBefore() {
   try {
-    if (localStorage.getItem(KEY)) return true;
-  } catch {}
-  return document.cookie.indexOf(`${KEY}=1`) >= 0;
+    return !!sessionStorage.getItem(KEY);
+  } catch {
+    return false;
+  }
 }
 
 function markSeen() {
   try {
-    localStorage.setItem(KEY, "1");
+    sessionStorage.setItem(KEY, "1");
   } catch {}
-  document.cookie = `${KEY}=1;path=/;max-age=2592000`;
 }
 
 function Countdown() {
@@ -98,7 +101,7 @@ function Countdown() {
   );
 }
 
-export function PreBookPopup() {
+export function PreBookDrawer() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("intent");
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -108,38 +111,43 @@ export function PreBookPopup() {
   const rootRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<Element | null>(null);
 
-  const show = useCallback(() => {
-    if (seenBefore()) return;
+  const show = useCallback((force = false) => {
+    if (!force && seenBefore()) return;
+    markSeen();
     lastFocused.current = document.activeElement;
     setOpen(true);
   }, []);
 
   const close = useCallback(() => {
     setOpen(false);
-    markSeen();
     (lastFocused.current as HTMLElement | null)?.focus?.();
   }, []);
 
+  // The announcement bar CTA opens the drawer on demand.
+  useEffect(() => {
+    const onOpen = () => show(true);
+    window.addEventListener(OPEN_PREBOOK_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_PREBOOK_EVENT, onOpen);
+  }, [show]);
+
+  // Auto-open: exit intent on desktop, after 45s on mobile, once per session.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("quiz") === "1" || window.location.hash === "#quiz") {
-      try {
-        localStorage.removeItem(KEY);
-      } catch {}
-      document.cookie = `${KEY}=;path=/;max-age=0`;
-      const t = setTimeout(show, 300);
+      const t = setTimeout(() => show(true), 300);
       return () => clearTimeout(t);
     }
     if (seenBefore()) return;
-    const t = setTimeout(show, 5000);
+    const mobile = window.matchMedia("(max-width: 860px)").matches;
+    if (mobile) {
+      const t = setTimeout(() => show(), 45000);
+      return () => clearTimeout(t);
+    }
     const onMouseOut = (e: MouseEvent) => {
-      if (e.clientY <= 0) show();
+      if (e.clientY <= 0 && !e.relatedTarget) show();
     };
     document.addEventListener("mouseout", onMouseOut);
-    return () => {
-      clearTimeout(t);
-      document.removeEventListener("mouseout", onMouseOut);
-    };
+    return () => document.removeEventListener("mouseout", onMouseOut);
   }, [show]);
 
   useEffect(() => {
@@ -203,6 +211,7 @@ export function PreBookPopup() {
 
   return (
     <div ref={rootRef} className={s.root} role="dialog" aria-modal="true" aria-label="Pre-book IP6 Original and receive 20% off">
+      <button type="button" className={s.backdrop} aria-label="Close" onClick={close} tabIndex={-1} />
       <div className={s.panel}>
         <div className={s.media} aria-hidden="true">
           <div className={s.mtag}>
@@ -301,7 +310,7 @@ export function PreBookPopup() {
                     Pre-book price with 20% off: <b>$39.20</b> <s>$49.00</s>
                   </p>
                   <p className={s.micro}>Your pre-book offer will be emailed to {email.trim()}. Ships on or after October 3, 2026.</p>
-                  <a className={s.cta} href={PRODUCT_URL} onClick={markSeen}>
+                  <a className={s.cta} href={PRODUCT_URL} onClick={close}>
                     See IP6 Original &rarr;
                   </a>
                   <p className={s.nudge}>

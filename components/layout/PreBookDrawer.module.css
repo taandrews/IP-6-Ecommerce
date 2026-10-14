@@ -1,7 +1,9 @@
 .root { position: fixed; inset: 0; z-index: 9999; }
-.panel { position: absolute; inset: 0; background: #fff; color: #0B1F3A; display: flex; flex-direction: row; overflow: hidden; font-family: var(--font-body), system-ui, sans-serif; }
-.media { flex: 0 0 42%; position: relative; background: #d7e3ef url("/popup/ip6-quiz.jpg") center 26% / cover no-repeat; }
-.media::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 72%; background: linear-gradient(to top, rgba(8,18,32,.9) 0%, rgba(8,18,32,.45) 38%, rgba(8,18,32,0) 100%); }
+.backdrop { position: absolute; inset: 0; background: rgba(11,31,58,.55); border: 0; padding: 0; cursor: pointer; }
+.panel { position: absolute; top: 0; right: 0; bottom: 0; width: min(520px, 100%); background: #F6F2EA; color: #0B1F3A; display: flex; flex-direction: column; overflow: hidden; font-family: var(--font-body), system-ui, sans-serif; box-shadow: -24px 0 60px rgba(11,31,58,.35); animation: slide .35s ease-out; }
+@keyframes slide { from { transform: translateX(100%); } to { transform: none; } }
+.media { flex: 0 0 170px; position: relative; background: #d7e3ef url("/popup/ip6-quiz.jpg") center 26% / cover no-repeat; }
+.media::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 85%; background: linear-gradient(to top, rgba(8,18,32,.9) 0%, rgba(8,18,32,.45) 38%, rgba(8,18,32,0) 100%); }
 .mtag { position: absolute; left: 28px; right: 28px; bottom: 26px; z-index: 1; color: #fff; text-shadow: 0 2px 16px rgba(8,18,32,.95); }
 .mtagE { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; opacity: .95; }
 .mtagH { font-style: italic; font-size: 26px; margin-top: 6px; line-height: 1.15; max-width: 16ch; }
@@ -47,11 +49,10 @@
 .disc { padding: 14px clamp(20px,5vw,48px) 24px; text-align: center; font-size: 11px; line-height: 1.5; color: #5B6470; border-top: 1px solid #E6EAF0; }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 @media (max-width: 860px) {
-  .panel { flex-direction: column; }
-  .media { flex: 0 0 190px; background-position: center 24%; }
+  .media { flex: 0 0 150px; background-position: center 24%; }
   .media::after { height: 85%; }
   .mtag { bottom: 18px; }
   .mtagH { font-size: 20px; }
 }
 @media (max-width: 600px) { .h2 { font-size: 26px; } .unit { min-width: 56px; } }
-@media (prefers-reduced-motion: reduce) { .inner { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .inner { animation: none; } .panel { animation: none; } }

@@ -7,7 +7,7 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { CookieBanner } from "@/components/layout/CookieBanner";
 import { Analytics } from "@/components/layout/Analytics";
 import { CartDrawer } from "@/components/cart/CartDrawer";
-import { PreBookPopup } from "@/components/layout/PreBookPopup";
+import { PreBookDrawer } from "@/components/layout/PreBookDrawer";
 import { isEuOrUk } from "@/lib/utils";
 import { hreflangAlternates } from "@/lib/i18n";
 
@@ -93,7 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main" className="pt-[120px] [&:has([data-hero-fullbleed])]:pt-0">{children}</main>
         <CartDrawer />
         <CookieBanner isEuOrUk={isEuOrUk(country)} />
-        <PreBookPopup />
+        <PreBookDrawer />
         <Analytics />
         <script
           type="application/ld+json"
