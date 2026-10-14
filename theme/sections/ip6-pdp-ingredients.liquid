@@ -1,0 +1,99 @@
+{%- liquid
+ assign cv = product.selected_or_first_available_variant
+ assign ip6_mg = cv.metafields.ip6.ip6_mg.value | default: 804
+ assign ino_mg = cv.metafields.ip6.inositol_mg.value | default: 196
+ assign has_source = false
+ assign has_supplier = false
+ assign has_origin = false
+ for b in section.blocks
+ if b.settings.source != blank
+ assign has_source = true
+ endif
+ if b.settings.supplier != blank
+ assign has_supplier = true
+ endif
+ if b.settings.origin != blank
+ assign has_origin = true
+ endif
+ endfor
+-%}
+<style>
+ #ing-{{ section.id }} { background: #fff; }
+ #ing-{{ section.id }} .head h2 { font-size: clamp(28px,3.4vw,42px); margin: 14px 0 24px; }
+ #ing-{{ section.id }} .scroll { overflow-x: auto; }
+ #ing-{{ section.id }} table { width: 100%; min-width: 520px; border-collapse: collapse; }
+ #ing-{{ section.id }} th, #ing-{{ section.id }} td { text-align: left; vertical-align: top; padding: 14px 16px 14px 0; font-size: 15px; }
+ #ing-{{ section.id }} thead th { font-size: 10.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid rgba(11,31,58,.2); padding-top: 0; padding-bottom: 10px; }
+ #ing-{{ section.id }} tbody th { font-weight: 600; color: var(--ink); }
+ #ing-{{ section.id }} tbody td { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+ #ing-{{ section.id }} tbody tr { border-bottom: 1px dotted rgba(11,31,58,.3); }
+</style>
+<section id="ing-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+ <div class="ip6-wrap" style="max-width: 1000px">
+ <div class="head ip6-rise d1">
+ <span class="ip6-eyebrow">Traceable ingredients</span>
+ <h2>Ingredients</h2>
+ </div>
+ <div class="scroll ip6-rise d2">
+ <table>
+ <thead>
+ <tr>
+ <th scope="col">Ingredient</th>
+ <th scope="col">Amount</th>
+ <th scope="col">Function</th>
+ {%- if has_source -%}<th scope="col">Source</th>{%- endif -%}
+ {%- if has_supplier -%}<th scope="col">Supplier</th>{%- endif -%}
+ {%- if has_origin -%}<th scope="col">Final manufacturing</th>{%- endif -%}
+ </tr>
+ </thead>
+ <tbody>
+ {%- for b in section.blocks -%}
+ {%- assign amt = b.settings.amount -%}
+ {%- if b.settings.key == 'ip6' -%}{%- capture amt -%}<span data-spec-ip6>{{ ip6_mg }}</span> mg per serving{%- endcapture -%}{%- endif -%}
+ {%- if b.settings.key == 'inositol' -%}{%- capture amt -%}<span data-spec-inositol>{{ ino_mg }}</span> mg per serving{%- endcapture -%}{%- endif -%}
+ <tr {{ b.shopify_attributes }}>
+ <th scope="row">{{ b.settings.name }}</th>
+ <td>{{ amt }}</td>
+ <td>{{ b.settings.function }}</td>
+ {%- if has_source -%}<td>{{ b.settings.source }}</td>{%- endif -%}
+ {%- if has_supplier -%}<td>{{ b.settings.supplier }}</td>{%- endif -%}
+ {%- if has_origin -%}<td>{{ b.settings.origin }}</td>{%- endif -%}
+ </tr>
+ {%- endfor -%}
+ </tbody>
+ </table>
+ </div>
+ </div>
+</section>
+{% schema %}
+{
+ "name": "IP6 PDP Ingredients",
+ "tag": "section",
+ "settings": [],
+ "blocks": [
+ {
+ "type": "ingredient",
+ "name": "Ingredient",
+ "settings": [
+ { "type": "text", "id": "name", "label": "Ingredient" },
+ { "type": "select", "id": "key", "label": "Amount source", "options": [ { "value": "ip6", "label": "IP6 mg from variant metafield" }, { "value": "inositol", "label": "Inositol mg from variant metafield" }, { "value": "manual", "label": "Manual amount below" } ], "default": "manual" },
+ { "type": "text", "id": "amount", "label": "Amount (manual)" },
+ { "type": "text", "id": "function", "label": "Function" },
+ { "type": "text", "id": "source", "label": "Source (column shows once any row has it)" },
+ { "type": "text", "id": "supplier", "label": "Supplier (column shows once any row has it)" },
+ { "type": "text", "id": "origin", "label": "Final manufacturing location (column shows once any row has it)" }
+ ]
+ }
+ ],
+ "presets": [
+ {
+ "name": "IP6 PDP Ingredients",
+ "blocks": [
+ { "type": "ingredient", "settings": { "name": "IP6 (Calcium-Magnesium Inositol Hexaphosphate)", "key": "ip6", "function": "Active ingredient" } },
+ { "type": "ingredient", "settings": { "name": "Inositol", "key": "inositol", "function": "Active ingredient" } },
+ { "type": "ingredient", "settings": { "name": "Cellulose capsule", "key": "manual", "amount": "", "function": "Plant-based capsule shell" } }
+ ]
+ }
+ ]
+}
+{% endschema %}

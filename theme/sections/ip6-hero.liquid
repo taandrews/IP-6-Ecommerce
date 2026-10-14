@@ -3,56 +3,53 @@
  assign img = section.settings.image
 -%}
 <style>
- #hero-{{ section.id }} { background: var(--paper); }
- #hero-{{ section.id }} .hero-grid {
- display: flex; flex-direction: row; gap: clamp(32px, 6vw, 80px); align-items: center;
- padding-top: clamp(48px, 8vw, 112px); padding-bottom: clamp(48px, 8vw, 112px);
- }
- #hero-{{ section.id }} .hero-grid > .hero-copy { flex: 1 1 auto; min-width: 0; }
- #hero-{{ section.id }} .hero-grid > .frame-wrap { flex: 0 0 clamp(300px, 34vw, 440px); }
- #hero-{{ section.id }} .eyebrow-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
- #hero-{{ section.id }} .prebook { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 20px; padding: 10px 18px; border: 1px solid var(--gold); border-radius: 100px; background: #fdfaf3; font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--gold-deep); }
+ #hero-{{ section.id }} { background: var(--paper); padding-top: 12px; }
+ #hero-{{ section.id }} .panel { display: grid; grid-template-columns: 1.2fr 1fr; background: #fbf6ea; border-radius: 28px; overflow: hidden; }
+ #hero-{{ section.id }} .copy { padding: clamp(40px, 6vw, 96px) clamp(24px, 4vw, 64px); display: flex; flex-direction: column; justify-content: center; }
+ #hero-{{ section.id }} .ip6-eyebrow { color: var(--gold-deep); margin-bottom: 28px; }
+ #hero-{{ section.id }} h1 { font-size: clamp(44px, 5.2vw, 84px); line-height: .98; letter-spacing: -0.03em; font-weight: 400; margin: 0 0 24px; max-width: 14ch; }
+ #hero-{{ section.id }} h1 em, #hero-{{ section.id }} h1 .accent { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--ink); }
+ #hero-{{ section.id }} .sub { font-family: var(--serif); font-size: clamp(18px, 1.4vw, 21px); line-height: 1.6; max-width: 46ch; margin: 0 0 36px; color: var(--ink-2); }
+ #hero-{{ section.id }} .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+ #hero-{{ section.id }} .stage { position: relative; background: #f5ebd3; min-height: 620px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+ #hero-{{ section.id }} .stage img { width: 78%; max-width: 440px; height: auto; display: block; transform: translateY(4%); }
+ #hero-{{ section.id }} .chips { position: absolute; top: 24px; left: 24px; display: flex; gap: 8px; flex-wrap: wrap; }
+ #hero-{{ section.id }} .chips span { background: #fff; border-radius: 100px; padding: 7px 12px; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--ink); }
+ #hero-{{ section.id }} .prebook { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 22px; padding: 9px 16px; border: 1px solid var(--gold); border-radius: 100px; background: #fff; font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--gold-deep); }
  #hero-{{ section.id }} .prebook .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold-deep); }
- #hero-{{ section.id }} .eyebrow-row .line { height: 1px; width: 44px; background: var(--gold); }
- #hero-{{ section.id }} h1 { margin: 0 0 24px; max-width: 14ch; }
- #hero-{{ section.id }} .sub { max-width: 46ch; margin: 0 0 36px; color: var(--muted); }
- #hero-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
- #hero-{{ section.id }} .frame-wrap { position: relative; width: 100%; }
- #hero-{{ section.id }} .ip6-frame { width: 100%; background: linear-gradient(180deg, #ffffff, #eef3f8); border-radius: 14px; display: flex; align-items: center; justify-content: center; padding: clamp(20px, 3vw, 40px); box-sizing: border-box; overflow: hidden; }
- #hero-{{ section.id }} .ip6-frame img { width: 84%; height: auto; max-width: 360px; display: block; }
- #hero-{{ section.id }} .cap { margin-top: 14px; text-align: right; }
  @media (max-width: 749px) {
- #hero-{{ section.id }} .hero-grid { flex-direction: column; align-items: stretch; gap: 36px; }
- #hero-{{ section.id }} .hero-grid > .frame-wrap { flex: none; order: -1; max-width: 340px; }
- #hero-{{ section.id }} h1, #hero-{{ section.id }} .sub { max-width: none; }
+ #hero-{{ section.id }} .panel { grid-template-columns: 1fr; border-radius: 20px; }
+ #hero-{{ section.id }} .stage { order: -1; min-height: 360px; }
+ #hero-{{ section.id }} .stage img { width: 62%; }
+ #hero-{{ section.id }} h1 { max-width: none; }
  }
 </style>
 
 <section id="hero-{{ section.id }}" class="ip6 ip6-reveal">
- <div class="ip6-wrap hero-grid">
- <div class="hero-copy">
- <div class="eyebrow-row ip6-rise d1"><span class="line"></span><span class="ip6-eyebrow">{{ section.settings.eyebrow }}</span></div>
+ <div class="ip6-wrap">
+ <div class="panel">
+ <div class="copy">
+ <span class="ip6-eyebrow ip6-rise d1">{{ section.settings.eyebrow }}</span>
  <p class="prebook ip6-rise d1"><span class="dot" aria-hidden="true"></span>Coming October 3, 2026 · Pre-Book Now &amp; Receive 20% Off</p>
- <h1 class="ip6-display ip6-rise d2">{{ section.settings.heading }}</h1>
- <p class="sub ip6-body-lg ip6-rise d3">{{ section.settings.subheading }}</p>
+ <h1 class="ip6-rise d2">{{ section.settings.heading }}</h1>
+ <p class="sub ip6-rise d3">{{ section.settings.subheading }}</p>
  <div class="actions ip6-rise d4">
  {%- if p != blank -%}
  <a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Pre-Book Now · 20% Off</a>
  {%- else -%}
  <a class="ip6-btn ip6-btn--primary" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label }}</a>
  {%- endif -%}
- <a class="ip6-textlink" href="{{ section.settings.link2 | default: '/pages/story' }}">{{ section.settings.link2_label }}</a>
+ <a class="ip6-btn ip6-btn--square" href="{{ section.settings.link2 | default: '/pages/story' }}">{{ section.settings.link2_label }} <span aria-hidden="true">→</span></a>
  </div>
  </div>
- <div class="frame-wrap ip6-rise d3">
- <div class="ip6-frame">
+ <div class="stage ip6-rise d3">
+ <div class="chips"><span>cGMP Certified</span><span>Third-Party Tested</span></div>
  {%- if img != blank -%}
  <img src="{{ img | image_url: width: 900 }}" alt="{{ p.title | default: 'IP6 Original' }}" width="600" height="750" loading="eager" fetchpriority="high">
  {%- else -%}
  <img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original supplement bottle" width="600" height="750" loading="eager" fetchpriority="high">
  {%- endif -%}
  </div>
- <p class="cap ip6-caption">120 capsules · 60 servings</p>
  </div>
  </div>
 </section>
@@ -65,7 +62,7 @@
  { "type": "product", "id": "product", "label": "Featured product" },
  { "type": "image_picker", "id": "image", "label": "Product image (4:5)" },
  { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD" },
- { "type": "text", "id": "heading", "label": "Heading", "default": "There is only one IP6 Original." },
+ { "type": "text", "id": "heading", "label": "Heading", "default": "There is only one <em>IP6 Original</em>." },
  { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "The first IP6 supplement standardized to the research-grade purity Prof. Shamsuddin's work defined, 804 mg of inositol hexaphosphate with Inositol, in every serving." },
  { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop IP6 Original" },
  { "type": "url", "id": "button_link", "label": "Button link" },

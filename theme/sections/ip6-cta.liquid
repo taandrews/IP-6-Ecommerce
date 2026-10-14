@@ -1,32 +1,33 @@
 {%- assign p = section.settings.product -%}
 <style>
- #act-{{ section.id }} { background: var(--surface); }
- #act-{{ section.id }} .head { margin-bottom: clamp(28px,3vw,44px); }
+ #act-{{ section.id }} { background: #fcf8ee; }
+ #act-{{ section.id }} .g { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(32px,5vw,64px); align-items: start; }
  #act-{{ section.id }} h2 { font-size: clamp(30px,4vw,42px); margin: 14px 0 0; }
- #act-{{ section.id }} .head p { margin: 14px 0 0; max-width: 60ch; font-size: 17px; line-height: 1.6; color: var(--ink-2); }
- #act-{{ section.id }} .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-bottom: clamp(32px,4vw,48px); }
- #act-{{ section.id }} .step { background: #fff; border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 12px; padding: 28px; }
- #act-{{ section.id }} .step h3 { font-size: 19px; margin: 0 0 8px; }
- #act-{{ section.id }} .step p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
- #act-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
- @media (max-width: 749px){ #act-{{ section.id }} .steps { grid-template-columns: 1fr; } }
+ #act-{{ section.id }} .lead { font-family: var(--serif); margin: 14px 0 0; max-width: 46ch; font-size: 19px; line-height: 1.6; color: var(--ink-2); }
+ #act-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: 32px; }
+ #act-{{ section.id }} ol { list-style: none; margin: 0; padding: 0; border-top: 1px dotted rgba(11,31,58,.35); }
+ #act-{{ section.id }} li { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px dotted rgba(11,31,58,.35); }
+ #act-{{ section.id }} .n { font-size: 11px; font-weight: 700; letter-spacing: .22em; color: var(--muted); padding-top: 6px; font-variant-numeric: tabular-nums; }
+ #act-{{ section.id }} h3 { font-size: 18px; margin: 0 0 4px; }
+ #act-{{ section.id }} p.b { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+ @media (max-width: 749px){ #act-{{ section.id }} .g { grid-template-columns: 1fr; gap: 28px; } }
 </style>
 <section id="act-{{ section.id }}" class="ip6 ip6-section ip6-reveal">
- <div class="ip6-wrap">
- <div class="head ip6-rise d1">
+ <div class="ip6-wrap g">
+ <div class="ip6-rise d1">
  <span class="ip6-eyebrow">The action</span>
  <h2>Take it. Here is exactly how.</h2>
- <p>Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.</p>
- </div>
- <div class="steps">
- <div class="step ip6-rise d1"><h3>On an empty stomach</h3><p>30 minutes before food, or 2 hours after, for optimal absorption.</p></div>
- <div class="step ip6-rise d2"><h3>With water only</h3><p>8 oz minimum. Avoid mineral-rich beverages within an hour.</p></div>
- <div class="step ip6-rise d3"><h3>Consult your physician</h3><p>Always discuss new supplements with your healthcare professional.</p></div>
- </div>
- <div class="actions ip6-rise d4">
+ <p class="lead">Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.</p>
+ <div class="actions">
  {%- if p != blank -%}<a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Shop IP6 Original</a>{%- else -%}<a class="ip6-btn ip6-btn--primary" href="#">Shop IP6 Original</a>{%- endif -%}
- <a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/faq#how-to-take' }}">Full dosing guide →</a>
+ <a class="ip6-btn ip6-btn--square" href="{{ section.settings.link | default: '/pages/faq#how-to-take' }}">Full dosing guide <span aria-hidden="true">→</span></a>
  </div>
+ </div>
+ <ol class="ip6-rise d2">
+ <li><span class="n">01</span><div><h3>On an empty stomach</h3><p class="b">30 minutes before food, or 2 hours after, for optimal absorption.</p></div></li>
+ <li><span class="n">02</span><div><h3>With water only</h3><p class="b">8 oz minimum. Avoid mineral-rich beverages within an hour.</p></div></li>
+ <li><span class="n">03</span><div><h3>Consult your physician</h3><p class="b">Always discuss new supplements with your healthcare professional.</p></div></li>
+ </ol>
  </div>
 </section>
 {% schema %}

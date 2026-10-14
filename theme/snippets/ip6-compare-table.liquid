@@ -1,0 +1,81 @@
+{%- comment -%}
+  Specification comparison: Commodity IP6 vs IP6 Original.
+  Marks: yes / partial / no. Our column is tinted pale gold.
+  Desktop renders a table; phone width renders stacked rows so the
+  IP6 Original column is never off-screen. Shared by the home page,
+  the product page, and /pages/the-difference.
+  Usage: {% render 'ip6-compare-table', id: section.id %}
+{%- endcomment -%}
+{%- assign cid = id | default: 'cmp' -%}
+<style>
+  .ip6-cmp { --cmp-gold: #fcf8ee; --cmp-line: rgba(11,31,58,.18); }
+  .ip6-cmp table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .ip6-cmp th, .ip6-cmp td { text-align: left; vertical-align: top; padding: 16px 16px; }
+  .ip6-cmp thead th { border-bottom: 1px solid var(--cmp-line); padding-top: 14px; padding-bottom: 14px; }
+  .ip6-cmp th:first-child, .ip6-cmp td:first-child { padding-left: 0; }
+  .ip6-cmp .lbl { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .ip6-cmp .sub { display: block; margin-top: 4px; font-size: 12.5px; font-weight: 400; color: var(--muted); }
+  .ip6-cmp th.ours .lbl, .ip6-cmp th.ours .sub { color: var(--ink); }
+  .ip6-cmp th.ours .sub { opacity: .7; }
+  .ip6-cmp tbody tr + tr td, .ip6-cmp tbody tr + tr th { border-top: 1px dotted var(--cmp-line); }
+  .ip6-cmp tbody th { font-weight: 600; color: var(--ink); }
+  .ip6-cmp td.theirs { color: var(--muted); }
+  .ip6-cmp td.ours { background: var(--cmp-gold); color: var(--ink); font-weight: 500; }
+  .ip6-cmp thead th.ours { background: var(--cmp-gold); border-radius: 14px 14px 0 0; }
+  .ip6-cmp tbody tr:last-child td.ours { border-radius: 0 0 14px 14px; }
+  .ip6-cmp .cell { display: flex; align-items: flex-start; gap: 12px; }
+  .ip6-cmp .mk { flex: none; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; margin-top: 1px; }
+  .ip6-cmp .mk svg { width: 11px; height: 11px; }
+  .ip6-cmp .mk.yes { background: var(--ink); color: #fff; }
+  .ip6-cmp .mk.partial { border: 1px solid rgba(11,31,58,.3); color: rgba(11,31,58,.5); }
+  .ip6-cmp .mk.no { border: 1px solid rgba(11,31,58,.22); color: rgba(11,31,58,.4); }
+  .ip6-cmp ul.stack { display: none; list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--cmp-line); border-bottom: 1px solid var(--cmp-line); }
+  .ip6-cmp ul.stack li { padding: 16px 0; }
+  .ip6-cmp ul.stack li + li { border-top: 1px dotted var(--cmp-line); }
+  .ip6-cmp ul.stack .cell { margin-top: 8px; font-size: 15px; }
+  .ip6-cmp ul.stack .cell.theirs { color: var(--muted); }
+  .ip6-cmp ul.stack .cell.ours { background: var(--cmp-gold); border-radius: 10px; padding: 10px 12px; color: var(--ink); font-weight: 500; }
+  .ip6-cmp ul.stack .tag { display: block; font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+  .ip6-cmp ul.stack .ours .tag { color: rgba(11,31,58,.6); }
+  @media (max-width: 749px) { .ip6-cmp table { display: none; } .ip6-cmp ul.stack { display: block; } }
+</style>
+{%- capture mk_yes -%}<span class="mk yes" role="img" aria-label="Yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M5 12l4 4L19 7"/></svg></span>{%- endcapture -%}
+{%- capture mk_partial -%}<span class="mk partial" role="img" aria-label="Partial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M5 12h14"/></svg></span>{%- endcapture -%}
+{%- capture mk_no -%}<span class="mk no" role="img" aria-label="No"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></span>{%- endcapture -%}
+{%- assign labels = "Formulated by|Connection to the research|Purity|Verification|Manufacturing|Processing additives" | split: "|" -%}
+{%- assign t_marks = "no|no|partial|partial|partial|partial" | split: "|" -%}
+{%- assign t_text = "No named formulator|None|Varies by vendor|Vendor declaration|Varies|Common" | split: "|" -%}
+{%- assign o_text = "Prof. Shamsuddin, founder and formulator|Built on the founder's published work|High-Purity Formula|Third-party tested, batch report published|cGMP-certified facility|No magnesium stearate or silicon dioxide" | split: "|" -%}
+
+<div class="ip6-cmp" id="cmp-{{ cid }}">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col"><span class="lbl">Specification</span></th>
+        <th scope="col"><span class="lbl">Commodity IP6</span><span class="sub">Most supplements on shelves</span></th>
+        <th scope="col" class="ours"><span class="lbl">IP6 Original</span><span class="sub">From the lab of Prof. Shamsuddin</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {%- for label in labels -%}
+        {%- assign i = forloop.index0 -%}
+        <tr>
+          <th scope="row">{{ label }}</th>
+          <td class="theirs"><div class="cell">{% case t_marks[i] %}{% when 'no' %}{{ mk_no }}{% else %}{{ mk_partial }}{% endcase %}<span>{{ t_text[i] }}</span></div></td>
+          <td class="ours"><div class="cell">{{ mk_yes }}<span>{{ o_text[i] }}</span></div></td>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+
+  <ul class="stack">
+    {%- for label in labels -%}
+      {%- assign i = forloop.index0 -%}
+      <li>
+        <span class="lbl">{{ label }}</span>
+        <div class="cell theirs">{% case t_marks[i] %}{% when 'no' %}{{ mk_no }}{% else %}{{ mk_partial }}{% endcase %}<span><span class="tag">Commodity IP6</span>{{ t_text[i] }}</span></div>
+        <div class="cell ours">{{ mk_yes }}<span><span class="tag">IP6 Original</span>{{ o_text[i] }}</span></div>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>

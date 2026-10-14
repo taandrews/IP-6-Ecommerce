@@ -1,0 +1,40 @@
+<style>
+  #hf-{{ section.id }} { background: var(--paper); border-top: 1px solid var(--line); }
+  #hf-{{ section.id }} .g { display: grid; grid-template-columns: 300px 1fr; gap: clamp(32px, 5vw, 72px); align-items: center; max-width: 1040px; margin: 0 auto; }
+  #hf-{{ section.id }} .photo { aspect-ratio: 4/5; border-radius: 16px; overflow: hidden; background: var(--surface); }
+  #hf-{{ section.id }} .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #hf-{{ section.id }} h2 { font-size: clamp(28px, 3vw, 40px); line-height: 1.1; letter-spacing: -0.02em; margin: 16px 0 0; }
+  #hf-{{ section.id }} .cred { font-family: var(--serif); font-size: 18px; line-height: 1.4; color: var(--muted); margin: 12px 0 0; }
+  #hf-{{ section.id }} blockquote { font-family: var(--serif); font-style: italic; font-size: clamp(20px, 2vw, 24px); line-height: 1.5; color: var(--ink); margin: 28px 0 0; padding-left: 20px; border-left: 2px solid var(--gold); }
+  #hf-{{ section.id }} .link { margin-top: 32px; }
+  @media (max-width: 749px) { #hf-{{ section.id }} .g { grid-template-columns: 1fr; gap: 28px; } #hf-{{ section.id }} .photo { max-width: 300px; } }
+</style>
+<section id="hf-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
+  <div class="ip6-wrap g">
+    <div class="photo ip6-rise d1">
+      {%- if section.settings.image != blank -%}
+        <img src="{{ section.settings.image | image_url: width: 600 }}" alt="Portrait of Professor AbulKalam M. Shamsuddin, MD, PhD, founder and formulator of IP6 Original." width="300" height="375" loading="lazy">
+      {%- else -%}
+        <img src="{{ 'ip6-founder.jpg' | asset_url }}" alt="Portrait of Professor AbulKalam M. Shamsuddin, MD, PhD, founder and formulator of IP6 Original." width="300" height="375" loading="lazy">
+      {%- endif -%}
+    </div>
+    <div class="ip6-rise d2">
+      <span class="ip6-eyebrow">The founder</span>
+      <h2>Prof. AbulKalam M. Shamsuddin, MD, PhD</h2>
+      <p class="cred">Physician-scientist, University of Maryland School of Medicine. Founder and formulator of IP6 Original.</p>
+      <blockquote>&ldquo;IP6 Original is the supplement built to the specification his own research describes.&rdquo;</blockquote>
+      <p class="link"><a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/story#founder' }}">Meet Prof. Shamsuddin →</a></p>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "IP6 Home Founder",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Founder portrait (4:5)" },
+    { "type": "url", "id": "link", "label": "Founder page link" }
+  ],
+  "presets": [{ "name": "IP6 Home Founder" }]
+}
+{% endschema %}
