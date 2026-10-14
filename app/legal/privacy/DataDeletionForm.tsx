@@ -44,7 +44,7 @@ export function DataDeletionForm() {
       </button>
       {status === "error" ? (
         <p className="text-sm text-danger" role="alert">
-          Something went wrong. Please email privacy@ip6original.com.
+          Something went wrong. Please use the contact form instead.
         </p>
       ) : null}
     </form>

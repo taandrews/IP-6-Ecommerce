@@ -19,10 +19,8 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
       <div className="card p-6">
         <p className="text-ink/70">
           Order details are available once your account is connected. For immediate help with this
-          order, please contact{" "}
-          <a href="mailto:support@ip6original.com" className="underline text-forest-700">
-            support@ip6original.com
-          </a>
+          order, please use our{" "}
+          <a href="/contact" className="underline text-forest-700">contact form</a>
           .
         </p>
       </div>

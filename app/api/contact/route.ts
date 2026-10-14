@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   const findings = lintContent(parsed.data.message);
-  const adminInbox = process.env.SES_REPLY_TO ?? "support@ip6original.com";
+  const adminInbox = process.env.SES_REPLY_TO ?? "taandrews@init1s.com";
   try {
     await sendEmail(
       adminInbox,

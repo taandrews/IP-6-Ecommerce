@@ -14,8 +14,8 @@ export const sesClient = new SESClient({
     : {}),
 });
 
-const FROM = process.env.SES_FROM_EMAIL ?? "hello@ip6original.com";
-const REPLY_TO = process.env.SES_REPLY_TO ?? "support@ip6original.com";
+const FROM = process.env.SES_FROM_EMAIL ?? "taandrews@init1s.com";
+const REPLY_TO = process.env.SES_REPLY_TO ?? "taandrews@init1s.com";
 
 export async function sendEmail(to: string, subject: string, html: string, text?: string) {
   const cmd = new SendEmailCommand({

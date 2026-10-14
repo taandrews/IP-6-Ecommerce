@@ -55,10 +55,8 @@ export default function PrivacyPage() {
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">6. Contact</h2>
           <p>
-            Data protection requests can be sent to{" "}
-            <a href="mailto:privacy@ip6original.com" className="underline text-forest-700">
-              privacy@ip6original.com
-            </a>
+            Data protection requests can be sent through our{" "}
+            <a href="/contact" className="underline text-forest-700">contact form</a>
             .
           </p>
         </section>
@@ -66,7 +64,7 @@ export default function PrivacyPage() {
         <section className="rounded-lg border border-ivory-300 bg-ivory-200 p-6">
           <h2 className="font-display text-xl text-forest-800 mb-2">Request data deletion</h2>
           <p className="text-sm text-ink/75 mb-4">
-            Submit a request to remove your personal data from our systems. We confirm receipt within 5 business days and complete deletion within 30 days where legally permitted.
+            Submit a request to remove your personal data from our systems through our We confirm receipt within 5 business days and complete deletion within 30 days where legally permitted.
           </p>
           <DataDeletionForm />
         </section>

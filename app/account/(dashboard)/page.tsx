@@ -42,7 +42,7 @@ export default function AccountDashboard() {
       <section className="card p-6">
         <h3 className="font-display text-lg text-forest-800 mb-3">Need help?</h3>
         <p className="text-sm text-ink/75 mb-3">
-          Our team responds within one business day. Email <a href="mailto:support@ip6original.com" className="underline text-forest-700">support@ip6original.com</a> or visit the <Link href="/faq" className="underline text-forest-700">FAQ</Link>.
+          Reach us through our <a href="/contact" className="underline text-forest-700">contact form</a> or visit the <Link href="/faq" className="underline text-forest-700">FAQ</Link>.
         </p>
       </section>
     </div>

@@ -33,9 +33,7 @@ export default function AccessibilityPage() {
           <h2 className="font-display text-display-md text-forest-800 mb-3">Feedback</h2>
           <p>
             If you encounter accessibility issues, please reach out to{" "}
-            <a href="mailto:accessibility@ip6original.com" className="underline text-forest-700">
-              accessibility@ip6original.com
-            </a>
+            <a href="/contact" className="underline text-forest-700">contact form</a>
             . We aim to respond within one business day and resolve critical issues within 14 days.
           </p>
         </section>

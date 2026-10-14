@@ -22,10 +22,8 @@ export default function RefundPolicyPage() {
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">Damaged or incorrect orders</h2>
           <p>
-            If your order arrives damaged or you received the wrong item, email{" "}
-            <a href="mailto:support@ip6original.com" className="underline text-forest-700">
-              support@ip6original.com
-            </a>{" "}
+            If your order arrives damaged or you received the wrong item, use our{" "}
+            <a href="/contact" className="underline text-forest-700">contact form</a>{" "}
             with your order number and photos, and we will make it right.
           </p>
         </section>

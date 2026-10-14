@@ -10,7 +10,7 @@ const Body = z.object({
 export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  const adminInbox = "privacy@ip6original.com";
+  const adminInbox = process.env.SES_REPLY_TO ?? "taandrews@init1s.com";
   try {
     await sendEmail(
       adminInbox,
