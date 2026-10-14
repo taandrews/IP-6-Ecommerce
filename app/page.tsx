@@ -58,6 +58,7 @@ export default function HomePage() {
       <Credibility />
       <Molecule />
       <Stakes />
+      <FounderBand hasVideo={assets.hasFounderVideo} />
       {/* @sections */}
       <Footer showDshea />
     </>
