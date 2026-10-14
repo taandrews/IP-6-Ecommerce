@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { Minus, Plus, RefreshCw, ShoppingBag, Check } from "lucide-react";
 import type { Product, Currency } from "@/types";
 import { formatPrice, cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartStore";
-import { Badge } from "@/components/ui/Badge";
 
 type Mode = "one-time" | "subscribe";
 
@@ -16,22 +16,48 @@ export function PurchasePanel({
   product: Product;
   currency: Currency;
 }) {
+  const cycles = product.subscriptionCycles;
+  const hasSubscription = cycles.length > 0;
+  const bestCycle = hasSubscription
+    ? cycles.reduce((a, b) => (b.discountPct > a.discountPct ? b : a))
+    : undefined;
+
   const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
   const [qty, setQty] = useState(1);
-  const [mode, setMode] = useState<Mode>("one-time");
-  const [cycleDays, setCycleDays] = useState<number>(product.subscriptionCycles[0]?.days ?? 30);
+  const [mode, setMode] = useState<Mode>(hasSubscription ? "subscribe" : "one-time");
+  const [cycleDays, setCycleDays] = useState<number>(cycles[0]?.days ?? 30);
   const variant = useMemo(
     () => product.variants.find((v) => v.id === variantId) ?? product.variants[0],
     [product.variants, variantId],
   );
   const { add } = useCart();
 
+  // Sentinel sits around the primary CTA. When it leaves the top of the
+  // viewport the sticky bar takes over.
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const [showBar, setShowBar] = useState(false);
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        setShowBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { rootMargin: "-80px 0px 0px 0px", threshold: 0 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   if (!variant) return null;
 
   const unit = variant.priceCents[currency];
-  const sub = product.subscriptionCycles.find((c) => c.days === cycleDays);
-  const subDiscount = sub?.discountPct ?? 0;
-  const effective = mode === "subscribe" ? Math.round(unit * (1 - subDiscount / 100)) : unit;
+  const sub = cycles.find((c) => c.days === cycleDays);
+  const subDiscount = mode === "subscribe" ? (sub?.discountPct ?? 0) : 0;
+  const effective = Math.round(unit * (1 - subDiscount / 100));
+  const ctaLabel = mode === "subscribe" ? "Subscribe now" : "Add to cart";
 
   function onAdd() {
     add({
@@ -44,8 +70,8 @@ export function PurchasePanel({
       unitPriceCents: unit,
       currency,
       subscription:
-        mode === "subscribe"
-          ? { cycleDays, discountPct: subDiscount }
+        mode === "subscribe" && sub
+          ? { cycleDays: sub.days, discountPct: sub.discountPct }
           : undefined,
     });
   }
@@ -54,11 +80,16 @@ export function PurchasePanel({
     <div className="space-y-6">
       {/* Price */}
       <div className="flex items-baseline gap-3">
-        <span className="text-3xl font-display text-forest-800">
+        <span className="text-3xl font-display text-forest-800 tabular-nums">
           {formatPrice(effective, currency)}
         </span>
-        {mode === "subscribe" && subDiscount > 0 ? (
-          <span className="text-sm text-ink/50 line-through">{formatPrice(unit, currency)}</span>
+        {subDiscount > 0 ? (
+          <>
+            <span className="text-sm text-ink/50 line-through tabular-nums">{formatPrice(unit, currency)}</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-700">
+              Save {subDiscount}%
+            </span>
+          </>
         ) : null}
       </div>
 
@@ -93,84 +124,111 @@ export function PurchasePanel({
         </div>
       ) : null}
 
-      {/* Purchase mode toggle */}
-      <fieldset>
-        <legend className="label">Purchase option</legend>
-        <div className="grid sm:grid-cols-2 gap-2">
-          <ModeCard
-            active={mode === "one-time"}
-            onClick={() => setMode("one-time")}
-            title="One-time purchase"
-            subtitle={formatPrice(unit, currency)}
-          />
-          <ModeCard
-            active={mode === "subscribe"}
-            onClick={() => setMode("subscribe")}
-            title="Subscribe & save"
-            subtitle={
-              subDiscount > 0
-                ? `Save ${subDiscount}% · ${formatPrice(Math.round(unit * (1 - subDiscount / 100)), currency)}`
-                : "Flexible delivery"
-            }
-            badge={subDiscount > 0 ? `-${subDiscount}%` : undefined}
-          />
-        </div>
-      </fieldset>
-
-      {/* Subscription cycle */}
-      {mode === "subscribe" ? (
-        <div>
-          <span className="label">Delivery frequency</span>
-          <div className="flex gap-2 flex-wrap">
-            {product.subscriptionCycles.map((c) => {
-              const active = c.days === cycleDays;
+      {/* Subscribe & Save tiers */}
+      {hasSubscription ? (
+        <fieldset>
+          <legend className="label">Subscribe &amp; save</legend>
+          <div className="space-y-2">
+            {cycles.map((c) => {
+              const checked = mode === "subscribe" && c.days === cycleDays;
+              const tierPrice = Math.round(unit * (1 - c.discountPct / 100));
+              const best = bestCycle && c.days === bestCycle.days && cycles.length > 1;
               return (
-                <button
+                <label
                   key={c.days}
-                  onClick={() => setCycleDays(c.days)}
-                  aria-pressed={active}
                   className={cn(
-                    "rounded-full border-2 px-3.5 py-1.5 text-sm",
-                    active
-                      ? "border-forest-700 bg-forest-700 text-ivory-100"
+                    "relative flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-colors",
+                    checked
+                      ? "border-forest-700 bg-forest-50"
                       : "border-ivory-300 hover:border-forest-300",
                   )}
                 >
-                  Every {c.days} days · {c.discountPct}% off
-                </button>
+                  <input
+                    type="radio"
+                    name={`cycle-${product.sku}`}
+                    value={c.days}
+                    checked={checked}
+                    onChange={() => {
+                      setMode("subscribe");
+                      setCycleDays(c.days);
+                    }}
+                    className="size-4 shrink-0 accent-forest-700"
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-medium text-navy-800">Every {c.days} days</span>
+                    <span className="block text-xs font-semibold text-gold-700">Save {c.discountPct}%</span>
+                  </span>
+                  <span className="shrink-0 text-right tabular-nums">
+                    <span className="block font-semibold text-navy-800">{formatPrice(tierPrice, currency)}</span>
+                    <span className="block text-xs text-ink/50 line-through">{formatPrice(unit, currency)}</span>
+                  </span>
+                  {best ? (
+                    <span className="absolute -top-2.5 right-3 rounded-full bg-navy-800 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-surface">
+                      Best value
+                    </span>
+                  ) : null}
+                </label>
               );
             })}
           </div>
-        </div>
+          <p className="mt-2 flex items-center gap-1.5 text-xs text-ink/60">
+            <RefreshCw className="size-3.5" aria-hidden />
+            Modify, pause, or cancel any time from your account.
+          </p>
+        </fieldset>
       ) : null}
 
       {/* Qty + CTA */}
-      <div className="flex items-center gap-3">
-        <div
-          role="group"
-          aria-label="Quantity"
-          className="inline-flex items-center border border-ivory-300 rounded-md"
-        >
-          <button
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            aria-label="Decrease quantity"
-            className="p-2.5 hover:bg-ivory-200"
+      <div ref={sentinelRef} className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div
+            role="group"
+            aria-label="Quantity"
+            className="inline-flex items-center border border-ivory-300 rounded-md"
           >
-            <Minus className="size-4" />
-          </button>
-          <span className="px-4 text-sm min-w-[32px] text-center">{qty}</span>
-          <button
-            onClick={() => setQty((q) => q + 1)}
-            aria-label="Increase quantity"
-            className="p-2.5 hover:bg-ivory-200"
-          >
-            <Plus className="size-4" />
+            <button
+              onClick={() => setQty((q) => Math.max(1, q - 1))}
+              aria-label="Decrease quantity"
+              className="p-2.5 hover:bg-ivory-200"
+            >
+              <Minus className="size-4" />
+            </button>
+            <span className="px-4 text-sm min-w-[32px] text-center">{qty}</span>
+            <button
+              onClick={() => setQty((q) => q + 1)}
+              aria-label="Increase quantity"
+              className="p-2.5 hover:bg-ivory-200"
+            >
+              <Plus className="size-4" />
+            </button>
+          </div>
+          <button onClick={onAdd} className="btn-primary flex-1">
+            <ShoppingBag className="size-4" />
+            {ctaLabel}
           </button>
         </div>
-        <button onClick={onAdd} className="btn-primary flex-1">
-          <ShoppingBag className="size-4" />
-          {mode === "subscribe" ? "Subscribe now" : "Add to cart"}
-        </button>
+
+        {hasSubscription ? (
+          <p className="text-center text-sm">
+            {mode === "subscribe" ? (
+              <button
+                type="button"
+                onClick={() => setMode("one-time")}
+                className="font-semibold text-navy-800 underline underline-offset-4 decoration-gold-500 decoration-2 hover:text-gold-700"
+              >
+                One-time purchase · {formatPrice(unit, currency)}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setMode("subscribe")}
+                className="font-semibold text-navy-800 underline underline-offset-4 decoration-gold-500 decoration-2 hover:text-gold-700"
+              >
+                Subscribe &amp; save instead
+              </button>
+            )}
+          </p>
+        ) : null}
       </div>
 
       {/* Reassurance */}
@@ -180,37 +238,40 @@ export function PurchasePanel({
         <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Secure checkout</li>
         <li className="flex items-center gap-2"><RefreshCw className="size-4 text-forest-600" />Cancel anytime</li>
       </ul>
-    </div>
-  );
-}
 
-function ModeCard({
-  active,
-  onClick,
-  title,
-  subtitle,
-  badge,
-}: {
-  active: boolean;
-  onClick: () => void;
-  title: string;
-  subtitle: string;
-  badge?: string;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      aria-pressed={active}
-      className={cn(
-        "relative text-left rounded-md border-2 p-4 transition-colors",
-        active ? "border-forest-700 bg-forest-50" : "border-ivory-300 hover:border-forest-300",
-      )}
-    >
-      {badge ? (
-        <Badge variant="gold" className="absolute top-2 right-2">{badge}</Badge>
-      ) : null}
-      <div className="font-medium">{title}</div>
-      <div className="text-sm text-ink/70 mt-0.5">{subtitle}</div>
-    </button>
+      {/* Sticky buy bar, shown once the CTA above has scrolled out of view */}
+      <div
+        aria-hidden={!showBar}
+        className={cn(
+          "fixed inset-x-0 top-16 z-30 border-b border-ivory-300 bg-surface/95 backdrop-blur transition-transform duration-300 ease-brand lg:top-20",
+          showBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 invisible pointer-events-none",
+        )}
+      >
+        <div className="container flex h-14 items-center gap-3 lg:h-16">
+          {product.images[0] ? (
+            <span className="relative hidden size-10 shrink-0 overflow-hidden rounded-md bg-cloud-200 sm:block">
+              <Image src={product.images[0].url} alt="" fill sizes="40px" className="object-contain p-1" />
+            </span>
+          ) : null}
+          <p className="min-w-0 flex-1 truncate font-medium text-navy-800">
+            {product.name}
+            <span className="ml-2 text-sm text-ink/55">
+              {mode === "subscribe" && sub ? `Every ${sub.days} days` : "One-time"}
+            </span>
+          </p>
+          <span className="shrink-0 font-semibold text-navy-800 tabular-nums">
+            {formatPrice(effective, currency)}
+          </span>
+          <button
+            onClick={onAdd}
+            tabIndex={showBar ? 0 : -1}
+            className="btn-primary shrink-0 px-5 py-2.5 text-sm"
+          >
+            <ShoppingBag className="size-4" />
+            {ctaLabel}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

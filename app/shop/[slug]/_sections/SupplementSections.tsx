@@ -6,7 +6,7 @@ export function SupplementSections() {
   return (
     <>
       {/* Founder endorsement, compliant structure-function language only */}
-      <section className="bg-ivory-200 py-20">
+      <section className="bg-gold-50 py-20">
         <div className="container max-w-5xl grid lg:grid-cols-[1fr_1.4fr] gap-10 items-center">
           <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-cloud-200 max-w-xs lg:max-w-none mx-auto w-full">
             <Image
@@ -22,7 +22,7 @@ export function SupplementSections() {
             <h2 className="font-display text-display-md text-forest-800 mb-5">
               Why we stake the company on purity.
             </h2>
-            <blockquote className="text-ink/85 leading-relaxed italic border-l-4 border-gold-400 pl-5">
+            <blockquote className="font-serif text-xl lg:text-2xl text-navy-800 leading-relaxed italic border-l-4 border-gold-400 pl-5">
               “We could have shipped an IP6 supplement years earlier if we'd been willing to ship commodity-purity material. We weren't, and we still aren't. Purity is the difference between a commodity ingredient and the molecule the research describes, and our customers can feel the difference.”
             </blockquote>
             <p className="mt-6 text-sm text-ink/70">
@@ -43,7 +43,7 @@ export function SupplementSections() {
           What our formulation is designed to support.
         </h2>
         <p className="text-ink/85 leading-relaxed">
-          IP6 Original Supplement is formulated to support immune health and healthy cell function. We use structure-function language because that is the language that survives scientific and regulatory review.
+          IP6 Original Supplement is formulated to support immune health and healthy cell function.<a href="#dshea" className="ml-0.5 align-super text-xs font-semibold text-sky-700" aria-label="FDA disclaimer">†</a> We use structure-function language because that is the language that survives scientific and regulatory review.
         </p>
       </section>
     </>

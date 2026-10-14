@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
@@ -14,6 +14,14 @@ const sans = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-body",
+  display: "swap",
+});
+
+const serif = IBM_Plex_Serif({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
@@ -63,7 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" className={`${sans.variable}`} style={{ ["--font-display" as string]: "var(--font-body)" }}>
+    <html lang="en" className={`${sans.variable} ${serif.variable}`} style={{ ["--font-display" as string]: "var(--font-body)" }}>
       <body>
         <a
           href="#main"

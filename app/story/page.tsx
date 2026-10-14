@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
-import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { hreflangAlternates } from "@/lib/i18n";
 import { asset } from "@/lib/assets";
 import { FounderContent } from "@/components/sections/FounderContent";
@@ -118,7 +117,6 @@ export default function StoryPage() {
 
       <FounderContent />
 
-      <StickyDisclaimer />
       <Footer showDshea />
     </>
   );

@@ -36,6 +36,23 @@ export interface Product {
   shipsGlobally: boolean;
   labReport?: { url: string; batchId: string; issuedOn: string; labName: string };
   comingSoon?: boolean;
+  /** Rendered as an HTML Supplement Facts panel in the product media grid. */
+  supplementFacts?: {
+    servingSize: string;
+    servingsPerContainer?: string;
+    rows: { name: string; amount: string; dailyValue?: string }[];
+    footnote?: string;
+    otherIngredients?: string;
+  };
+  /** Per-ingredient traceability. Optional columns render only when any row has them. */
+  traceability?: {
+    ingredient: string;
+    amount?: string;
+    function: string;
+    source?: string;
+    supplier?: string;
+    manufacturedIn?: string;
+  }[];
 }
 
 export interface CartLine {

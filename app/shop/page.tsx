@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Footer } from "@/components/layout/Footer";
-import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { products } from "@/content/products";
 import { resolveCurrency } from "@/lib/currency";
 import { hreflangAlternates } from "@/lib/i18n";
@@ -35,7 +34,6 @@ export default function ShopPage() {
         </div>
       </section>
 
-      <StickyDisclaimer />
       <Footer showDshea />
     </>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
+import { NewsletterForm } from "@/components/layout/NewsletterForm";
 
 const GROUPS = [
   {
@@ -40,6 +41,14 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
   return (
     <footer className="mt-24 border-t-[3px] border-navy-800 bg-surface text-navy-800">
       <div className="container">
+        <div className="grid gap-8 border-b border-navy-800/10 py-14 lg:grid-cols-2 lg:items-center lg:gap-16">
+          <h2 className="max-w-[20ch] text-3xl font-medium leading-tight tracking-[-0.02em] lg:text-4xl">
+            Notes from the lab, only when there is something to say.
+          </h2>
+          <div className="lg:max-w-md lg:justify-self-end lg:w-full">
+            <NewsletterForm />
+          </div>
+        </div>
         <div className="grid gap-12 py-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-0">
           <div className="lg:pr-14">
             <Link href="/" aria-label="IP6 Original, Home" className="inline-block">

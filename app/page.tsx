@@ -12,7 +12,8 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
-import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
+import { ComparisonTable } from "@/components/sections/ComparisonTable";
+import { asset } from "@/lib/assets";
 import { products } from "@/content/products";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
@@ -127,7 +128,7 @@ export default function HomePage() {
           <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
             First, the molecule
           </p>
-          <p className="text-lg lg:text-xl text-ink/75 leading-relaxed">
+          <p className="font-serif text-xl lg:text-2xl text-navy-800/85 leading-relaxed">
             IP6 is{" "}
             <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
             <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
@@ -161,29 +162,8 @@ export default function HomePage() {
             Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself: a high-purity formula, third-party tested, manufactured in a cGMP-certified facility.
           </p>
 
-          {/* Qualitative contrast - no invented purity figures */}
-          <div className="mt-12 lg:mt-16 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
-            <div className="bg-surface p-7 lg:p-8">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55 font-bold mb-4">
-                Commodity IP6
-              </p>
-              <ul className="space-y-3 text-sm text-ink/70 leading-relaxed">
-                <li>No connection to the original research</li>
-                <li>Purity and testing vary by vendor</li>
-                <li>No named formulator behind it</li>
-              </ul>
-            </div>
-            <div className="bg-surface p-7 lg:p-8">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold mb-4">
-                IP6 Original
-              </p>
-              <ul className="space-y-3 text-sm text-navy-800 leading-relaxed">
-                <li>High-Purity Formula</li>
-                <li>Third-party tested, cGMP-certified manufacturing</li>
-                <li>Formulated by the scientist who pioneered the research</li>
-              </ul>
-            </div>
-          </div>
+          {/* Specification table. Marks and short text, our column tinted. */}
+          <ComparisonTable className="mt-12 lg:mt-16" />
 
           <div className="mt-12">
             <Link
@@ -218,49 +198,105 @@ export default function HomePage() {
           >
             Made to the standard the research describes.
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-10">
             {[
-              { t: "Pioneer in IP6 Research", l: "Built on the founder's body of published work" },
-              { t: "Founder & Formulator", l: "Formulated by Prof. Shamsuddin himself" },
-              { t: "cGMP Certified", l: "Manufactured in a cGMP-certified facility" },
-              { t: "Third-Party Tested", l: "Independently tested for purity, potency, and quality" },
+              {
+                n: "1998",
+                l: "First paper",
+                d: "Prof. Shamsuddin publishes his first paper on inositol hexaphosphate at the University of Maryland School of Medicine.",
+              },
+              {
+                n: "1,000",
+                u: "mg",
+                l: "Per serving",
+                d: "804 mg IP6 and 196 mg Inositol in every 2-capsule serving, the pairing his research describes.",
+              },
+              {
+                n: "0",
+                l: "Processing additives",
+                d: "No magnesium stearate, no silicon dioxide. A plant-based cellulose capsule and nothing else.",
+              },
+              {
+                n: "1",
+                l: "Named formulator",
+                d: "One supplement, formulated by the scientist behind the research, made in a cGMP-certified facility and third-party tested.",
+              },
             ].map((c) => (
-              <div key={c.t}>
-                <span aria-hidden className="block h-px w-12 bg-gold-500 mb-5" />
+              <div key={c.l}>
                 <p
-                  className="font-serif text-navy-800 leading-snug"
-                  style={{
-                    fontFamily: "var(--font-display), Georgia, serif",
-                    fontSize: "clamp(1.35rem, 2vw, 1.6rem)",
-                    letterSpacing: "-0.015em",
-                    fontWeight: 400,
-                  }}
+                  className="text-navy-800 tabular-nums whitespace-nowrap"
+                  style={{ fontSize: "clamp(2.75rem, 4.5vw, 4rem)", lineHeight: 1, letterSpacing: "-0.03em", fontWeight: 400 }}
                 >
-                  {c.t}
+                  {c.n}
+                  {"u" in c && c.u ? (
+                    <span className="ml-1 align-baseline text-[0.4em] font-medium tracking-normal text-ink/60">{c.u}</span>
+                  ) : null}
                 </p>
-                <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
-                  {c.l}
-                </p>
+                <span aria-hidden className="mt-5 mb-4 block border-t border-dotted border-navy-800/35" />
+                <p className="font-semibold text-navy-800">{c.l}</p>
+                <p className="mt-2 text-sm text-ink/65 leading-relaxed">{c.d}</p>
               </div>
             ))}
-          </div>
-          <div className="mt-14">
-            <Link
-              href="/story#founder"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-gold-500 decoration-2"
-            >
-              Meet Prof. Shamsuddin
-              <ArrowRight className="size-3.5" />
-            </Link>
           </div>
         </div>
       </section>
 
       {/* =============================================
+         THE FOUNDER (compact)
+         Headshot, name, credentials, one line, link to the full story.
+      ============================================== */}
+      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+        <div className="container max-w-5xl grid sm:grid-cols-[220px_1fr] lg:grid-cols-[300px_1fr] gap-10 lg:gap-16 items-center">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-cloud-200 max-w-[300px]">
+            <Image
+              src={asset("founder/shamsuddin.png")}
+              alt="Portrait of Professor AbulKalam M. Shamsuddin, MD, PhD, founder and formulator of IP6 Original."
+              fill
+              sizes="(min-width: 1024px) 300px, 220px"
+              className="object-cover"
+            />
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+              The Founder
+            </p>
+            <h2
+              className="text-navy-800 text-balance"
+              style={{
+                fontFamily: "var(--font-display), Georgia, serif",
+                fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
+                lineHeight: 1.1,
+                letterSpacing: "-0.02em",
+                fontWeight: 400,
+              }}
+            >
+              Prof. AbulKalam M. Shamsuddin, MD, PhD
+            </h2>
+            <p className="mt-3 font-serif text-lg text-ink/70 leading-snug">
+              Physician-scientist, University of Maryland School of Medicine. Founder and formulator of IP6 Original.
+            </p>
+            <blockquote className="mt-7 font-serif italic text-xl lg:text-2xl text-navy-800 leading-relaxed border-l-2 border-gold-500 pl-5">
+              &ldquo;IP6 Original is the supplement built to the specification his own research describes.&rdquo;
+            </blockquote>
+            <div className="mt-8">
+              <Link
+                href="/story#founder"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-gold-500 decoration-2"
+              >
+                Meet Prof. Shamsuddin
+                <ArrowRight className="size-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* =============================================
          CHAPTER 3 EXIT-RAMP - The Solution (product card link)
          The first IP6 supplement standardized to research-grade purity.
       ============================================== */}
-      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+      <section className="bg-gold-50 py-20 lg:py-24">
         <div className="container max-w-5xl">
           <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
             The Solution
@@ -283,7 +319,7 @@ export default function HomePage() {
 
           <Link
             href={`/shop/${supplement.slug}`}
-            className="mt-10 group block border-y border-cloud-300 hover:border-gold-500 transition-colors max-w-2xl"
+            className="mt-10 group block rounded-2xl border border-gold-200 bg-surface hover:border-gold-500 transition-colors max-w-2xl shadow-soft"
           >
             <div className="grid sm:grid-cols-[180px_1fr]">
               <div className="relative aspect-square sm:aspect-auto">
@@ -386,7 +422,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <StickyDisclaimer />
       <Footer showDshea />
     </>
   );
