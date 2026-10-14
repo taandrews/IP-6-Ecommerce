@@ -26,7 +26,7 @@ export function Credibility() {
             <li key={s.l} className="border-t border-gold-500/60 pt-5">
               <p className="font-serif text-[48px] leading-none tracking-[-0.02em] lg:text-[64px] tabular-nums whitespace-nowrap">
                 {s.n}
-                {s.u ? <span className="ml-1 font-mono text-[14px] tracking-normal text-navy-800/60">{s.u}</span> : null}
+                {s.u ? <span className="ml-1 font-mono text-[14px] tracking-normal text-navy-800/75">{s.u}</span> : null}
               </p>
               <p className="eyebrow mt-4">{s.l}</p>
             </li>

@@ -96,8 +96,8 @@ export function Navigation() {
       {/* Mobile drawer */}
       <div
         className={cn(
-          "lg:hidden fixed inset-0 z-50 overflow-hidden transition-opacity",
-          mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+          "lg:hidden fixed inset-0 z-50 overflow-hidden transition-[opacity,visibility]",
+          mobileOpen ? "pointer-events-auto opacity-100 visible" : "pointer-events-none opacity-0 invisible",
         )}
         aria-hidden={!mobileOpen}
       >

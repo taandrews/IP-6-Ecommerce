@@ -128,7 +128,7 @@ export function ProductSection({
             <dl className="mt-8 grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-navy-800/15 bg-navy-800/15 sm:grid-cols-6">
               {specs.map(([v, l]) => (
                 <div key={l} className="bg-cream px-3 py-4">
-                  <dt className="font-mono text-[11px] uppercase tracking-[0.12em] text-navy-800/55">{l}</dt>
+                  <dt className="font-mono text-[11px] uppercase tracking-[0.12em] text-navy-800/75">{l}</dt>
                   <dd className="mt-1 font-mono text-[13px] uppercase tracking-[0.06em] text-navy-800">{v}</dd>
                 </div>
               ))}
@@ -138,7 +138,7 @@ export function ProductSection({
               <span className="font-serif text-[40px] leading-none tabular-nums">{formatPrice(price, currency)}</span>
               {mode === "subscribe" ? (
                 <>
-                  <span className="text-navy-800/50 line-through tabular-nums">{formatPrice(unit, currency)}</span>
+                  <span className="text-navy-800/70 line-through tabular-nums">{formatPrice(unit, currency)}</span>
                   <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-gold-700">Save {cycle.discountPct}%</span>
                 </>
               ) : null}
@@ -163,12 +163,12 @@ export function ProductSection({
                     <input type="radio" name="purchase-mode" value={m} checked={mode === m} onChange={() => setMode(m)} className="mt-1 accent-gold-500" />
                     <span>
                       <span className="block font-medium">{t}</span>
-                      <span className={cn("block text-xs", mode === m ? "text-cream/70" : "text-navy-800/60")}>{sub}</span>
+                      <span className={cn("block text-xs", mode === m ? "text-cream/80" : "text-navy-800/75")}>{sub}</span>
                     </span>
                   </label>
                 ))}
               </div>
-              <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-navy-800/50">
+              <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.12em] text-navy-800/70">
                 Subscribe pricing is a placeholder until Recharge is connected.
               </p>
             </fieldset>
@@ -190,8 +190,8 @@ export function ProductSection({
       {/* Mobile sticky add-to-cart bar */}
       <div
         className={cn(
-          "fixed inset-x-0 bottom-0 z-40 border-t border-navy-800/10 bg-cream/95 backdrop-blur transition-transform duration-300 lg:hidden",
-          past ? "translate-y-0" : "translate-y-full",
+          "fixed inset-x-0 bottom-0 z-40 border-t border-navy-800/10 bg-cream/95 backdrop-blur transition-[transform,visibility] duration-300 lg:hidden",
+          past ? "translate-y-0 visible" : "translate-y-full invisible",
         )}
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0)" }}
         aria-hidden={!past}
