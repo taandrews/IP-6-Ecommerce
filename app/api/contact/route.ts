@@ -15,7 +15,8 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   const findings = lintContent(parsed.data.message);
-  const adminInbox = process.env.SES_REPLY_TO ?? "taandrews@init1s.com";
+  const adminInbox = process.env.SES_REPLY_TO;
+  if (!adminInbox) return NextResponse.json({ error: "Contact inbox is not configured" }, { status: 500 });
   try {
     await sendEmail(
       adminInbox,
