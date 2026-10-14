@@ -56,12 +56,13 @@ export default function HomePage() {
     <>
       <Hero frames={assets.frames} price={formatPrice(supplementFrom, currency)} shopHref={shopHref} />
       <Credibility />
+      <div className="container"><Divider /></div>
       <Molecule />
       <Stakes />
       <FounderBand hasVideo={assets.hasFounderVideo} />
+      <div className="container"><Divider /></div>
       <ProductSection product={supplement} currency={currency} macros={assets.macros} />
       <HowToTake hasLifestyle={assets.hasLifestyle} shopHref={shopHref} />
-      {/* @sections */}
       <Footer showDshea />
     </>
   );
