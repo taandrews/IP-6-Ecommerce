@@ -3,6 +3,7 @@
 import type { Address, CartLine, Currency } from "@/types";
 import type { ShippingRate } from "@/lib/shipping";
 import { formatPrice } from "@/lib/utils";
+import { PREORDER, isPreorderLine, lineDiscountPct, lineTotalCents } from "@/lib/preorder";
 
 export function ReviewStep({
   email,
@@ -60,12 +61,19 @@ export function ReviewStep({
         <ul className="divide-y divide-ivory-300 text-sm">
           {items.map((l) => (
             <li key={l.variantId + (l.subscription ? "-sub" : "")} className="py-2 flex justify-between">
-              <span>{l.name} · {l.variantLabel} × {l.qty}</span>
-              <span>{formatPrice(l.unitPriceCents * l.qty, l.currency)}</span>
+              <span>
+                {l.name} · {l.variantLabel} × {l.qty}
+                {isPreorderLine(l) ? ` · ${PREORDER.label} ${lineDiscountPct(l)}% off` : ""}
+              </span>
+              <span>{formatPrice(lineTotalCents(l), l.currency)}</span>
             </li>
           ))}
         </ul>
       </section>
+
+      {items.some(isPreorderLine) ? (
+        <p className="text-sm text-ink/75">{PREORDER.label} items: {PREORDER.shipNote}. You are charged today and we ship when stock arrives.</p>
+      ) : null}
 
       <section className="border-t border-ivory-300 pt-4 space-y-1 text-sm">
         <Row label="Subtotal" value={formatPrice(subtotalCents, currency)} />

@@ -6,6 +6,7 @@ import type { Product, Currency } from "@/types";
 import { formatPrice, cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartStore";
 import { Badge } from "@/components/ui/Badge";
+import { PREORDER, preorderUnitCents } from "@/lib/preorder";
 
 type Mode = "one-time" | "subscribe";
 
@@ -31,7 +32,8 @@ export function PurchasePanel({
   const unit = variant.priceCents[currency];
   const sub = product.subscriptionCycles.find((c) => c.days === cycleDays);
   const subDiscount = sub?.discountPct ?? 0;
-  const effective = mode === "subscribe" ? Math.round(unit * (1 - subDiscount / 100)) : unit;
+  const effective = mode === "subscribe" ? Math.round(unit * (1 - subDiscount / 100)) : preorderUnitCents(unit);
+  const showPreorder = PREORDER.active && mode === "one-time";
 
   function onAdd() {
     add({
@@ -57,10 +59,18 @@ export function PurchasePanel({
         <span className="text-3xl font-display text-forest-800">
           {formatPrice(effective, currency)}
         </span>
-        {mode === "subscribe" && subDiscount > 0 ? (
+        {(mode === "subscribe" && subDiscount > 0) || showPreorder ? (
           <span className="text-sm text-ink/50 line-through">{formatPrice(unit, currency)}</span>
         ) : null}
+        {showPreorder ? (
+          <Badge variant="gold">{PREORDER.label} · {PREORDER.discountPct}% off</Badge>
+        ) : null}
       </div>
+      {PREORDER.active ? (
+        <p className="text-sm text-ink/70 -mt-3">
+          {PREORDER.label}: {PREORDER.discountPct}% off one-time purchases, applied in your cart. {PREORDER.shipNote}.
+        </p>
+      ) : null}
 
       {/* Variant selector */}
       {product.variants.length > 1 ? (
@@ -100,8 +110,13 @@ export function PurchasePanel({
           <ModeCard
             active={mode === "one-time"}
             onClick={() => setMode("one-time")}
-            title="One-time purchase"
-            subtitle={formatPrice(unit, currency)}
+            title={PREORDER.active ? "Pre-order, one-time" : "One-time purchase"}
+            subtitle={
+              PREORDER.active
+                ? `Save ${PREORDER.discountPct}% · ${formatPrice(preorderUnitCents(unit), currency)}`
+                : formatPrice(unit, currency)
+            }
+            badge={PREORDER.active ? `-${PREORDER.discountPct}%` : undefined}
           />
           <ModeCard
             active={mode === "subscribe"}
@@ -169,7 +184,7 @@ export function PurchasePanel({
         </div>
         <button onClick={onAdd} className="btn-primary flex-1">
           <ShoppingBag className="size-4" />
-          {mode === "subscribe" ? "Subscribe now" : "Add to cart"}
+          {mode === "subscribe" ? "Subscribe now" : PREORDER.active ? "Pre-order now" : "Add to cart"}
         </button>
       </div>
 

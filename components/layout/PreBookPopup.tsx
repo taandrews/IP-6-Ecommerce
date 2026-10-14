@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import s from "./PreBookPopup.module.css";
 
 const KEY = "ip6quiz_seen_v1";
-const LAUNCH_MS = Date.parse("2026-10-03T04:00:00Z");
+const LAUNCH_MS = Date.parse("2026-11-01T04:00:00Z");
 const PRODUCT_URL = "/shop/ip6-original-supplement";
 
 type Step = "intent" | "email" | "q2" | "q3" | "q4" | "q5" | "q6" | "reveal";
@@ -202,7 +202,7 @@ export function PreBookPopup() {
   const dailyNudge = answers.routine === "daily" || answers.experience === "regular";
 
   return (
-    <div ref={rootRef} className={s.root} role="dialog" aria-modal="true" aria-label="Pre-book IP6 Original and receive 20% off">
+    <div ref={rootRef} className={s.root} role="dialog" aria-modal="true" aria-label="Pre-order IP6 Original and receive 15% off">
       <div className={s.panel}>
         <div className={s.media} aria-hidden="true">
           <div className={s.mtag}>
@@ -226,9 +226,9 @@ export function PreBookPopup() {
                 <>
                   <span className={s.eyebrow}>From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
                   <div className={s.launch}>
-                    <div className={s.kicker}>Coming October 3, 2026</div>
+                    <div className={s.kicker}>Pre-order open · Starts shipping November 2026</div>
                     <div className={s.offer}>
-                      Pre-Book Now &amp; Receive <b>20% Off</b>
+                      Pre-Order Now &amp; Receive <b>15% Off</b>
                     </div>
                     <Countdown />
                   </div>
@@ -245,8 +245,8 @@ export function PreBookPopup() {
 
               {step === "email" && (
                 <>
-                  <h2 className={s.h2}>Where should we send your 20% off?</h2>
-                  <p className={s.sub}>Your pre-book discount is reserved. Answer a few quick questions and it&apos;s yours.</p>
+                  <h2 className={s.h2}>Where should we send your 15% off?</h2>
+                  <p className={s.sub}>Your pre-order discount is reserved. Answer a few quick questions and it&apos;s yours.</p>
                   <form className={s.form} onSubmit={submitEmail} noValidate>
                     <label htmlFor="pb-email" className={s.srOnly}>
                       Email address
@@ -262,7 +262,7 @@ export function PreBookPopup() {
                     />
                     <label className={s.consent}>
                       <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required /> Email
-                      me my pre-book offer and occasional research-backed updates.
+                      me my pre-order offer and occasional research-backed updates.
                     </label>
                     {error && <div className={s.err}>Please enter your email and check the box to continue.</div>}
                     <button type="submit" className={s.btn}>
@@ -298,9 +298,9 @@ export function PreBookPopup() {
                   <h2 className={s.h2}>IP6 Original is your match.</h2>
                   <p className={s.sub}>{result}</p>
                   <p className={s.price}>
-                    Pre-book price with 20% off: <b>$39.20</b> <s>$49.00</s>
+                    Pre-order price with 15% off: <b>$41.65</b> <s>$49.00</s>
                   </p>
-                  <p className={s.micro}>Your pre-book offer will be emailed to {email.trim()}. Ships on or after October 3, 2026.</p>
+                  <p className={s.micro}>Your pre-order offer will be emailed to {email.trim()}. Starts shipping November 2026.</p>
                   <a className={s.cta} href={PRODUCT_URL} onClick={markSeen}>
                     See IP6 Original &rarr;
                   </a>

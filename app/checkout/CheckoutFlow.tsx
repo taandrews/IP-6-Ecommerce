@@ -15,6 +15,7 @@ import { PaymentStep } from "./PaymentStep";
 import { ReviewStep } from "./ReviewStep";
 import { ConfirmationStep } from "./ConfirmationStep";
 import type { ShippingRate } from "@/lib/shipping";
+import { PREORDER, isPreorderLine, lineTotalCents } from "@/lib/preorder";
 
 type Step = "shipping" | "method" | "payment" | "review" | "confirmation";
 
@@ -161,17 +162,14 @@ export function CheckoutFlow() {
                     <p className="text-xs text-gold-500 mt-0.5">
                       Every {line.subscription.cycleDays} d · {line.subscription.discountPct}% off
                     </p>
+                  ) : isPreorderLine(line) ? (
+                    <p className="text-xs text-gold-500 mt-0.5">
+                      {PREORDER.label} · {PREORDER.discountPct}% off
+                    </p>
                   ) : null}
                 </div>
                 <div className="text-sm font-medium">
-                  {formatPrice(
-                    Math.round(
-                      line.unitPriceCents *
-                        line.qty *
-                        (1 - (line.subscription?.discountPct ?? 0) / 100),
-                    ),
-                    line.currency,
-                  )}
+                  {formatPrice(lineTotalCents(line), line.currency)}
                 </div>
               </li>
             ))}
@@ -188,6 +186,9 @@ export function CheckoutFlow() {
             </div>
           </div>
 
+          {lines.some(isPreorderLine) ? (
+            <p className="text-xs text-ink/60 mt-4">{PREORDER.label} items: {PREORDER.shipNote}.</p>
+          ) : null}
           <div className="flex items-center gap-2 text-xs text-ink/60 mt-4">
             <Lock className="size-3.5" /> Secure checkout via Stripe
           </div>

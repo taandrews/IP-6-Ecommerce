@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { stripe, STRIPE_TAX_ENABLED } from "@/lib/stripe/server";
 import { cuid } from "@/lib/utils";
+import { PREORDER, isPreorderLine, lineTotalCents } from "@/lib/preorder";
 
 const Body = z.object({
   email: z.string().email(),
@@ -44,11 +45,8 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   const { items, shipping, currency, email, address } = parsed.data;
 
-  const subtotal = items.reduce(
-    (s, i) =>
-      s + Math.round(i.unitPriceCents * i.qty * (1 - (i.subscription?.discountPct ?? 0) / 100)),
-    0,
-  );
+  const subtotal = items.reduce((s, i) => s + lineTotalCents(i), 0);
+  const preorder = items.some(isPreorderLine);
   const total = subtotal + shipping.amountCents;
   const orderId = `IP6-${cuid().toUpperCase().slice(0, 12)}`;
 
@@ -65,8 +63,11 @@ export async function POST(req: Request) {
         shippingCarrier: shipping.carrier,
         shippingLabel: shipping.label,
         itemCount: String(items.reduce((n, i) => n + i.qty, 0)),
+        preorder: preorder ? "1" : "0",
+        preorderDiscountPct: preorder ? String(PREORDER.discountPct) : "0",
+        shipsFrom: preorder ? PREORDER.shipNote : "",
         items: JSON.stringify(
-          items.map((i) => ({ sku: i.sku, qty: i.qty, sub: !!i.subscription })),
+          items.map((i) => ({ sku: i.sku, qty: i.qty, sub: !!i.subscription, pre: isPreorderLine(i) })),
         ),
         destinationCountry: address.country,
       },

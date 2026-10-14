@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { CartLine } from "@/types";
+import { lineTotalCents } from "@/lib/preorder";
 
 interface CartState {
   lines: CartLine[];
@@ -65,10 +66,7 @@ export const useCart = create<CartState>()(
 
 function derive(lines: CartLine[]) {
   const count = lines.reduce((n, l) => n + l.qty, 0);
-  const subtotalCents = lines.reduce((s, l) => {
-    const discount = l.subscription ? l.subscription.discountPct / 100 : 0;
-    return s + Math.round(l.unitPriceCents * l.qty * (1 - discount));
-  }, 0);
+  const subtotalCents = lines.reduce((s, l) => s + lineTotalCents(l), 0);
   return { count, subtotalCents };
 }
 

@@ -7,11 +7,13 @@ import { useCart } from "./CartStore";
 import { Drawer } from "@/components/ui/Drawer";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
+import { PREORDER, isPreorderLine, lineTotalCents } from "@/lib/preorder";
 
 export function CartDrawer() {
   const { drawerOpen, closeDrawer, lines, remove, setQty, subtotalCents } = useCart();
   const currency = lines[0]?.currency ?? "USD";
   const hasSubscription = lines.some((l) => l.subscription);
+  const hasPreorder = lines.some(isPreorderLine);
 
   return (
     <Drawer open={drawerOpen} onClose={closeDrawer} title="Your cart">
@@ -48,6 +50,10 @@ export function CartDrawer() {
                         <Badge variant="gold" className="mt-1.5">
                           <RefreshCw className="size-3" /> Every {line.subscription.cycleDays} days · Save {line.subscription.discountPct}%
                         </Badge>
+                      ) : isPreorderLine(line) ? (
+                        <Badge variant="gold" className="mt-1.5">
+                          {PREORDER.label} · {PREORDER.discountPct}% off
+                        </Badge>
                       ) : null}
                     </div>
                     <button
@@ -81,14 +87,12 @@ export function CartDrawer() {
                       </button>
                     </div>
                     <span className="font-medium text-sm">
-                      {formatPrice(
-                        Math.round(
-                          line.unitPriceCents *
-                            line.qty *
-                            (1 - (line.subscription?.discountPct ?? 0) / 100),
-                        ),
-                        line.currency,
-                      )}
+                      {isPreorderLine(line) ? (
+                        <s className="mr-2 font-normal text-ink/50">
+                          {formatPrice(line.unitPriceCents * line.qty, line.currency)}
+                        </s>
+                      ) : null}
+                      {formatPrice(lineTotalCents(line), line.currency)}
                     </span>
                   </div>
                 </div>
@@ -97,6 +101,11 @@ export function CartDrawer() {
           </ul>
 
           <div className="border-t border-ivory-300 p-6 space-y-3">
+            {hasPreorder ? (
+              <div className="rounded-md bg-gold-50 border border-gold-200 px-3 py-2.5 text-xs text-forest-900">
+                {PREORDER.label}: {PREORDER.discountPct}% off is applied to one-time items. {PREORDER.shipNote}.
+              </div>
+            ) : null}
             {hasSubscription ? (
               <div className="rounded-md bg-gold-50 border border-gold-200 px-3 py-2.5 text-xs text-forest-900">
                 Subscription items will renew on your chosen cycle. Manage anytime in your account.

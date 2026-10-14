@@ -57,7 +57,7 @@ export default function HomePage() {
                 href={`/shop/${supplement.slug}`}
                 className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
               >
-                Shop IP6 Original · {formatPrice(supplementFrom, currency)}
+                Pre-order IP6 Original · 15% off
                 <ArrowRight className="size-4" />
               </Link>
               <Link
