@@ -13,7 +13,7 @@ function Mark({ mark, strong, variant }: { mark: ComparisonMark; strong?: boolea
           "inline-grid size-5 shrink-0 place-items-center rounded-full",
           dark ? "bg-gold-500 text-navy-900" : strong ? "bg-navy-800 text-surface" : "bg-navy-800/10 text-navy-800",
         )}
-        aria-label="Yes"
+        role="img" aria-label="Yes"
       >
         <Check className="size-3" strokeWidth={3} aria-hidden />
       </span>
@@ -26,7 +26,7 @@ function Mark({ mark, strong, variant }: { mark: ComparisonMark; strong?: boolea
           "inline-grid size-5 shrink-0 place-items-center rounded-full border",
           dark ? "border-cream/30 text-cream/50" : "border-ink/25 text-ink/45",
         )}
-        aria-label="Partial"
+        role="img" aria-label="Partial"
       >
         <Minus className="size-3" strokeWidth={3} aria-hidden />
       </span>
@@ -38,7 +38,7 @@ function Mark({ mark, strong, variant }: { mark: ComparisonMark; strong?: boolea
         "inline-grid size-5 shrink-0 place-items-center rounded-full border",
         dark ? "border-cream/25 text-cream/40" : "border-ink/20 text-ink/35",
       )}
-      aria-label="No"
+      role="img" aria-label="No"
     >
       <X className="size-3" strokeWidth={3} aria-hidden />
     </span>

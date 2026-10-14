@@ -37,8 +37,8 @@ export function Drawer({
     <div
       aria-hidden={!open}
       className={cn(
-        "fixed inset-0 z-50 transition-opacity duration-200",
-        open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+        "fixed inset-0 z-50 transition-[opacity,visibility] duration-200",
+        open ? "opacity-100 pointer-events-auto visible" : "opacity-0 pointer-events-none invisible",
       )}
     >
       <div
