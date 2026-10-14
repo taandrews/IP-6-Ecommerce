@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { HeroBottle } from "@/components/home/HeroBottle";
+import { HeroBottle, HeroLine, HeroWords } from "@/components/home/HeroBottle";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -35,9 +35,11 @@ export default function HomePage() {
       <section className="relative bg-surface">
         <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
-              From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
-            </p>
+            <HeroLine delay={0.05}>
+              <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
+                From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
+              </p>
+            </HeroLine>
             <h1
               className="font-serif text-navy-800 text-balance"
               style={{
@@ -48,12 +50,14 @@ export default function HomePage() {
                 fontWeight: 400,
               }}
             >
-              There is only one <span className="text-sky-700">IP6 Original</span>.
+              <HeroWords text="There is only one" accent="IP6 Original" />
             </h1>
-            <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
-              The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-5">
+            <HeroLine delay={0.8}>
+              <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
+                The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
+              </p>
+            </HeroLine>
+            <HeroLine delay={1.0} className="mt-9 flex flex-wrap items-center gap-5">
               <Link
                 href={`/shop/${supplement.slug}`}
                 className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
@@ -67,7 +71,7 @@ export default function HomePage() {
               >
                 Read the story
               </Link>
-            </div>
+            </HeroLine>
           </div>
 
           <div className="relative">

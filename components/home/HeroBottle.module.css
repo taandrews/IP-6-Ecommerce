@@ -1,6 +1,14 @@
+/* Hero bottle sequence.
+   1. Bottle drops in with an overshoot and settles.
+   2. It keeps drifting on a slow, wide float.
+   3. Molecule spheres from the label orbit it in 3D, passing in front and behind.
+   4. Gold rings ripple out behind it.
+   5. The whole stage tilts toward the pointer and parallaxes on scroll.
+   Everything is static under prefers-reduced-motion. */
+
 .stage {
   position: relative;
-  height: 340px;
+  height: 360px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8,16 +16,18 @@
   --ry: 0deg;
   --tx: 0px;
   --ty: 0px;
-  animation: enter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --py: 0px;
+  --r: 150px;
+  perspective: 1400px;
 }
 @media (min-width: 640px) {
-  .stage { height: 420px; }
+  .stage { height: 460px; --r: 190px; }
 }
 @media (min-width: 1024px) {
-  .stage { height: 520px; }
+  .stage { height: 560px; --r: 240px; }
 }
 
-/* Soft gold halo behind the bottle. Decorative only. */
+/* Halo. */
 .glow {
   position: absolute;
   inset: -4% -16%;
@@ -29,65 +39,153 @@
     rgba(197, 162, 83, 0) 100%
   );
   filter: blur(22px);
-  animation: glow 7s ease-in-out infinite;
+  animation: glow 6s ease-in-out infinite;
   pointer-events: none;
 }
 
-/* Pointer tilt: variables are set by HeroBottle.tsx, eased here. */
+/* Expanding gold rings. */
+.ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 70%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(197, 162, 83, 0.55);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  opacity: 0;
+  animation: ring 7s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  pointer-events: none;
+}
+.ring:nth-child(3) { animation-delay: 2.3s; }
+.ring:nth-child(4) { animation-delay: 4.6s; }
+
+/* Pointer tilt and scroll parallax, eased. */
 .tilt {
   position: relative;
   height: 100%;
-  transform: perspective(1200px) rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--tx), var(--ty));
-  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-style: preserve-3d;
+  transform: translateY(var(--py)) rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--tx), var(--ty));
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
   will-change: transform;
 }
 
-/* Slow drift, independent of the tilt so both can run. */
+/* Drop-in, then float. The drop-in runs once; the float takes over after it. */
 .float {
   height: 100%;
-  animation: float 7s ease-in-out infinite;
+  transform-style: preserve-3d;
+  animation:
+    drop 1.3s cubic-bezier(0.22, 1.4, 0.36, 1) both,
+    float 5.5s ease-in-out 1.3s infinite;
 }
 
 .img {
   height: 100%;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 26px 30px rgba(0, 44, 92, 0.22));
+  filter: drop-shadow(0 34px 34px rgba(0, 44, 92, 0.28));
 }
 
-/* Ground shadow that shrinks as the bottle rises. */
+/* Ground shadow that breathes with the float. */
 .shadow {
   position: absolute;
-  bottom: 3%;
+  bottom: 1%;
   left: 50%;
-  width: 44%;
-  height: 18px;
+  width: 46%;
+  height: 20px;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0, 44, 92, 0.3), rgba(0, 44, 92, 0));
-  filter: blur(6px);
-  animation: shadow 7s ease-in-out infinite;
+  background: radial-gradient(closest-side, rgba(0, 44, 92, 0.34), rgba(0, 44, 92, 0));
+  filter: blur(7px);
+  animation: shadowIn 1.3s ease-out both, shadow 5.5s ease-in-out 1.3s infinite;
   pointer-events: none;
 }
 
+/* Orbiting molecule spheres. Each orbit is a tilted 3D plane; each node sits
+   on it at a fixed angle and the plane spins, so nodes pass behind the bottle. */
+.orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  opacity: 0;
+  animation: spin var(--speed, 22s) linear infinite, orbitIn 1.2s ease-out 0.9s forwards;
+}
+.orbitA { --speed: 24s; --tiltX: 72deg; }
+.orbitB { --speed: 34s; --tiltX: 64deg; animation-direction: reverse, normal; }
+
+.node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--size, 22px);
+  height: var(--size, 22px);
+  margin: calc(var(--size, 22px) / -2);
+  border-radius: 50%;
+  transform: rotateX(var(--tiltX)) rotateZ(var(--a)) translateX(var(--r)) rotateZ(calc(-1 * var(--a))) rotateX(calc(-1 * var(--tiltX)));
+  box-shadow: 0 6px 14px rgba(0, 44, 92, 0.25);
+}
+.gold {
+  background: radial-gradient(circle at 32% 28%, #f4e3a4 0%, #d9bb64 35%, #b48d3a 70%, #7d5d1b 100%);
+}
+.navy {
+  background: radial-gradient(circle at 32% 28%, #4d6f9d 0%, #1f3f6f 40%, #0b2345 75%, #04142b 100%);
+}
+
+@keyframes drop {
+  0% { opacity: 0; transform: translateY(140px) scale(0.72) rotate(-10deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
-  50% { transform: translateY(-16px) rotate(0.8deg); }
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-30px) rotate(2.5deg); }
+}
+@keyframes shadowIn {
+  from { opacity: 0; transform: translateX(-50%) scaleX(0.4); }
+  to { opacity: 0.95; transform: translateX(-50%) scaleX(1); }
 }
 @keyframes shadow {
-  0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.9; }
-  50% { transform: translateX(-50%) scaleX(0.8); opacity: 0.55; }
+  0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.95; }
+  50% { transform: translateX(-50%) scaleX(0.7); opacity: 0.45; }
 }
 @keyframes glow {
-  0%, 100% { opacity: 0.75; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.06); }
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
-@keyframes enter {
-  from { opacity: 0; transform: translateY(28px); }
+@keyframes ring {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  12% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.75); }
+}
+@keyframes spin {
+  from { transform: rotateZ(0); }
+  to { transform: rotateZ(360deg); }
+}
+@keyframes orbitIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Staggered copy on the left of the hero. */
+.word {
+  display: inline-block;
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(0.12s + var(--i, 0) * 0.09s);
+}
+.line {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0.7s);
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(26px); }
   to { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage, .float, .shadow, .glow { animation: none; }
+  .float, .shadow, .glow, .ring, .orbit, .word, .line { animation: none; opacity: 1; }
+  .ring { display: none; }
   .tilt { transition: none; transform: none; }
 }
