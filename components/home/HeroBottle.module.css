@@ -37,6 +37,9 @@
   height: 100%;
   object-fit: cover;
   mix-blend-mode: multiply;
+  /* feather the edges into the page so macro shots never read as a hard rectangle */
+  -webkit-mask-image: radial-gradient(ellipse 62% 60% at 50% 50%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 62% 60% at 50% 50%, #000 58%, transparent 100%);
 }
 
 .poster {
