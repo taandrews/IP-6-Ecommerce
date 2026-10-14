@@ -262,13 +262,8 @@ export default function ProductPage({ params }: Params) {
         <h2 className="font-display text-display-md text-forest-800 mb-6">How to use</h2>
         <ol className="border-t border-dotted border-navy-800/30">
           {product.howToUse.map((step, i) => (
-            <li
-              key={i}
-              className="grid grid-cols-[2.5rem_1fr] gap-4 border-b border-dotted border-navy-800/30 py-4"
-            >
-              <span className="pt-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-ink/50 tabular-nums">
-                {String(i + 1).padStart(2, "0")}
-              </span>
+            <li key={i} className="flex gap-4 border-b border-dotted border-navy-800/30 py-4">
+              <span aria-hidden className="mt-3 h-px w-6 shrink-0 bg-gold-500" />
               <p className="text-ink/85 leading-relaxed">{step}</p>
             </li>
           ))}
