@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HeroBottle } from "@/components/home/HeroBottle";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -70,19 +71,8 @@ export default function HomePage() {
           </div>
 
           <div className="relative">
-            {/* Bottle floats on the page - no box, no shadow, no fill behind it.
-               Height is capped so the bottle stays a reasonable size in the hero
-               instead of filling a tall aspect box. */}
-            <div className="relative h-[340px] sm:h-[420px] lg:h-[520px]">
-              <Image
-                src="/products/supplement-real.png"
-                alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
-                fill
-                priority
-                sizes="(min-width: 1024px) 540px, 100vw"
-                className="object-contain"
-              />
-            </div>
+            {/* Floating bottle with gold halo and pointer tilt. See components/home/HeroBottle.tsx. */}
+            <HeroBottle />
             {/* Label badges - taken verbatim from the packaging, no invented stats.
                Sits beneath the bottle so it never overlaps the image. */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">

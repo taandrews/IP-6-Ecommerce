@@ -1,0 +1,93 @@
+.stage {
+  position: relative;
+  height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  --rx: 0deg;
+  --ry: 0deg;
+  --tx: 0px;
+  --ty: 0px;
+  animation: enter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@media (min-width: 640px) {
+  .stage { height: 420px; }
+}
+@media (min-width: 1024px) {
+  .stage { height: 520px; }
+}
+
+/* Soft gold halo behind the bottle. Decorative only. */
+.glow {
+  position: absolute;
+  inset: -4% -16%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(197, 162, 83, 0.55),
+    rgba(197, 162, 83, 0.3) 55%,
+    rgba(197, 162, 83, 0) 100%
+  );
+  filter: blur(22px);
+  animation: glow 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Pointer tilt: variables are set by HeroBottle.tsx, eased here. */
+.tilt {
+  position: relative;
+  height: 100%;
+  transform: perspective(1200px) rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--tx), var(--ty));
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+
+/* Slow drift, independent of the tilt so both can run. */
+.float {
+  height: 100%;
+  animation: float 7s ease-in-out infinite;
+}
+
+.img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 26px 30px rgba(0, 44, 92, 0.22));
+}
+
+/* Ground shadow that shrinks as the bottle rises. */
+.shadow {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  width: 44%;
+  height: 18px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 44, 92, 0.3), rgba(0, 44, 92, 0));
+  filter: blur(6px);
+  animation: shadow 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-0.6deg); }
+  50% { transform: translateY(-16px) rotate(0.8deg); }
+}
+@keyframes shadow {
+  0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.9; }
+  50% { transform: translateX(-50%) scaleX(0.8); opacity: 0.55; }
+}
+@keyframes glow {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+@keyframes enter {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage, .float, .shadow, .glow { animation: none; }
+  .tilt { transition: none; transform: none; }
+}
