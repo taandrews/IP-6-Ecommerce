@@ -101,7 +101,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
               </li>
             ))}
           </ul>
-          <span>Ships to the US and Canada</span>
+          <span>Made in USA · Ships to the US and 27 international countries</span>
         </div>
       </div>
     </footer>
