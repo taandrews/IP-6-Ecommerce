@@ -18,20 +18,13 @@
  #hero-{{ section.id }} .sub { max-width: 46ch; margin: 0 0 36px; color: var(--muted); }
  #hero-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
  #hero-{{ section.id }} .frame-wrap { position: relative; width: 100%; }
- /* Hero bottle: rises in and sharpens, slow float, pointer tilt and scroll parallax. Static under reduced motion. */
- #hero-{{ section.id }} .stage { position: relative; height: clamp(340px, 38vw, 560px); display: flex; align-items: center; justify-content: center; --rx: 0deg; --ry: 0deg; --tx: 0px; --ty: 0px; --py: 0px; perspective: 1400px; }
- #hero-{{ section.id }} .glow { position: absolute; inset: -4% -16%; border-radius: 50%; background: radial-gradient(closest-side, rgba(197,162,83,.55), rgba(197,162,83,.3) 55%, rgba(197,162,83,0) 100%); filter: blur(22px); animation: ip6-glow-in 1.6s ease-out both, ip6-glow 7s ease-in-out 1.6s infinite; pointer-events: none; }
- #hero-{{ section.id }} .tilt { position: relative; height: 100%; transform-style: preserve-3d; transform: translateY(var(--py)) rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--tx), var(--ty)); transition: transform .9s cubic-bezier(.2,.7,.2,1); will-change: transform; }
- #hero-{{ section.id }} .float { height: 100%; transform-style: preserve-3d; animation: ip6-drop 1.4s cubic-bezier(.2,.7,.2,1) both, ip6-float 7s ease-in-out 1.4s infinite; }
- #hero-{{ section.id }} .float img { height: 100%; width: auto; display: block; filter: drop-shadow(0 34px 34px rgba(0,44,92,.28)); }
- #hero-{{ section.id }} .shadow { position: absolute; bottom: 1%; left: 50%; width: 46%; height: 20px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(0,44,92,.34), rgba(0,44,92,0)); filter: blur(7px); animation: ip6-shadow-in 1.4s ease-out both, ip6-shadow 7s ease-in-out 1.4s infinite; pointer-events: none; }
- @keyframes ip6-drop { 0% { opacity: 0; transform: translateY(70px) scale(.94); filter: blur(10px); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
- @keyframes ip6-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
- @keyframes ip6-shadow-in { from { opacity: 0; transform: translateX(-50%) scaleX(.4); } to { opacity: .95; transform: translateX(-50%) scaleX(1); } }
- @keyframes ip6-shadow { 0%, 100% { transform: translateX(-50%) scaleX(1); opacity: .95; } 50% { transform: translateX(-50%) scaleX(.84); opacity: .6; } }
- @keyframes ip6-glow-in { from { opacity: 0; transform: scale(.8); } to { opacity: .7; transform: scale(1); } }
- @keyframes ip6-glow { 0%, 100% { opacity: .7; transform: scale(1); } 50% { opacity: .95; transform: scale(1.05); } }
- @media (prefers-reduced-motion: reduce) { #hero-{{ section.id }} .float, #hero-{{ section.id }} .shadow, #hero-{{ section.id }} .glow { animation: none; opacity: 1; } #hero-{{ section.id }} .tilt { transition: none; transform: none; } }
+ /* Hero bottle film: a short muted loop of the real bottle (slow push-in with a gold light sweep) blended into the white page. Fades in on load, parallaxes on scroll. Reduced motion shows the poster instead. */
+ #hero-{{ section.id }} .stage { position: relative; height: clamp(360px, 38vw, 560px); display: flex; align-items: center; justify-content: center; --py: 0px; animation: ip6-hero-enter 1.4s cubic-bezier(.2,.7,.2,1) both; }
+ #hero-{{ section.id }} .frame { position: relative; height: 100%; aspect-ratio: 3 / 4; transform: translateY(var(--py)); transition: transform .6s cubic-bezier(.2,.7,.2,1); will-change: transform; }
+ #hero-{{ section.id }} .frame video, #hero-{{ section.id }} .frame .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; mix-blend-mode: multiply; }
+ #hero-{{ section.id }} .frame .poster { display: none; }
+ @keyframes ip6-hero-enter { from { opacity: 0; transform: translateY(40px); filter: blur(10px); } to { opacity: 1; transform: none; filter: blur(0); } }
+ @media (prefers-reduced-motion: reduce) { #hero-{{ section.id }} .stage { animation: none; } #hero-{{ section.id }} .frame { transition: none; transform: none; } #hero-{{ section.id }} .frame video { display: none; } #hero-{{ section.id }} .frame .poster { display: block; } }
 </style>
 
 <section id="hero-{{ section.id }}" class="ip6 ip6-reveal">
@@ -52,17 +45,13 @@
  </div>
  <div class="frame-wrap ip6-rise d3">
  <div class="stage" data-hero-stage>
- <div class="glow" aria-hidden="true"></div>
- <div class="tilt">
- <div class="float">
- {%- if img != blank -%}
- <img src="{{ img | image_url: width: 900 }}" alt="{{ p.title | default: 'IP6 Original' }}" width="532" height="900" loading="eager" fetchpriority="high">
- {%- else -%}
- <img src="{{ 'ip6-bottle-hero.png' | asset_url }}" alt="IP6 Original supplement bottle" width="532" height="900" loading="eager" fetchpriority="high">
- {%- endif -%}
+ <div class="frame">
+ <video autoplay muted loop playsinline preload="auto" poster="{{ 'ip6-hero-poster.jpg' | asset_url }}" aria-label="IP6 Original supplement bottle">
+ <source src="{{ 'ip6-hero-loop.webm' | asset_url }}" type="video/webm">
+ <source src="{{ 'ip6-hero-loop.mp4' | asset_url }}" type="video/mp4">
+ </video>
+ <img class="poster" src="{{ 'ip6-hero-poster.jpg' | asset_url }}" alt="IP6 Original supplement bottle" width="720" height="960">
  </div>
- </div>
- <div class="shadow" aria-hidden="true"></div>
  </div>
  <p class="cap ip6-caption">120 capsules · 60 servings</p>
  </div>
@@ -71,26 +60,9 @@
 <script>
 (function () {
  var stage = document.querySelector('#hero-{{ section.id }} [data-hero-stage]');
- if (!stage || !window.matchMedia) return;
- if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
- var area = stage.closest('section') || stage, raf = 0;
- var onScroll = function () { stage.style.setProperty('--py', (Math.min(window.scrollY, 900) * 0.16).toFixed(1) + 'px'); };
+ if (!stage || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+ var onScroll = function () { stage.style.setProperty('--py', (Math.min(window.scrollY, 900) * 0.12).toFixed(1) + 'px'); };
  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
- if (!window.matchMedia('(pointer: fine)').matches) return;
- area.addEventListener('pointermove', function (e) {
-  var r = area.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-  cancelAnimationFrame(raf);
-  raf = requestAnimationFrame(function () {
-   stage.style.setProperty('--rx', (-y * 8).toFixed(2) + 'deg');
-   stage.style.setProperty('--ry', (x * 12).toFixed(2) + 'deg');
-   stage.style.setProperty('--tx', (x * 20).toFixed(1) + 'px');
-   stage.style.setProperty('--ty', (y * 14).toFixed(1) + 'px');
-  });
- });
- area.addEventListener('pointerleave', function () {
-  cancelAnimationFrame(raf);
-  ['--rx', '--ry', '--tx', '--ty'].forEach(function (v) { stage.style.removeProperty(v); });
- });
 })();
 </script>
 
@@ -100,7 +72,7 @@
  "tag": "section",
  "settings": [
  { "type": "product", "id": "product", "label": "Featured product" },
- { "type": "image_picker", "id": "image", "label": "Product image (4:5)" },
+ { "type": "image_picker", "id": "image", "label": "Product image (unused while the hero film is active)" },
  { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD" },
  { "type": "text", "id": "heading", "label": "Heading", "default": "There is only one IP6 Original." },
  { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "The first IP6 supplement standardized to the research-grade purity Prof. Shamsuddin's work defined, 804 mg of inositol hexaphosphate with Inositol, in every serving." },

@@ -1,109 +1,51 @@
-/* Hero bottle.
-   1. Bottle rises in and sharpens while the halo fades up.
-   2. It keeps a slow, subtle float.
-   3. The stage tilts toward the pointer and parallaxes on scroll.
-   Everything is static under prefers-reduced-motion. */
+/* Hero bottle film.
+   A short, muted, looping product film of the real bottle (slow push-in with a
+   gold light sweep) on a white seamless, blended into the page. It fades and
+   sharpens in on load, then parallaxes gently on scroll. Under reduced motion
+   the poster frame is shown instead of the video. */
 
 .stage {
   position: relative;
-  height: 360px;
+  height: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
-  --rx: 0deg;
-  --ry: 0deg;
-  --tx: 0px;
-  --ty: 0px;
   --py: 0px;
-  perspective: 1400px;
+  animation: enter 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 @media (min-width: 640px) {
-  .stage { height: 460px; }
+  .stage { height: 480px; }
 }
 @media (min-width: 1024px) {
   .stage { height: 560px; }
 }
 
-/* Halo. */
-.glow {
-  position: absolute;
-  inset: -4% -16%;
-  border-radius: 50%;
-  background: radial-gradient(
-    closest-side,
-    rgba(197, 162, 83, 0.55),
-    rgba(197, 162, 83, 0.3) 55%,
-    rgba(197, 162, 83, 0) 100%
-  );
-  filter: blur(22px);
-  animation: glowIn 1.6s ease-out both, glow 7s ease-in-out 1.6s infinite;
-  pointer-events: none;
-}
-
-/* Pointer tilt and scroll parallax, eased. */
-.tilt {
+.frame {
   position: relative;
   height: 100%;
-  transform-style: preserve-3d;
-  transform: translateY(var(--py)) rotateX(var(--rx)) rotateY(var(--ry)) translate(var(--tx), var(--ty));
-  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  aspect-ratio: 3 / 4;
+  transform: translateY(var(--py));
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
   will-change: transform;
 }
 
-/* Drop-in, then float. The drop-in runs once; the float takes over after it. */
-.float {
-  height: 100%;
-  transform-style: preserve-3d;
-  animation:
-    drop 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both,
-    float 7s ease-in-out 1.4s infinite;
-}
-
-.img {
-  height: 100%;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 34px 34px rgba(0, 44, 92, 0.28));
-}
-
-/* Ground shadow that breathes with the float. */
-.shadow {
+.video,
+.poster {
   position: absolute;
-  bottom: 1%;
-  left: 50%;
-  width: 46%;
-  height: 20px;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0, 44, 92, 0.34), rgba(0, 44, 92, 0));
-  filter: blur(7px);
-  animation: shadowIn 1.4s ease-out both, shadow 7s ease-in-out 1.4s infinite;
-  pointer-events: none;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
 }
 
-@keyframes drop {
-  0% { opacity: 0; transform: translateY(70px) scale(0.94); filter: blur(10px); }
-  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+.poster {
+  display: none;
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
-}
-@keyframes shadowIn {
-  from { opacity: 0; transform: translateX(-50%) scaleX(0.4); }
-  to { opacity: 0.95; transform: translateX(-50%) scaleX(1); }
-}
-@keyframes shadow {
-  0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.95; }
-  50% { transform: translateX(-50%) scaleX(0.84); opacity: 0.6; }
-}
-@keyframes glowIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 0.7; transform: scale(1); }
-}
-@keyframes glow {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 0.95; transform: scale(1.05); }
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(40px); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
 }
 
 /* Staggered copy on the left of the hero. */
@@ -122,6 +64,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .float, .shadow, .glow, .word, .line { animation: none; opacity: 1; }
-  .tilt { transition: none; transform: none; }
+  .stage, .word, .line { animation: none; opacity: 1; }
+  .frame { transition: none; transform: none; }
+  .video { display: none; }
+  .poster { display: block; }
 }

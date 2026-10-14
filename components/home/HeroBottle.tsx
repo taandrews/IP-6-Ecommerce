@@ -1,15 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, type ReactNode } from "react";
 import styles from "./HeroBottle.module.css";
 
 /**
- * Home hero bottle: rises in and sharpens, slow float, pointer tilt and scroll
- * parallax. Static under prefers-reduced-motion. The photo is the client's
- * 120-count bottle cut to a transparent PNG.
+ * Home hero: a short muted product film of the client's real bottle (slow
+ * push-in with a gold light sweep, mirrored into a seamless loop), blended into
+ * the white page. Fades in on load and parallaxes on scroll. Under reduced
+ * motion the poster frame is shown and the film never plays.
  */
-
 export function HeroBottle() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -17,62 +16,40 @@ export function HeroBottle() {
     const el = ref.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const area: HTMLElement = el.closest("section") ?? el;
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    let raf = 0;
-
-    const onMove = (e: PointerEvent) => {
-      const r = area.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        el.style.setProperty("--rx", `${(-y * 8).toFixed(2)}deg`);
-        el.style.setProperty("--ry", `${(x * 12).toFixed(2)}deg`);
-        el.style.setProperty("--tx", `${(x * 20).toFixed(1)}px`);
-        el.style.setProperty("--ty", `${(y * 14).toFixed(1)}px`);
-      });
-    };
-    const onLeave = () => {
-      cancelAnimationFrame(raf);
-      for (const v of ["--rx", "--ry", "--tx", "--ty"]) el.style.removeProperty(v);
-    };
     const onScroll = () => {
       const y = Math.min(window.scrollY, 900);
-      el.style.setProperty("--py", `${(y * 0.16).toFixed(1)}px`);
+      el.style.setProperty("--py", `${(y * 0.12).toFixed(1)}px`);
     };
-
-    if (finePointer) {
-      area.addEventListener("pointermove", onMove);
-      area.addEventListener("pointerleave", onLeave);
-    }
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => {
-      area.removeEventListener("pointermove", onMove);
-      area.removeEventListener("pointerleave", onLeave);
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <div ref={ref} className={styles.stage}>
-      <div className={styles.glow} aria-hidden />
-      <div className={styles.tilt}>
-        <div className={styles.float}>
-          <Image
-            src="/products/supplement-hero.png"
-            alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
-            width={532}
-            height={900}
-            priority
-            sizes="(min-width: 1024px) 340px, (min-width: 640px) 280px, 220px"
-            className={styles.img}
-          />
-        </div>
+      <div className={styles.frame}>
+        <video
+          className={styles.video}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/video/ip6-hero-poster.jpg"
+          aria-label="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
+        >
+          <source src="/video/ip6-hero-loop.webm" type="video/webm" />
+          <source src="/video/ip6-hero-loop.mp4" type="video/mp4" />
+        </video>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className={styles.poster}
+          src="/video/ip6-hero-poster.jpg"
+          alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
+          width={720}
+          height={960}
+        />
       </div>
-      <div className={styles.shadow} aria-hidden />
     </div>
   );
 }
