@@ -113,12 +113,7 @@ export const products: Product[] = [
     relatedSkus: ["SKN-LSC-BASE", "FIL-CITRATE-BASE"],
     requiresDsheaDisclaimer: true,
     shipsGlobally: false,
-    labReport: {
-      url: "/coa/sup-ip6-cap-60-2026-q1.pdf",
-      batchId: "SUP-IP6-B0426-A",
-      issuedOn: "2026-03-14",
-      labName: "Eurofins Scientific",
-    },
+    // labReport: add back once the real certificate of analysis PDF is in public/coa/
   },
   {
     slug: "ip6-la-sante-cream",
