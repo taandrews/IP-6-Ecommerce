@@ -108,7 +108,7 @@ export default function HomePage() {
               <FlaskConical className="size-3.5 text-sky-700" /> High-Purity Formula
             </span>
             <span className="flex items-center gap-2">
-              <Truck className="size-3.5 text-sky-700" /> Ships to 28 countries
+              <Truck className="size-3.5 text-sky-700" /> Free US shipping over $75
             </span>
             <span className="flex items-center gap-2">
               <CheckCircle2 className="size-3.5 text-sky-700" /> Made in USA

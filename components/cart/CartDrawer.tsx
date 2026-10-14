@@ -8,12 +8,15 @@ import { Drawer } from "@/components/ui/Drawer";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { PREORDER, isPreorderLine, lineTotalCents } from "@/lib/preorder";
+import { FREE_SHIPPING_THRESHOLD_CENTS, qualifiesForFreeShipping } from "@/lib/shipping";
 
 export function CartDrawer() {
   const { drawerOpen, closeDrawer, lines, remove, setQty, subtotalCents } = useCart();
   const currency = lines[0]?.currency ?? "USD";
   const hasSubscription = lines.some((l) => l.subscription);
   const hasPreorder = lines.some(isPreorderLine);
+  const freeShipping = qualifiesForFreeShipping(subtotalCents, currency);
+  const toFreeShipping = FREE_SHIPPING_THRESHOLD_CENTS - subtotalCents;
 
   return (
     <Drawer open={drawerOpen} onClose={closeDrawer} title="Your cart">
@@ -115,8 +118,13 @@ export function CartDrawer() {
               <span className="text-ink/70">Subtotal</span>
               <span className="font-medium">{formatPrice(subtotalCents, currency)}</span>
             </div>
-            <div className="flex justify-between text-xs text-ink/60">
-              <span>Shipping & tax calculated at checkout</span>
+            <div className="text-xs text-ink/60 space-y-1">
+              {currency === "USD" ? (
+                <p className={freeShipping ? "text-forest-700 font-medium" : undefined}>
+                  {freeShipping ? "Free US shipping on this order." : `Add ${formatPrice(toFreeShipping, currency)} more for free US shipping.`}
+                </p>
+              ) : null}
+              <p>Shipping & tax calculated at checkout</p>
             </div>
             <Link
               href="/checkout"

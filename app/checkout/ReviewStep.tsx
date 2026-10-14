@@ -52,7 +52,7 @@ export function ReviewStep({
       <section>
         <h3 className="font-medium text-forest-800 mb-2">Shipping method</h3>
         <p className="text-sm text-ink/75">
-          {rate.label} · {rate.carrier} · {rate.etaDays[0]}–{rate.etaDays[1]} business days · {formatPrice(shippingCents, currency)}
+          {rate.label} · {rate.carrier} · {rate.etaDays[0]}–{rate.etaDays[1]} business days · {shippingCents === 0 ? "Free" : formatPrice(shippingCents, currency)}
         </p>
       </section>
 
@@ -77,7 +77,7 @@ export function ReviewStep({
 
       <section className="border-t border-ivory-300 pt-4 space-y-1 text-sm">
         <Row label="Subtotal" value={formatPrice(subtotalCents, currency)} />
-        <Row label="Shipping" value={formatPrice(shippingCents, currency)} />
+        <Row label="Shipping" value={shippingCents === 0 ? "Free" : formatPrice(shippingCents, currency)} />
         <Row label="Tax" value={formatPrice(taxCents, currency)} />
         <div className="pt-2 border-t border-ivory-300 mt-2">
           <Row label={<strong>Total</strong>} value={<strong>{formatPrice(totalCents, currency)}</strong>} />

@@ -176,7 +176,7 @@ export function CheckoutFlow() {
           </ul>
           <div className="border-t border-ivory-300 pt-4 space-y-2 text-sm">
             <Row label="Subtotal" value={formatPrice(subtotalCents, currency)} />
-            <Row label="Shipping" value={rate ? formatPrice(shippingCents, currency) : "Calculated next step"} />
+            <Row label="Shipping" value={rate ? (shippingCents === 0 ? "Free" : formatPrice(shippingCents, currency)) : "Calculated next step"} />
             <Row label="Est. tax" value={formatPrice(estimatedTaxCents, currency)} />
             <div className="border-t border-ivory-300 pt-3 mt-3">
               <Row

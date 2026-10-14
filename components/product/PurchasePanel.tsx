@@ -68,7 +68,7 @@ export function PurchasePanel({
       </div>
       {PREORDER.active ? (
         <p className="text-sm text-ink/70 -mt-3">
-          {PREORDER.label}: {PREORDER.discountPct}% off one-time purchases, applied in your cart. {PREORDER.shipNote}.
+          {PREORDER.label}: {PREORDER.discountPct}% off one-time purchases, applied in your cart. {PREORDER.shipNote}. Free US shipping on orders over $75.
         </p>
       ) : null}
 

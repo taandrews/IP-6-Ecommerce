@@ -87,7 +87,7 @@ export function MethodStep({
                       {r.carrier} · {r.etaDays[0]}–{r.etaDays[1]} business days
                     </div>
                   </div>
-                  <div className="font-medium">{formatPrice(r.amountCents, r.currency)}</div>
+                  <div className="font-medium">{r.amountCents === 0 ? "Free" : formatPrice(r.amountCents, r.currency)}</div>
                 </label>
               </li>
             );

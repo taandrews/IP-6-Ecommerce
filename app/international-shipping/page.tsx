@@ -49,7 +49,7 @@ export default function InternationalShippingPage() {
           Where we ship.
         </h1>
         <p className="text-lg text-ink/75 leading-relaxed mb-10">
-          IP6 Original ships to the United States and the countries listed below. Shipping rates are calculated at checkout from your address. International duties and import taxes are the responsibility of the recipient. Tracking is emailed when your order ships.
+          IP6 Original ships to the United States and the countries listed below. US orders over $75 ship free. Other shipping rates are calculated at checkout from your address. International duties and import taxes are the responsibility of the recipient. Tracking is emailed when your order ships.
         </p>
         <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
           {Object.entries(COUNTRIES).map(([code, name]) => (

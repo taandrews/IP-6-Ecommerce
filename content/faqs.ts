@@ -79,7 +79,7 @@ export const faqCategories: FaqCategory[] = [
       },
       {
         q: "Where does IP6 Original ship?",
-        a: "IP6 Original ships to the United States and 27 international countries. Rates are shown at checkout.",
+        a: "IP6 Original ships to the United States and 27 international countries. US orders over $75 ship free. Other rates are shown at checkout.",
       },
       {
         q: "What is the return policy?",

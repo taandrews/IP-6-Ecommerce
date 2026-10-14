@@ -15,7 +15,7 @@ export default function ShippingPolicyPage() {
       <div className="space-y-8 text-ink/80 leading-relaxed">
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">Rates and carriers</h2>
-          <p>Shipping rates and carrier options are calculated at checkout from your address. Tracking is emailed when your order ships.</p>
+          <p>US orders over $75 ship free with standard shipping. All other shipping rates and carrier options are calculated at checkout from your address. Tracking is emailed when your order ships.</p>
         </section>
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">Pre-orders</h2>
