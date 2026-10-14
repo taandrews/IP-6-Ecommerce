@@ -59,6 +59,7 @@ export default function HomePage() {
       <Molecule />
       <Stakes />
       <FounderBand hasVideo={assets.hasFounderVideo} />
+      <ProductSection product={supplement} currency={currency} macros={assets.macros} />
       {/* @sections */}
       <Footer showDshea />
     </>
