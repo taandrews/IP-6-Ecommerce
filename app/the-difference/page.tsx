@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
+import { products } from "@/content/products";
 import { Footer } from "@/components/layout/Footer";
 import { ComparisonTable } from "@/components/sections/ComparisonTable";
 import { hreflangAlternates } from "@/lib/i18n";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function TheDifferencePage() {
+  const supplement = products.find((p) => p.slug === "ip6-original-supplement")!;
   return (
     <>
       <article className="bg-surface">
@@ -51,6 +53,26 @@ export default function TheDifferencePage() {
         {/* Comparison table (shared with the home page) */}
         <section className="container max-w-5xl pb-12">
           <ComparisonTable />
+        </section>
+
+        {/* Third-party test report */}
+        <section id="test-report" className="container max-w-5xl pb-12 scroll-mt-32">
+          {supplement.labReport ? (
+            <a
+              href={supplement.labReport.url}
+              className="group flex items-start gap-4 rounded-xl border border-navy-800/15 p-6 transition-colors hover:border-gold-600"
+            >
+              <FileText className="mt-0.5 size-5 shrink-0 text-gold-700" aria-hidden />
+              <span className="min-w-0 flex-1">
+                <span className="eyebrow block">Certificate of analysis · batch {supplement.labReport.batchId}</span>
+                <span className="mt-1 block text-lg font-medium text-navy-800">Third-party batch report</span>
+                <span className="mt-1 block text-sm text-ink/60">
+                  {supplement.labReport.labName} · issued {new Date(supplement.labReport.issuedOn).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                </span>
+              </span>
+              <span className="self-center font-mono text-[12px] uppercase tracking-[0.12em] text-navy-800 group-hover:text-gold-700">PDF →</span>
+            </a>
+          ) : null}
         </section>
 
         {/* Closing line */}

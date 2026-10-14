@@ -5,6 +5,10 @@ import { Hero } from "@/components/home/Hero";
 import { Credibility } from "@/components/home/Credibility";
 import { Molecule } from "@/components/home/Molecule";
 import { Divider } from "@/components/home/MoleculeMark";
+import { Stakes } from "@/components/home/Stakes";
+import { FounderBand } from "@/components/home/FounderBand";
+import { ProductSection } from "@/components/home/ProductSection";
+import { HowToTake } from "@/components/home/HowToTake";
 import { products } from "@/content/products";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
@@ -53,6 +57,7 @@ export default function HomePage() {
       <Hero frames={assets.frames} price={formatPrice(supplementFrom, currency)} shopHref={shopHref} />
       <Credibility />
       <Molecule />
+      <Stakes />
       {/* @sections */}
       <Footer showDshea />
     </>
