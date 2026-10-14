@@ -27,7 +27,7 @@ export function ProductMediaGrid({ product }: { product: Product }) {
           <figure
             key={im.url + i}
             className={cn(
-              "relative w-[82vw] max-w-[420px] shrink-0 snap-center overflow-hidden rounded-xl bg-cream-200",
+              "relative w-[82vw] max-w-[420px] shrink-0 snap-center overflow-hidden rounded-xl bg-cloud-300",
               "aspect-[4/5] lg:w-auto lg:max-w-none",
               i === 0 && "lg:col-span-2 lg:aspect-[4/3]",
             )}

@@ -6,7 +6,7 @@ export function SupplementSections() {
   return (
     <>
       {/* Founder endorsement, compliant structure-function language only */}
-      <section className="bg-gold-50 py-20">
+      <section className="bg-cloud-200 py-20">
         <div className="container max-w-5xl grid lg:grid-cols-[1fr_1.4fr] gap-10 items-center">
           <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-cloud-200 max-w-xs lg:max-w-none mx-auto w-full">
             <Image

@@ -56,7 +56,7 @@ export function ComparisonTable({ className }: { className?: string }) {
                 {row.commodity.text}
               </span>
             </div>
-            <div className="mt-2 flex items-start gap-3 rounded-lg bg-gold-50 px-3 py-2.5 text-sm font-medium text-navy-800">
+            <div className="mt-2 flex items-start gap-3 rounded-lg bg-navy-50 px-3 py-2.5 text-sm font-medium text-navy-800">
               <Mark mark={row.original.mark} strong />
               <span>
                 <span className="block text-[10px] uppercase tracking-[0.18em] text-navy-800/60 font-semibold">IP6 Original</span>
@@ -81,7 +81,7 @@ export function ComparisonTable({ className }: { className?: string }) {
               </span>
               <span className="mt-1 block text-xs font-normal text-ink/55">Most supplements on shelves</span>
             </th>
-            <th scope="col" className="rounded-t-xl bg-gold-50 py-4 px-4 text-left align-bottom">
+            <th scope="col" className="rounded-t-xl bg-navy-50 py-4 px-4 text-left align-bottom">
               <span className="block text-[10px] uppercase tracking-[0.22em] text-navy-800 font-bold">
                 IP6 Original
               </span>
@@ -103,7 +103,7 @@ export function ComparisonTable({ className }: { className?: string }) {
                     <span className="pt-px">{row.commodity.text}</span>
                   </div>
                 </td>
-                <td className={cn("bg-gold-50 py-4 px-4 align-top", last && "rounded-b-xl")}>
+                <td className={cn("bg-navy-50 py-4 px-4 align-top", last && "rounded-b-xl")}>
                   <div className="flex items-start gap-3 font-medium text-navy-800">
                     <Mark mark={row.original.mark} strong />
                     <span className="pt-px">{row.original.text}</span>

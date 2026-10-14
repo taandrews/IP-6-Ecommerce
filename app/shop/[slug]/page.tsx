@@ -64,7 +64,7 @@ export default function ProductPage({ params }: Params) {
   return (
     <>
       {/* Atmospheric product hero with gradient ground + serial detail */}
-      <section className="bg-cream-100 relative">
+      <section className="bg-cloud-200 relative">
         <nav aria-label="Breadcrumb" className="container pt-6 text-sm text-ink/60">
           <ol className="flex items-center gap-1.5">
             <li>

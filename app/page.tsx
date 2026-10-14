@@ -35,7 +35,7 @@ export default function HomePage() {
       <section className="relative bg-surface">
         <div className="container pt-4 lg:pt-6">
           {/* Cream inset panel (Ritual): text left, oversized bottle right on a flat tinted ground */}
-          <div className="rounded-[28px] bg-cream-100 overflow-hidden grid lg:grid-cols-[1.2fr_1fr]">
+          <div className="rounded-[28px] bg-navy-50 overflow-hidden grid lg:grid-cols-[1.2fr_1fr]">
             <div className="px-7 py-14 sm:px-12 lg:px-16 lg:py-24 flex flex-col justify-center">
               <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-8">
                 From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
@@ -66,7 +66,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="relative bg-cream-200 min-h-[380px] sm:min-h-[460px] lg:min-h-[620px] flex items-end justify-center overflow-hidden">
+            <div className="relative bg-cloud-300 min-h-[380px] sm:min-h-[460px] lg:min-h-[620px] flex items-end justify-center overflow-hidden">
               <div className="relative w-full h-[88%] translate-y-[4%]">
                 <Image
                   src="/products/supplement-real.png"
@@ -285,7 +285,7 @@ export default function HomePage() {
          CHAPTER 3 EXIT-RAMP - The Solution (product card link)
          The first IP6 supplement standardized to research-grade purity.
       ============================================== */}
-      <section className="bg-cream-100 py-20 lg:py-28">
+      <section className="bg-cloud-200 py-20 lg:py-28">
         <div className="container max-w-5xl">
           <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
             The Solution
@@ -311,7 +311,7 @@ export default function HomePage() {
             className="mt-10 group block rounded-2xl bg-surface max-w-2xl overflow-hidden shadow-soft"
           >
             <div className="grid sm:grid-cols-[240px_1fr]">
-              <div className="relative aspect-square bg-cream-200">
+              <div className="relative aspect-square bg-cloud-300">
                 <Image
                   src="/products/supplement-real.png"
                   alt=""

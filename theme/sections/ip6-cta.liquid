@@ -1,6 +1,6 @@
 {%- assign p = section.settings.product -%}
 <style>
- #act-{{ section.id }} { background: #fcf8ee; }
+ #act-{{ section.id }} { background: var(--surface); }
  #act-{{ section.id }} .g { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(32px,5vw,64px); align-items: start; }
  #act-{{ section.id }} h2 { font-size: clamp(30px,4vw,42px); margin: 14px 0 0; }
  #act-{{ section.id }} .lead { font-family: var(--serif); margin: 14px 0 0; max-width: 46ch; font-size: 19px; line-height: 1.6; color: var(--ink-2); }
