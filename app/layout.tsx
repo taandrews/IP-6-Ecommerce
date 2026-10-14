@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: `${siteName} · Science-backed wellness`, template: `%s · ${siteName}` },
   description:
-    "Premium supplements, cortisone-free skincare, and gravity-fed water filtration, built to research-grade specifications.",
+    "The original IP6 and Inositol supplement, formulated by the scientist who pioneered the research, built to a research-grade specification.",
   applicationName: siteName,
   alternates: hreflangAlternates("/"),
   openGraph: {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     title: `${siteName} · Science-backed wellness`,
     description:
-      "Premium supplements, cortisone-free skincare, and gravity-fed water filtration, built to research-grade specifications.",
+      "The original IP6 and Inositol supplement, formulated by the scientist who pioneered the research, built to a research-grade specification.",
   },
   twitter: { card: "summary_large_image", title: siteName },
   robots: { index: true, follow: true },

@@ -6,7 +6,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact IP6 Original for customer support, wholesale inquiries, and humanitarian program contacts.",
+    "Contact IP6 Original for customer support, wholesale inquiries, and press.",
   alternates: hreflangAlternates("/contact"),
 };
 
@@ -37,14 +37,6 @@ export default function ContactPage() {
               <dd className="text-ink/75">
                 <a href="mailto:wholesale@ip6original.com" className="underline">
                   wholesale@ip6original.com
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="font-display text-lg text-forest-800">Humanitarian programs</dt>
-              <dd className="text-ink/75">
-                <a href="mailto:programs@ip6original.com" className="underline">
-                  programs@ip6original.com
                 </a>
               </dd>
             </div>

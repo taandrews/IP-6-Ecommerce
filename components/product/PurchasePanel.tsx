@@ -190,7 +190,7 @@ export function PurchasePanel({
 
       {/* Reassurance */}
       <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-ink/75">
-        <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Free returns 30 days</li>
+        <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Made in USA</li>
         <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Third-party tested</li>
         <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Secure checkout</li>
         <li className="flex items-center gap-2"><RefreshCw className="size-4 text-forest-600" />Cancel anytime</li>

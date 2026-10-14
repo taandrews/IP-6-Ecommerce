@@ -79,7 +79,7 @@ export default function StoryPage() {
               The years that followed
             </p>
             <p className="text-xl lg:text-2xl text-ink/85 leading-relaxed">
-              Publication after publication. A growing body of peer-reviewed research. A research foundation in Baltimore to keep the work going. A career spent proving that a molecule found in seeds and grains holds properties the world has not yet paid attention to.
+              Publication after publication. A growing body of peer-reviewed research. A research foundation to keep the work going. A career spent proving that a molecule found in seeds and grains holds properties the world has not yet paid attention to.
             </p>
           </div>
         </section>

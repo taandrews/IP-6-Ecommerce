@@ -11,18 +11,15 @@ export default function ShippingPolicyPage() {
     <>
       <p className="eyebrow mb-4">Legal</p>
       <h1 className="font-display text-display-xl text-forest-800 mb-6">Shipping Policy</h1>
-      <p className="text-sm text-ink/60 mb-10">Last updated: April 17, 2026</p>
-
-      <div className="space-y-8 text-ink/85 leading-relaxed">
+      <p className="text-sm text-ink/60 mb-10">Last updated: October 14, 2026</p>
+      <div className="space-y-8 text-ink/80 leading-relaxed">
         <section>
-          <h2 className="font-display text-display-md text-forest-800 mb-3">Processing time</h2>
-          <p>
-            Orders are processed within 1–2 business days. Orders placed on weekends and US holidays ship the next business day.
-          </p>
+          <h2 className="font-display text-display-md text-forest-800 mb-3">Rates and carriers</h2>
+          <p>Shipping rates and carrier options are calculated at checkout from your address. Tracking is emailed when your order ships.</p>
         </section>
         <section>
-          <h2 className="font-display text-display-md text-forest-800 mb-3">Carriers</h2>
-          <p>We ship via USPS, UPS, DHL Express, and partner posts depending on destination. Tracking is emailed when your order leaves our warehouse.</p>
+          <h2 className="font-display text-display-md text-forest-800 mb-3">Pre-orders</h2>
+          <p>Pre-ordered items start shipping in November 2026. You are charged at checkout and we ship when stock arrives.</p>
         </section>
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">Duties and taxes</h2>
@@ -31,9 +28,9 @@ export default function ShippingPolicyPage() {
           </p>
         </section>
         <section>
-          <h2 className="font-display text-display-md text-forest-800 mb-3">Country eligibility</h2>
+          <h2 className="font-display text-display-md text-forest-800 mb-3">Where we ship</h2>
           <p>
-            See our <a href="/international-shipping" className="underline text-forest-700">International Shipping</a> page for the current list of permitted countries for supplements and skincare. The IP6-Citrate Water Filter ships globally.
+            See our <a href="/international-shipping" className="underline text-forest-700">International Shipping</a> page for the current list of countries.
           </p>
         </section>
       </div>

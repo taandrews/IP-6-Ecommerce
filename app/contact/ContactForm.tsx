@@ -48,7 +48,6 @@ export function ContactForm() {
         <option value="support">Customer support</option>
         <option value="order">Order question</option>
         <option value="wholesale">Wholesale inquiry</option>
-        <option value="humanitarian">Humanitarian program</option>
         <option value="press">Press</option>
         <option value="other">Other</option>
       </Select>

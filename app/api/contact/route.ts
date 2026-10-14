@@ -6,7 +6,7 @@ import { lintContent } from "@/lib/compliance/claim-linter";
 const Body = z.object({
   name: z.string().min(1).max(80),
   email: z.string().email(),
-  topic: z.enum(["support", "order", "wholesale", "humanitarian", "press", "other"]),
+  topic: z.enum(["support", "order", "wholesale", "press", "other"]),
   order: z.string().max(40).optional().or(z.literal("")),
   message: z.string().min(10).max(2000),
 });

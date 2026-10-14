@@ -316,7 +316,7 @@ export function PreBookPopup() {
                   <div className={s.reassure}>
                     <span>cGMP Certified</span>
                     <span>Third-Party Tested</span>
-                    <span>30-Day Returns</span>
+                    <span>Made in USA</span>
                   </div>
                 </>
               )}

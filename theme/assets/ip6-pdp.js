@@ -12,7 +12,9 @@
         subWas = root.querySelector('[data-sub-was]'),
         otNow = root.querySelector('[data-ot-now]');
     var main = root.querySelector('[data-main-img]');
-    var state = { price: parseInt(root.getAttribute('data-onetime'), 10) || 0, plan: 'subscribe' };
+    var hasPlans = !!root.querySelector('.plan[data-plan="subscribe"]');
+    var preNow = root.querySelector('[data-pre-now]'), preWas = root.querySelector('[data-pre-was]');
+    var state = { price: parseInt(root.getAttribute('data-onetime'), 10) || 0, plan: hasPlans ? 'subscribe' : 'onetime' };
 
     function refresh() {
       var s = Math.round(state.price * 0.85);
@@ -20,6 +22,8 @@
       if (subWas) subWas.textContent = money(state.price);
       if (otNow) otNow.textContent = money(state.price);
       if (atc) atc.textContent = money(state.plan === 'subscribe' ? s : state.price);
+      if (preNow) preNow.textContent = money(s);
+      if (preWas) preWas.textContent = money(state.price);
     }
 
     root.querySelectorAll('.plan').forEach(function (p) {

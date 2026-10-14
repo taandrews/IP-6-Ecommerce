@@ -65,7 +65,7 @@ export const faqCategories: FaqCategory[] = [
       },
       {
         q: "Is every batch tested?",
-        a: "Yes. IP6 Original is independently third-party tested for purity, potency, and quality. A certificate of analysis is available on the product page.",
+        a: "Yes. IP6 Original is independently third-party tested for purity, potency, and quality.",
       },
     ],
   },
@@ -79,15 +79,15 @@ export const faqCategories: FaqCategory[] = [
       },
       {
         q: "Where does IP6 Original ship?",
-        a: "At launch, IP6 Original ships to the United States and Canada.",
+        a: "IP6 Original ships to the United States and 27 international countries. Rates are shown at checkout.",
       },
       {
         q: "What is the return policy?",
-        a: "Unopened products may be returned within 30 days of delivery for a full refund. See our Refund Policy page for the full terms.",
+        a: "All sales are final once shipped. If your order arrives damaged, contact support with your order number and photos. See our Refund Policy page.",
       },
       {
         q: "When will my order arrive?",
-        a: "Standard US delivery is 3–6 business days. Canadian delivery 7–14 business days. Tracking is emailed when your order ships.",
+        a: "Tracking is emailed when your order ships.",
       },
     ],
   },

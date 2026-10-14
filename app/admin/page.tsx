@@ -1,19 +1,16 @@
 import { DollarSign, ShoppingCart, Users, RefreshCw, TrendingUp } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 
-// In production, aggregate from AnalyticsDaily table. Mock values reflect the shape.
+// Analytics are not connected yet. Values stay at zero until the AnalyticsDaily
+// table is wired up; nothing here is sample data.
 async function getMetrics() {
   return {
-    revenue7d: 482500,
-    orders7d: 63,
-    newCustomers7d: 41,
-    activeSubs: 284,
-    conversionRate: 3.2,
-    topProducts: [
-      { sku: "SUP-IP6-CAP-60", name: "IP6 Original · Capsules 60ct", revenue: 185300, units: 52 },
-      { sku: "FIL-CITRATE-UNIT", name: "IP6-Citrate Water Filter", revenue: 148900, units: 14 },
-      { sku: "SKN-LSC-ECZ-50", name: "La Santé · Eczema 50ml", revenue: 92400, units: 31 },
-    ],
+    revenue7d: 0,
+    orders7d: 0,
+    newCustomers7d: 0,
+    activeSubs: 0,
+    conversionRate: 0,
+    topProducts: [] as { sku: string; name: string; revenue: number; units: number }[],
   };
 }
 

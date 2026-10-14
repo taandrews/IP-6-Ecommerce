@@ -15,8 +15,7 @@
     "howto":     { "type": "ip6-pdp-howto", "settings": {} },
     "proof":     { "type": "ip6-pdp-proof", "settings": {} },
     "founder":   { "type": "ip6-pdp-founder", "settings": {} },
-    "guarantee": { "type": "ip6-pdp-guarantee", "settings": {} },
     "faq":       { "type": "ip6-pdp-faq", "settings": {} }
   },
-  "order": ["buy", "molecule", "compare", "howto", "proof", "founder", "guarantee", "faq"]
+  "order": ["buy", "molecule", "compare", "howto", "proof", "founder", "faq"]
 }

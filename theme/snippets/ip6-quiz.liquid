@@ -187,8 +187,8 @@
           <p class="price">Your pre-order 15% off is applied at checkout: <b>{{ quiz_pre | money }}</b> <s>{{ quiz_full | money }}</s></p>
           <a class="cta" href="{{ quiz_url }}">Pre-Order Now &rarr;</a>
           <p class="micro">Starts shipping November 2026.</p>
-          <p class="nudge" id="ip6q-nudge">Subscribe &amp; save to keep the discount going.</p>
-          <div class="reassure"><span>cGMP Certified</span><span>Third-Party Tested</span><span>30-Day Returns</span></div>
+          <p class="nudge" id="ip6q-nudge">Pre-order now. The 15% is applied automatically at checkout.</p>
+          <div class="reassure"><span>cGMP Certified</span><span>Third-Party Tested</span><span>Made in USA</span></div>
         </div>
 
       </div>
@@ -282,7 +282,7 @@
     if(answers.experience==='new'){ t += " New to IP6? Take it on an empty stomach, with water."; }
     document.getElementById('ip6q-result').textContent = t;
     var nudge = document.getElementById('ip6q-nudge');
-    if(answers.routine==='daily' || answers.experience==='regular'){ nudge.innerHTML = "You take it daily, <b>Subscribe &amp; Save</b> makes it a standing 15% off, free shipping, cancel anytime."; }
+    if(answers.routine==='daily' || answers.experience==='regular'){ nudge.innerHTML = "You take it daily. <b>Pre-order now</b> and 15% off is applied automatically at checkout."; }
   }
 
   // Launch countdown (real deadline: pre-book pricing ends at launch, Oct 3 2026 midnight ET)

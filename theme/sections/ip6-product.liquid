@@ -13,6 +13,10 @@
  #pdp-{{ section.id }} .offerbar { position: sticky; top: 0; z-index: 30; background: var(--ink); color: #fff; }
  #pdp-{{ section.id }} .offerbar .in { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 11px 24px; font-size: 13.5px; font-weight: 500; letter-spacing: .01em; flex-wrap: wrap; }
  #pdp-{{ section.id }} .offerbar b { font-weight: 700; }
+ #pdp-{{ section.id }} .preprice { display: flex; align-items: baseline; gap: 10px; margin: 0 0 16px; }
+ #pdp-{{ section.id }} .preprice .now { font-size: 28px; font-weight: 600; color: var(--ink); }
+ #pdp-{{ section.id }} .preprice s { color: var(--muted); }
+ #pdp-{{ section.id }} .preprice .note { font-size: 13px; color: var(--muted); }
  #pdp-{{ section.id }} .offerbar .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
  #pdp-{{ section.id }} .offerbar a { color: var(--gold); text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; }
  #pdp-{{ section.id }} .offerbar a:hover { border-color: var(--gold); }
@@ -74,7 +78,7 @@
 <section id="pdp-{{ section.id }}" class="ip6 ip6-bright" data-ip6-pdp data-onetime="{{ cv.price }}">
  <div class="offerbar">
  <div class="in">
- <span><b>Subscribe &amp; save 15%</b>, free shipping, cancel anytime</span>
+ <span><b>Pre-order open</b>, 15% off at checkout, starts shipping November 2026</span>
  <span class="dot"></span>
  <a href="#buy-{{ section.id }}">Shop now →</a>
  </div>
@@ -105,7 +109,7 @@
  <span class="ip6-eyebrow">From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
  <h1>{{ product.title | default: 'IP6 Original' }}</h1>
  <p class="vline">The original IP6 formula, standardized to research-grade purity, <span data-spec-ip6>{{ cv.metafields.ip6.ip6_mg.value | default: 804 }}</span> mg IP6 + <span data-spec-inositol>{{ cv.metafields.ip6.inositol_mg.value | default: 196 }}</span> mg Inositol per serving.</p>
- <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested by Eurofins</div>
+ <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested · cGMP certified</div>
 
  {%- if product.variants.size > 1 -%}
  <p class="opt-label">Format</p>
@@ -137,6 +141,7 @@
  <input type="hidden" name="id" id="vid-{{ section.id }}" data-vid-input value="{{ cv.id }}">
  <input type="hidden" name="selling_plan" id="plan-{{ section.id }}" data-plan-input value="" disabled>
  <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
+ {%- if has_plans -%}
  <p class="opt-label">Choose your plan</p>
  <div class="plans" role="radiogroup" aria-label="Purchase option">
  <label class="plan" data-plan="subscribe"{% if has_plans %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans.first.id }}"{% endif %} data-active="true" role="radio" aria-checked="true" tabindex="0">
@@ -152,10 +157,14 @@
  </label>
  </div>
  <button type="submit" class="ip6-btn ip6-btn--primary atc">Pre-Order, <span data-atc>{{ sub | money }}</span></button>
+ {%- else -%}
+ <p class="opt-label">Pre-order price</p>
+ <p class="preprice"><span class="now" data-pre-now>{{ cv.price | times: 0.85 | round | money }}</span> <s data-pre-was>{{ cv.price | money }}</s> <span class="note">15% off at checkout</span></p>
+ <button type="submit" class="ip6-btn ip6-btn--primary atc">Pre-Order Now</button>
+ {%- endif -%}
  <p class="ship"><b>Pre-order:</b> 15% off applied automatically at checkout · Starts shipping November 2026</p>
- <p class="ship"><b>Free shipping</b> across the US &amp; Canada · 30-day returns</p>
+ <p class="ship">Shipping calculated at checkout · Made in USA</p>
  <div class="micro"><span>cGMP Certified</span><span>Third-Party Tested</span><span>High-Purity</span></div>
- {%- unless has_plans -%}<p class="note-sub">Subscribe pricing is illustrative until Recharge is connected.</p>{%- endunless -%}
  </form>
  </div>
  </div>
@@ -164,7 +173,7 @@
 <section id="trustband-{{ section.id }}" class="ip6 ip6-bright">
  <div class="ip6-wrap">
  <ul>
- <li>cGMP Certified</li><li>Third-Party Tested</li><li>High-Purity</li><li>Ships US &amp; CA</li><li>30-Day Returns</li>
+ <li>cGMP Certified</li><li>Third-Party Tested</li><li>High-Purity</li><li>Made in USA</li>
  </ul>
  </div>
 </section>

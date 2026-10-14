@@ -20,8 +20,6 @@ import { testimonials } from "@/content/testimonials";
 import { resolveCurrency } from "@/lib/currency";
 import { hreflangAlternates } from "@/lib/i18n";
 import { SupplementSections } from "./_sections/SupplementSections";
-import { SkincareSections } from "./_sections/SkincareSections";
-import { FilterSections } from "./_sections/FilterSections";
 
 interface Params {
   params: { slug: string };
@@ -142,7 +140,7 @@ export default function ProductPage({ params }: Params) {
                   Coming Soon
                 </p>
                 <p className="text-ink/70 leading-relaxed mb-6">
-                  {product.name} is currently in final formulation and certification. Join the notification list and we&apos;ll email you the moment it&apos;s ready to ship.
+                  {product.name} is in development. Join the notification list and we&apos;ll email you the moment it&apos;s ready to ship.
                 </p>
                 <form
                   className="flex flex-col sm:flex-row gap-3 max-w-md"
@@ -218,8 +216,6 @@ export default function ProductPage({ params }: Params) {
 
       {/* Category-specific content */}
       {product.category === "supplement" ? <SupplementSections /> : null}
-      {product.category === "skincare" ? <SkincareSections product={product} /> : null}
-      {product.category === "filter" ? <FilterSections product={product} /> : null}
 
       {/* Ingredients / spec list */}
       {product.ingredients ? (
@@ -269,7 +265,7 @@ export default function ProductPage({ params }: Params) {
             { icon: Leaf, title: "Third-party tested", body: "Independently verified." },
             { icon: ShieldCheck, title: "cGMP certified", body: "Manufactured to cGMP standards." },
             { icon: Award, title: "High-purity formula", body: "No magnesium stearate or silicon dioxide." },
-            { icon: Zap, title: "Fast shipping", body: "Tracked worldwide." },
+            { icon: Zap, title: "Made in USA", body: "With globally sourced ingredients." },
           ].map((f) => (
             <div key={f.title} className="flex items-start gap-3">
               <f.icon className="size-6 text-gold-300 shrink-0" aria-hidden />

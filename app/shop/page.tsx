@@ -9,7 +9,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Shop",
   description:
-    "Shop IP6 Original supplements, cortisone-free skincare, and the IP6-Citrate water filter. Third-party tested. Held to institutional standards.",
+    "Shop IP6 Original, the research-grade IP6 and Inositol supplement. Third-party tested, cGMP certified, made in USA.",
   alternates: hreflangAlternates("/shop"),
 };
 
@@ -20,10 +20,10 @@ export default function ShopPage() {
       <section className="container py-16 lg:py-24 text-center max-w-2xl mx-auto">
         <p className="eyebrow mb-3">The collection</p>
         <h1 className="font-display text-display-xl text-forest-800 mb-6 text-balance">
-          Three products. Considered in full.
+          One supplement. Considered in full.
         </h1>
         <p className="text-lg text-ink/75 leading-relaxed">
-          Each product is developed to a research-grade specification, third-party tested, and manufactured to cGMP standards.
+          Developed to a research-grade specification, third-party tested, and manufactured to cGMP standards.
         </p>
       </section>
 
