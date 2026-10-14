@@ -2,6 +2,7 @@ import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
+import { Credibility } from "@/components/home/Credibility";
 import { products } from "@/content/products";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
@@ -48,6 +49,7 @@ export default function HomePage() {
   return (
     <>
       <Hero frames={assets.frames} price={formatPrice(supplementFrom, currency)} shopHref={shopHref} />
+      <Credibility />
       {/* @sections */}
       <Footer showDshea />
     </>
