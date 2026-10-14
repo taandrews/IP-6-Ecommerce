@@ -17,7 +17,7 @@
         "announcement_prebook": {
           "type": "_announcement",
           "settings": {
-            "text": "IP6 Original – Coming October 3, 2026. Pre-Book Now &amp; Receive 20% Off.",
+            "text": "Pre-order IP6 Original · 15% off at checkout · Starts shipping November 2026",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",

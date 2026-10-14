@@ -1,8 +1,8 @@
-{%- comment -%} IP6 lead-capture quiz funnel (pre-book 20% off; discount applies automatically at checkout). Styled to IP6 tokens. {%- endcomment -%}
+{%- comment -%} IP6 lead-capture quiz funnel (pre-order 15% off; discount applies automatically at checkout). Styled to IP6 tokens. {%- endcomment -%}
 {%- assign quiz_product = all_products['ip-6-original'] -%}
 {%- assign quiz_url = quiz_product.url | default: '/products/ip-6-original' -%}
 {%- assign quiz_full = quiz_product.price | default: 4900 -%}
-{%- assign quiz_pre = quiz_full | times: 0.8 | round -%}
+{%- assign quiz_pre = quiz_full | times: 0.85 | round -%}
 
 <style>
   #ip6quiz { position: fixed; inset: 0; z-index: 9999; display: none; }
@@ -70,7 +70,7 @@
   @media (max-width: 600px) { #ip6quiz h2 { font-size: 26px; } }
 </style>
 
-<div id="ip6quiz" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Pre-book IP6 Original and receive 20% off">
+<div id="ip6quiz" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Pre-order IP6 Original and receive 15% off">
   <div class="ovl" data-close></div>
   <div class="panel">
     <div class="media" aria-hidden="true">
@@ -89,8 +89,8 @@
         <div class="step active" data-step="intent">
           <span class="eyebrow">From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
           <div class="launch">
-            <div class="l-kicker">Coming October 3, 2026</div>
-            <div class="l-offer">Pre-Book Now &amp; Receive <b>20% Off</b></div>
+            <div class="l-kicker">Pre-order open · Starts shipping November 2026</div>
+            <div class="l-offer">Pre-Order Now &amp; Receive <b>15% Off</b></div>
             <div class="l-count" id="ip6q-count" aria-label="Time until launch">
               <div class="u"><div class="n" data-cd="d">–</div><div class="l">Days</div></div>
               <div class="u"><div class="n" data-cd="h">–</div><div class="l">Hours</div></div>
@@ -109,8 +109,8 @@
 
         <!-- Step 1: email -->
         <div class="step" data-step="email">
-          <h2>Where should we send your 20% off?</h2>
-          <p class="sub">Your pre-book discount is reserved. Answer a few quick questions and it's yours.</p>
+          <h2>Where should we send your 15% off?</h2>
+          <p class="sub">Your pre-order discount is reserved. Answer a few quick questions and it's yours.</p>
           <form id="ip6q-form">
             <label for="ip6q-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
             <input type="email" id="ip6q-email" placeholder="Email address" aria-label="Email address" required>
@@ -184,9 +184,9 @@
           <span class="eyebrow">Your match</span>
           <h2>IP6 Original is your match.</h2>
           <p class="sub" id="ip6q-result">A high-purity IP6 and Inositol formula, made to the standard the research describes.</p>
-          <p class="price">Your pre-book 20% off is applied at checkout: <b>{{ quiz_pre | money }}</b> <s>{{ quiz_full | money }}</s></p>
-          <a class="cta" href="{{ quiz_url }}">Pre-Book Now &rarr;</a>
-          <p class="micro">Ships on or after October 3, 2026.</p>
+          <p class="price">Your pre-order 15% off is applied at checkout: <b>{{ quiz_pre | money }}</b> <s>{{ quiz_full | money }}</s></p>
+          <a class="cta" href="{{ quiz_url }}">Pre-Order Now &rarr;</a>
+          <p class="micro">Starts shipping November 2026.</p>
           <p class="nudge" id="ip6q-nudge">Subscribe &amp; save to keep the discount going.</p>
           <div class="reassure"><span>cGMP Certified</span><span>Third-Party Tested</span><span>30-Day Returns</span></div>
         </div>
@@ -287,7 +287,7 @@
 
   // Launch countdown (real deadline: pre-book pricing ends at launch, Oct 3 2026 midnight ET)
   (function(){
-    var end = Date.parse('2026-10-03T04:00:00Z');
+    var end = Date.parse('2026-11-01T04:00:00Z');
     var wrap = document.getElementById('ip6q-count'); if(!wrap) return;
     var els = { d: wrap.querySelector('[data-cd="d"]'), h: wrap.querySelector('[data-cd="h"]'), m: wrap.querySelector('[data-cd="m"]'), s: wrap.querySelector('[data-cd="s"]') };
     function pad(n){ return n < 10 ? '0' + n : '' + n; }
