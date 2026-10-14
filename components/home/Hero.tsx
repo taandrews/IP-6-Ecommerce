@@ -150,7 +150,7 @@ export function Hero({
                 ))}
                 <p
                   className={cn(
-                    "absolute inset-x-0 top-6 font-mono text-[12px] uppercase tracking-[0.12em] text-cream/40 transition-opacity duration-500",
+                    "absolute inset-x-0 top-6 font-mono text-[12px] uppercase tracking-[0.12em] text-cream/70 transition-opacity duration-500",
                     captionsVisible || !ready ? "opacity-0" : "opacity-100",
                   )}
                   aria-hidden
