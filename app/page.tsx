@@ -33,72 +33,61 @@ export default function HomePage() {
          From the lab of Prof. Shamsuddin. One supplement.
       ============================================== */}
       <section className="relative bg-surface">
-        <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
-              From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
-            </p>
-            <h1
-              className="font-serif text-navy-800 text-balance"
-              style={{
-                fontFamily: "var(--font-display), Georgia, serif",
-                fontSize: "clamp(2.75rem, 5.5vw, 5.5rem)",
-                lineHeight: 1,
-                letterSpacing: "-0.025em",
-                fontWeight: 400,
-              }}
-            >
-              There is only one <span className="text-sky-700">IP6 Original</span>.
-            </h1>
-            <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
-              The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-5">
-              <Link
-                href={`/shop/${supplement.slug}`}
-                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
+        <div className="container pt-4 lg:pt-6">
+          {/* Cream inset panel (Ritual): text left, oversized bottle right on a flat tinted ground */}
+          <div className="rounded-[28px] bg-cream-100 overflow-hidden grid lg:grid-cols-[1.2fr_1fr]">
+            <div className="px-7 py-14 sm:px-12 lg:px-16 lg:py-24 flex flex-col justify-center">
+              <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-8">
+                From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
+              </p>
+              <h1
+                className="text-navy-800 text-balance"
+                style={{
+                  fontSize: "clamp(2.75rem, 5.2vw, 5.25rem)",
+                  lineHeight: 0.98,
+                  letterSpacing: "-0.03em",
+                  fontWeight: 400,
+                }}
               >
-                Shop IP6 Original · {formatPrice(supplementFrom, currency)}
-                <ArrowRight className="size-4" />
-              </Link>
-              <Link
-                href="/story"
-                className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2"
-              >
-                Read the story
-              </Link>
+                There is only one <em className="font-serif italic font-normal">IP6 Original</em>.
+              </h1>
+              <p className="prose-editorial mt-8 max-w-xl">
+                The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-4">
+                <Link href={`/shop/${supplement.slug}`} className="btn-pill">
+                  Shop IP6 Original · {formatPrice(supplementFrom, currency)}
+                  <ArrowRight className="size-4" />
+                </Link>
+                <Link href="/story" className="btn-square">
+                  Read the story
+                  <ArrowRight className="size-3.5" />
+                </Link>
+              </div>
             </div>
-          </div>
 
-          <div className="relative">
-            {/* Bottle floats on the page - no box, no shadow, no fill behind it.
-               Height is capped so the bottle stays a reasonable size in the hero
-               instead of filling a tall aspect box. */}
-            <div className="relative h-[340px] sm:h-[420px] lg:h-[520px]">
-              <Image
-                src="/products/supplement-real.png"
-                alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
-                fill
-                priority
-                sizes="(min-width: 1024px) 540px, 100vw"
-                className="object-contain"
-              />
-            </div>
-            {/* Label badges - taken verbatim from the packaging, no invented stats.
-               Sits beneath the bottle so it never overlaps the image. */}
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">
-              <span>cGMP Certified</span>
-              <span aria-hidden className="text-gold-500">·</span>
-              <span>Third-Party Tested</span>
-              <span aria-hidden className="text-gold-500">·</span>
-              <span>High-Purity Formula</span>
+            <div className="relative bg-cream-200 min-h-[380px] sm:min-h-[460px] lg:min-h-[620px] flex items-end justify-center overflow-hidden">
+              <div className="relative w-full h-[88%] translate-y-[4%]">
+                <Image
+                  src="/products/supplement-real.png"
+                  alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 640px, 100vw"
+                  className="object-contain object-bottom"
+                />
+              </div>
+              <div className="absolute top-6 left-6 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-navy-800">
+                <span className="rounded-full bg-surface px-3 py-1.5">cGMP Certified</span>
+                <span className="rounded-full bg-surface px-3 py-1.5">Third-Party Tested</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Trust strip */}
-        <div className="border-t border-cloud-300 bg-surface">
-          <div className="container py-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.2em] text-ink/65 font-semibold">
+        <div className="bg-surface">
+          <div className="container py-7 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.2em] text-ink/65 font-semibold">
             <span className="flex items-center gap-2">
               <Award className="size-3.5 text-sky-700" /> cGMP Certified
             </span>
@@ -123,12 +112,12 @@ export default function HomePage() {
          A short orientation that lands before the purity argument,
          so a first-time visitor knows the molecule before comparing it.
       ============================================== */}
-      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-20">
+      <section className="bg-surface border-t border-cloud-300 py-20 lg:py-28">
         <div className="container max-w-3xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
             First, the molecule
           </p>
-          <p className="font-serif text-xl lg:text-2xl text-navy-800/85 leading-relaxed">
+          <p className="font-serif text-2xl lg:text-[1.9rem] text-navy-800/85 leading-relaxed">
             IP6 is{" "}
             <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
             <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
@@ -143,7 +132,7 @@ export default function HomePage() {
       ============================================== */}
       <section className="bg-surface py-20 lg:py-28">
         <div className="container max-w-5xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
             The Stakes
           </p>
           <h2
@@ -158,7 +147,7 @@ export default function HomePage() {
           >
             Most IP6 on shelves is not the molecule his research described.
           </h2>
-          <p className="mt-6 text-lg text-ink/75 leading-relaxed max-w-3xl">
+          <p className="prose-editorial mt-6 max-w-3xl">
             Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself: a high-purity formula, third-party tested, manufactured in a cGMP-certified facility.
           </p>
 
@@ -181,13 +170,13 @@ export default function HomePage() {
          CHAPTER 4 - PROOF (4-tile credential strip)
          Soft white ground. Color lives in the gold rule and serif numerals.
       ============================================== */}
-      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+      <section className="bg-navy-800 text-surface py-20 lg:py-28">
         <div className="container max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-400 font-bold mb-5">
             The Proof
           </p>
           <h2
-            className="font-serif text-navy-800 text-balance mb-14 lg:mb-16 max-w-3xl"
+            className="font-serif text-surface text-balance mb-14 lg:mb-16 max-w-3xl"
             style={{
               fontFamily: "var(--font-display), Georgia, serif",
               fontSize: "clamp(1.75rem, 3vw, 2.75rem)",
@@ -224,17 +213,17 @@ export default function HomePage() {
             ].map((c) => (
               <div key={c.l}>
                 <p
-                  className="text-navy-800 tabular-nums whitespace-nowrap"
-                  style={{ fontSize: "clamp(2.75rem, 4.5vw, 4rem)", lineHeight: 1, letterSpacing: "-0.03em", fontWeight: 400 }}
+                  className="text-gold-400 tabular-nums whitespace-nowrap"
+                  style={{ fontSize: "clamp(3rem, 5vw, 4.5rem)", lineHeight: 1, letterSpacing: "-0.03em", fontWeight: 400 }}
                 >
                   {c.n}
                   {"u" in c && c.u ? (
-                    <span className="ml-1 align-baseline text-[0.4em] font-medium tracking-normal text-ink/60">{c.u}</span>
+                    <span className="ml-1 align-baseline text-[0.4em] font-medium tracking-normal text-surface/60">{c.u}</span>
                   ) : null}
                 </p>
-                <span aria-hidden className="mt-5 mb-4 block border-t border-dotted border-navy-800/35" />
-                <p className="font-semibold text-navy-800">{c.l}</p>
-                <p className="mt-2 text-sm text-ink/65 leading-relaxed">{c.d}</p>
+                <span aria-hidden className="mt-5 mb-4 block border-t border-dotted border-surface/35" />
+                <p className="font-semibold text-surface">{c.l}</p>
+                <p className="mt-2 text-sm text-surface/65 leading-relaxed">{c.d}</p>
               </div>
             ))}
           </div>
@@ -245,7 +234,7 @@ export default function HomePage() {
          THE FOUNDER (compact)
          Headshot, name, credentials, one line, link to the full story.
       ============================================== */}
-      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+      <section className="bg-surface py-20 lg:py-28">
         <div className="container max-w-5xl grid sm:grid-cols-[220px_1fr] lg:grid-cols-[300px_1fr] gap-10 lg:gap-16 items-center">
           <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-cloud-200 max-w-[300px]">
             <Image
@@ -257,7 +246,7 @@ export default function HomePage() {
             />
           </div>
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
               The Founder
             </p>
             <h2
@@ -296,9 +285,9 @@ export default function HomePage() {
          CHAPTER 3 EXIT-RAMP - The Solution (product card link)
          The first IP6 supplement standardized to research-grade purity.
       ============================================== */}
-      <section className="bg-gold-50 py-20 lg:py-24">
+      <section className="bg-cream-100 py-20 lg:py-28">
         <div className="container max-w-5xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
             The Solution
           </p>
           <h2
@@ -313,26 +302,29 @@ export default function HomePage() {
           >
             The first IP6 supplement standardized to research-grade purity.
           </h2>
-          <p className="mt-5 text-lg text-ink/75 leading-relaxed max-w-3xl">
+          <p className="prose-editorial mt-5 max-w-3xl">
             A high-purity formula, third-party tested, manufactured in a cGMP-certified facility, formulated by the scientist who pioneered the research behind it.
           </p>
 
           <Link
             href={`/shop/${supplement.slug}`}
-            className="mt-10 group block rounded-2xl border border-gold-200 bg-surface hover:border-gold-500 transition-colors max-w-2xl shadow-soft"
+            className="mt-10 group block rounded-2xl bg-surface max-w-2xl overflow-hidden shadow-soft"
           >
-            <div className="grid sm:grid-cols-[180px_1fr]">
-              <div className="relative aspect-square sm:aspect-auto">
+            <div className="grid sm:grid-cols-[240px_1fr]">
+              <div className="relative aspect-square bg-cream-200">
                 <Image
                   src="/products/supplement-real.png"
                   alt=""
                   fill
-                  sizes="180px"
-                  className="object-contain p-3"
+                  sizes="240px"
+                  className="object-contain p-6"
                 />
+                <span className="absolute bottom-4 right-4 rounded-full bg-surface px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-navy-800 shadow-soft group-hover:bg-navy-800 group-hover:text-surface transition-colors">
+                  Add
+                </span>
               </div>
               <div className="p-6 lg:p-7 flex flex-col">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold mb-2">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-gold-700 font-bold mb-2">
                   IP6 Original Supplement
                 </p>
                 <h3 className="font-serif text-navy-800 text-xl lg:text-2xl mb-2"
@@ -352,7 +344,7 @@ export default function HomePage() {
                       {formatPrice(supplementFrom, currency)}
                     </span>
                   </p>
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 group-hover:text-sky-800">
+                  <span className="inline-flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.16em] text-navy-800">
                     Shop now
                     <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
                   </span>
@@ -367,10 +359,10 @@ export default function HomePage() {
          CHAPTER 5 - ACTION
          Take it. Here is exactly how.
       ============================================== */}
-      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+      <section className="bg-surface py-20 lg:py-28">
         <div className="container max-w-5xl grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
               The Action
             </p>
             <h2
@@ -385,22 +377,17 @@ export default function HomePage() {
             >
               Take it. Here is exactly how.
             </h2>
-            <p className="mt-5 text-lg text-ink/75 leading-relaxed">
+            <p className="prose-editorial mt-5">
               Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link
-                href={`/shop/${supplement.slug}`}
-                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
-              >
+              <Link href={`/shop/${supplement.slug}`} className="btn-pill">
                 Shop IP6 Original
                 <ArrowRight className="size-4" />
               </Link>
-              <Link
-                href="/faq#how-to-take"
-                className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2"
-              >
-                Full dosing guide →
+              <Link href="/faq#how-to-take" className="btn-square">
+                Full dosing guide
+                <ArrowRight className="size-3.5" />
               </Link>
             </div>
           </div>

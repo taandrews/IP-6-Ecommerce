@@ -59,7 +59,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
             </p>
             <Link
               href="/shop/ip6-original-supplement"
-              className="mt-7 inline-flex items-center rounded-full bg-navy-800 px-7 py-3 text-sm font-semibold text-surface transition-colors hover:bg-navy-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600"
+              className="btn-pill mt-7"
             >
               Shop IP6 Original
             </Link>

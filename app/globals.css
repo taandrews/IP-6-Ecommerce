@@ -59,11 +59,26 @@
   }
 
   .btn-primary {
-    @apply btn bg-teal-500 text-surface hover:bg-teal-600 px-6 py-3.5 rounded-full font-semibold;
+    @apply btn bg-navy-800 text-surface hover:bg-navy-900 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em];
   }
 
   .btn-secondary {
-    @apply btn border-2 border-teal-500 text-teal-500 hover:bg-teal-50 px-6 py-3.5 rounded-full font-semibold;
+    @apply btn border border-navy-800 text-navy-800 hover:bg-navy-800 hover:text-surface px-6 py-3.5 rounded-none font-semibold text-[12px] uppercase tracking-[0.16em];
+  }
+
+  /* Pill CTA used inline across pages: navy, uppercase, tracked */
+  .btn-pill {
+    @apply inline-flex items-center justify-center gap-2 bg-navy-800 text-surface hover:bg-navy-900 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
+  }
+
+  /* Square outlined secondary with arrow (Timeline) */
+  .btn-square {
+    @apply inline-flex items-center gap-3 border border-navy-800 text-navy-800 hover:bg-navy-800 hover:text-surface px-5 py-3.5 font-semibold text-[12px] uppercase tracking-[0.16em] transition-colors;
+  }
+
+  /* Editorial paragraph: serif, larger measure */
+  .prose-editorial {
+    @apply font-serif text-lg lg:text-xl text-ink/80 leading-relaxed;
   }
 
   .btn-gold {
@@ -100,7 +115,7 @@
 
   /* Eyebrow stripped of decorative rule for clinical look. */
   .eyebrow {
-    @apply inline-block text-[11px] uppercase tracking-[0.18em] text-sky-600 font-semibold;
+    @apply inline-block text-[11px] uppercase tracking-[0.18em] text-gold-700 font-semibold;
   }
 
   .hairline-gold,

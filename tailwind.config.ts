@@ -93,6 +93,13 @@ const config: Config = {
         },
         ink: "#0B1F3A",
         surface: "#FFFFFF",
+        cream: {
+          DEFAULT: "#FBF6EA",
+          50: "#FDFBF4",
+          100: "#FBF6EA",
+          200: "#F5EBD3",
+          300: "#EBDDB8",
+        },
         cloud: {
           DEFAULT: "#F7F9FB",
           100: "#FFFFFF",
