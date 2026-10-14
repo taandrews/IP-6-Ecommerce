@@ -5,93 +5,58 @@
  if product.selling_plan_groups.size > 0
  assign has_plans = true
  endif
- assign sub30 = cv.price | times: 0.85 | round
- assign sub90 = cv.price | times: 0.80 | round
- assign ip6_mg = cv.metafields.ip6.ip6_mg.value | default: 804
- assign ino_mg = cv.metafields.ip6.inositol_mg.value | default: 196
- assign servings = cv.metafields.ip6.servings.value | default: 60
+ assign sub = cv.price | times: 0.85 | round
 -%}
 <style>
- #pdp-{{ section.id }} { background: #f4f7fa; }
- #pdp-{{ section.id }} .pdp-grid { display: flex; flex-direction: row; gap: clamp(28px,4vw,64px); align-items: flex-start; padding: clamp(28px,4vw,56px) 0 clamp(40px,5vw,72px); }
- #pdp-{{ section.id }} .gallery { flex: 1 1 0; min-width: 0; }
- #pdp-{{ section.id }} .buybox { flex: 0 0 clamp(360px, 44%, 540px); position: sticky; top: 24px; }
+ #pdp-{{ section.id }} { background: var(--bg, #fff); }
+ /* Sticky offer bar */
+ #pdp-{{ section.id }} .offerbar { position: sticky; top: 0; z-index: 30; background: var(--ink); color: #fff; }
+ #pdp-{{ section.id }} .offerbar .in { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 11px 24px; font-size: 13.5px; font-weight: 500; letter-spacing: .01em; flex-wrap: wrap; }
+ #pdp-{{ section.id }} .offerbar b { font-weight: 700; }
+ #pdp-{{ section.id }} .offerbar .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
+ #pdp-{{ section.id }} .offerbar a { color: var(--gold); text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; }
+ #pdp-{{ section.id }} .offerbar a:hover { border-color: var(--gold); }
 
- /* Media grid: stacked two-column on desktop, snap row on phones */
- #pdp-{{ section.id }} .media { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
- #pdp-{{ section.id }} .tile { border-radius: 16px; overflow: hidden; background: #e8edf3; border: 0; min-height: 300px; }
- #pdp-{{ section.id }} .tile.photo { display: grid; place-items: center; aspect-ratio: 4/5; }
- #pdp-{{ section.id }} .tile.photo.lead { grid-column: 1 / -1; aspect-ratio: 4/3; }
- #pdp-{{ section.id }} .tile.photo img { width: 82%; height: 82%; object-fit: contain; }
- #pdp-{{ section.id }} .tile.claims { background: var(--ink); color: #fff; border-color: var(--ink); padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; }
- #pdp-{{ section.id }} .tile.claims .k { margin: 0 auto 0 0; font-size: 10.5px; font-weight: 700; letter-spacing: .24em; text-transform: uppercase; color: var(--gold); }
- #pdp-{{ section.id }} .tile.claims ul { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; font-size: 14.5px; line-height: 1.4; }
- #pdp-{{ section.id }} .tile.claims li { display: flex; gap: 10px; align-items: flex-start; }
- #pdp-{{ section.id }} .tile.claims li::before { content: "✓"; color: var(--gold); font-weight: 700; flex: none; }
- #pdp-{{ section.id }} .tile.facts { background: #fff; padding: 20px; }
- #pdp-{{ section.id }} .sf { border: 3px solid var(--ink); padding: 12px; color: var(--ink); font-family: var(--sans); }
- #pdp-{{ section.id }} .sf .t { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin: 0; }
- #pdp-{{ section.id }} .sf .s { font-size: 12px; margin: 8px 0 0; }
- #pdp-{{ section.id }} .sf .hd { display: flex; justify-content: space-between; border-top: 6px solid var(--ink); border-bottom: 6px solid var(--ink); margin-top: 8px; padding: 4px 0; font-size: 11px; font-weight: 700; }
- #pdp-{{ section.id }} .sf .r { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; border-bottom: 1px solid rgba(11,31,58,.4); padding: 6px 0; font-size: 12px; }
- #pdp-{{ section.id }} .sf .r b { font-weight: 500; }
- #pdp-{{ section.id }} .sf .r span { flex: none; display: flex; gap: 16px; font-variant-numeric: tabular-nums; }
- #pdp-{{ section.id }} .sf .r span em { font-style: normal; font-weight: 600; }
- #pdp-{{ section.id }} .sf .r span i { font-style: normal; width: 14px; text-align: right; }
- #pdp-{{ section.id }} .sf .fn { font-size: 10px; line-height: 1.4; margin: 8px 0 0; }
- #pdp-{{ section.id }} .sf .oi { font-size: 10px; line-height: 1.4; margin: 8px 0 0; padding-top: 8px; border-top: 3px solid var(--ink); }
+ #pdp-{{ section.id }} .pdp-grid { display: flex; flex-direction: row; gap: clamp(28px,4vw,64px); align-items: flex-start; padding: clamp(28px,4vw,56px) 0 clamp(40px,5vw,72px); }
+ #pdp-{{ section.id }} .gallery { flex: 1 1 0; min-width: 0; position: sticky; top: 64px; }
+ #pdp-{{ section.id }} .buybox { flex: 0 0 clamp(360px, 44%, 540px); }
+
+ #pdp-{{ section.id }} .stage { aspect-ratio: 4/5; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; display: grid; place-items: center; overflow: hidden; }
+ #pdp-{{ section.id }} .stage img { width: 86%; height: 86%; object-fit: contain; }
+ #pdp-{{ section.id }} .thumbs { display: flex; gap: 12px; margin-top: 14px; }
+ #pdp-{{ section.id }} .thumbs button { width: 86px; aspect-ratio: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px; cursor: pointer; transition: border-color .15s; }
+ #pdp-{{ section.id }} .thumbs button[aria-pressed="true"] { border-color: var(--ink); }
+ #pdp-{{ section.id }} .thumbs img { width: 100%; height: 100%; object-fit: contain; }
 
  #pdp-{{ section.id }} h1 { font-size: clamp(32px,3.4vw,46px); line-height: 1.06; margin: 12px 0 0; }
  #pdp-{{ section.id }} .vline { font-size: clamp(17px,1.5vw,20px); color: var(--ink-2); margin: 14px 0 0; max-width: 36ch; }
  #pdp-{{ section.id }} .rating { margin: 16px 0 22px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
+ #pdp-{{ section.id }} .rating .stars { color: var(--gold); letter-spacing: 2px; }
 
  #pdp-{{ section.id }} .opt-label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
  #pdp-{{ section.id }} .formats { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
  #pdp-{{ section.id }} .formats button { background: #fff; color: var(--ink); border: 1.5px solid var(--line); border-radius: 100px; padding: 10px 18px; font-family: var(--sans); font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s; }
  #pdp-{{ section.id }} .formats button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
 
- #pdp-{{ section.id }} .price-line { display: flex; align-items: baseline; gap: 12px; margin: 0 0 18px; }
- #pdp-{{ section.id }} .price-line .now { font-size: 30px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
- #pdp-{{ section.id }} .price-line .was { font-size: 14px; color: var(--muted); text-decoration: line-through; }
- #pdp-{{ section.id }} .price-line .pct { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-deep); }
- #pdp-{{ section.id }}[data-mode="onetime"] .price-line .was, #pdp-{{ section.id }}[data-mode="onetime"] .price-line .pct { display: none; }
-
- #pdp-{{ section.id }} .plans { display: grid; gap: 10px; margin-bottom: 8px; }
- #pdp-{{ section.id }} .plan { position: relative; display: grid; grid-template-columns: 20px 1fr auto; gap: 14px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 16px 18px; cursor: pointer; transition: border-color .15s, background .15s; }
+ #pdp-{{ section.id }} .plans { display: grid; gap: 12px; margin-bottom: 20px; }
+ #pdp-{{ section.id }} .plan { position: relative; display: grid; grid-template-columns: 22px 1fr auto; gap: 14px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: border-color .15s, background .15s; }
  #pdp-{{ section.id }} .plan[data-active="true"] { border-color: var(--ink); background: #f7fafe; }
- #pdp-{{ section.id }} .plan .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #c7cedb; display: grid; place-items: center; }
+ #pdp-{{ section.id }} .plan .dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #c7cedb; display: grid; place-items: center; }
  #pdp-{{ section.id }} .plan[data-active="true"] .dot { border-color: var(--ink); }
- #pdp-{{ section.id }} .plan[data-active="true"] .dot::after { content:""; width: 9px; height: 9px; border-radius: 50%; background: var(--ink); }
- #pdp-{{ section.id }} .plan .title { font-weight: 600; font-size: 16px; color: var(--ink); }
- #pdp-{{ section.id }} .plan .note { font-size: 12.5px; font-weight: 600; color: var(--gold-deep); margin-top: 2px; }
- #pdp-{{ section.id }} .plan .price { text-align: right; font-variant-numeric: tabular-nums; }
- #pdp-{{ section.id }} .plan .price .now { font-weight: 600; font-size: 17px; color: var(--ink); }
- #pdp-{{ section.id }} .plan .price .was { font-size: 12.5px; color: var(--muted); text-decoration: line-through; }
- #pdp-{{ section.id }} .plan .save { position: absolute; top: -10px; right: 14px; background: var(--ink); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; padding: 4px 9px; border-radius: 100px; }
- #pdp-{{ section.id }} .plan-note { display: flex; gap: 6px; align-items: center; font-size: 12.5px; color: var(--muted); margin: 0 0 20px; }
+ #pdp-{{ section.id }} .plan[data-active="true"] .dot::after { content:""; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); }
+ #pdp-{{ section.id }} .plan .title { font-weight: 700; font-size: 16px; color: var(--ink); }
+ #pdp-{{ section.id }} .plan .note { font-size: 13px; color: var(--muted); margin-top: 2px; }
+ #pdp-{{ section.id }} .plan .price { text-align: right; }
+ #pdp-{{ section.id }} .plan .price .now { font-weight: 800; font-size: 20px; color: var(--ink); }
+ #pdp-{{ section.id }} .plan .price .was { font-size: 13px; color: var(--muted); text-decoration: line-through; }
+ #pdp-{{ section.id }} .plan .save { position: absolute; top: -10px; right: 18px; background: var(--success); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .03em; padding: 4px 10px; border-radius: 100px; }
 
  #pdp-{{ section.id }} .atc { width: 100%; justify-content: center; }
- #pdp-{{ section.id }} .onetime { margin: 12px 0 0; text-align: center; font-size: 14px; }
- #pdp-{{ section.id }} .onetime button { background: none; border: 0; padding: 0; font-family: var(--sans); font-weight: 600; font-size: 14px; color: var(--ink); border-bottom: 2px solid var(--gold); cursor: pointer; }
  #pdp-{{ section.id }} .ship { margin-top: 14px; text-align: center; font-size: 13px; color: var(--muted); }
  #pdp-{{ section.id }} .ship b { color: var(--success); }
  #pdp-{{ section.id }} .micro { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
  #pdp-{{ section.id }} .micro span::before { content: "✓ "; color: var(--success); font-weight: 700; }
  #pdp-{{ section.id }} .note-sub { font-size: 12px; color: var(--muted); margin-top: 12px; text-align: center; }
- #pdp-{{ section.id }} .dshea { margin: 22px 0 0; font-size: 12px; line-height: 1.6; color: var(--muted); scroll-margin-top: 120px; }
- #pdp-{{ section.id }} .dshea b { color: var(--ink-2); }
-
- /* Sticky buy bar: slides up from the bottom once the main button scrolls away */
- #buybar-{{ section.id }} { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: rgba(255,255,255,.96); backdrop-filter: blur(8px); border-top: 1px solid var(--line); transform: translateY(110%); transition: transform .3s ease-out; padding-bottom: env(safe-area-inset-bottom, 0); }
- #buybar-{{ section.id }}.is-on { transform: translateY(0); }
- #buybar-{{ section.id }} .in { display: flex; align-items: center; gap: 14px; height: 64px; }
- #buybar-{{ section.id }} .th { width: 40px; height: 40px; border-radius: 8px; background: var(--surface); flex: none; display: grid; place-items: center; overflow: hidden; }
- #buybar-{{ section.id }} .th img { width: 80%; height: 80%; object-fit: contain; }
- #buybar-{{ section.id }} .t { flex: 1; min-width: 0; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
- #buybar-{{ section.id }} .t small { font-weight: 400; color: var(--muted); margin-left: 8px; }
- #buybar-{{ section.id }} .p { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; flex: none; }
- #buybar-{{ section.id }} .ip6-btn { padding: 12px 20px; font-size: 14px; flex: none; }
- @media (max-width: 749px) { #buybar-{{ section.id }} .th, #buybar-{{ section.id }} .t small { display: none; } }
 
  /* Trust row band */
  #trustband-{{ section.id }} { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -100,66 +65,47 @@
  #trustband-{{ section.id }} li + li::before { content:""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 13px; background: var(--line); }
  @media (max-width: 860px) {
  #pdp-{{ section.id }} .pdp-grid { flex-direction: column; }
- #pdp-{{ section.id }} .gallery { width: 100%; }
- #pdp-{{ section.id }} .buybox { flex: none; width: 100%; position: static; }
- #pdp-{{ section.id }} .media { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 6px; scrollbar-width: none; }
- #pdp-{{ section.id }} .media::-webkit-scrollbar { display: none; }
- #pdp-{{ section.id }} .tile { flex: 0 0 82vw; max-width: 420px; scroll-snap-align: center; aspect-ratio: 4/5; min-height: 0; }
- #pdp-{{ section.id }} .tile.photo.lead { aspect-ratio: 4/5; }
+ #pdp-{{ section.id }} .gallery { position: static; width: 100%; }
+ #pdp-{{ section.id }} .buybox { flex: none; width: 100%; }
  #trustband-{{ section.id }} li + li::before { display: none; }
  }
 </style>
 
-<section id="pdp-{{ section.id }}" class="ip6 ip6-bright" data-ip6-pdp data-onetime="{{ cv.price }}" data-mode="subscribe">
+<section id="pdp-{{ section.id }}" class="ip6 ip6-bright" data-ip6-pdp data-onetime="{{ cv.price }}">
+ <div class="offerbar">
+ <div class="in">
+ <span><b>Subscribe &amp; save 15%</b>, free shipping, cancel anytime</span>
+ <span class="dot"></span>
+ <a href="#buy-{{ section.id }}">Shop now →</a>
+ </div>
+ </div>
+
  <div class="ip6-wrap pdp-grid" id="buy-{{ section.id }}">
  <div class="gallery">
- <div class="media" aria-label="Product media">
- {%- assign shown = 0 -%}
- {%- for image in product.images -%}
- {%- assign src_l = image.src | downcase -%}
- {%- if src_l contains 'back' -%}{%- continue -%}{%- endif -%}
- {%- if shown >= 2 -%}{%- break -%}{%- endif -%}
- {%- assign shown = shown | plus: 1 -%}
- <figure class="tile photo{% if shown == 1 %} lead{% endif %}">
- <img {% if shown == 1 %}data-main-img id="pmain-{{ section.id }}" loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %} src="{{ image | image_url: width: 1000 }}" alt="{{ image.alt | default: product.title }}" width="500" height="625">
- </figure>
- {%- endfor -%}
- {%- if shown == 0 -%}
- <figure class="tile photo lead"><img data-main-img id="pmain-{{ section.id }}" src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original" width="500" height="625"></figure>
+ <div class="stage">
+ {%- if product.featured_image -%}
+ <img id="pmain-{{ section.id }}" data-main-img src="{{ product.featured_image | image_url: width: 1000 }}" alt="{{ product.title }}" width="500" height="625">
+ {%- else -%}
+ <img id="pmain-{{ section.id }}" data-main-img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original" width="500" height="625">
  {%- endif -%}
-
- <div class="tile claims">
- <p class="k">High-purity formula</p>
- <ul>
- <li>High-Purity Formula, third-party tested</li>
- <li>Formulated by Prof. Shamsuddin, founder and formulator</li>
- <li>Manufactured in a cGMP-certified facility</li>
- <li>No magnesium stearate, no silicon dioxide, no unnecessary additives</li>
- </ul>
  </div>
-
- <div class="tile facts">
- <div class="sf" aria-label="Supplement Facts">
- <p class="t">Supplement Facts</p>
- <p class="s">Serving Size 2 capsules</p>
- <p class="s">Servings Per Container <span data-spec-servings>{{ servings }}</span></p>
- <div class="hd"><span>Amount Per Serving</span><span>%DV</span></div>
- <div class="r"><b>IP6 (Calcium-Magnesium Inositol Hexaphosphate)</b><span><em><span data-spec-ip6>{{ ip6_mg }}</span> mg</em><i>†</i></span></div>
- <div class="r"><b>Inositol</b><span><em><span data-spec-inositol>{{ ino_mg }}</span> mg</em><i>†</i></span></div>
- <p class="fn">† Daily Value (DV) not established.</p>
- <p class="oi"><b>Other ingredients:</b> Plant-based capsule (cellulose).</p>
- </div>
- </div>
+ <div class="thumbs">
+ {%- if product.images.size > 0 -%}
+ {%- for image in product.images limit: 4 -%}
+ <button type="button" aria-label="View product image {{ forloop.index }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" data-src="{{ image | image_url: width: 1000 }}"><img src="{{ image | image_url: width: 200 }}" alt="" width="86" height="86"></button>
+ {%- endfor -%}
+ {%- else -%}
+ <button type="button" aria-label="View front of bottle" aria-pressed="true" data-src="{{ 'ip6-bottle-front.png' | asset_url }}"><img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="" width="86" height="86"></button>
+ <button type="button" aria-label="View back of bottle" aria-pressed="false" data-src="{{ 'ip6-bottle-back.png' | asset_url }}"><img src="{{ 'ip6-bottle-back.png' | asset_url }}" alt="" width="86" height="86"></button>
+ {%- endif -%}
  </div>
  </div>
 
  <div class="buybox">
  <span class="ip6-eyebrow">From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
  <h1>{{ product.title | default: 'IP6 Original' }}</h1>
- <p class="vline">The original IP6 formula, standardized to research-grade purity, <span data-spec-ip6>{{ ip6_mg }}</span> mg IP6 + <span data-spec-inositol>{{ ino_mg }}</span> mg Inositol per serving.</p>
+ <p class="vline">The original IP6 formula, standardized to research-grade purity, <span data-spec-ip6>{{ cv.metafields.ip6.ip6_mg.value | default: 804 }}</span> mg IP6 + <span data-spec-inositol>{{ cv.metafields.ip6.inositol_mg.value | default: 196 }}</span> mg Inositol per serving.</p>
  <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested by Eurofins</div>
-
- <p class="price-line"><span class="now" data-atc>{{ sub30 | money }}</span><span class="was" data-ot-now>{{ cv.price | money }}</span><span class="pct" data-pct>Save 15%</span></p>
 
  {%- if product.variants.size > 1 -%}
  <p class="opt-label">Format</p>
@@ -191,38 +137,26 @@
  <input type="hidden" name="id" id="vid-{{ section.id }}" data-vid-input value="{{ cv.id }}">
  <input type="hidden" name="selling_plan" id="plan-{{ section.id }}" data-plan-input value="" disabled>
  <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
- <p class="opt-label">Subscribe &amp; save</p>
- <div class="plans" role="radiogroup" aria-label="Delivery frequency">
- <label class="plan" data-plan="subscribe" data-discount="15" data-cycle="30"{% if has_plans %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans.first.id }}"{% endif %} data-active="true" role="radio" aria-checked="true" tabindex="0">
+ <p class="opt-label">Choose your plan</p>
+ <div class="plans" role="radiogroup" aria-label="Purchase option">
+ <label class="plan" data-plan="subscribe"{% if has_plans %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans.first.id }}"{% endif %} data-active="true" role="radio" aria-checked="true" tabindex="0">
+ <span class="save">Save 15%</span>
  <span class="dot"></span>
- <span><span class="title">Every 30 days</span><br><span class="note">Save 15%</span></span>
- <span class="price"><span class="now" data-plan-now>{{ sub30 | money }}</span><br><span class="was" data-plan-was>{{ cv.price | money }}</span></span>
+ <span><span class="title">Subscribe &amp; Save</span><br><span class="note">Delivered monthly · skip or cancel anytime</span></span>
+ <span class="price"><span class="now" data-sub-now>{{ sub | money }}</span><br><span class="was" data-sub-was>{{ cv.price | money }}</span></span>
  </label>
- <label class="plan" data-plan="subscribe" data-discount="20" data-cycle="90"{% if has_plans and product.selling_plan_groups.first.selling_plans.size > 1 %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans[1].id }}"{% endif %} data-active="false" role="radio" aria-checked="false" tabindex="0">
- <span class="save">Best value</span>
+ <label class="plan" data-plan="onetime" data-active="false" role="radio" aria-checked="false" tabindex="0">
  <span class="dot"></span>
- <span><span class="title">Every 90 days</span><br><span class="note">Save 20%</span></span>
- <span class="price"><span class="now" data-plan-now>{{ sub90 | money }}</span><br><span class="was" data-plan-was>{{ cv.price | money }}</span></span>
+ <span><span class="title">One-Time Purchase</span><br><span class="note">No commitment</span></span>
+ <span class="price"><span class="now" data-ot-now>{{ cv.price | money }}</span></span>
  </label>
  </div>
- <p class="plan-note"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg> Modify, pause, or cancel any time from your account.</p>
- <button type="submit" class="ip6-btn ip6-btn--primary atc" data-atc-anchor>Pre-Order, <span data-atc>{{ sub30 | money }}</span></button>
- <p class="onetime"><button type="button" data-plan-onetime data-label-sub="Subscribe &amp; save instead">One-time purchase · <span data-ot-now>{{ cv.price | money }}</span></button></p>
+ <button type="submit" class="ip6-btn ip6-btn--primary atc">Pre-Order, <span data-atc>{{ sub | money }}</span></button>
  <p class="ship"><b>Pre-book offer:</b> 20% off one-time orders, applied at checkout · Ships on or after October 3, 2026</p>
  <p class="ship"><b>Free shipping</b> across the US &amp; Canada · 30-day returns</p>
  <div class="micro"><span>cGMP Certified</span><span>Third-Party Tested</span><span>High-Purity</span></div>
  {%- unless has_plans -%}<p class="note-sub">Subscribe pricing is illustrative until Recharge is connected.</p>{%- endunless -%}
  </form>
- <p class="dshea" id="dshea"><b>†</b> {{ section.settings.disclaimer }}</p>
- </div>
- </div>
-
- <div id="buybar-{{ section.id }}" data-buybar aria-hidden="true">
- <div class="ip6-wrap in">
- <span class="th">{%- if product.featured_image -%}<img src="{{ product.featured_image | image_url: width: 120 }}" alt="" width="40" height="40">{%- endif -%}</span>
- <p class="t">{{ product.title | default: 'IP6 Original' }}<small data-bar-plan>Every 30 days</small></p>
- <span class="p" data-atc>{{ sub30 | money }}</span>
- <button type="submit" form="form-{{ section.id }}" class="ip6-btn ip6-btn--primary">Pre-Order</button>
  </div>
  </div>
 </section>
@@ -241,10 +175,7 @@
 {
  "name": "IP6 Product",
  "tag": "section",
- "settings": [
- { "type": "product", "id": "product", "label": "Product (defaults to current product)" },
- { "type": "textarea", "id": "disclaimer", "label": "FDA disclaimer", "default": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease." }
- ],
+ "settings": [ { "type": "product", "id": "product", "label": "Product (defaults to current product)" } ],
  "presets": [{ "name": "IP6 Product" }]
 }
 {% endschema %}

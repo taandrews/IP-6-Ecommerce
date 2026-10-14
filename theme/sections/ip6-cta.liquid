@@ -1,43 +1,31 @@
 {%- assign p = section.settings.product -%}
 <style>
- #act-{{ section.id }} { background: var(--ink); color: #F6F2EA; }
- #act-{{ section.id }} .g { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
- #act-{{ section.id }} .img { aspect-ratio: 4/5; border-radius: 16px; overflow: hidden; background: #13294A; display: grid; place-items: center; color: var(--gold); }
- #act-{{ section.id }} .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
- #act-{{ section.id }} .img .ip6-mol { width: 46%; opacity: .6; }
- #act-{{ section.id }} .ip6-eyebrow { color: var(--gold); }
- #act-{{ section.id }} h2 { color: #F6F2EA; margin: 20px 0 0; }
- #act-{{ section.id }} .lead { font-family: var(--serif); margin: 24px 0 0; max-width: 46ch; font-size: 18px; line-height: 1.6; color: rgba(246,242,234,.8); }
- #act-{{ section.id }} ol { list-style: none; margin: 40px 0 0; padding: 0; border-top: 1px solid rgba(197,162,83,.4); }
- #act-{{ section.id }} li { display: grid; grid-template-columns: 96px 1fr; gap: 16px; padding: 20px 0; border-bottom: 1px solid rgba(197,162,83,.4); }
- #act-{{ section.id }} .n { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); padding-top: 4px; }
- #act-{{ section.id }} h3 { font-size: 17px; margin: 0 0 4px; color: #F6F2EA; font-weight: 500; }
- #act-{{ section.id }} p.b { margin: 0; font-size: 14px; line-height: 1.55; color: rgba(246,242,234,.65); }
- #act-{{ section.id }} .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 36px; }
- @media (max-width: 749px){ #act-{{ section.id }} .g { grid-template-columns: 1fr; gap: 32px; } #act-{{ section.id }} li { grid-template-columns: 80px 1fr; } }
+ #act-{{ section.id }} { background: var(--surface); }
+ #act-{{ section.id }} .head { margin-bottom: clamp(28px,3vw,44px); }
+ #act-{{ section.id }} h2 { font-size: clamp(30px,4vw,42px); margin: 14px 0 0; }
+ #act-{{ section.id }} .head p { margin: 14px 0 0; max-width: 60ch; font-size: 17px; line-height: 1.6; color: var(--ink-2); }
+ #act-{{ section.id }} .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-bottom: clamp(32px,4vw,48px); }
+ #act-{{ section.id }} .step { background: #fff; border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 12px; padding: 28px; }
+ #act-{{ section.id }} .step h3 { font-size: 19px; margin: 0 0 8px; }
+ #act-{{ section.id }} .step p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+ #act-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+ @media (max-width: 749px){ #act-{{ section.id }} .steps { grid-template-columns: 1fr; } }
 </style>
 <section id="act-{{ section.id }}" class="ip6 ip6-section ip6-reveal">
- <div class="ip6-wrap g">
- <div class="img ip6-rise d1">
- {%- if section.settings.image != blank -%}
- <img src="{{ section.settings.image | image_url: width: 1200 }}" alt="IP6 Original bottle beside a glass of water." width="720" height="900" loading="lazy">
- {%- else -%}
- {% render 'ip6-molecule', size: '46%' %}
- {%- endif -%}
- </div>
- <div class="ip6-rise d2">
+ <div class="ip6-wrap">
+ <div class="head ip6-rise d1">
  <span class="ip6-eyebrow">The action</span>
- <h2 class="ip6-h2">Take it. Here is exactly how.</h2>
- <p class="lead">Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.</p>
- <ol>
- <li><span class="n">Timing</span><div><h3>On an empty stomach</h3><p class="b">30 minutes before food, or 2 hours after, for optimal absorption.</p></div></li>
- <li><span class="n">Water</span><div><h3>With water only</h3><p class="b">8 oz minimum. Avoid mineral-rich beverages within an hour.</p></div></li>
- <li><span class="n">Guidance</span><div><h3>Consult your physician</h3><p class="b">Always discuss new supplements with your healthcare professional.</p></div></li>
- </ol>
- <div class="actions">
- {%- if p != blank -%}<a class="ip6-btn ip6-btn--gold" href="{{ p.url }}">Shop IP6 Original</a>{%- else -%}<a class="ip6-btn ip6-btn--gold" href="#">Shop IP6 Original</a>{%- endif -%}
- <a class="ip6-btn ip6-btn--outline-cream" href="{{ section.settings.link | default: '/pages/faq#how-to-take' }}">Full dosing guide</a>
+ <h2>Take it. Here is exactly how.</h2>
+ <p>Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.</p>
  </div>
+ <div class="steps">
+ <div class="step ip6-rise d1"><h3>On an empty stomach</h3><p>30 minutes before food, or 2 hours after, for optimal absorption.</p></div>
+ <div class="step ip6-rise d2"><h3>With water only</h3><p>8 oz minimum. Avoid mineral-rich beverages within an hour.</p></div>
+ <div class="step ip6-rise d3"><h3>Consult your physician</h3><p>Always discuss new supplements with your healthcare professional.</p></div>
+ </div>
+ <div class="actions ip6-rise d4">
+ {%- if p != blank -%}<a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Shop IP6 Original</a>{%- else -%}<a class="ip6-btn ip6-btn--primary" href="#">Shop IP6 Original</a>{%- endif -%}
+ <a class="ip6-textlink" href="{{ section.settings.link | default: '/pages/faq#how-to-take' }}">Full dosing guide →</a>
  </div>
  </div>
 </section>
@@ -47,7 +35,6 @@
  "tag": "section",
  "settings": [
  { "type": "product", "id": "product", "label": "Product" },
- { "type": "image_picker", "id": "image", "label": "Lifestyle image (bottle and a glass of water, 4:5)" },
  { "type": "url", "id": "link", "label": "Dosing guide link" }
  ],
  "presets": [{ "name": "IP6 Action" }]

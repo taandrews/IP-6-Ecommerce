@@ -18,7 +18,7 @@
   }
 
   body {
-    @apply bg-cream text-ink font-sans antialiased text-[16px] lg:text-[18px];
+    @apply bg-surface text-ink font-sans antialiased;
   }
 
   h1, h2, h3, h4 {
@@ -59,26 +59,11 @@
   }
 
   .btn-primary {
-    @apply btn bg-navy-800 text-surface hover:bg-navy-900 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em];
+    @apply btn bg-teal-500 text-surface hover:bg-teal-600 px-6 py-3.5 rounded-full font-semibold;
   }
 
   .btn-secondary {
-    @apply btn border border-navy-800 text-navy-800 hover:bg-navy-800 hover:text-surface px-6 py-3.5 rounded-none font-semibold text-[12px] uppercase tracking-[0.16em];
-  }
-
-  /* Pill CTA used inline across pages: navy, uppercase, tracked */
-  .btn-pill {
-    @apply inline-flex items-center justify-center gap-2 bg-navy-800 text-surface hover:bg-navy-900 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
-  }
-
-  /* Square outlined secondary with arrow (Timeline) */
-  .btn-square {
-    @apply inline-flex items-center gap-3 border border-navy-800 text-navy-800 hover:bg-navy-800 hover:text-surface px-5 py-3.5 font-semibold text-[12px] uppercase tracking-[0.16em] transition-colors;
-  }
-
-  /* Editorial paragraph: serif, larger measure */
-  .prose-editorial {
-    @apply font-serif text-lg lg:text-xl text-ink/80 leading-relaxed;
+    @apply btn border-2 border-teal-500 text-teal-500 hover:bg-teal-50 px-6 py-3.5 rounded-full font-semibold;
   }
 
   .btn-gold {
@@ -113,39 +98,9 @@
     @apply badge bg-navy-50 text-navy-800;
   }
 
-  /* Eyebrow: 12px mono, uppercase, tracked 0.12em */
+  /* Eyebrow stripped of decorative rule for clinical look. */
   .eyebrow {
-    @apply inline-block font-mono text-[12px] uppercase tracking-[0.12em] text-gold-700 font-medium;
-  }
-  .eyebrow-light {
-    @apply inline-block font-mono text-[12px] uppercase tracking-[0.12em] text-gold-400 font-medium;
-  }
-
-  /* Section rhythm: 120px desktop, 72px mobile */
-  .section-y {
-    @apply py-[72px] lg:py-[120px];
-  }
-
-  /* Type scale */
-  .h-statement {
-    @apply text-[44px] lg:text-[96px] leading-[0.98] tracking-[-0.03em] font-normal;
-  }
-  .h-section {
-    @apply text-[32px] lg:text-[48px] leading-[1.05] tracking-[-0.02em] font-normal;
-  }
-  .body-lg {
-    @apply text-[16px] lg:text-[18px] leading-relaxed;
-  }
-
-  /* Gold fill primary */
-  .btn-gold {
-    @apply inline-flex items-center justify-center gap-2 bg-gold-500 text-navy-900 hover:bg-gold-400 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
-  }
-  .btn-outline-cream {
-    @apply inline-flex items-center justify-center gap-2 border border-cream/70 text-cream hover:bg-cream hover:text-navy-900 px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
-  }
-  .btn-outline-navy {
-    @apply inline-flex items-center justify-center gap-2 border border-navy-800 text-navy-800 hover:bg-navy-800 hover:text-cream px-7 py-4 rounded-full font-semibold text-[13px] uppercase tracking-[0.16em] transition-colors;
+    @apply inline-block text-[11px] uppercase tracking-[0.18em] text-sky-600 font-semibold;
   }
 
   .hairline-gold,

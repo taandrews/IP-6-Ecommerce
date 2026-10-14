@@ -8,17 +8,16 @@
   #ip6quiz { position: fixed; inset: 0; z-index: 9999; display: none; }
   #ip6quiz.open { display: block; }
   #ip6quiz .ovl { position: absolute; inset: 0; background: rgba(8,18,32,.55); backdrop-filter: blur(3px); }
-  #ip6quiz .panel { position: absolute; top: 0; right: 0; bottom: 0; width: min(520px, 100%); background: var(--paper,#F6F2EA); color: var(--ink,#0b1f3a); font-family: var(--sans); display: flex; flex-direction: column; overflow: hidden; box-shadow: -24px 0 60px rgba(11,31,58,.35); animation: ip6q-slide .35s ease-out; }
-  @keyframes ip6q-slide { from { transform: translateX(100%); } to { transform: none; } }
-  @media (prefers-reduced-motion: reduce) { #ip6quiz .panel { animation: none; } }
-  #ip6quiz .media { flex: 0 0 170px; position: relative; background: #d7e3ef url('{{ 'ip6-quiz.jpg' | asset_url }}') center 26% / cover no-repeat; }
+  #ip6quiz .panel { position: absolute; inset: 0; background: var(--bg,#fff); color: var(--ink,#0b1f3a); font-family: var(--sans); display: flex; flex-direction: row; overflow: hidden; }
+  #ip6quiz .media { flex: 0 0 42%; position: relative; background: #d7e3ef url('{{ 'ip6-quiz.jpg' | asset_url }}') center 26% / cover no-repeat; }
   #ip6quiz .media::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 72%; background: linear-gradient(to top, rgba(8,18,32,.9) 0%, rgba(8,18,32,.45) 38%, rgba(8,18,32,0) 100%); }
   #ip6quiz .media .mtag { position: absolute; left: 28px; right: 28px; bottom: 26px; z-index: 1; color: #fff; text-shadow: 0 2px 16px rgba(8,18,32,.95); }
   #ip6quiz .media .mtag .e { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; opacity: .95; }
   #ip6quiz .media .mtag .h { font-family: var(--serif); font-style: italic; font-size: 26px; margin-top: 6px; line-height: 1.15; max-width: 16ch; }
   #ip6quiz .side { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; }
   @media (max-width: 860px) {
-    #ip6quiz .media { flex: 0 0 150px; background-position: center 24%; }
+    #ip6quiz .panel { flex-direction: column; }
+    #ip6quiz .media { flex: 0 0 190px; background-position: center 24%; }
     #ip6quiz .media::after { height: 85%; }
     #ip6quiz .media .mtag { bottom: 18px; }
     #ip6quiz .media .mtag .h { font-size: 20px; }
@@ -202,7 +201,7 @@
 <script>
 (function(){
   var root = document.getElementById('ip6quiz'); if(!root) return;
-  var KEY = 'ip6_prebook_seen';
+  var KEY = 'ip6quiz_seen_v1';
   var order = ['intent','email','q2','q3','q4','q5','q6','reveal'];
   var steps = {}; root.querySelectorAll('.step').forEach(function(s){ steps[s.getAttribute('data-step')] = s; });
   var bar = document.getElementById('ip6q-bar');
@@ -219,18 +218,16 @@
     root.querySelector('.body').scrollTop = 0;
   }
   var dismissed = false;
-  // Auto-open once per session; the announcement bar link (#quiz) opens it any time.
-  function seen(){ try { if(sessionStorage.getItem(KEY)) return true; } catch(e){} return dismissed; }
-  function markSeen(){ dismissed = true; try{ sessionStorage.setItem(KEY,'1'); }catch(e){} document.removeEventListener('mouseout', onMouseOut); }
+  function seen(){ try { if(localStorage.getItem(KEY)) return true; } catch(e){} return dismissed || document.cookie.indexOf(KEY+'=1') >= 0; }
+  function markSeen(){ dismissed = true; try{ localStorage.setItem(KEY,'1'); }catch(e){} document.cookie = KEY+'=1;path=/;max-age=2592000'; document.removeEventListener('mouseout', onMouseOut); }
   var lastFocused = null;
   function focusables(){ return Array.prototype.slice.call(root.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter(function(el){ return el.offsetParent !== null && !el.disabled; }); }
-  function open(force){ if(!force && seen()) return; markSeen(); lastFocused = document.activeElement; root.classList.add('open'); document.body.style.overflow='hidden'; root.setAttribute('aria-hidden','false'); var c=root.querySelector('.close'); if(c) c.focus(); }
-  function close(){ root.classList.remove('open'); document.body.style.overflow=''; root.setAttribute('aria-hidden','true'); if(lastFocused && lastFocused.focus){ lastFocused.focus(); } }
-  var onMouseOut = function(e){ if(e.clientY <= 0 && !e.relatedTarget) open(); };
-  document.addEventListener('click', function(e){ var a = e.target.closest('a[href="#quiz"], [data-open-prebook]'); if(a){ e.preventDefault(); open(true); } });
+  function open(){ if(seen()) return; lastFocused = document.activeElement; root.classList.add('open'); document.body.style.overflow='hidden'; root.setAttribute('aria-hidden','false'); var c=root.querySelector('.close'); if(c) c.focus(); }
+  function close(){ root.classList.remove('open'); document.body.style.overflow=''; root.setAttribute('aria-hidden','true'); markSeen(); if(lastFocused && lastFocused.focus){ lastFocused.focus(); } }
+  var onMouseOut = function(e){ if(e.clientY <= 0) open(); };
 
   root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', close); });
-  var ctaBtn = root.querySelector('.reveal .cta'); if(ctaBtn){ ctaBtn.addEventListener('click', close); }
+  var ctaBtn = root.querySelector('.reveal .cta'); if(ctaBtn){ ctaBtn.addEventListener('click', markSeen); }
   document.addEventListener('keydown', function(e){
     if(!root.classList.contains('open')) return;
     if(e.key==='Escape'){ close(); return; }
@@ -305,12 +302,14 @@
     var iv = setInterval(tick, 1000); tick();
   })();
 
-  // ?quiz=1 or #quiz force-opens it. Otherwise: exit intent on desktop, 45s on mobile, once per session.
+  // QA/build: ?quiz=1 or #quiz force-opens it, ignoring the once-per-30-days rule.
   if(/[?&]quiz=1/.test(location.search) || location.hash==='#quiz'){
-    setTimeout(function(){ open(true); }, 300);
+    try{ localStorage.removeItem(KEY); }catch(e){} dismissed=false; document.cookie=KEY+'=;path=/;max-age=0';
+    setTimeout(open, 300);
   } else if(!seen()){
-    if (window.matchMedia('(max-width: 860px)').matches) { setTimeout(function(){ open(); }, 45000); }
-    else { document.addEventListener('mouseout', onMouseOut); }
+    // trigger: first visit after delay + exit intent (only if not already seen)
+    setTimeout(open, 5000);
+    document.addEventListener('mouseout', onMouseOut);
   }
   show('intent');
 })();

@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, Leaf, ShieldCheck, Award, Zap } from "lucide-react";
-import { ProductMediaGrid } from "@/components/product/ProductMediaGrid";
+import { ProductGallery } from "@/components/product/ProductGallery";
 import { PurchasePanel } from "@/components/product/PurchasePanel";
 import { Reviews } from "@/components/product/Reviews";
 import { ProductSchema } from "@/components/product/ProductSchema";
+import { DsheaDisclaimer } from "@/components/product/Dshea";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Footer } from "@/components/layout/Footer";
+import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
+import { Grain } from "@/components/ui/Grain";
 import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Stars } from "@/components/ui/Stars";
 import { FileText } from "lucide-react";
-import type { Product } from "@/types";
 import { products, getProductBySlug, getProductsBySkus } from "@/content/products";
-import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 import { testimonials } from "@/content/testimonials";
 import { resolveCurrency } from "@/lib/currency";
 import { hreflangAlternates } from "@/lib/i18n";
@@ -64,7 +65,7 @@ export default function ProductPage({ params }: Params) {
   return (
     <>
       {/* Atmospheric product hero with gradient ground + serial detail */}
-      <section className="bg-cloud-200 relative">
+      <section className="bg-atmosphere-deep relative">
         <nav aria-label="Breadcrumb" className="container pt-6 text-sm text-ink/60">
           <ol className="flex items-center gap-1.5">
             <li>
@@ -79,13 +80,10 @@ export default function ProductPage({ params }: Params) {
           </ol>
         </nav>
 
-        {/* No transform-animating wrapper here: the sticky buy bar inside
-            PurchasePanel is position: fixed and needs the viewport as its
-            containing block. */}
-        <div className="container py-10 lg:py-14 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:items-start">
-          <ProductMediaGrid product={product} />
+        <div className="container py-10 lg:py-14 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 stagger">
+          <ProductGallery images={product.images} />
 
-          <div className="flex flex-col lg:sticky lg:top-24">
+          <div className="flex flex-col">
             <div className="mb-5">
               <p className="eyebrow mb-4">{product.category === "supplement" ? "Supplement" : product.category === "skincare" ? "Skincare" : "Water filtration"}</p>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -199,12 +197,6 @@ export default function ProductPage({ params }: Params) {
                 </span>
               </a>
             ) : null}
-
-            {product.requiresDsheaDisclaimer ? (
-              <p id="dshea" className="mt-6 text-xs leading-relaxed text-ink/55 scroll-mt-32">
-                <span className="font-semibold text-ink/70">†</span> {DSHEA_DISCLAIMER}
-              </p>
-            ) : null}
           </div>
         </div>
       </section>
@@ -229,10 +221,8 @@ export default function ProductPage({ params }: Params) {
       {product.category === "skincare" ? <SkincareSections product={product} /> : null}
       {product.category === "filter" ? <FilterSections product={product} /> : null}
 
-      {/* Ingredients: traceability table when the data exists, plain list otherwise */}
-      {product.traceability && product.traceability.length > 0 ? (
-        <TraceabilityTable rows={product.traceability} />
-      ) : product.ingredients ? (
+      {/* Ingredients / spec list */}
+      {product.ingredients ? (
         <section className="container py-16 max-w-4xl">
           <h2 className="font-display text-display-md text-forest-800 mb-6">Ingredients</h2>
           <ul className="space-y-2 text-ink/85">
@@ -260,11 +250,13 @@ export default function ProductPage({ params }: Params) {
       {/* How to use */}
       <section className="container py-16 max-w-3xl">
         <h2 className="font-display text-display-md text-forest-800 mb-6">How to use</h2>
-        <ol className="border-t border-dotted border-navy-800/30">
+        <ol className="space-y-4">
           {product.howToUse.map((step, i) => (
-            <li key={i} className="flex gap-4 border-b border-dotted border-navy-800/30 py-4">
-              <span aria-hidden className="mt-3 h-px w-6 shrink-0 bg-gold-500" />
-              <p className="text-ink/85 leading-relaxed">{step}</p>
+            <li key={i} className="flex gap-4">
+              <span className="shrink-0 size-8 rounded-full bg-forest-700 text-ivory-100 grid place-items-center font-display text-sm">
+                {i + 1}
+              </span>
+              <p className="text-ink/85 pt-1 leading-relaxed">{step}</p>
             </li>
           ))}
         </ol>
@@ -331,49 +323,16 @@ export default function ProductPage({ params }: Params) {
         </section>
       ) : null}
 
+      {/* DSHEA */}
+      {product.requiresDsheaDisclaimer ? (
+        <div className="container max-w-3xl mb-16">
+          <DsheaDisclaimer />
+        </div>
+      ) : null}
+
       <ProductSchema product={product} currency={currency} reviewAggregate={reviewAggregate} />
+      {product.requiresDsheaDisclaimer ? <StickyDisclaimer /> : null}
       <Footer showDshea={product.requiresDsheaDisclaimer} />
     </>
-  );
-}
-
-function TraceabilityTable({ rows }: { rows: NonNullable<Product["traceability"]> }) {
-  const hasAmount = rows.some((r) => r.amount);
-  const hasSource = rows.some((r) => r.source);
-  const hasSupplier = rows.some((r) => r.supplier);
-  const hasOrigin = rows.some((r) => r.manufacturedIn);
-  const th = "py-3 pr-4 text-left text-[10px] uppercase tracking-[0.22em] text-ink/55 font-bold";
-  const td = "py-4 pr-4 align-top text-sm";
-  return (
-    <section className="container py-16 max-w-5xl">
-      <p className="eyebrow mb-3">Traceable ingredients</p>
-      <h2 className="font-display text-display-md text-forest-800 mb-6">Ingredients</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[520px] border-collapse">
-          <thead>
-            <tr className="border-b border-navy-800/20">
-              <th scope="col" className={th}>Ingredient</th>
-              {hasAmount ? <th scope="col" className={th}>Amount</th> : null}
-              <th scope="col" className={th}>Function</th>
-              {hasSource ? <th scope="col" className={th}>Source</th> : null}
-              {hasSupplier ? <th scope="col" className={th}>Supplier</th> : null}
-              {hasOrigin ? <th scope="col" className={th}>Final manufacturing</th> : null}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.ingredient} className="border-b border-dotted border-navy-800/25">
-                <th scope="row" className={`${td} text-left font-semibold text-navy-800`}>{r.ingredient}</th>
-                {hasAmount ? <td className={`${td} tabular-nums text-ink/80`}>{r.amount ?? ""}</td> : null}
-                <td className={`${td} text-ink/80`}>{r.function}</td>
-                {hasSource ? <td className={`${td} text-ink/80`}>{r.source ?? ""}</td> : null}
-                {hasSupplier ? <td className={`${td} text-ink/80`}>{r.supplier ?? ""}</td> : null}
-                {hasOrigin ? <td className={`${td} text-ink/80`}>{r.manufacturedIn ?? ""}</td> : null}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
   );
 }

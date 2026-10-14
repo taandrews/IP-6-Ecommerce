@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
+import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { Accordion } from "@/components/ui/Accordion";
 import { faqCategories } from "@/content/faqs";
 import { HowToTakeContent } from "@/components/sections/HowToTakeContent";
@@ -85,6 +86,7 @@ export default function FaqPage() {
       <HowToTakeContent />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <StickyDisclaimer />
       <Footer showDshea />
     </>
   );

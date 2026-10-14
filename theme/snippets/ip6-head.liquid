@@ -27,8 +27,6 @@
 </script>
 
 {%- comment -%} IBM Plex self-hosted from theme assets (latin subset). Fraunces/Inter come from Shopify's font CDN via theme settings. {%- endcomment -%}
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="preload" href="{{ 'ibm-plex-sans-400.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="{{ 'ibm-plex-sans-500.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
 <style>
@@ -51,8 +49,8 @@
     --teal: #8A6A1F;       /* brand premium gold for text (eyebrows/accents), darkened to pass WCAG AA 4.5:1 on white */
     --gold: #C5A253;       /* premium accent for rules/dots/borders (decorative only) */
     --gold-deep: #8A6A1F;  /* text-bearing gold, 5.05:1 on white */
-    --paper: #F6F2EA;      /* cream page bg */
-    --bg: #F6F2EA;
+    --paper: #FFFFFF;      /* bright page bg */
+    --bg: #FFFFFF;
     --surface: #F4F7FA;    /* cool light bands/cards */
     --line: #E6EAF0;       /* hairlines */
     --muted: #5B6470;
@@ -61,22 +59,20 @@
     /* Type: IBM Plex (Amplify) */
     --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
     --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
     /* Spacing scale (4px base) */
     --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
     --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px; --s10: 128px;
 
     /* Layout */
-    --maxw: 1280px;
+    --maxw: 1200px;
     --measure: 66ch;
     --gutter: 24px;
-    --section-y: 120px;
+    --section-y: 96px;
     --radius-card: 8px;
     --radius-btn: 6px;
   }
-  @media (max-width: 749px) { :root { --section-y: 72px; --gutter: 16px; } }
-  body { background: var(--paper); }
+  @media (max-width: 749px) { :root { --section-y: 56px; --gutter: 20px; } }
 
   /* Header logo sizing (override Horizon's clamp) */
   .header-logo, .header-logo__image-container { height: auto !important; }
@@ -112,38 +108,19 @@
 
   /* Eyebrow: signature editorial label */
   .ip6-eyebrow {
-    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    font-family: var(--sans); font-size: 12.5px; font-weight: 600;
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal);
     display: inline-block; margin: 0;
   }
 
   /* Buttons */
-  .ip6-btn { font-family: var(--sans); font-weight: 600; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; line-height: 1; cursor: pointer;
+  .ip6-btn { font-family: var(--sans); font-weight: 600; font-size: 15px; line-height: 1; cursor: pointer;
     display: inline-flex; align-items: center; gap: 10px; text-decoration: none; border-radius: 100px;
-    padding: 17px 28px; transition: background .18s ease-out, color .18s ease-out, border-color .18s ease-out; border: 1px solid transparent; }
-  .ip6-btn--primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+    padding: 16px 28px; transition: background .18s ease-out, color .18s ease-out, border-color .18s ease-out; border: 1px solid transparent; }
+  .ip6-btn--primary { background: var(--cyan); color: #fff; border-color: var(--cyan); }
   .ip6-btn--primary:hover { background: #09182d; border-color: #09182d; }
   .ip6-btn--secondary { background: transparent; color: var(--ink); border-color: #c9d2dd; }
   .ip6-btn--secondary:hover { border-color: var(--ink); }
-  .ip6-btn--gold { background: var(--gold); color: #06122A; border-color: var(--gold); }
-  .ip6-btn--gold:hover { background: #d3b56a; border-color: #d3b56a; }
-  .ip6-btn--outline-cream { background: transparent; color: #F6F2EA; border-color: rgba(246,242,234,.7); }
-  .ip6-btn--outline-cream:hover { background: #F6F2EA; color: var(--ink); }
-  .ip6-btn--outline-navy { background: transparent; color: var(--ink); border-color: var(--ink); }
-  .ip6-btn--outline-navy:hover { background: var(--ink); color: #F6F2EA; }
-  .ip6-mol path, .ip6-mol line { stroke-dasharray: 420; stroke-dashoffset: 0; }
-  .ip6-mol--anim path, .ip6-mol--anim line { stroke-dashoffset: 420; }
-  .ip6-mol--anim circle.p { opacity: 0; transform-origin: center; }
-  .ip6-in .ip6-mol--anim path, .ip6-in .ip6-mol--anim line { animation: ip6-mol-draw 1.2s cubic-bezier(.2,.65,.2,1) forwards; }
-  .ip6-in .ip6-mol--anim line:nth-of-type(2) { animation-delay: .1s } .ip6-in .ip6-mol--anim line:nth-of-type(3) { animation-delay: .2s } .ip6-in .ip6-mol--anim line:nth-of-type(4) { animation-delay: .3s } .ip6-in .ip6-mol--anim line:nth-of-type(5) { animation-delay: .4s } .ip6-in .ip6-mol--anim line:nth-of-type(6) { animation-delay: .5s }
-  .ip6-in .ip6-mol--anim circle.p { animation: ip6-mol-pop .4s ease-out forwards; animation-delay: .8s; }
-  @keyframes ip6-mol-draw { to { stroke-dashoffset: 0; } }
-  @keyframes ip6-mol-pop { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: scale(1); } }
-  @media (prefers-reduced-motion: reduce) { .ip6-mol--anim path, .ip6-mol--anim line { stroke-dashoffset: 0 !important; animation: none !important; } .ip6-mol--anim circle.p { opacity: 1 !important; animation: none !important; } }
-  .ip6-btn--square, .ip6-btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); border-radius: 0; font-size: 12px; padding: 15px 20px; }
-  .ip6-btn--square:hover, .ip6-btn--ghost:hover { background: var(--ink); color: #fff; }
-  .ip6 h1 em, .ip6 h2 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
-  .ip6-serif { font-family: var(--serif); }
   .ip6-textlink { font-family: var(--sans); font-weight: 600; font-size: 15px; color: var(--teal); text-decoration: none;
     border-bottom: 1px solid currentColor; padding-bottom: 2px; transition: opacity .18s ease-out; }
   .ip6-textlink:hover { opacity: .7; }
@@ -192,7 +169,7 @@
   .ip6-bright h1, .ip6-bright h2, .ip6-bright h3 { font-family: var(--sans); font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
   .ip6-bright .serif { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -0.01em; }
   .ip6-bright .ip6-eyebrow { color: var(--teal); }
-  .ip6-bright .ip6-btn--primary { background: var(--ink); color: #fff; border-color: var(--ink); border-radius: 100px; padding: 17px 28px; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; }
+  .ip6-bright .ip6-btn--primary { background: var(--cyan); color: #fff; border-color: var(--cyan); border-radius: 100px; padding: 16px 28px; font-size: 16px; font-weight: 600; }
   .ip6-bright .ip6-btn--primary:hover { background: #09182d; border-color: #09182d; }
   .ip6-bright .ip6-card { border-radius: var(--radius-card); border-color: var(--line); }
 </style>

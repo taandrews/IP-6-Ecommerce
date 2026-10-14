@@ -1,25 +1,24 @@
 <style>
  #ph-{{ section.id }} { background: #fff; }
- #ph-{{ section.id }} .wrap { max-width: 820px; }
- #ph-{{ section.id }} .head { margin-bottom: clamp(24px,3vw,36px); }
+ #ph-{{ section.id }} .head { margin-bottom: clamp(28px,3vw,44px); }
  #ph-{{ section.id }} .head h2 { font-size: clamp(28px,3.4vw,42px); margin: 14px 0 0; }
- #ph-{{ section.id }} ol { list-style: none; margin: 0; padding: 0; border-top: 1px dotted rgba(11,31,58,.35); }
- #ph-{{ section.id }} li { display: grid; grid-template-columns: 88px 1fr; gap: 16px; padding: 18px 0; border-bottom: 1px dotted rgba(11,31,58,.35); }
- #ph-{{ section.id }} .n { font-size: 11px; font-weight: 700; letter-spacing: .22em; color: var(--muted); padding-top: 6px; font-variant-numeric: tabular-nums; }
- #ph-{{ section.id }} h3 { font-size: 18px; margin: 0 0 4px; }
- #ph-{{ section.id }} p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+ #ph-{{ section.id }} .steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+ #ph-{{ section.id }} .step { background: var(--surface); border: 1px solid var(--line); border-top: 2px solid var(--gold); border-radius: 12px; padding: 28px; }
+ #ph-{{ section.id }} .step h3 { font-size: 19px; margin: 0 0 8px; }
+ #ph-{{ section.id }} .step p { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+ @media (max-width:749px){ #ph-{{ section.id }} .steps { grid-template-columns: 1fr; } }
 </style>
 <section id="ph-{{ section.id }}" class="ip6 ip6-bright ip6-section ip6-reveal">
- <div class="ip6-wrap wrap">
+ <div class="ip6-wrap">
  <div class="head ip6-rise d1">
  <span class="ip6-eyebrow">How to take it</span>
  <h2>Simple to take. Easy to keep up.</h2>
  </div>
- <ol>
- <li class="ip6-rise d1"><span class="n">Timing</span><div><h3>On an empty stomach</h3><p>Take 2 capsules once or twice daily, away from meals, for optimal absorption.</p></div></li>
- <li class="ip6-rise d2"><span class="n">Water</span><div><h3>With water only</h3><p>Avoid mineral-rich foods or drinks that can bind to IP6 and reduce absorption.</p></div></li>
- <li class="ip6-rise d3"><span class="n">Guidance</span><div><h3>Consult your physician</h3><p>As with any supplement, talk to your healthcare professional before starting.</p></div></li>
- </ol>
+ <div class="steps">
+ <div class="step ip6-rise d1"><h3>On an empty stomach</h3><p>Take 2 capsules once or twice daily, away from meals, for optimal absorption.</p></div>
+ <div class="step ip6-rise d2"><h3>With water only</h3><p>Avoid mineral-rich foods or drinks that can bind to IP6 and reduce absorption.</p></div>
+ <div class="step ip6-rise d3"><h3>Consult your physician</h3><p>As with any supplement, talk to your healthcare professional before starting.</p></div>
+ </div>
  </div>
 </section>
 {% schema %}

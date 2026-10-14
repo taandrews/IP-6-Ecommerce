@@ -88,6 +88,7 @@ export function FounderContent() {
         <p
           className="font-serif text-navy-800 text-balance leading-tight"
           style={{
+            fontFamily: "var(--font-display), Georgia, serif",
             fontSize: "clamp(1.5rem, 2.5vw, 2rem)",
             fontWeight: 400,
             fontStyle: "italic",

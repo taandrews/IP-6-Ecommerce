@@ -3,98 +3,59 @@
  assign img = section.settings.image
 -%}
 <style>
- #hero-{{ section.id }} { background: var(--ink); color: #F6F2EA; position: relative; }
- #hero-{{ section.id }} .track { height: 300vh; }
- #hero-{{ section.id }} .pin { position: sticky; top: 0; height: 100vh; min-height: 640px; overflow: hidden; }
- #hero-{{ section.id }} .glow { position: absolute; inset: 0 0 0 auto; width: 58%; pointer-events: none; background: radial-gradient(ellipse 55% 60% at 62% 55%, rgba(197,162,83,.38) 0%, rgba(197,162,83,.12) 38%, rgba(11,31,58,0) 72%); }
- #hero-{{ section.id }} .grid { position: relative; display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; height: 100%; padding-top: 96px; padding-bottom: 48px; }
- #hero-{{ section.id }} .ip6-eyebrow { color: var(--gold); margin-bottom: 28px; }
- #hero-{{ section.id }} h1 { font-size: clamp(44px, 6.6vw, 96px); line-height: .98; letter-spacing: -0.03em; font-weight: 400; color: #F6F2EA; margin: 0; }
- #hero-{{ section.id }} h1 em { font-family: var(--serif); font-style: italic; font-weight: 400; }
- #hero-{{ section.id }} .sub { font-size: clamp(16px, 1.3vw, 18px); line-height: 1.6; max-width: 46ch; margin: 28px 0 36px; color: rgba(246,242,234,.8); }
- #hero-{{ section.id }} .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
- #hero-{{ section.id }} .caps { position: relative; margin-top: 48px; height: 96px; border-top: 1px solid rgba(246,242,234,.15); padding-top: 24px; }
- #hero-{{ section.id }} .cap { position: absolute; left: 0; right: 0; top: 24px; max-width: 440px; opacity: 0; transform: translateY(12px); transition: opacity .5s ease-out, transform .5s ease-out; }
- #hero-{{ section.id }} .cap.on { opacity: 1; transform: none; }
- #hero-{{ section.id }} .cap .k { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
- #hero-{{ section.id }} .cap p { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: rgba(246,242,234,.7); }
- #hero-{{ section.id }} .hint { position: absolute; left: 0; top: 24px; font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: rgba(246,242,234,.4); transition: opacity .5s; }
- #hero-{{ section.id }} .caps.live .hint { opacity: 0; }
- #hero-{{ section.id }} .stage { position: relative; height: 70vh; max-height: 720px; display: flex; align-items: center; justify-content: center; }
- #hero-{{ section.id }} .stage img { max-height: 100%; width: auto; max-width: 100%; filter: drop-shadow(0 40px 60px rgba(0,0,0,.45)); }
- #hero-{{ section.id }}.static .track { height: auto; }
- #hero-{{ section.id }}.static .pin { position: relative; height: auto; min-height: 0; }
- #hero-{{ section.id }}.static .caps { height: auto; }
- #hero-{{ section.id }}.static .cap { position: static; opacity: 1; transform: none; margin-top: 16px; }
- #hero-{{ section.id }}.static .hint { display: none; }
- @media (max-width: 749px) {
- #hero-{{ section.id }} .grid { grid-template-columns: 1fr; gap: 24px; padding-top: 80px; align-content: start; }
- #hero-{{ section.id }} .stage { height: 320px; order: 2; }
- #hero-{{ section.id }} .glow { width: 100%; }
- #hero-{{ section.id }} .caps { margin-top: 28px; }
+ #hero-{{ section.id }} { background: var(--paper); }
+ #hero-{{ section.id }} .hero-grid {
+ display: flex; flex-direction: row; gap: clamp(32px, 6vw, 80px); align-items: center;
+ padding-top: clamp(48px, 8vw, 112px); padding-bottom: clamp(48px, 8vw, 112px);
  }
- @media (prefers-reduced-motion: reduce) {
- #hero-{{ section.id }} .track { height: auto; }
- #hero-{{ section.id }} .pin { position: relative; height: auto; min-height: 0; }
- #hero-{{ section.id }} .caps { height: auto; }
- #hero-{{ section.id }} .cap { position: static; opacity: 1; transform: none; margin-top: 16px; transition: none; }
- #hero-{{ section.id }} .hint { display: none; }
+ #hero-{{ section.id }} .hero-grid > .hero-copy { flex: 1 1 auto; min-width: 0; }
+ #hero-{{ section.id }} .hero-grid > .frame-wrap { flex: 0 0 clamp(300px, 34vw, 440px); }
+ #hero-{{ section.id }} .eyebrow-row { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+ #hero-{{ section.id }} .prebook { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 20px; padding: 10px 18px; border: 1px solid var(--gold); border-radius: 100px; background: #fdfaf3; font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--gold-deep); }
+ #hero-{{ section.id }} .prebook .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold-deep); }
+ #hero-{{ section.id }} .eyebrow-row .line { height: 1px; width: 44px; background: var(--gold); }
+ #hero-{{ section.id }} h1 { margin: 0 0 24px; max-width: 14ch; }
+ #hero-{{ section.id }} .sub { max-width: 46ch; margin: 0 0 36px; color: var(--muted); }
+ #hero-{{ section.id }} .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+ #hero-{{ section.id }} .frame-wrap { position: relative; width: 100%; }
+ #hero-{{ section.id }} .ip6-frame { width: 100%; background: linear-gradient(180deg, #ffffff, #eef3f8); border-radius: 14px; display: flex; align-items: center; justify-content: center; padding: clamp(20px, 3vw, 40px); box-sizing: border-box; overflow: hidden; }
+ #hero-{{ section.id }} .ip6-frame img { width: 84%; height: auto; max-width: 360px; display: block; }
+ #hero-{{ section.id }} .cap { margin-top: 14px; text-align: right; }
+ @media (max-width: 749px) {
+ #hero-{{ section.id }} .hero-grid { flex-direction: column; align-items: stretch; gap: 36px; }
+ #hero-{{ section.id }} .hero-grid > .frame-wrap { flex: none; order: -1; max-width: 340px; }
+ #hero-{{ section.id }} h1, #hero-{{ section.id }} .sub { max-width: none; }
  }
 </style>
 
-<section id="hero-{{ section.id }}" class="ip6" data-ip6-hero>
- <div class="track">
- <div class="pin">
- <div class="glow" aria-hidden="true"></div>
- <div class="ip6-wrap grid">
- <div>
- <span class="ip6-eyebrow">{{ section.settings.eyebrow }}</span>
- <h1>{{ section.settings.heading }}</h1>
- <p class="sub">{{ section.settings.subheading }}</p>
- <div class="actions">
+<section id="hero-{{ section.id }}" class="ip6 ip6-reveal">
+ <div class="ip6-wrap hero-grid">
+ <div class="hero-copy">
+ <div class="eyebrow-row ip6-rise d1"><span class="line"></span><span class="ip6-eyebrow">{{ section.settings.eyebrow }}</span></div>
+ <p class="prebook ip6-rise d1"><span class="dot" aria-hidden="true"></span>Coming October 3, 2026 · Pre-Book Now &amp; Receive 20% Off</p>
+ <h1 class="ip6-display ip6-rise d2">{{ section.settings.heading }}</h1>
+ <p class="sub ip6-body-lg ip6-rise d3">{{ section.settings.subheading }}</p>
+ <div class="actions ip6-rise d4">
  {%- if p != blank -%}
- <a class="ip6-btn ip6-btn--gold" href="{{ p.url }}">Pre-Book Now · 20% Off</a>
+ <a class="ip6-btn ip6-btn--primary" href="{{ p.url }}">Pre-Book Now · 20% Off</a>
  {%- else -%}
- <a class="ip6-btn ip6-btn--gold" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label }}</a>
+ <a class="ip6-btn ip6-btn--primary" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label }}</a>
  {%- endif -%}
- <a class="ip6-btn ip6-btn--outline-cream" href="{{ section.settings.link2 | default: '/pages/story' }}">{{ section.settings.link2_label }}</a>
- </div>
- <div class="caps" data-caps aria-live="polite">
- <span class="hint" aria-hidden="true">Scroll</span>
- <div class="cap" data-cap><span class="k">The molecule</span><p>Inositol hexaphosphate, paired with Inositol, the way the research describes the two.</p></div>
- <div class="cap" data-cap><span class="k">The purity</span><p>A high-purity formula with no magnesium stearate and no silicon dioxide. Third-party tested, batch report published.</p></div>
- <div class="cap" data-cap><span class="k">The founder</span><p>Formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD, the physician-scientist who pioneered the work.</p></div>
+ <a class="ip6-textlink" href="{{ section.settings.link2 | default: '/pages/story' }}">{{ section.settings.link2_label }}</a>
  </div>
  </div>
- <div class="stage">
+ <div class="frame-wrap ip6-rise d3">
+ <div class="ip6-frame">
  {%- if img != blank -%}
- <img src="{{ img | image_url: width: 1000 }}" alt="{{ p.title | default: 'IP6 Original' }}" width="800" height="1000" loading="eager" fetchpriority="high">
+ <img src="{{ img | image_url: width: 900 }}" alt="{{ p.title | default: 'IP6 Original' }}" width="600" height="750" loading="eager" fetchpriority="high">
  {%- else -%}
- <img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original supplement bottle" width="800" height="1000" loading="eager" fetchpriority="high">
+ <img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original supplement bottle" width="600" height="750" loading="eager" fetchpriority="high">
  {%- endif -%}
  </div>
- </div>
+ <p class="cap ip6-caption">120 capsules · 60 servings</p>
  </div>
  </div>
 </section>
-
-<script>
-(function(){
- var root = document.querySelector('[data-ip6-hero]'); if(!root) return;
- if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { root.classList.add('static'); return; }
- var caps = root.querySelectorAll('[data-cap]'); var wrap = root.querySelector('[data-caps]'); var raf = 0;
- function update(){
- raf = 0;
- var rect = root.getBoundingClientRect(); var total = root.offsetHeight - window.innerHeight;
- var p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
- var active = p < .42 ? 0 : p < .72 ? 1 : 2; var live = p > .12;
- wrap.classList.toggle('live', live);
- caps.forEach(function(c, i){ c.classList.toggle('on', live && i === active); });
- }
- function onScroll(){ if(!raf) raf = requestAnimationFrame(update); }
- window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); update();
-})();
-</script>
 
 {% schema %}
 {
@@ -104,7 +65,7 @@
  { "type": "product", "id": "product", "label": "Featured product" },
  { "type": "image_picker", "id": "image", "label": "Product image (4:5)" },
  { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD" },
- { "type": "text", "id": "heading", "label": "Heading", "default": "There is only one <em>IP6 Original</em>." },
+ { "type": "text", "id": "heading", "label": "Heading", "default": "There is only one IP6 Original." },
  { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "The first IP6 supplement standardized to the research-grade purity Prof. Shamsuddin's work defined, 804 mg of inositol hexaphosphate with Inositol, in every serving." },
  { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop IP6 Original" },
  { "type": "url", "id": "button_link", "label": "Button link" },

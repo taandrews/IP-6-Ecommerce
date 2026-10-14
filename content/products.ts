@@ -3,6 +3,7 @@ import { asset } from "@/lib/assets";
 
 // Real product photos, served from /public/products/ locally (not yet on S3).
 const HERO_SUPPLEMENT = "/products/supplement-real.png";
+const DETAIL_SUPPLEMENT_BACK = "/products/supplement-real-back.png";
 const HERO_CREAM = asset("products/cream-1.jpg");
 const HERO_FILTER = asset("products/filter-1.jpg");
 
@@ -87,28 +88,9 @@ export const products: Product[] = [
       { days: 30, discountPct: 15 },
       { days: 90, discountPct: 20 },
     ],
-    // The back-label render still shows the pre-revision amounts (800 mg / 220 mg),
-    // so it is left out until matching art exists. The Supplement Facts panel is
-    // rendered from supplementFacts below instead.
     images: [
       { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement. Navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
-    ],
-    supplementFacts: {
-      servingSize: "2 capsules",
-      rows: [
-        { name: "IP6 (Calcium-Magnesium Inositol Hexaphosphate)", amount: "804 mg", dailyValue: "†" },
-        { name: "Inositol", amount: "196 mg", dailyValue: "†" },
-      ],
-      footnote: "† Daily Value (DV) not established.",
-      otherIngredients: "Plant-based capsule (cellulose).",
-    },
-    // Source, supplier, and final manufacturing location are intentionally
-    // unset until the supply data is confirmed. Those columns stay hidden
-    // until a row carries them.
-    traceability: [
-      { ingredient: "IP6 (Calcium-Magnesium Inositol Hexaphosphate)", amount: "804 mg per serving", function: "Active ingredient" },
-      { ingredient: "Inositol", amount: "196 mg per serving", function: "Active ingredient" },
-      { ingredient: "Cellulose capsule", function: "Plant-based capsule shell" },
+      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label. Supplement Facts panel with serving size and amounts per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP Certified / Third-Party Tested / High-Purity Formula badges.", width: 674, height: 912 },
     ],
     faq: [
       {

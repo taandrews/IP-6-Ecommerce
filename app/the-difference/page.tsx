@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, FileText } from "lucide-react";
-import { products } from "@/content/products";
+import { ArrowRight, Check, X } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
-import { ComparisonTable } from "@/components/sections/ComparisonTable";
+import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { hreflangAlternates } from "@/lib/i18n";
 
 export const metadata: Metadata = {
@@ -13,8 +12,15 @@ export const metadata: Metadata = {
   alternates: hreflangAlternates("/the-difference"),
 };
 
+const ROWS: { label: string; commodity: string; original: string }[] = [
+  { label: "Purity", commodity: "Varies by vendor", original: "High-Purity Formula" },
+  { label: "Verification", commodity: "Vendor declaration", original: "Third-party tested" },
+  { label: "Formulation", commodity: "Common processing additives", original: "No magnesium stearate or silicon dioxide" },
+  { label: "Manufacturing", commodity: "Varies", original: "cGMP-certified facility" },
+  { label: "Formulated by", commodity: "Unknown", original: "Prof. Shamsuddin, founder & formulator" },
+];
+
 export default function TheDifferencePage() {
-  const supplement = products.find((p) => p.slug === "ip6-original-supplement")!;
   return (
     <>
       <article className="bg-surface">
@@ -50,29 +56,55 @@ export default function TheDifferencePage() {
           </div>
         </section>
 
-        {/* Comparison table (shared with the home page) */}
+        {/* Comparison table */}
         <section className="container max-w-5xl pb-12">
-          <ComparisonTable />
-        </section>
+          {/* Open editorial table on soft white. The IP6 Original column is set
+              apart by a thin gold rule and an italic display number, not by
+              filling the whole column with navy. */}
+          <div className="border-y border-cloud-300">
+            {/* Header row */}
+            <div className="grid grid-cols-[1.1fr_1fr_1fr] py-5 lg:py-6 border-b border-cloud-300">
+              <div>
+                <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 font-bold">
+                  Specification
+                </p>
+              </div>
+              <div className="border-l border-cloud-300 pl-5 lg:pl-6">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-ink/55 font-bold mb-1">
+                  Commodity IP6
+                </p>
+                <p className="text-xs text-ink/55">Most supplements on shelves</p>
+              </div>
+              <div className="border-l-2 border-gold-500 pl-5 lg:pl-6">
+                <p className="text-[10px] uppercase tracking-[0.22em] text-navy-800 font-bold mb-1">
+                  IP6 Original
+                </p>
+                <p className="text-xs text-ink/65">From the lab of Prof. Shamsuddin</p>
+              </div>
+            </div>
 
-        {/* Third-party test report */}
-        <section id="test-report" className="container max-w-5xl pb-12 scroll-mt-32">
-          {supplement.labReport ? (
-            <a
-              href={supplement.labReport.url}
-              className="group flex items-start gap-4 rounded-xl border border-navy-800/15 p-6 transition-colors hover:border-gold-600"
-            >
-              <FileText className="mt-0.5 size-5 shrink-0 text-gold-700" aria-hidden />
-              <span className="min-w-0 flex-1">
-                <span className="eyebrow block">Certificate of analysis · batch {supplement.labReport.batchId}</span>
-                <span className="mt-1 block text-lg font-medium text-navy-800">Third-party batch report</span>
-                <span className="mt-1 block text-sm text-ink/60">
-                  {supplement.labReport.labName} · issued {new Date(supplement.labReport.issuedOn).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-                </span>
-              </span>
-              <span className="self-center font-mono text-[12px] uppercase tracking-[0.12em] text-navy-800 group-hover:text-gold-700">PDF →</span>
-            </a>
-          ) : null}
+            {/* Data rows */}
+            {ROWS.map((row, i) => (
+              <div
+                key={row.label}
+                className={`grid grid-cols-[1.1fr_1fr_1fr] py-5 lg:py-6 ${
+                  i < ROWS.length - 1 ? "border-b border-cloud-300" : ""
+                }`}
+              >
+                <div className="flex items-center">
+                  <p className="font-semibold text-navy-800 text-sm lg:text-base">{row.label}</p>
+                </div>
+                <div className="border-l border-cloud-300 pl-5 lg:pl-6 flex items-start gap-3">
+                  <X className="size-4 text-ink/35 shrink-0 mt-0.5" aria-hidden />
+                  <p className="text-sm text-ink/65">{row.commodity}</p>
+                </div>
+                <div className="border-l-2 border-gold-500 pl-5 lg:pl-6 flex items-start gap-3">
+                  <Check className="size-4 text-sky-700 shrink-0 mt-0.5" aria-hidden />
+                  <p className="text-sm text-navy-800 font-medium">{row.original}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Closing line */}
@@ -80,6 +112,7 @@ export default function TheDifferencePage() {
           <p
             className="font-serif text-navy-800 text-balance leading-tight"
             style={{
+              fontFamily: "var(--font-display), Georgia, serif",
               fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
               fontWeight: 400,
               fontStyle: "italic",
@@ -99,6 +132,7 @@ export default function TheDifferencePage() {
         </section>
       </article>
 
+      <StickyDisclaimer />
       <Footer showDshea />
     </>
   );

@@ -11,16 +11,6 @@
   "sections": {
     "buy":       { "type": "ip6-product", "settings": {} },
     "molecule":  { "type": "ip6-pdp-molecule", "settings": {} },
-    "ingredients": {
-      "type": "ip6-pdp-ingredients",
-      "blocks": {
-        "ip6": { "type": "ingredient", "settings": { "name": "IP6 (Calcium-Magnesium Inositol Hexaphosphate)", "key": "ip6", "function": "Active ingredient" } },
-        "inositol": { "type": "ingredient", "settings": { "name": "Inositol", "key": "inositol", "function": "Active ingredient" } },
-        "capsule": { "type": "ingredient", "settings": { "name": "Cellulose capsule", "key": "manual", "amount": "", "function": "Plant-based capsule shell" } }
-      },
-      "block_order": ["ip6", "inositol", "capsule"],
-      "settings": {}
-    },
     "compare":   { "type": "ip6-pdp-compare", "settings": {} },
     "howto":     { "type": "ip6-pdp-howto", "settings": {} },
     "proof":     { "type": "ip6-pdp-proof", "settings": {} },
@@ -28,5 +18,5 @@
     "guarantee": { "type": "ip6-pdp-guarantee", "settings": {} },
     "faq":       { "type": "ip6-pdp-faq", "settings": {} }
   },
-  "order": ["buy", "molecule", "ingredients", "compare", "howto", "proof", "founder", "guarantee", "faq"]
+  "order": ["buy", "molecule", "compare", "howto", "proof", "founder", "guarantee", "faq"]
 }

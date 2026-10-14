@@ -1,13 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Serif, IBM_Plex_Mono } from "next/font/google";
+import { IBM_Plex_Sans } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { CookieBanner } from "@/components/layout/CookieBanner";
 import { Analytics } from "@/components/layout/Analytics";
 import { CartDrawer } from "@/components/cart/CartDrawer";
-import { PreBookDrawer } from "@/components/layout/PreBookDrawer";
+import { PreBookPopup } from "@/components/layout/PreBookPopup";
 import { isEuOrUk } from "@/lib/utils";
 import { hreflangAlternates } from "@/lib/i18n";
 
@@ -15,21 +14,6 @@ const sans = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-body",
-  display: "swap",
-});
-
-const serif = IBM_Plex_Serif({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  style: ["normal", "italic"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
   display: "swap",
 });
 
@@ -79,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable} ${mono.variable}`} style={{ ["--font-display" as string]: "var(--font-body)" }}>
+    <html lang="en" className={`${sans.variable}`} style={{ ["--font-display" as string]: "var(--font-body)" }}>
       <body>
         <a
           href="#main"
@@ -87,13 +71,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to main content
         </a>
-        <AnnouncementBar />
         <Navigation />
-        {/* 56px announcement bar + 64px header are fixed; non-home pages need the offset. */}
-        <main id="main" className="pt-[120px] [&:has([data-hero-fullbleed])]:pt-0">{children}</main>
+        <main id="main">{children}</main>
         <CartDrawer />
         <CookieBanner isEuOrUk={isEuOrUk(country)} />
-        <PreBookDrawer />
+        <PreBookPopup />
         <Analytics />
         <script
           type="application/ld+json"

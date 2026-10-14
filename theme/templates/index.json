@@ -9,15 +9,15 @@
  */
 {
   "sections": {
-    "hero":   { "type": "ip6-hero", "settings": { "product": "ip-6-original", "heading": "There is only one <em>IP6 Original</em>." } },
-    "cred":   { "type": "ip6-credibility", "settings": {} },
+    "hero":   { "type": "ip6-hero", "settings": { "product": "ip-6-original", "heading": "There is only <span class=\"accent\">one IP6 Original.</span>" } },
+    "trust":  { "type": "ip6-badges", "settings": {} },
     "mol":    { "type": "ip6-science", "settings": {} },
     "stakes": { "type": "ip6-clean", "settings": {} },
-    "founder": { "type": "ip6-home-founder", "settings": {} },
-    "product": { "type": "ip6-home-product", "settings": { "product": "ip-6-original" } },
+    "proof":  { "type": "ip6-founder", "settings": {} },
+    "offer":  { "type": "ip6-reviews", "settings": { "product": "ip-6-original" } },
     "petpromo": { "type": "ip6-pet-promo", "settings": { "product": "ip6-original-pet" } },
     "action": { "type": "ip6-cta", "settings": { "product": "ip-6-original" } },
     "disc":   { "type": "ip6-disclaimer", "settings": {} }
   },
-  "order": ["hero", "cred", "mol", "stakes", "founder", "product", "petpromo", "action", "disc"]
+  "order": ["hero", "trust", "mol", "stakes", "proof", "offer", "petpromo", "action", "disc"]
 }

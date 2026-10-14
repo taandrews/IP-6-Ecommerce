@@ -127,41 +127,6 @@
       {{ content_for_layout }}
     </main>
 
-    <section class="ip6 ip6-newsletter" aria-label="Newsletter">
-      <div class="ip6-wrap nl-in">
-        <h2>Notes from the lab, only when there is something to say.</h2>
-        <div class="nl-form">
-          {%- form 'customer', id: 'ip6-newsletter' -%}
-            {%- if form.posted_successfully? -%}
-              <p class="nl-ok" role="status">Thanks. You are on the list.</p>
-            {%- else -%}
-              <input type="hidden" name="contact[tags]" value="newsletter">
-              <label for="ip6-nl-email" class="visually-hidden">Email address</label>
-              <div class="nl-row">
-                <input id="ip6-nl-email" type="email" name="contact[email]" required autocomplete="email" placeholder="Enter your email">
-                <button type="submit">Subscribe <span aria-hidden="true">→</span></button>
-              </div>
-              <p class="nl-hint">{%- if form.errors -%}Something went wrong. Please try again.{%- else -%}Occasional notes only. Unsubscribe any time.{%- endif -%}</p>
-            {%- endif -%}
-          {%- endform -%}
-        </div>
-      </div>
-    </section>
-    <style>
-      .ip6-newsletter { background: var(--ink, #0b1f3a); border-top: 0; color: #F6F2EA; }
-      .ip6-newsletter .nl-in { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 64px; align-items: center; padding: 56px var(--gutter, 24px); }
-      .ip6-newsletter h2 { font-family: var(--sans, sans-serif); font-size: clamp(32px, 3.4vw, 48px); font-weight: 500; line-height: 1.1; letter-spacing: -0.02em; color: #F6F2EA; margin: 0; max-width: 20ch; }
-      .ip6-newsletter .nl-form { max-width: 440px; justify-self: end; width: 100%; }
-      .ip6-newsletter .nl-row { display: flex; align-items: center; gap: 8px; border-bottom: 2px solid rgba(246,242,234,.7); padding-bottom: 8px; }
-      .ip6-newsletter input { flex: 1; min-width: 0; border: 0; background: transparent; font-family: var(--sans, sans-serif); font-size: 16px; color: #F6F2EA; padding: 8px 0; outline: none; }
-      .ip6-newsletter input::placeholder { color: rgba(246,242,234,.4); }
-      .ip6-newsletter button { border: 0; background: none; font-family: var(--mono, monospace); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold, #c5a253); cursor: pointer; padding: 8px 0; white-space: nowrap; }
-      .ip6-newsletter button:hover { color: #F6F2EA; }
-      .ip6-newsletter .nl-hint, .ip6-newsletter .nl-ok { margin: 10px 0 0; font-family: var(--sans, sans-serif); font-size: 12px; color: rgba(246,242,234,.55); }
-      .ip6-newsletter .nl-ok { font-size: 14px; color: #F6F2EA; }
-      @media (max-width: 749px) { .ip6-newsletter .nl-in { grid-template-columns: 1fr; gap: 20px; padding: 36px var(--gutter, 20px); } .ip6-newsletter .nl-form { justify-self: start; } }
-    </style>
-
     <footer class="ip6-mini-footer">
       {%- if linklists.footer.links.size > 0 -%}
       <nav class="ip6-footer-links" aria-label="Footer">
@@ -183,18 +148,18 @@
       </div>
     </footer>
     <style>
-      .ip6-mini-footer { background: var(--ink, #0b1f3a); color: #F6F2EA; border-top: 1px solid rgba(246,242,234,.15); padding: 14px 40px; }
-      .ip6-footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; padding: 20px 0 18px; margin-bottom: 6px; border-bottom: 1px solid rgba(246,242,234,.15); }
-      .ip6-footer-links a { font-family: var(--mono, monospace); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(246,242,234,.65); text-decoration: none; transition: color .15s ease-out; }
-      .ip6-footer-links a:hover { color: var(--gold, #c5a253); }
+      .ip6-mini-footer { background: #fff; border-top: 1px solid var(--line, #e6eaf0); padding: 14px 40px; }
+      .ip6-footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; padding: 20px 0 18px; margin-bottom: 6px; border-bottom: 1px solid var(--line, #e6eaf0); }
+      .ip6-footer-links a { font-family: var(--sans, sans-serif); font-size: 13px; color: var(--muted, #5b6470); text-decoration: none; transition: color .15s ease-out; }
+      .ip6-footer-links a:hover { color: var(--gold-deep, #a8842f); }
       .ftr-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding-top: 4px; }
       .ip6-footer-logo { display: inline-flex; flex: 0 0 auto; }
-      .ip6-footer-logo img { height: 60px; width: auto; display: block; filter: brightness(0) invert(1); }
+      .ip6-footer-logo img { height: 60px; width: auto; display: block; }
       .ip6-social { display: flex; gap: 20px; }
-      .ip6-social a { color: rgba(246,242,234,.6); display: inline-flex; transition: color .15s ease-out, transform .15s ease-out; }
-      .ip6-social a:hover { color: var(--gold, #c5a253); transform: translateY(-2px); }
+      .ip6-social a { color: #9aa3b2; display: inline-flex; transition: color .15s ease-out, transform .15s ease-out; }
+      .ip6-social a:hover { color: var(--gold-deep, #a8842f); transform: translateY(-2px); }
       .ip6-social svg { width: 19px; height: 19px; display: block; }
-      .ip6-mini-footer span { font-family: var(--mono, monospace); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(246,242,234,.6); }
+      .ip6-mini-footer span { font-family: var(--sans, sans-serif); font-size: 12.5px; letter-spacing: .02em; color: var(--muted, #5b6470); }
       @media (max-width: 749px) { .ip6-mini-footer { padding: 14px 16px; } .ip6-footer-logo img { height: 44px; } }
       @media (max-width: 640px) { .ftr-inner { justify-content: center; text-align: center; } }
     </style>

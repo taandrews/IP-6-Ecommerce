@@ -18,7 +18,7 @@
           "type": "_announcement",
           "settings": {
             "text": "IP6 Original – Coming October 3, 2026. Pre-Book Now &amp; Receive 20% Off.",
-            "link": "#quiz",
+            "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",
             "weight": "",
