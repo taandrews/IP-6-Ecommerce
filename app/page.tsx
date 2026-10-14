@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { HeroBottle, HeroLine, HeroWords } from "@/components/home/HeroBottle";
+import { HeroLine, HeroWords } from "@/components/home/HeroBottle";
+import { HeroBottle3D } from "@/components/home/HeroBottle3D";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -75,8 +76,8 @@ export default function HomePage() {
           </div>
 
           <div className="relative">
-            {/* Floating bottle with gold halo and pointer tilt. See components/home/HeroBottle.tsx. */}
-            <HeroBottle />
+            {/* Real-time 3D bottle built from the label print file. See components/home/HeroBottle3D.tsx. */}
+            <HeroBottle3D />
             {/* Label badges - taken verbatim from the packaging, no invented stats.
                Sits beneath the bottle so it never overlaps the image. */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">

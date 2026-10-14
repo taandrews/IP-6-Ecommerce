@@ -20,6 +20,17 @@
   .stage { height: 560px; }
 }
 
+.gl {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.gl canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .frame {
   position: relative;
   height: 100%;
