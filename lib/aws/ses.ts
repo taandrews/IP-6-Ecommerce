@@ -14,10 +14,11 @@ export const sesClient = new SESClient({
     : {}),
 });
 
-const FROM = process.env.SES_FROM_EMAIL ?? "taandrews@init1s.com";
-const REPLY_TO = process.env.SES_REPLY_TO ?? "taandrews@init1s.com";
+const FROM = process.env.SES_FROM_EMAIL;
+const REPLY_TO = process.env.SES_REPLY_TO;
 
 export async function sendEmail(to: string, subject: string, html: string, text?: string) {
+  if (!FROM || !REPLY_TO) throw new Error("SES_FROM_EMAIL and SES_REPLY_TO must be configured");
   const cmd = new SendEmailCommand({
     Source: FROM,
     ReplyToAddresses: [REPLY_TO],
