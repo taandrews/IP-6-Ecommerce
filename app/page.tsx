@@ -1,6 +1,4 @@
 import Image from "next/image";
-import { HeroLine, HeroWords } from "@/components/home/HeroBottle";
-import { HeroBottle3D } from "@/components/home/HeroBottle3D";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -36,11 +34,9 @@ export default function HomePage() {
       <section className="relative bg-surface">
         <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
           <div>
-            <HeroLine delay={0.05}>
-              <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
-                From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
-              </p>
-            </HeroLine>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
+              From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
+            </p>
             <h1
               className="font-serif text-navy-800 text-balance"
               style={{
@@ -51,14 +47,12 @@ export default function HomePage() {
                 fontWeight: 400,
               }}
             >
-              <HeroWords text="There is only one" accent="IP6 Original" />
+              There is only one <span className="text-sky-700">IP6 Original</span>.
             </h1>
-            <HeroLine delay={0.8}>
-              <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
-                The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
-              </p>
-            </HeroLine>
-            <HeroLine delay={1.0} className="mt-9 flex flex-wrap items-center gap-5">
+            <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
+              The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-5">
               <Link
                 href={`/shop/${supplement.slug}`}
                 className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
@@ -72,12 +66,23 @@ export default function HomePage() {
               >
                 Read the story
               </Link>
-            </HeroLine>
+            </div>
           </div>
 
           <div className="relative">
-            {/* Real-time 3D bottle built from the label print file. See components/home/HeroBottle3D.tsx. */}
-            <HeroBottle3D />
+            {/* Bottle floats on the page - no box, no shadow, no fill behind it.
+               Height is capped so the bottle stays a reasonable size in the hero
+               instead of filling a tall aspect box. */}
+            <div className="relative h-[340px] sm:h-[420px] lg:h-[520px]">
+              <Image
+                src="/products/supplement-real.png"
+                alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
+                fill
+                priority
+                sizes="(min-width: 1024px) 540px, 100vw"
+                className="object-contain"
+              />
+            </div>
             {/* Label badges - taken verbatim from the packaging, no invented stats.
                Sits beneath the bottle so it never overlaps the image. */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">
