@@ -49,6 +49,7 @@ export const Cinemagraph = forwardRef<CinemagraphHandle, Props>(function Cinemag
   const raf = useRef(0);
   const stateRef = useRef<"still" | "playing" | "paused" | "ended">("still");
   const [portrait, setPortrait] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
   const src = portrait ? sources.portrait : sources.landscape;
 
@@ -57,10 +58,12 @@ export const Cinemagraph = forwardRef<CinemagraphHandle, Props>(function Cinemag
     onStateChange?.(s);
   };
 
-  // Pick the clip for the viewport. Only re-evaluated on orientation/width change.
+  // Pick the clip for the viewport before the video element exists, so the first element created
+  // is already the right one. Re-evaluated only on an orientation/width change.
   useEffect(() => {
     const mq = window.matchMedia(PORTRAIT_QUERY);
     setPortrait(mq.matches);
+    setMounted(true);
     const onChange = () => setPortrait(mq.matches);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
@@ -112,12 +115,13 @@ export const Cinemagraph = forwardRef<CinemagraphHandle, Props>(function Cinemag
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src.poster]);
 
-  // Frame loop while the clip plays.
+  // Frame loop while the clip plays. Frames are only painted when one is decoded, so a stall
+  // never clears the canvas.
   const loop = () => {
     const v = video.current;
     if (!v) return;
     if (!v.paused && !v.ended) {
-      paint(v);
+      if (v.readyState >= 2) paint(v);
       raf.current = requestAnimationFrame(loop);
     }
   };
@@ -127,11 +131,13 @@ export const Cinemagraph = forwardRef<CinemagraphHandle, Props>(function Cinemag
     if (!v) return;
     v.play().then(
       () => {
+        if (video.current !== v) return; // element was swapped meanwhile
         setState("playing");
         cancelAnimationFrame(raf.current);
         raf.current = requestAnimationFrame(loop);
       },
       () => {
+        if (video.current !== v) return;
         // Autoplay refused: stay on the still.
         setState("still");
       },
@@ -140,15 +146,18 @@ export const Cinemagraph = forwardRef<CinemagraphHandle, Props>(function Cinemag
 
   // Play once when asked. Never restarts by itself after "ended".
   useEffect(() => {
-    if (!play || still || !ready) return;
+    if (!play || still || !ready || !mounted) return;
     if (stateRef.current !== "still") return;
     start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [play, still, ready]);
+  }, [play, still, ready, mounted, src.video]);
 
   useEffect(() => {
     const v = video.current;
     if (!v) return;
+    // A new element (orientation change): drop the frame loop. An ended clip stays ended.
+    cancelAnimationFrame(raf.current);
+    if (stateRef.current !== "ended") setState("still");
     const onEnded = () => {
       cancelAnimationFrame(raf.current);
       paint(v); // keep the last frame
@@ -196,7 +205,7 @@ export const Cinemagraph = forwardRef<CinemagraphHandle, Props>(function Cinemag
   return (
     <div ref={wrap} className={className} role="img" aria-label={alt} style={bg}>
       <canvas ref={canvas} style={{ width: "100%", height: "100%", display: "block" }} />
-      {!still && (
+      {!still && mounted && (
         <video
           key={src.video}
           ref={video}
