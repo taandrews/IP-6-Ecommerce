@@ -12,6 +12,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
+import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { products } from "@/content/products";
 import { resolveCurrency } from "@/lib/currency";
@@ -32,68 +33,8 @@ export default function HomePage() {
          From the lab of Prof. Shamsuddin. One supplement.
       ============================================== */}
       <section className="relative bg-surface">
-        <div className="container pt-12 lg:pt-20 pb-16 lg:pb-24 grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-16 items-center">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
-              From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD
-            </p>
-            <h1
-              className="font-serif text-navy-800 text-balance"
-              style={{
-                fontFamily: "var(--font-display), Georgia, serif",
-                fontSize: "clamp(2.75rem, 5.5vw, 5.5rem)",
-                lineHeight: 1,
-                letterSpacing: "-0.025em",
-                fontWeight: 400,
-              }}
-            >
-              There is only one <span className="text-sky-700">IP6 Original</span>.
-            </h1>
-            <p className="mt-7 text-lg lg:text-xl text-ink/75 leading-relaxed max-w-xl">
-              The original IP6 formula, formulated by the physician-scientist who pioneered the research behind it. One supplement, made to the specification his work describes.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-5">
-              <Link
-                href={`/shop/${supplement.slug}`}
-                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
-              >
-                Pre-order IP6 Original · 15% off
-                <ArrowRight className="size-4" />
-              </Link>
-              <Link
-                href="/story"
-                className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2"
-              >
-                Read the story
-              </Link>
-            </div>
-          </div>
-
-          <div className="relative">
-            {/* Bottle floats on the page - no box, no shadow, no fill behind it.
-               Height is capped so the bottle stays a reasonable size in the hero
-               instead of filling a tall aspect box. */}
-            <div className="relative h-[340px] sm:h-[420px] lg:h-[520px]">
-              <Image
-                src="/products/supplement-real.png"
-                alt="IP6 Original Supplement bottle, navy and gold label, formulated by Prof. AbulKalam M. Shamsuddin, MD, PhD."
-                fill
-                priority
-                sizes="(min-width: 1024px) 540px, 100vw"
-                className="object-contain"
-              />
-            </div>
-            {/* Label badges - taken verbatim from the packaging, no invented stats.
-               Sits beneath the bottle so it never overlaps the image. */}
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[10px] uppercase tracking-[0.22em] text-ink/60 font-semibold">
-              <span>cGMP Certified</span>
-              <span aria-hidden className="text-gold-500">·</span>
-              <span>Third-Party Tested</span>
-              <span aria-hidden className="text-gold-500">·</span>
-              <span>High-Purity Formula</span>
-            </div>
-          </div>
-        </div>
+        {/* Full-bleed photo slideshow: duotone tint, typed headline, reveal. */}
+        <HeroSlideshow ctaHref={`/shop/${supplement.slug}`} />
 
         {/* Trust strip */}
         <div className="border-t border-cloud-300 bg-surface">

@@ -1,0 +1,257 @@
+.hero {
+  position: relative;
+  height: min(calc(100svh - 80px), 820px);
+  min-height: 560px;
+  overflow: hidden;
+  background: #06122a;
+  color: #fff;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ph {
+  position: absolute;
+  inset: 0;
+}
+.ph img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(1) contrast(1.05);
+  transition: filter 1.4s ease;
+}
+.on .ph img {
+  animation: kb 9s linear forwards;
+}
+@keyframes kb {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+/* Duotone: shadows lifted to navy, highlights tinted cyan. Both fade on reveal. */
+.shadow,
+.light,
+.dim {
+  position: absolute;
+  inset: 0;
+  transition: opacity 1.4s ease;
+}
+.shadow {
+  background: #0b1f3a;
+  mix-blend-mode: screen;
+}
+.light {
+  background: #4ccbe4;
+  mix-blend-mode: multiply;
+}
+.dim {
+  background: linear-gradient(to top, rgba(6, 18, 42, 0.55), rgba(6, 18, 42, 0.08) 45%, rgba(6, 18, 42, 0.18));
+}
+.reveal .ph img {
+  filter: none;
+}
+.reveal .shadow,
+.reveal .light {
+  opacity: 0;
+}
+.reveal .dim {
+  opacity: 0.85;
+}
+
+.copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 6vw 7vh;
+}
+.eyebrow {
+  margin: 0 0 1.6rem;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #bfedf6;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.3s;
+}
+.on .eyebrow {
+  opacity: 0.9;
+}
+.line {
+  margin: 0;
+  font-weight: 300;
+  text-transform: uppercase;
+  font-size: clamp(2.1rem, min(5.6vw, 9.5vh), 5.4rem);
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+  max-width: 15ch;
+  text-wrap: balance;
+  color: #fff;
+}
+.line em {
+  font-style: normal;
+  color: #40c7e2;
+}
+.ch,
+.chIn {
+  transition: opacity 0.18s ease;
+}
+.ch {
+  opacity: 0;
+}
+.chIn {
+  opacity: 1;
+}
+
+.cta {
+  margin-top: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #00b4d8;
+  color: #fff;
+  padding: 1rem 1.75rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease, transform 0.6s ease, background-color 0.2s ease;
+}
+.cta:hover {
+  background: #0090ae;
+}
+.reveal .cta {
+  opacity: 1;
+  transform: none;
+}
+.cta svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dots {
+  position: absolute;
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  z-index: 5;
+}
+.dot,
+.dotOn {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.dot {
+  background: rgba(255, 255, 255, 0.55);
+}
+.dotOn {
+  background: #c9a961;
+  transform: scale(1.25);
+}
+
+.scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 1.6rem;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 5;
+  opacity: 0.9;
+}
+.scroll svg {
+  width: 18px;
+  height: 18px;
+  animation: bob 1.8s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+.pause {
+  position: absolute;
+  left: 1.6rem;
+  bottom: 1.4rem;
+  z-index: 5;
+  background: none;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.pause svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    min-height: 520px;
+  }
+  .dots {
+    left: 50%;
+    top: auto;
+    bottom: 5.4rem;
+    transform: translateX(-50%);
+    flex-direction: row;
+    gap: 12px;
+  }
+  .scroll {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph img,
+  .on .ph img {
+    animation: none;
+    filter: none;
+  }
+  .shadow,
+  .light {
+    opacity: 0;
+  }
+  .ch {
+    opacity: 1;
+  }
+  .cta {
+    opacity: 1;
+    transform: none;
+  }
+  .scroll svg {
+    animation: none;
+  }
+}
