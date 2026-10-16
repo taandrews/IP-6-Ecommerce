@@ -14,7 +14,7 @@ type Slide = { src: string; pos: string; alt: string; eyebrow: string; line: Seg
 
 const SLIDES: Slide[] = [
   { src: "/hero/ip6-hero-1.webp", pos: "50% 30%", alt: "An older couple dancing and laughing on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }] },
-  { src: "/hero/ip6-hero-2.webp", pos: "50% 12%", alt: "A grey-haired man riding a mountain bike above a wooded valley", eyebrow: "The original IP6 formula", line: [{ text: "From the scientist who " }, { text: "pioneered IP6", em: true }, { text: "." }] },
+  { src: "/hero/ip6-hero-2.webp", pos: "50% 30%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "The original IP6 formula", line: [{ text: "From the scientist who " }, { text: "pioneered IP6", em: true }, { text: "." }] },
   { src: "/hero/ip6-hero-3.webp", pos: "50% 8%", alt: "A woman in her sixties laughing in golden evening light", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }] },
   { src: "/hero/ip6-hero-4.webp", pos: "50% 35%", alt: "A couple with backpacks and trekking poles smiling on a misty trail", eyebrow: "Every bottle", line: [{ text: "Made in the USA. " }, { text: "Third-party tested.", em: true }] },
   { src: "/hero/ip6-hero-5.webp", pos: "55% 40%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "One supplement, one specification", line: [{ text: "The formula " }, { text: "his research", em: true }, { text: " describes." }] },
