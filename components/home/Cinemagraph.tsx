@@ -173,8 +173,9 @@ export const Cinemagraph = forwardRef<CinemagraphHandle, Props>(function Cinemag
       v.removeEventListener("pause", onPause);
       cancelAnimationFrame(raf.current);
     };
+    // Re-attach for every video element: the first one appears only once mounted is true.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src.video]);
+  }, [src.video, mounted]);
 
   useImperativeHandle(ref, () => ({
     state: () => stateRef.current,
