@@ -35,7 +35,7 @@
   mix-blend-mode: screen;
 }
 .light {
-  background: #bfedf6;
+  background: #c9a961;
   mix-blend-mode: multiply;
 }
 .dim {
@@ -88,7 +88,7 @@
 }
 .line em {
   font-style: normal;
-  color: #80d9ec;
+  color: #d9bd79;
 }
 .ch,
 .chIn {
