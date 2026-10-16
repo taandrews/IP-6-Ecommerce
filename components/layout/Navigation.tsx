@@ -9,7 +9,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
+  { href: "/shop", label: "Shop" },
   { href: "/story", label: "The Story" },
   { href: "/the-difference", label: "The Difference" },
   { href: "/faq", label: "FAQ" },
