@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 import { Minus, Plus, Trash2, ArrowRight, RefreshCw } from "lucide-react";
 import { useCart } from "./CartStore";
 import { Drawer } from "@/components/ui/Drawer";
@@ -12,6 +13,10 @@ import { FREE_SHIPPING_THRESHOLD_CENTS, qualifiesForFreeShipping } from "@/lib/s
 
 export function CartDrawer() {
   const { drawerOpen, closeDrawer, lines, remove, setQty, subtotalCents } = useCart();
+  // Load the saved cart only after hydration (see skipHydration in CartStore).
+  useEffect(() => {
+    void useCart.persist.rehydrate();
+  }, []);
   const currency = lines[0]?.currency ?? "USD";
   const hasSubscription = lines.some((l) => l.subscription);
   const hasPreorder = lines.some(isPreorderLine);

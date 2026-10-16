@@ -57,6 +57,10 @@ export const useCart = create<CartState>()(
       name: "ip6-cart-v1",
       storage: createJSONStorage(() => (typeof window === "undefined" ? dummyStorage : localStorage)),
       partialize: (s) => ({ lines: s.lines }),
+      // localStorage is read synchronously, so without this the first client render already has
+      // the saved lines while the server rendered an empty cart: a hydration mismatch in the
+      // drawer and the nav badge. CartDrawer rehydrates after mount instead.
+      skipHydration: true,
       onRehydrateStorage: () => (state) => {
         if (state) Object.assign(state, derive(state.lines));
       },
