@@ -31,11 +31,11 @@
   pointer-events: none;
 }
 .shadow {
-  background: #0b1f3a;
+  background: #06122a;
   mix-blend-mode: screen;
 }
 .light {
-  background: #4ccbe4;
+  background: #bfedf6;
   mix-blend-mode: multiply;
 }
 .dim {
@@ -88,7 +88,7 @@
 }
 .line em {
   font-style: normal;
-  color: #40c7e2;
+  color: #80d9ec;
 }
 .ch,
 .chIn {
