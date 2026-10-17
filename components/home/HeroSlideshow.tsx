@@ -10,15 +10,12 @@ import styles from "./HeroSlideshow.module.css";
    Every headline traces to the label, a Shopify setting, or copy already on the site. */
 
 type Segment = { text: string; em?: boolean };
-type Slide = { src: string; pos: string; alt: string; eyebrow: string; line: Segment[] };
+type Slide = { src: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[] };
 
 const SLIDES: Slide[] = [
-  { src: "/hero/ip6-hero-1.webp", pos: "50% 30%", alt: "An older couple dancing and laughing on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }] },
-  { src: "/hero/ip6-hero-beach-couple.webp", pos: "50% 30%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "The original IP6 formula", line: [{ text: "From the scientist who " }, { text: "pioneered IP6", em: true }, { text: "." }] },
-  { src: "/hero/ip6-hero-3.webp", pos: "50% 8%", alt: "A woman in her sixties laughing in golden evening light", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }] },
-  { src: "/hero/ip6-hero-4.webp", pos: "50% 35%", alt: "A couple with backpacks and trekking poles smiling on a misty trail", eyebrow: "Every bottle", line: [{ text: "Made in the USA. " }, { text: "Third-party tested.", em: true }] },
-  { src: "/hero/ip6-hero-5.webp", pos: "55% 40%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "One supplement, one specification", line: [{ text: "The formula " }, { text: "his research", em: true }, { text: " describes." }] },
-  { src: "/hero/ip6-hero-6.webp", pos: "50% 45%", alt: "An older couple carrying surfboards along the beach", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }] },
+  { src: "/hero/ip6-hero-beach-couple.webp", pos: "62% 0%", mpos: "36% 0%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }] },
+  { src: "/hero/ip6-hero-3.webp", pos: "50% 8%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }] },
+  { src: "/hero/ip6-hero-5.webp", pos: "55% 40%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }] },
 ];
 
 const TYPE_MS = 42;
@@ -138,7 +135,7 @@ export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
             <div className={styles.ph}>
               {/* Plain img: the slides are full-bleed covers with a hand-set focal point. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.src} alt={s.alt} style={{ objectPosition: s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
+              <img src={s.src} alt={s.alt} style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
             </div>
             <div className={styles.shadow} />
             <div className={styles.light} />
