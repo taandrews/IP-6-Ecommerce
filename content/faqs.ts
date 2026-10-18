@@ -17,7 +17,7 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "What is IP6?",
-        a: "IP6 is inositol hexaphosphate, a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. It is the molecule Professor AbulKalam M. Shamsuddin, MD, PhD, has spent his career researching at the University of Maryland School of Medicine.",
+        a: "IP6 is inositol hexaphosphate, a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. Professor AbulKalam M. Shamsuddin, MD, PhD, pioneered research on IP6 at the University of Maryland School of Medicine before retiring from the university in 2020. IP6 Original contains Calcium-Magnesium IP6.",
       },
       {
         q: "What is Inositol, and how is it related to IP6?",
@@ -105,7 +105,7 @@ export const faqCategories: FaqCategory[] = [
       },
       {
         q: "Can I take IP6 Original with other medications or supplements?",
-        a: "IP6 binds minerals, which means timing and pairing matter. We recommend spacing IP6 away from mineral supplements, and coordinating any new supplement or medication with your healthcare professional.",
+        a: "Consult your healthcare professional to coordinate IP6 Original with any medications or other supplements you take.",
       },
       {
         q: "Is IP6 Original safe during pregnancy or nursing?",

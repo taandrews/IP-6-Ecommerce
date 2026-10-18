@@ -23,7 +23,7 @@ export function HowToTakeContent() {
             Take it. Here is exactly how.
           </h2>
           <p className="mt-6 text-lg text-ink/70 leading-relaxed max-w-2xl">
-            Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after eating. Always consult your physician before beginning any supplement regimen.
+            Take IP6 Original 15-30 minutes before a meal for maximum effect. Always consult your physician before beginning any supplement regimen.
           </p>
         </div>
       </section>
@@ -37,7 +37,7 @@ export function HowToTakeContent() {
           <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
             IP6 is{" "}
             <strong className="text-navy-800 font-semibold">inositol</strong> carrying six phosphate groups;{" "}
-            <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original includes both, the pairing Prof. Shamsuddin&rsquo;s research is built around. Because IP6 readily binds minerals, taking it on an empty stomach gives the compound the cleanest path to absorption, which is why the timing below matters.
+            <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original combines Calcium-Magnesium IP6 with Inositol, the pairing Prof. Shamsuddin&rsquo;s research is built around. Since IP6 may bind with other elements in food, it is best to take it 15-30 minutes before a meal for maximum effect.
           </p>
         </div>
       </section>
@@ -48,13 +48,13 @@ export function HowToTakeContent() {
           {[
             {
               icon: Clock,
-              title: "On an empty stomach",
-              body: "30 minutes before food, or 2 hours after. Mineral-rich meals reduce absorption.",
+              title: "Before a meal",
+              body: "Take 15-30 minutes before a meal for maximum effect.",
             },
             {
               icon: Utensils,
               title: "With water only",
-              body: "8 oz of water minimum. Skip mineral-rich beverages within an hour of taking.",
+              body: "Take each serving with at least 8 oz of water.",
             },
             {
               icon: AlertTriangle,
@@ -98,7 +98,7 @@ export function HowToTakeContent() {
               <strong className="text-navy-800 font-semibold">Serving size is 2 capsules.</strong> Take 2 capsules once or twice daily with water, or as directed by a healthcare professional. Each bottle holds 120 capsules, 60 servings.
             </p>
             <p>
-              Take each serving on an empty stomach, at least 30 minutes before eating or two hours after. IP6 binds minerals, so space it away from mineral supplements and mineral-rich food or drinks.
+              Take each serving 15-30 minutes before a meal for maximum effect, since IP6 may bind with other elements in food.
             </p>
             <p>
               Take it at the same time each day so the routine is easy to keep, and stay consistent for several weeks.

@@ -33,7 +33,7 @@ export const products: Product[] = [
     ],
     howToUse: [
       "Take 2 capsules once or twice daily with water, or as directed by your healthcare professional.",
-      "For best absorption, take on an empty stomach when possible.",
+      "For maximum effect, take 15-30 minutes before a meal.",
       "Consult a healthcare professional before starting any supplement regimen.",
     ],
     variants: [
@@ -73,7 +73,7 @@ export const products: Product[] = [
       },
       {
         q: "Why take IP6 between meals?",
-        a: "Take IP6 on an empty stomach, away from mineral-rich meals, for the best absorption.",
+        a: "IP6 Original contains Calcium-Magnesium IP6. Since IP6 may bind with other elements in food, it is best to take it 15-30 minutes before a meal for maximum effect.",
       },
       {
         q: "Is this product third-party tested?",

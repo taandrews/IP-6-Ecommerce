@@ -11,7 +11,7 @@ import { FounderContent } from "@/components/sections/FounderContent";
 export const metadata: Metadata = {
   title: "The molecule a scientist spent his career on",
   description:
-    "A career of research at the University of Maryland School of Medicine. One supplement, formulated by the physician-scientist who pioneered the research behind it.",
+    "Professor Shamsuddin pioneered IP6 research at the University of Maryland School of Medicine before retiring in 2020. Discover the story behind IP6 Original.",
   alternates: hreflangAlternates("/story"),
 };
 
@@ -42,7 +42,7 @@ export default function StoryPage() {
           <div className="mt-12 h-px w-24 bg-gold-500" />
         </section>
 
-        {/* 1998 - the first paper */}
+        {/* 1988 - the first paper */}
         <section className="bg-surface border-y border-cloud-300">
           <div className="container max-w-3xl py-20 lg:py-28">
             <div className="flex items-baseline gap-6 mb-8">
@@ -55,7 +55,7 @@ export default function StoryPage() {
                   fontStyle: "italic",
                 }}
               >
-                1998
+                1988
               </span>
               <span className="h-px flex-1 bg-cloud-300" />
             </div>

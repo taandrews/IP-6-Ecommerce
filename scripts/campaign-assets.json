@@ -1,0 +1,17 @@
+{
+  "backdrop": {
+    "file": "public/campaign/daylight-studio.webp",
+    "method": "Built-in image_gen tool; converted to WebP with FFmpeg",
+    "source": "exec-3bc1c4ae-a861-48f0-a947-ff96cfdaa28b.png",
+    "prompt": "Use case: ads-marketing. Asset type: photographic background plate for a high-end wellness brand's animated website hero. Create a striking, photorealistic architectural still-life studio photograph, wide landscape 16:9, ideally 1920x1080. Absolutely NO bottle, NO products, NO text, NO logos. Composition: a powder blue / pale mineral blue seamless studio fills the entire frame, luminous and airy. Left 52 percent is quiet smooth pale blue negative space for dark typography. At the RIGHT, a single thick low rectangular slab of pale blue frosted glass acts as a product pedestal; its level top surface is at approximately 79 percent image height, runs from x=57 percent to the right edge, with the front face extending to bottom edge. A bottle will later be composited upright at x=75 percent on this surface. Behind this future bottle position, far to the right at x=89 percent, a tall sculptural slab of translucent reeded/fluted clear glass leans very slightly, extending beyond the top and right image boundaries. This glass is an architectural background element, not a bottle or vase. Strong beautiful natural daylight from upper left refracts through the glass, creating elegant broad caustic bands of light and shadow on the right side of the blue studio and pedestal. Tiny genuine material texture, precise physical perspective, clean medium-format commercial photography, tactile and believable, subtle cool blue tonal variations. Large minimal forms and highly art-directed light. Left side stays calm and bright for text. No gradients as graphic effects, no abstract swooshes, no ribbons, no floating objects, no pills, no circular podium, no botanical props, no gold elements, no shiny plastic CGI appearance. Editorial campaign quality, natural photographic realism."
+  },
+  "label": {
+    "file": "public/campaign/ip6-supplied-label.webp",
+    "source": "User-supplied IP6 Original Capsules Final Image 2.png",
+    "processing": "Cropped the supplied print artwork at x=6, y=6, width=1522, height=546; lossless WebP. No generated product label."
+  },
+  "product": {
+    "renderer": "components/home/product-cinematography.ts",
+    "method": "Code-built bottle geometry with the supplied label; animated camera, bottle rotation and studio lighting."
+  }
+}
