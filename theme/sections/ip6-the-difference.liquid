@@ -8,24 +8,19 @@
   #diff-{{ section.id }} .seg .l { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
   #diff-{{ section.id }} .seg .rule { flex: 1; height: 1px; background: var(--line); }
 
-  /* Comparison */
-  #diff-{{ section.id }} .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  /* Strengths */
+  #diff-{{ section.id }} .compare { max-width: 640px; }
   #diff-{{ section.id }} .col { border-radius: 16px; padding: clamp(24px,3vw,36px); border: 1px solid var(--line); }
-  #diff-{{ section.id }} .col.commodity { background: var(--surface); }
   #diff-{{ section.id }} .col.original { background: #fdfaf3; border-color: var(--gold); }
   #diff-{{ section.id }} .col .k { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-  #diff-{{ section.id }} .col.commodity .k { color: var(--muted); }
   #diff-{{ section.id }} .col.original .k { color: var(--gold-deep); }
   #diff-{{ section.id }} .col h3 { font-size: 23px; margin: 8px 0 18px; }
-  #diff-{{ section.id }} .col.commodity h3 { color: var(--ink); }
   #diff-{{ section.id }} .col.original h3 { color: var(--ink); }
   #diff-{{ section.id }} .col ul { list-style: none; margin: 0; padding: 0; }
   #diff-{{ section.id }} .col li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; padding: 12px 0; font-size: 15px; line-height: 1.5; }
-  #diff-{{ section.id }} .col.commodity li { color: var(--ink-2); border-top: 1px solid var(--line); }
   #diff-{{ section.id }} .col.original li { color: var(--ink-2); border-top: 1px solid #ece4d4; }
   #diff-{{ section.id }} .col li:first-child { border-top: 0; }
   #diff-{{ section.id }} .col .ic { width: 20px; height: 20px; }
-  #diff-{{ section.id }} .col.commodity .ic { color: var(--muted); }
   #diff-{{ section.id }} .col.original .ic { color: var(--gold-deep); }
 
   /* Pillars */
@@ -39,7 +34,6 @@
   #diff-{{ section.id }} .cta-row { margin-top: clamp(40px,5vw,64px); display: flex; gap: 16px; flex-wrap: wrap; }
 
   @media (max-width: 900px) { #diff-{{ section.id }} .pillars { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 760px) { #diff-{{ section.id }} .compare { grid-template-columns: 1fr; } }
   @media (max-width: 520px) { #diff-{{ section.id }} .pillars { grid-template-columns: 1fr; } }
 </style>
 
@@ -47,30 +41,21 @@
   <div class="ip6-wrap">
     <div class="head ip6-reveal">
       <span class="ip6-eyebrow">The difference</span>
-      <h1>Not all IP6 is the same.</h1>
-      <p class="lead">Most IP6 on the shelf isn't the molecule the published research describes. IP6 Original is standardized to research-grade purity and formulated by the scientist who pioneered the work, so what you take matches what the science studied.</p>
+      <h1>What goes into IP6 Original.</h1>
+      <p class="lead">IP6 Original is of the highest purity, research grade, and formulated by the scientist who pioneered the work.</p>
     </div>
 
-    <div class="seg ip6-reveal"><span class="l">Commodity IP6 vs IP6 Original</span><span class="rule"></span></div>
+    <div class="seg ip6-reveal"><span class="l">IP6 Original</span><span class="rule"></span></div>
     <div class="compare ip6-reveal">
-      <div class="col commodity ip6-rise d1">
-        <div class="k">Commodity IP6</div>
-        <h3>What's usually on the shelf</h3>
-        <ul>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Variable source and form, not standardized to the research</span></li>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Often blended with fillers and flow agents</span></li>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Magnesium stearate and silicon dioxide common</span></li>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span><span class="visually-hidden">Not included: </span>Rarely third-party tested for purity and potency</span></li>
-        </ul>
-      </div>
-      <div class="col original ip6-rise d2">
+      <div class="col original ip6-rise d1">
         <div class="k">IP6 Original</div>
         <h3>Built to the research</h3>
         <ul>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>Standardized to the research-grade molecule</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>Highest purity, research grade</span></li>
           <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>IP6 and Inositol, no unnecessary fillers</span></li>
           <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>No magnesium stearate, no silicon dioxide</span></li>
           <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>cGMP-certified and independently third-party tested</span></li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>Formulated by Prof. Shamsuddin</span></li>
         </ul>
       </div>
     </div>

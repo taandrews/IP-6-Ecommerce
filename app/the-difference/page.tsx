@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check, X } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { hreflangAlternates } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Not all IP6 is the same",
+  title: "What goes into IP6 Original",
   description:
-    "Most IP6 on the market has no connection to the research that identified its potential. The specification, verification, and source of IP6 Original, line by line.",
+    "The purity, verification, formulation, and source of IP6 Original, line by line.",
   alternates: hreflangAlternates("/the-difference"),
 };
 
-const ROWS: { label: string; commodity: string; original: string }[] = [
-  { label: "Purity", commodity: "Varies by vendor", original: "High-Purity Formula" },
-  { label: "Verification", commodity: "Vendor declaration", original: "Third-party tested" },
-  { label: "Formulation", commodity: "Common processing additives", original: "No magnesium stearate or silicon dioxide" },
-  { label: "Manufacturing", commodity: "Varies", original: "cGMP-certified facility" },
-  { label: "Formulated by", commodity: "Unknown", original: "Prof. Shamsuddin, founder & formulator" },
+const ROWS: { label: string; original: string }[] = [
+  { label: "Purity", original: "Highest purity, research grade" },
+  { label: "Verification", original: "Third-party tested" },
+  { label: "Formulation", original: "No magnesium stearate or silicon dioxide" },
+  { label: "Manufacturing", original: "cGMP-certified facility" },
+  { label: "Formulated by", original: "Prof. Shamsuddin, founder & formulator" },
 ];
 
 export default function TheDifferencePage() {
@@ -38,10 +38,10 @@ export default function TheDifferencePage() {
               fontWeight: 400,
             }}
           >
-            Not all IP6 is the same.
+            What goes into IP6 Original.
           </h1>
           <p className="mt-6 text-lg lg:text-xl text-ink/70 leading-relaxed max-w-2xl">
-            Most IP6 on the market has no connection to the research that identified its potential. Here is the difference.
+            The purity, verification, and source of the formula, line by line.
           </p>
         </section>
 
@@ -51,29 +51,20 @@ export default function TheDifferencePage() {
             <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
               First, what it is. IP6, or{" "}
               <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, is a naturally occurring molecule of inositol carrying six phosphate groups, found in the bran of seeds and grains.{" "}
-              <strong className="text-navy-800 font-semibold">Inositol</strong> is the simpler compound at its core, and IP6 Original pairs the two as Prof. Shamsuddin&rsquo;s research describes them. Because IP6 is defined by those six phosphate groups, the purity of the compound, how much of it remains the intact molecule rather than broken-down fragments, is what determines its quality. That is what the comparison below measures.
+              <strong className="text-navy-800 font-semibold">Inositol</strong> is the simpler compound at its core, and IP6 Original pairs the two as Prof. Shamsuddin&rsquo;s research describes them. Because IP6 is defined by those six phosphate groups, the purity of the compound, how much of it remains the intact molecule rather than broken-down fragments, is what determines its quality. That is why purity comes first below.
             </p>
           </div>
         </section>
 
-        {/* Comparison table */}
-        <section className="container max-w-5xl pb-12">
-          {/* Open editorial table on soft white. The IP6 Original column is set
-              apart by a thin gold rule and an italic display number, not by
-              filling the whole column with navy. */}
+        {/* Specification table: IP6 Original's own strengths only, no competitor column */}
+        <section className="container max-w-4xl pb-12">
           <div className="border-y border-cloud-300">
             {/* Header row */}
-            <div className="grid grid-cols-[1.1fr_1fr_1fr] py-5 lg:py-6 border-b border-cloud-300">
+            <div className="grid grid-cols-[1fr_1.6fr] py-5 lg:py-6 border-b border-cloud-300">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 font-bold">
                   Specification
                 </p>
-              </div>
-              <div className="border-l border-cloud-300 pl-5 lg:pl-6">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-ink/55 font-bold mb-1">
-                  Commodity IP6
-                </p>
-                <p className="text-xs text-ink/55">Most supplements on shelves</p>
               </div>
               <div className="border-l-2 border-gold-500 pl-5 lg:pl-6">
                 <p className="text-[10px] uppercase tracking-[0.22em] text-navy-800 font-bold mb-1">
@@ -87,16 +78,12 @@ export default function TheDifferencePage() {
             {ROWS.map((row, i) => (
               <div
                 key={row.label}
-                className={`grid grid-cols-[1.1fr_1fr_1fr] py-5 lg:py-6 ${
+                className={`grid grid-cols-[1fr_1.6fr] py-5 lg:py-6 ${
                   i < ROWS.length - 1 ? "border-b border-cloud-300" : ""
                 }`}
               >
                 <div className="flex items-center">
                   <p className="font-semibold text-navy-800 text-sm lg:text-base">{row.label}</p>
-                </div>
-                <div className="border-l border-cloud-300 pl-5 lg:pl-6 flex items-start gap-3">
-                  <X className="size-4 text-ink/35 shrink-0 mt-0.5" aria-hidden />
-                  <p className="text-sm text-ink/65">{row.commodity}</p>
                 </div>
                 <div className="border-l-2 border-gold-500 pl-5 lg:pl-6 flex items-start gap-3">
                   <Check className="size-4 text-sky-700 shrink-0 mt-0.5" aria-hidden />
@@ -118,7 +105,7 @@ export default function TheDifferencePage() {
               fontStyle: "italic",
             }}
           >
-            “If you are going to take IP6 daily, take the version his research describes.”
+            One formula, from the scientist who pioneered the research.
           </p>
           <div className="mt-10">
             <Link

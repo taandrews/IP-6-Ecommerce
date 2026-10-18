@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: `${siteName} · Science-backed wellness`, template: `%s · ${siteName}` },
   description:
-    "The original IP6 and Inositol supplement, formulated by the scientist who pioneered the research, built to a research-grade specification.",
+    "The original IP6 and Inositol supplement, formulated by the scientist who pioneered the research.",
   applicationName: siteName,
   alternates: hreflangAlternates("/"),
   openGraph: {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     title: `${siteName} · Science-backed wellness`,
     description:
-      "The original IP6 and Inositol supplement, formulated by the scientist who pioneered the research, built to a research-grade specification.",
+      "The original IP6 and Inositol supplement, formulated by the scientist who pioneered the research.",
   },
   twitter: { card: "summary_large_image", title: siteName },
   robots: { index: true, follow: true },

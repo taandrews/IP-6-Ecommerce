@@ -43,7 +43,7 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "What makes IP6 Original different from other IP6 supplements?",
-        a: "Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is a high-purity formula, third-party tested, formulated by the scientist who pioneered that research.",
+        a: "IP6 Original is of the highest purity, research grade, third-party tested, formulated by the scientist who pioneered that research.",
       },
       {
         q: "Why does purity matter?",

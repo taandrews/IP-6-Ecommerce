@@ -115,7 +115,7 @@ export default function ProductPage({ params }: Params) {
                     lineHeight: 1.3,
                   }}
                 >
-                  The first IP6 supplement standardized to research-grade purity.
+                  The highest purity. Research grade.
                 </p>
               ) : null}
               <p className="text-lg text-ink/75 leading-relaxed">{product.shortDescription}</p>

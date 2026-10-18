@@ -92,7 +92,7 @@ export default function StoryPage() {
                 The supplement
               </p>
               <p className="text-xl lg:text-2xl text-ink/85 leading-relaxed">
-                At the end of that work, Professor Shamsuddin formulated IP6 Original. Not a commodity product. Not a licensed name. A high-purity formula built to the specification his own research describes. Third-party tested, made in a cGMP-certified facility, and sold directly by the scientist who pioneered the research behind it.
+                At the end of that work, Professor Shamsuddin formulated IP6 Original. The highest purity, research grade. Third-party tested, made in a cGMP-certified facility, and sold directly by the scientist who pioneered the research behind it.
               </p>
               <span className="block h-px w-12 bg-gold-500 mt-8 mb-8" />
               <Link

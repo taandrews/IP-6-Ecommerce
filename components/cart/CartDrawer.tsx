@@ -35,7 +35,7 @@ export function CartDrawer() {
           </p>
           <span className="inline-block hairline-gold-left bg-gold-400 my-5" />
           <p className="text-ink/70 mb-8 max-w-[28ch] mx-auto leading-relaxed">
-            One supplement, built to a single research-grade specification.
+            One supplement, formulated by the scientist who pioneered the research.
           </p>
           <Link href="/shop" onClick={closeDrawer} className="btn-primary">
             Browse the collection

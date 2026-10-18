@@ -77,14 +77,13 @@ export default function HomePage() {
       </section>
 
       {/* =============================================
-         CHAPTER 2 - STAKES
-         "Most IP6 on shelves is not the molecule his research described."
-         Side by side purity bar.
+         CHAPTER 2 - STRENGTHS
+         IP6 Original's own strengths only, no competitor comparison.
       ============================================== */}
       <section className="bg-surface py-20 lg:py-28">
         <div className="container max-w-5xl">
           <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
-            The Stakes
+            IP6 Original
           </p>
           <h2
             className="font-serif text-navy-800 text-balance"
@@ -96,42 +95,31 @@ export default function HomePage() {
               fontWeight: 400,
             }}
           >
-            Most IP6 on shelves is not the molecule his research described.
+            The highest purity. Research grade.
           </h2>
           <p className="mt-6 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            Most IP6 sold today is a commodity ingredient with no connection to the original research. IP6 Original is the formula the scientist who pioneered that research built himself: a high-purity formula, third-party tested, manufactured in a cGMP-certified facility.
+            IP6 Original is the formula the scientist who pioneered the research built himself, third-party tested and manufactured in a cGMP-certified facility.
           </p>
 
-          {/* Qualitative contrast - no invented purity figures */}
-          <div className="mt-12 lg:mt-16 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
-            <div className="bg-surface p-7 lg:p-8">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-ink/55 font-bold mb-4">
-                Commodity IP6
-              </p>
-              <ul className="space-y-3 text-sm text-ink/70 leading-relaxed">
-                <li>No connection to the original research</li>
-                <li>Purity and testing vary by vendor</li>
-                <li>No named formulator behind it</li>
-              </ul>
-            </div>
-            <div className="bg-surface p-7 lg:p-8">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold mb-4">
-                IP6 Original
-              </p>
-              <ul className="space-y-3 text-sm text-navy-800 leading-relaxed">
-                <li>High-Purity Formula</li>
-                <li>Third-party tested, cGMP-certified manufacturing</li>
-                <li>Formulated by the scientist who pioneered the research</li>
-              </ul>
-            </div>
-          </div>
+          <ul className="mt-12 lg:mt-16 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
+            {[
+              "Highest purity, research grade",
+              "No magnesium stearate or silicon dioxide",
+              "Third-party tested, cGMP-certified manufacturing",
+              "Formulated by the scientist who pioneered the research",
+            ].map((t) => (
+              <li key={t} className="bg-surface p-7 lg:p-8 text-navy-800 leading-relaxed">
+                {t}
+              </li>
+            ))}
+          </ul>
 
           <div className="mt-12">
             <Link
               href="/the-difference"
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 hover:text-sky-800 underline underline-offset-4 decoration-sky-300 decoration-2"
             >
-              See the full comparison
+              See what goes into it
               <ArrowRight className="size-3.5" />
             </Link>
           </div>
@@ -199,7 +187,6 @@ export default function HomePage() {
 
       {/* =============================================
          CHAPTER 3 EXIT-RAMP - The Solution (product card link)
-         The first IP6 supplement standardized to research-grade purity.
       ============================================== */}
       <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
         <div className="container max-w-5xl">
@@ -216,10 +203,10 @@ export default function HomePage() {
               fontWeight: 400,
             }}
           >
-            The first IP6 supplement standardized to research-grade purity.
+            One formula, from the scientist who pioneered the research.
           </h2>
           <p className="mt-5 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            A high-purity formula, third-party tested, manufactured in a cGMP-certified facility, formulated by the scientist who pioneered the research behind it.
+            Highest purity, research grade, third-party tested, manufactured in a cGMP-certified facility, formulated by the scientist who pioneered the research behind it.
           </p>
 
           <Link

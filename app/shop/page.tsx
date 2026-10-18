@@ -9,7 +9,7 @@ import { hreflangAlternates } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "Shop",
   description:
-    "Shop IP6 Original, the research-grade IP6 and Inositol supplement. Third-party tested, cGMP certified, made in USA.",
+    "Shop IP6 Original, the IP6 and Inositol supplement of the highest purity. Third-party tested, cGMP certified, made in USA.",
   alternates: hreflangAlternates("/shop"),
 };
 
@@ -23,7 +23,7 @@ export default function ShopPage() {
           One supplement. Considered in full.
         </h1>
         <p className="text-lg text-ink/75 leading-relaxed">
-          Developed to a research-grade specification, third-party tested, and manufactured to cGMP standards.
+          The highest purity, research grade, third-party tested, and manufactured to cGMP standards.
         </p>
       </section>
 
