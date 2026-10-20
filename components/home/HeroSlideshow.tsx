@@ -10,12 +10,14 @@ import styles from "./HeroSlideshow.module.css";
    Every headline traces to the label, a Shopify setting, or copy already on the site. */
 
 type Segment = { text: string; em?: boolean };
-type Slide = { src: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[] };
+// A slide with `video` plays it muted on loop (src is then its poster frame). `cta` overrides the shared button.
+type Slide = { src: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; cta?: { href: string; label: string } };
 
 const SLIDES: Slide[] = [
   { src: "/hero/ip6-hero-beach-couple.webp", pos: "62% 0%", mpos: "36% 0%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }] },
   { src: "/hero/ip6-hero-3.webp", pos: "50% 8%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }] },
   { src: "/hero/ip6-hero-5.webp", pos: "55% 40%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }] },
+  { src: "/hero/video/ip6-hero-dog-cat-poster.webp", video: "/hero/video/ip6-hero-dog-cat.mp4", pos: "72% 45%", mpos: "52% 40%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for dogs and cats", em: true }, { text: "." }], cta: { href: "/shop/ip6-original-pet-powder", label: "Shop Pet Powder · 15% off" } },
 ];
 
 const TYPE_MS = 42;
@@ -41,6 +43,7 @@ export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
   const [paused, setPaused] = useState(false);
   const [reduce, setReduce] = useState(false);
   const timers = useRef<number[]>([]);
+  const videos = useRef<(HTMLVideoElement | null)[]>([]);
   const pausedRef = useRef(false);
   const [runKey, setRunKey] = useState(0);
 
@@ -79,6 +82,15 @@ export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
     }, typedAt + REVEAL_AFTER_TYPED + REVEAL_MS + HOLD_AFTER_REVEAL);
     return clear;
   }, [cur, reduce, runKey, clear]);
+
+  // Only the active slide's video plays; reduced motion keeps the poster frame.
+  useEffect(() => {
+    videos.current.forEach((v, i) => {
+      if (!v) return;
+      if (i === cur && !reduce) void v.play().catch(() => {});
+      else v.pause();
+    });
+  }, [cur, reduce]);
 
   // Stop the clock while the tab is hidden; restart the current slide when it comes back.
   useEffect(() => {
@@ -135,7 +147,23 @@ export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
             <div className={styles.ph}>
               {/* Plain img: the slides are full-bleed covers with a hand-set focal point. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.src} alt={s.alt} style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
+              {s.video ? (
+                <video
+                  ref={(el) => {
+                    videos.current[i] = el;
+                  }}
+                  src={s.video}
+                  poster={s.src}
+                  muted
+                  loop
+                  playsInline
+                  preload={active ? "auto" : "none"}
+                  aria-label={s.alt}
+                  style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }}
+                />
+              ) : (
+                <img src={s.src} alt={s.alt} style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
+              )}
             </div>
             <div className={styles.shadow} />
             <div className={styles.light} />
@@ -147,8 +175,8 @@ export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
               ) : (
                 <p className={styles.line} aria-level={1} role="heading">{renderLine(s, active)}</p>
               )}
-              <Link href={ctaHref} className={styles.cta} tabIndex={active ? 0 : -1}>
-                Pre-order IP6 Original · 15% off
+              <Link href={s.cta?.href ?? ctaHref} className={styles.cta} tabIndex={active ? 0 : -1}>
+                {s.cta?.label ?? "Pre-order IP6 Original · 15% off"}
                 <ArrowRight aria-hidden />
               </Link>
             </div>

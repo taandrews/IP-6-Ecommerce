@@ -23,7 +23,8 @@
   position: absolute;
   inset: 0;
 }
-.ph img {
+.ph img,
+.ph video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -32,7 +33,8 @@
   filter: grayscale(1) contrast(1.05);
   transition: filter 1.4s ease;
 }
-.on .ph img {
+.on .ph img,
+.on .ph video {
   animation: kb 9s linear forwards;
   transform-origin: 50% 0;
 }
@@ -60,7 +62,8 @@
 .dim {
   background: linear-gradient(to top, rgba(6, 18, 42, 0.55), rgba(6, 18, 42, 0.08) 45%, rgba(6, 18, 42, 0.18));
 }
-.reveal .ph img {
+.reveal .ph img,
+.reveal .ph video {
   filter: none;
 }
 .reveal .shadow,
@@ -223,7 +226,8 @@
   .hero {
     min-height: 520px;
   }
-  .ph img {
+  .ph img,
+  .ph video {
     object-position: var(--pos-m, var(--pos, 50% 50%));
   }
   .dots {
@@ -241,7 +245,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ph img,
-  .on .ph img {
+  .ph video,
+  .on .ph img,
+  .on .ph video {
     animation: none;
     filter: none;
   }
