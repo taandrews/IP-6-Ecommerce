@@ -23,7 +23,7 @@ export function HowToTakeContent() {
             Take it. Here is exactly how.
           </h2>
           <p className="mt-6 text-lg text-ink/70 leading-relaxed max-w-2xl">
-            Take IP6 Original 15-30 minutes before a meal for maximum effect. Always consult your physician before beginning any supplement regimen.
+            Take 2 capsules once or twice daily with water, or as directed by your healthcare professional. Always consult your physician before beginning any supplement regimen.
           </p>
         </div>
       </section>
@@ -37,7 +37,7 @@ export function HowToTakeContent() {
           <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
             IP6 is{" "}
             <strong className="text-navy-800 font-semibold">inositol</strong> carrying six phosphate groups;{" "}
-            <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original combines Calcium-Magnesium IP6 with Inositol, the pairing Prof. Shamsuddin&rsquo;s research is built around. Since IP6 may bind with other elements in food, it is best to take it 15-30 minutes before a meal for maximum effect.
+            <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original combines Calcium-Magnesium IP6 with Inositol, the pairing Prof. Shamsuddin&rsquo;s research is built around.
           </p>
         </div>
       </section>
@@ -48,13 +48,13 @@ export function HowToTakeContent() {
           {[
             {
               icon: Clock,
-              title: "Before a meal",
-              body: "Take 15-30 minutes before a meal for maximum effect.",
+              title: "Once or twice daily",
+              body: "Take 2 capsules once or twice daily, or as directed by your healthcare professional.",
             },
             {
               icon: Utensils,
               title: "With water only",
-              body: "Take each serving with at least 8 oz of water.",
+              body: "Take each serving with water.",
             },
             {
               icon: AlertTriangle,
@@ -96,9 +96,6 @@ export function HowToTakeContent() {
           <div className="space-y-4 text-base lg:text-lg text-ink/80 leading-relaxed">
             <p>
               <strong className="text-navy-800 font-semibold">Serving size is 2 capsules.</strong> Take 2 capsules once or twice daily with water, or as directed by a healthcare professional. Each bottle holds 120 capsules, 60 servings.
-            </p>
-            <p>
-              Take each serving 15-30 minutes before a meal for maximum effect, since IP6 may bind with other elements in food.
             </p>
             <p>
               Take it at the same time each day so the routine is easy to keep, and stay consistent for several weeks.

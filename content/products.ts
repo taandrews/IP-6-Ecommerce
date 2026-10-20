@@ -33,7 +33,6 @@ export const products: Product[] = [
     ],
     howToUse: [
       "Take 2 capsules once or twice daily with water, or as directed by your healthcare professional.",
-      "For maximum effect, take 15-30 minutes before a meal.",
       "Consult a healthcare professional before starting any supplement regimen.",
     ],
     variants: [
@@ -70,10 +69,6 @@ export const products: Product[] = [
       {
         q: "What is IP6?",
         a: "IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. IP6 Original pairs it with Inositol in a high-purity formula, third-party tested for purity, potency, and quality.",
-      },
-      {
-        q: "Why take IP6 between meals?",
-        a: "IP6 Original contains Calcium-Magnesium IP6. Since IP6 may bind with other elements in food, it is best to take it 15-30 minutes before a meal for maximum effect.",
       },
       {
         q: "Is this product third-party tested?",
