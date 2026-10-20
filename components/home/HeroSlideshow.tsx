@@ -18,7 +18,7 @@ const SLIDES: Slide[] = [
   { src: "/hero/ip6-hero-5.webp", pos: "55% 40%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }] },
   { src: "/hero/video/ip6-hero-dog-cat-poster.webp", video: "/hero/video/ip6-hero-dog-cat.mp4", pos: "50% 0%", mpos: "62% 50%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], cta: { href: "/shop/ip6-original-pet-powder", label: "Shop Pet Powder · 15% off" } },
   { src: "/hero/ip6-hero-beach-couple.webp", msrc: "/hero/ip6-hero-beach-couple-m.webp", pos: "62% 0%", mpos: "50% 60%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }] },
-  { src: "/hero/ip6-hero-3.webp", pos: "50% 8%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }] },
+  { src: "/hero/ip6-hero-3.webp", pos: "50% 8%", mpos: "75% 0%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }] },
 ];
 
 const TYPE_MS = 42;
