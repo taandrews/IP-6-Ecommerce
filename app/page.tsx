@@ -278,7 +278,7 @@ export default function HomePage() {
               Take it. Here is exactly how.
             </h2>
             <p className="mt-5 text-lg text-ink/75 leading-relaxed">
-              Take IP6 Original on an empty stomach, at least 30 minutes before food or two hours after. Always consult your physician before beginning any supplement regimen.
+              Take IP6 Original 15-30 minutes before a meal for maximum effect. Always consult your physician before beginning any supplement regimen.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
@@ -298,8 +298,8 @@ export default function HomePage() {
           </div>
           <ol className="divide-y divide-cloud-300 border-y border-cloud-300">
             {[
-              { icon: Beaker, t: "On an empty stomach", b: "30 minutes before food, or 2 hours after." },
-              { icon: RefreshCw, t: "With water only", b: "8 oz minimum. Avoid mineral-rich beverages within an hour." },
+              { icon: Beaker, t: "Before a meal", b: "Take 15-30 minutes before a meal for maximum effect." },
+              { icon: RefreshCw, t: "With water", b: "Take each serving with at least 8 oz of water." },
               { icon: AlertTriangle, t: "Consult your physician", b: "Always discuss new supplements with your healthcare professional." },
             ].map((s, i) => (
               <li key={i} className="py-5 flex items-start gap-4">

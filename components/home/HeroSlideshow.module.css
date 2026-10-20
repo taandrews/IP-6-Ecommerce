@@ -224,7 +224,37 @@
 
 @media (max-width: 900px) {
   .hero {
-    min-height: 520px;
+    /* Phone header is 64px, not the desktop 80px. */
+    height: min(calc(100svh - 64px), 820px);
+    min-height: 540px;
+  }
+  /* Phones: darker band behind the centred copy so white and gold text read on bright photos. */
+  .dim {
+    background: linear-gradient(to bottom, rgba(6, 18, 42, 0.2), rgba(6, 18, 42, 0.62) 38%, rgba(6, 18, 42, 0.62) 72%, rgba(6, 18, 42, 0.35));
+  }
+  .eyebrow {
+    color: #fff;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+  }
+  .on .eyebrow {
+    opacity: 1;
+  }
+  .line {
+    font-size: clamp(2rem, 9.4vw, 2.6rem);
+    font-weight: 400;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+  }
+  .line em {
+    color: #ecd08f;
+  }
+  .cta {
+    margin-top: 1.8rem;
+  }
+  /* Pause sits beside the dots, clear of the FDA bar along the bottom. */
+  .pause {
+    left: auto;
+    right: 1rem;
+    bottom: 5rem;
   }
   .ph img,
   .ph video {
@@ -259,17 +289,23 @@
   }
   .vid video {
     position: absolute;
-    width: 200%;
+    width: 160%;
     max-width: none;
     height: auto;
     aspect-ratio: 16 / 9;
-    left: -66%;
+    left: -42%;
     top: 0;
   }
-  /* Headline sits under the animals instead of over their faces. */
+  /* The video already shows its own band; skip the dark band and keep the copy under the animals. */
+  .vid ~ .dim {
+    background: linear-gradient(to bottom, transparent 55%, rgba(6, 18, 42, 0.5));
+  }
   .vid ~ .copy {
     justify-content: flex-end;
-    padding-bottom: 7.5rem;
+    padding-bottom: 6.6rem;
+  }
+  .vid ~ .copy .eyebrow {
+    display: none;
   }
 }
 
