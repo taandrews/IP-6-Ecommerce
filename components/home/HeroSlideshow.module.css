@@ -277,37 +277,6 @@
 .on .ph video {
   animation: none;
 }
-@media (max-width: 900px) {
-  /* Phones: a 16:9 frame cannot cover a portrait screen without cropping the animals,
-     so the clip sits at twice the screen width over a blurred copy of its poster. */
-  .vid::before {
-    content: "";
-    position: absolute;
-    inset: -40px;
-    background: var(--poster) center / cover no-repeat;
-    filter: blur(24px) brightness(0.8);
-  }
-  .vid video {
-    position: absolute;
-    width: 160%;
-    max-width: none;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    left: -42%;
-    top: 0;
-  }
-  /* The video already shows its own band; skip the dark band and keep the copy under the animals. */
-  .vid ~ .dim {
-    background: linear-gradient(to bottom, transparent 55%, rgba(6, 18, 42, 0.5));
-  }
-  .vid ~ .copy {
-    justify-content: flex-end;
-    padding-bottom: 6.6rem;
-  }
-  .vid ~ .copy .eyebrow {
-    display: none;
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .ph img,
