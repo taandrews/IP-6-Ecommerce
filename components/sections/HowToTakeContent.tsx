@@ -23,7 +23,7 @@ export function HowToTakeContent() {
             Take it. Here is exactly how.
           </h2>
           <p className="mt-6 text-lg text-ink/70 leading-relaxed max-w-2xl">
-            Take 2 capsules once or twice daily with water, or as directed by your healthcare professional. Always consult your physician before beginning any supplement regimen.
+            Take 4 capsules once or twice daily with water, or as directed by your healthcare professional. Always consult your physician before beginning any supplement regimen.
           </p>
         </div>
       </section>
@@ -49,7 +49,7 @@ export function HowToTakeContent() {
             {
               icon: Clock,
               title: "Once or twice daily",
-              body: "Take 2 capsules once or twice daily, or as directed by your healthcare professional.",
+              body: "Take 4 capsules once or twice daily, or as directed by your healthcare professional.",
             },
             {
               icon: Utensils,
@@ -95,10 +95,10 @@ export function HowToTakeContent() {
           </h2>
           <div className="space-y-4 text-base lg:text-lg text-ink/80 leading-relaxed">
             <p>
-              <strong className="text-navy-800 font-semibold">Serving size is 2 capsules.</strong> Take 2 capsules once or twice daily with water, or as directed by a healthcare professional. Each bottle holds 120 capsules, 60 servings.
+              <strong className="text-navy-800 font-semibold">Serving size is 4 capsules.</strong> Take 4 capsules once or twice daily with water, or as directed by a healthcare professional. The 240-capsule bottle holds 60 servings.
             </p>
             <p>
-              Take it at the same time each day so the routine is easy to keep, and stay consistent for several weeks.
+              Take it at the same time each day so the routine is easy to keep.
             </p>
           </div>
         </div>

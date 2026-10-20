@@ -2,8 +2,9 @@ import type { Product } from "@/types";
 import { asset } from "@/lib/assets";
 
 // Product photos, served from /public/products/.
-const HERO_SUPPLEMENT = "/products/supplement-real.png";
-const DETAIL_SUPPLEMENT_BACK = "/products/supplement-real-back.png";
+const HERO_SUPPLEMENT = "/products/supplement-240.png";
+// The client's USA 240-count label artwork (Supplement Facts on the right panel).
+const DETAIL_SUPPLEMENT_LABEL = "/products/supplement-240-label.jpg";
 
 const DETAIL_SUPPLEMENT_2 = asset("products/supplement-2.jpg");
 const DETAIL_SUPPLEMENT_3 = asset("products/supplement-3.jpg");
@@ -24,24 +25,24 @@ export const products: Product[] = [
       "Formulated by Prof. Shamsuddin, founder and formulator",
       "Manufactured in a cGMP-certified facility",
       "No magnesium stearate, no silicon dioxide, no unnecessary additives",
-      "Plant-based capsule (cellulose)",
+      "Hypromellose (vegetable) capsule",
     ],
     ingredients: [
-      "IP6 (Calcium-Magnesium Inositol Hexaphosphate), 804 mg per 2-capsule serving",
+      "IP6 (Calcium Magnesium Inositol Hexaphosphate), 804 mg per 4-capsule serving",
       "Inositol, 196 mg per serving",
-      "Other ingredients: plant-based capsule (cellulose)",
+      "Other ingredients: hypromellose (vegetable capsule)",
     ],
     howToUse: [
-      "Take 2 capsules once or twice daily with water, or as directed by your healthcare professional.",
+      "Take 4 capsules once or twice daily with water, or as directed by your healthcare professional.",
       "Consult a healthcare professional before starting any supplement regimen.",
     ],
     variants: [
       {
-        id: "sup-capsule-120",
-        sku: "SUP-IP6-CAP120",
+        id: "sup-capsule-240",
+        sku: "SUP-IP6-CAP240",
         name: "Capsules",
         format: "Capsule",
-        size: "120 count",
+        size: "240 count",
         priceCents: { USD: 4900, CAD: 6700, GBP: 3900, AUD: 7400, EUR: 4500, INR: 409900 },
         weightGrams: 150,
         inStock: true,
@@ -62,8 +63,8 @@ export const products: Product[] = [
       { days: 90, discountPct: 20 },
     ],
     images: [
-      { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement. Navy bottle with gold accents reading 'IP6 ORIGINAL · Pioneer in IP6 Research and Cellular Health · Dr. Shamsuddin'.", width: 652, height: 1356 },
-      { url: DETAIL_SUPPLEMENT_BACK, alt: "IP6 Original Supplement back label. Supplement Facts panel with serving size and amounts per 2-capsule serving, 60 servings per container, plus suggested use, ingredients, and cGMP Certified / Third-Party Tested / High-Purity Formula badges.", width: 674, height: 912 },
+            { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement, 240 vegetarian capsules. Navy bottle with a gold label reading IP6 Original, Pioneer in IP6 Research and Cellular Health.", width: 870, height: 1160 },
+            { url: DETAIL_SUPPLEMENT_LABEL, alt: "IP6 Original 240-count label. Supplement Facts: serving size 4 capsules, 60 servings per container, 804 mg calcium magnesium inositol hexaphosphate (IP6) and 196 mg Inositol per serving.", width: 1600, height: 622 },
     ],
     faq: [
       {

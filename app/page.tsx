@@ -216,7 +216,7 @@ export default function HomePage() {
             <div className="grid sm:grid-cols-[180px_1fr]">
               <div className="relative aspect-square sm:aspect-auto">
                 <Image
-                  src="/products/supplement-real.png"
+                  src="/products/supplement-240.png"
                   alt=""
                   fill
                   sizes="180px"
@@ -232,7 +232,7 @@ export default function HomePage() {
                   Pioneer in IP6 Research and Cellular Health
                 </h3>
                 <p className="text-sm text-ink/65 mb-5 flex-1">
-                  120 capsules · 60 servings · 804 mg IP6 and 196 mg Inositol per serving. cGMP manufactured. Third-party tested.
+                  240 capsules · 60 servings · 804 mg IP6 and 196 mg Inositol per serving. cGMP manufactured. Third-party tested.
                 </p>
                 <div className="flex items-center justify-between">
                   <p>
@@ -278,7 +278,7 @@ export default function HomePage() {
               Take it. Here is exactly how.
             </h2>
             <p className="mt-5 text-lg text-ink/75 leading-relaxed">
-              Take 2 capsules once or twice daily with water, or as directed by your healthcare professional. Always consult your physician before beginning any supplement regimen.
+              Take 4 capsules once or twice daily with water, or as directed by your healthcare professional. Always consult your physician before beginning any supplement regimen.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
@@ -298,7 +298,7 @@ export default function HomePage() {
           </div>
           <ol className="divide-y divide-cloud-300 border-y border-cloud-300">
             {[
-              { icon: Beaker, t: "Once or twice daily", b: "Take 2 capsules once or twice daily, or as directed by your healthcare professional." },
+              { icon: Beaker, t: "Once or twice daily", b: "Take 4 capsules once or twice daily, or as directed by your healthcare professional." },
               { icon: RefreshCw, t: "With water", b: "Take each serving with water." },
               { icon: AlertTriangle, t: "Consult your physician", b: "Always discuss new supplements with your healthcare professional." },
             ].map((s, i) => (

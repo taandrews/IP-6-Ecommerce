@@ -97,7 +97,7 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "Is IP6 Original safe to take daily?",
-        a: "The suggested use is 2 capsules once or twice daily with water, or as directed by a healthcare professional. Always consult your physician before beginning any supplement regimen, including IP6 Original.",
+        a: "The suggested use is 4 capsules once or twice daily with water, or as directed by a healthcare professional. Always consult your physician before beginning any supplement regimen, including IP6 Original.",
       },
       {
         q: "Are there any side effects?",

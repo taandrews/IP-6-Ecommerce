@@ -23,6 +23,8 @@ export function ProductGallery({ images }: { images: GalleryImage[] }) {
   // images can fill with object-cover.
   const ratio = img.width / img.height;
   const isPortrait = ratio < 1;
+  // Very wide images (a flat label) are shown whole, never cropped.
+  const isWide = ratio > 1.6;
   const containerAspect = isPortrait ? "aspect-[3/4]" : "aspect-[4/3]";
 
   return (
@@ -32,7 +34,8 @@ export function ProductGallery({ images }: { images: GalleryImage[] }) {
         className="order-2 lg:order-1 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible scrollbar-none"
       >
         {images.map((im, i) => {
-          const thumbPortrait = im.width / im.height < 1;
+          const thumbRatio = im.width / im.height;
+          const thumbPortrait = thumbRatio < 1 || thumbRatio > 1.6;
           return (
             <li key={im.url + i}>
               <button
@@ -75,7 +78,7 @@ export function ProductGallery({ images }: { images: GalleryImage[] }) {
             priority={active === 0}
             className={cn(
               "transition-transform duration-500 ease-brand",
-              isPortrait ? "object-contain p-6" : "object-cover",
+              isPortrait ? "object-contain p-6" : isWide ? "object-contain p-3" : "object-cover",
               zoomed ? "scale-150" : "group-hover:scale-105",
             )}
           />

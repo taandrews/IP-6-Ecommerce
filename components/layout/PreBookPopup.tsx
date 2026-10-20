@@ -198,7 +198,7 @@ export function PreBookPopup() {
   };
 
   let result = RESULT_COPY[answers.intent ?? "everyday"] ?? RESULT_COPY.everyday;
-  if (answers.experience === "new") result += " New to IP6? Take 2 capsules once or twice daily with water.";
+  if (answers.experience === "new") result += " New to IP6? Take 4 capsules once or twice daily with water.";
   const dailyNudge = answers.routine === "daily" || answers.experience === "regular";
 
   return (
