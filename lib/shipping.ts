@@ -40,7 +40,7 @@ const SAME_ECONOMIC_ZONE = ["CA", "GB", "AU", "DE", "FR", "IE", "NL", "NZ"];
 export function calculateRates(req: RateRequest): ShippingRate[] {
   const weight = req.items.reduce((sum, item) => sum + item.qty * 100, 0);
   const hasRestricted = req.items.some(
-    (i) => i.sku.startsWith("SUP-") || i.sku.startsWith("SKN-"),
+    (i) => i.sku.startsWith("SUP-") || i.sku.startsWith("PET-") || i.sku.startsWith("SKN-"),
   );
   if (hasRestricted && !canShipSupplement(req.destinationCountry)) return [];
 

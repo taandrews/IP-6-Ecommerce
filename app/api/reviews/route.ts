@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 
-  const category = parsed.data.sku.startsWith("SUP-")
+  const category = parsed.data.sku.startsWith("SUP-") || parsed.data.sku.startsWith("PET-")
     ? "supplement"
     : parsed.data.sku.startsWith("SKN-")
       ? "skincare"

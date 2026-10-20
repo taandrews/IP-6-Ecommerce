@@ -10,6 +10,7 @@ export function ProductCard({ product, currency }: { product: Product; currency:
   const startingFrom = Math.min(...prices);
   const categoryLabel = {
     supplement: "Supplement",
+    pet: "For pets",
     skincare: "Skincare",
     filter: "Water filter",
   }[product.category];

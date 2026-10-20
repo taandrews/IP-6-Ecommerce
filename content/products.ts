@@ -89,6 +89,73 @@ export const products: Product[] = [
     shipsGlobally: false,
     // labReport: add back once the real certificate of analysis PDF is in public/coa/
   },
+  {
+    // Facts from the pet 120 g label and the live Shopify product (ip6-original-pet-powder).
+    slug: "ip6-original-pet-powder",
+    sku: "PET-IP6-PWD120",
+    name: "IP6 Original Pet Powder",
+    shortDescription:
+      "The original IP6 formula, for pets, in an easy-to-mix powder. IP6 and Inositol for dogs and cats, for single and multi-pet households.",
+    category: "pet",
+    heroClaim: "Veterinarian formulated",
+    highlights: [
+      "804 mg IP6 and 196 mg Inositol per 1 g level scoop",
+      "Unflavored, easy to mix into food",
+      "No magnesium stearate, no silicon dioxide, no unnecessary additives",
+      "cGMP-certified, third-party tested, veterinarian formulated",
+      "Made in USA",
+      "Measuring scoop included",
+    ],
+    ingredients: [
+      "IP6 (Inositol Hexaphosphate), 804 mg per 1 g level scoop",
+      "Inositol, 196 mg per scoop",
+      "Other ingredients: none",
+    ],
+    howToUse: [
+      "Dogs up to 25 lb: 1 level scoop once daily.",
+      "Dogs 26 to 50 lb: 1 level scoop twice daily.",
+      "Dogs over 50 lb: 2 level scoops twice daily.",
+      "Cats: 1 level scoop once daily.",
+      "Use the enclosed measuring scoop and mix into your pet's food.",
+    ],
+    variants: [
+      {
+        id: "pet-powder-120g",
+        sku: "PET-IP6-PWD120",
+        name: "Powder",
+        format: "Powder",
+        size: "120 g",
+        priceCents: { USD: 3400, CAD: 4700, GBP: 2700, AUD: 5100, EUR: 3100, INR: 284400 },
+        weightGrams: 160,
+        inStock: true,
+      },
+    ],
+    subscriptionCycles: [],
+    images: [
+      { url: "/products/pet-powder-120g.jpg", alt: "IP6 Original Pet Powder, 120 g tub with a dog and a cat on the label. Unflavored, easy to mix.", width: 1100, height: 1375 },
+    ],
+    faq: [
+      {
+        q: "How much do I give my pet?",
+        a: "Dogs up to 25 lb: 1 level scoop once daily. Dogs 26 to 50 lb: 1 level scoop twice daily. Dogs over 50 lb: 2 level scoops twice daily. Cats: 1 level scoop once daily. Use the enclosed measuring scoop.",
+      },
+      {
+        q: "What is in each scoop?",
+        a: "Each 1 g level scoop contains 804 mg IP6 and 196 mg Inositol. There are no other ingredients.",
+      },
+      {
+        q: "Is it flavored?",
+        a: "No. It is unflavored and easy to mix into food.",
+      },
+      {
+        q: "Is it third-party tested?",
+        a: "Yes. IP6 Original Pet Powder is made in a cGMP-certified facility and third-party tested.",
+      },
+    ],
+    relatedSkus: [],
+    requiresDsheaDisclaimer: true,
+    shipsGlobally: false,
+  },
 ];
 
 export function getProductBySlug(slug: string) {

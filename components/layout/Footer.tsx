@@ -7,6 +7,7 @@ const GROUPS = [
     heading: "Shop",
     links: [
       { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
+      { href: "/shop/ip6-original-pet-powder", label: "Pet Powder" },
       { href: "/faq#how-to-take", label: "How to Take" },
       { href: "/account", label: "My Account" },
     ],

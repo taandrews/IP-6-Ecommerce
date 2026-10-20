@@ -106,7 +106,7 @@ export function PurchasePanel({
       {/* Purchase mode toggle */}
       <fieldset>
         <legend className="label">Purchase option</legend>
-        <div className="grid sm:grid-cols-2 gap-2">
+        <div className={cn("grid gap-2", product.subscriptionCycles.length > 0 && "sm:grid-cols-2")}>
           <ModeCard
             active={mode === "one-time"}
             onClick={() => setMode("one-time")}
@@ -118,17 +118,19 @@ export function PurchasePanel({
             }
             badge={PREORDER.active ? `-${PREORDER.discountPct}%` : undefined}
           />
-          <ModeCard
-            active={mode === "subscribe"}
-            onClick={() => setMode("subscribe")}
-            title="Subscribe & save"
-            subtitle={
-              subDiscount > 0
-                ? `Save ${subDiscount}% · ${formatPrice(Math.round(unit * (1 - subDiscount / 100)), currency)}`
-                : "Flexible delivery"
-            }
-            badge={subDiscount > 0 ? `-${subDiscount}%` : undefined}
-          />
+          {product.subscriptionCycles.length > 0 ? (
+            <ModeCard
+              active={mode === "subscribe"}
+              onClick={() => setMode("subscribe")}
+              title="Subscribe & save"
+              subtitle={
+                subDiscount > 0
+                  ? `Save ${subDiscount}% · ${formatPrice(Math.round(unit * (1 - subDiscount / 100)), currency)}`
+                  : "Flexible delivery"
+              }
+              badge={subDiscount > 0 ? `-${subDiscount}%` : undefined}
+            />
+          ) : null}
         </div>
       </fieldset>
 
@@ -193,7 +195,9 @@ export function PurchasePanel({
         <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Made in USA</li>
         <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Third-party tested</li>
         <li className="flex items-center gap-2"><Check className="size-4 text-forest-600" />Secure checkout</li>
-        <li className="flex items-center gap-2"><RefreshCw className="size-4 text-forest-600" />Cancel anytime</li>
+        {product.subscriptionCycles.length > 0 ? (
+          <li className="flex items-center gap-2"><RefreshCw className="size-4 text-forest-600" />Cancel anytime</li>
+        ) : null}
       </ul>
     </div>
   );

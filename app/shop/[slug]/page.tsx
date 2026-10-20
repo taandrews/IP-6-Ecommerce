@@ -83,7 +83,7 @@ export default function ProductPage({ params }: Params) {
 
           <div className="flex flex-col">
             <div className="mb-5">
-              <p className="eyebrow mb-4">{product.category === "supplement" ? "Supplement" : product.category === "skincare" ? "Skincare" : "Water filtration"}</p>
+              <p className="eyebrow mb-4">{product.category === "supplement" ? "Supplement" : product.category === "pet" ? "For pets" : product.category === "skincare" ? "Skincare" : "Water filtration"}</p>
               <div className="flex flex-wrap gap-2 mb-4">
                 <Badge variant="gold">{product.heroClaim}</Badge>
                 {product.comingSoon ? (

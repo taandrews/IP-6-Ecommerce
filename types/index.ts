@@ -1,7 +1,7 @@
 export type Currency = "USD" | "CAD" | "GBP" | "AUD" | "EUR" | "INR";
 export type Locale = "en" | "fr" | "de" | "hi";
 
-export type ProductCategory = "supplement" | "skincare" | "filter";
+export type ProductCategory = "supplement" | "pet" | "skincare" | "filter";
 
 export interface ProductVariant {
   id: string;
