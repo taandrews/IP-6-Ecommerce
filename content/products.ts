@@ -93,7 +93,7 @@ export const products: Product[] = [
     shortDescription:
       "The original IP6 formula, for pets, in an easy-to-mix powder. IP6 and Inositol for dogs and cats, for single and multi-pet households.",
     category: "pet",
-    heroClaim: "Veterinarian formulated",
+    heroClaim: "The original IP6 formula, for pets",
     highlights: [
       "804 mg IP6 and 196 mg Inositol per 1 g level scoop",
       "Unflavored, easy to mix into food",
