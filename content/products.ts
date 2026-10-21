@@ -128,7 +128,7 @@ export const products: Product[] = [
     ],
     subscriptionCycles: [],
     images: [
-      { url: asset("products/pet-powder-120g.jpg"), alt: "IP6 Original Pet Powder, 120 g tub with a dog and a cat on the label. Unflavored, easy to mix.", width: 1100, height: 1375 },
+      { url: asset("products/pet-powder-120g.png"), alt: "IP6 Original Pet Powder, 120 g tub with a dog and a cat on the label. Unflavored, easy to mix.", width: 870, height: 1160 },
     ],
     faq: [
       {
