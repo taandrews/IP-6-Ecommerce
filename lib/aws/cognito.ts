@@ -36,14 +36,6 @@ import { ROLE_GROUPS, type Role } from "@/lib/auth/roles";
 export const cognitoClient = new CognitoIdentityProviderClient({
   region: awsRegion(),
   ...(process.env.COGNITO_ENDPOINT ? { endpoint: process.env.COGNITO_ENDPOINT } : {}),
-  ...(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
-    ? {
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        },
-      }
-    : {}),
 });
 
 function secretHash(realm: Realm, username: string) {

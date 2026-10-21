@@ -7,14 +7,6 @@ const region = awsRegion();
 export const sesClient = new SESClient({
   region,
   ...(process.env.SES_ENDPOINT ? { endpoint: process.env.SES_ENDPOINT } : {}),
-  ...(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
-    ? {
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        },
-      }
-    : {}),
 });
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com").replace(/\/$/, "");

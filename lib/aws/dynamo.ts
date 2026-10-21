@@ -9,14 +9,6 @@ const client = new DynamoDBClient({
   region,
   // Only for a local DynamoDB emulator during testing.
   ...(process.env.DYNAMODB_ENDPOINT ? { endpoint: process.env.DYNAMODB_ENDPOINT } : {}),
-  ...(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
-    ? {
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        },
-      }
-    : {}),
 });
 
 export const docClient = DynamoDBDocumentClient.from(client, {
