@@ -20,14 +20,6 @@ import {
 const region = awsRegion();
 const client = new SecretsManagerClient({
   region,
-  ...(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
-    ? {
-        credentials: {
-          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        },
-      }
-    : {}),
 });
 
 const cache = new Map<string, { value: Record<string, string>; fetchedAt: number }>();
