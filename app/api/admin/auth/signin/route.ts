@@ -27,6 +27,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, next: out.next });
   } catch (err) {
     const { error, httpStatus } = authErrorMessage(err);
+    // Unexpected failures (not a Cognito auth outcome) are logged server-side so operators can diagnose them.
+    if (httpStatus === 500) console.error("staff sign-in failed:", (err as Error)?.name, (err as Error)?.message);
     return NextResponse.json({ error }, { status: httpStatus });
   }
 }
