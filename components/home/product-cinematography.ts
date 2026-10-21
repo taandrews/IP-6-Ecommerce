@@ -1,10 +1,11 @@
 import * as THREE from "three";
+import { asset } from "@/lib/assets";
 
 const smooth = (value: number) => { const x = THREE.MathUtils.clamp(value, 0, 1); return x * x * (3 - 2 * x); };
 const mix = THREE.MathUtils.lerp;
 
 export async function createProductCinematography(canvas: HTMLCanvasElement) {
-  const label = await new THREE.TextureLoader().loadAsync("/campaign/ip6-supplied-label.webp");
+  const label = await new THREE.TextureLoader().loadAsync(asset("campaign/ip6-supplied-label.webp"));
   let renderer: THREE.WebGLRenderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });

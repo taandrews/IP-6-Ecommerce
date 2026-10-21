@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { asset } from "@/lib/assets";
 import s from "./PreBookPopup.module.css";
 
 const KEY = "ip6quiz_seen_v1";
@@ -204,7 +205,7 @@ export function PreBookPopup() {
   return (
     <div ref={rootRef} className={s.root} role="dialog" aria-modal="true" aria-label="Pre-order IP6 Original and receive 15% off">
       <div className={s.panel}>
-        <div className={s.media} aria-hidden="true">
+        <div className={s.media} aria-hidden="true" style={{ backgroundImage: `url(${asset("popup/ip6-quiz.jpg")})` }}>
           <div className={s.mtag}>
             <div className={s.mtagE}>Science Driven · Purity First</div>
             <div className={s.mtagH}>Strengthen your cellular health</div>

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { asset } from "@/lib/assets";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -216,7 +217,7 @@ export default async function HomePage() {
             <div className="grid sm:grid-cols-[180px_1fr]">
               <div className="relative aspect-square sm:aspect-auto">
                 <Image
-                  src="/products/supplement-240.png"
+                  src={asset("products/supplement-240.png")}
                   alt=""
                   fill
                   sizes="180px"

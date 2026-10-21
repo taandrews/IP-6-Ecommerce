@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { asset } from "@/lib/assets";
 import Image from "next/image";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 import { PrivacyChoicesButton } from "./PrivacyChoicesButton";
@@ -45,7 +46,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
         <div className="grid gap-12 py-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-0">
           <div className="lg:pr-14">
             <Link href="/" aria-label="IP6 Original, Home" className="inline-block">
-              <Image src="/brand/ip6-original-logo.png" alt="IP6 Original" width={324} height={216} className="h-20 w-auto" />
+              <Image src={asset("brand/ip6-original-logo.png")} alt="IP6 Original" width={324} height={216} className="h-20 w-auto" />
             </Link>
             <p className="mt-6 max-w-[30ch] text-xl font-medium leading-snug tracking-[-0.01em]">
               One supplement, made to the specification his research describes.

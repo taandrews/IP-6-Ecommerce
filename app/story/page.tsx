@@ -105,7 +105,7 @@ export default function StoryPage() {
             </div>
             <div className="relative aspect-[3/4] max-w-sm mx-auto">
               <Image
-                src="/products/supplement-240.png"
+                src={asset("products/supplement-240.png")}
                 alt="IP6 Original Supplement"
                 fill
                 sizes="(min-width:1024px) 360px, 80vw"

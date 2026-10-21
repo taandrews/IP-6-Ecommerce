@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { asset } from "@/lib/assets";
 import { Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import styles from "./CampaignHero.module.css";
@@ -109,8 +110,8 @@ export function DaylightScene() {
 
   return (
     <div ref={scene} className={styles.scene} data-ready={ready}>
-      <div className={styles.fallback}>
-        <Image className={styles.bottle} src="/products/supplement-real.png" alt="IP6 Original, 120-capsule bottle" width={435} height={580} sizes="(max-width: 760px) 280px, 460px" priority />
+      <div className={styles.fallback} style={{ backgroundImage: `url(${asset("campaign/daylight-studio.webp")})` }}>
+        <Image className={styles.bottle} src={asset("products/supplement-real.png")} alt="IP6 Original, 120-capsule bottle" width={435} height={580} sizes="(max-width: 760px) 280px, 460px" priority />
       </div>
       <canvas ref={canvas} className={styles.canvas} aria-hidden="true" />
       <div className={styles.productNote}>

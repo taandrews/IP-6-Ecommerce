@@ -1,10 +1,10 @@
 import type { Product } from "@/types";
 import { asset } from "@/lib/assets";
 
-// Product photos, served from /public/products/.
-const HERO_SUPPLEMENT = "/products/supplement-240.png";
+// Product photos, served from the S3/CloudFront assets bucket (see lib/assets.ts; sources in assets/products/).
+const HERO_SUPPLEMENT = asset("products/supplement-240.png");
 // The client's USA 240-count label artwork (Supplement Facts on the right panel).
-const DETAIL_SUPPLEMENT_LABEL = "/products/supplement-240-label.jpg";
+const DETAIL_SUPPLEMENT_LABEL = asset("products/supplement-240-label.jpg");
 
 const DETAIL_SUPPLEMENT_2 = asset("products/supplement-2.jpg");
 const DETAIL_SUPPLEMENT_3 = asset("products/supplement-3.jpg");
@@ -128,7 +128,7 @@ export const products: Product[] = [
     ],
     subscriptionCycles: [],
     images: [
-      { url: "/products/pet-powder-120g.jpg", alt: "IP6 Original Pet Powder, 120 g tub with a dog and a cat on the label. Unflavored, easy to mix.", width: 1100, height: 1375 },
+      { url: asset("products/pet-powder-120g.jpg"), alt: "IP6 Original Pet Powder, 120 g tub with a dog and a cat on the label. Unflavored, easy to mix.", width: 1100, height: 1375 },
     ],
     faq: [
       {

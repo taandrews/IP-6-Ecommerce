@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { asset } from "@/lib/assets";
 import { IBM_Plex_Sans } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
@@ -71,7 +72,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     "@type": "Organization",
     name: siteName,
     url: siteUrl,
-    logo: `${siteUrl}/brand/ip6-original-logo.png`,
+    logo: asset("brand/ip6-original-logo.png"),
     sameAs: [] as string[],
   };
 

@@ -10,6 +10,7 @@ npm run build             # next build
 npm run lint              # next lint
 npm run typecheck         # tsc --noEmit
 npm run compliance:check  # tsx scripts/compliance-check.ts
+npm run assets:sync       # upload assets/ to S3 + CloudFront invalidation (images live on the CDN, not in public/)
 ```
 
 ## Infrastructure (`infra/`, AWS CDK)
