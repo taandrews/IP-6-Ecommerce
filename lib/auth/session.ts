@@ -1,66 +1,86 @@
+import "server-only";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { AUTH_COOKIES, CHALLENGE_MAX_AGE, REFRESH_MAX_AGE, sameSiteFor, secureCookies, type Realm } from "./config";
+import { verifyIdToken, type VerifiedUser } from "./jwt";
 
-export interface SessionUser {
-  sub: string;
+export type SessionUser = VerifiedUser;
+
+interface TokenSet {
+  IdToken?: string;
+  AccessToken?: string;
+  RefreshToken?: string;
+  ExpiresIn?: number;
+}
+
+function cookieOpts(realm: Realm, maxAge: number) {
+  return { httpOnly: true, secure: secureCookies(), sameSite: sameSiteFor(realm), path: "/", maxAge };
+}
+
+/**
+ * Stores Cognito tokens in httpOnly cookies for one realm. The ID and access
+ * tokens live exactly as long as the tokens; the refresh token decides how
+ * long the person stays signed in (12 hours for staff, 30 days for customers).
+ */
+export async function setAuthCookies(tokens: TokenSet, realm: Realm = "customer") {
+  if (!tokens.IdToken || !tokens.AccessToken) throw new Error("incomplete token set");
+  const user = await verifyIdToken(tokens.IdToken, realm);
+  if (!user) throw new Error("token verification failed");
+  const names = AUTH_COOKIES[realm];
+  const c = cookies();
+  const ttl = Math.max(60, Math.min(tokens.ExpiresIn ?? 3600, 3600));
+  c.set(names.id, tokens.IdToken, cookieOpts(realm, ttl));
+  c.set(names.access, tokens.AccessToken, cookieOpts(realm, ttl));
+  if (tokens.RefreshToken) c.set(names.refresh, tokens.RefreshToken, cookieOpts(realm, REFRESH_MAX_AGE[realm]));
+  c.delete(names.challenge);
+  return user;
+}
+
+export function clearAuthCookies(realm: Realm = "customer") {
+  const c = cookies();
+  for (const name of Object.values(AUTH_COOKIES[realm])) c.delete(name);
+  // Cookie from the previous, unverified admin check. Removed wherever it lingers.
+  c.delete("ip6_admin");
+}
+
+export interface PendingChallenge {
+  name: string;
+  session: string;
+  username: string;
   email: string;
-  name?: string;
-  groups?: string[];
+  next: string;
 }
 
-const SESSION_COOKIE = "ip6_session";
-const ADMIN_COOKIE = "ip6_admin";
-const MAX_AGE = 60 * 60 * 24 * 30; // 30 days
-
-export function setSessionCookies(idToken: string, user: SessionUser) {
-  const c = cookies();
-  c.set(SESSION_COOKIE, idToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: MAX_AGE,
-  });
-  const adminGroup = process.env.COGNITO_ADMIN_GROUP ?? "admin";
-  if (user.groups?.includes(adminGroup)) {
-    c.set(ADMIN_COOKIE, "1", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: MAX_AGE,
-    });
-  }
+export function setChallengeCookie(ch: PendingChallenge, realm: Realm = "customer") {
+  cookies().set(AUTH_COOKIES[realm].challenge, JSON.stringify(ch), cookieOpts(realm, CHALLENGE_MAX_AGE));
 }
 
-export function clearSessionCookies() {
-  const c = cookies();
-  c.delete(SESSION_COOKIE);
-  c.delete(ADMIN_COOKIE);
-}
-
-export function getSessionUser(): SessionUser | null {
-  const token = cookies().get(SESSION_COOKIE)?.value;
-  if (!token) return null;
+export function readChallengeCookie(realm: Realm = "customer"): PendingChallenge | null {
+  const raw = cookies().get(AUTH_COOKIES[realm].challenge)?.value;
+  if (!raw) return null;
   try {
-    const decoded = jwt.decode(token) as Record<string, unknown> | null;
-    if (!decoded || typeof decoded.sub !== "string") return null;
-    return {
-      sub: decoded.sub,
-      email: String(decoded.email ?? ""),
-      name: typeof decoded.name === "string" ? decoded.name : undefined,
-      groups: Array.isArray(decoded["cognito:groups"])
-        ? (decoded["cognito:groups"] as string[])
-        : undefined,
-    };
+    const v = JSON.parse(raw) as PendingChallenge;
+    return typeof v.session === "string" && typeof v.username === "string" ? v : null;
   } catch {
     return null;
   }
 }
 
-export function requireAdmin(): SessionUser | null {
-  const user = getSessionUser();
-  const adminGroup = process.env.COGNITO_ADMIN_GROUP ?? "admin";
-  if (!user || !user.groups?.includes(adminGroup)) return null;
-  return user;
+/** The signed-in customer, or null. The token signature is always verified. */
+export async function getSessionUser(): Promise<SessionUser | null> {
+  const token = cookies().get(AUTH_COOKIES.customer.id)?.value;
+  if (!token) return null;
+  return verifyIdToken(token, "customer");
 }
+
+/** The signed-in staff member's verified token claims, or null. */
+export async function getStaffUser(): Promise<SessionUser | null> {
+  const token = cookies().get(AUTH_COOKIES.staff.id)?.value;
+  if (!token) return null;
+  return verifyIdToken(token, "staff");
+}
+
+export function getAccessToken(realm: Realm = "customer"): string | null {
+  return cookies().get(AUTH_COOKIES[realm].access)?.value ?? null;
+}
+
+export { safeNextPath } from "./redirect";

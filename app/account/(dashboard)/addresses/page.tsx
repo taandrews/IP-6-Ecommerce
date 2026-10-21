@@ -10,8 +10,8 @@ export default function AddressesPage() {
         <h2 className="font-display text-display-md text-forest-800">Saved addresses</h2>
       </header>
       <div className="card p-8 text-center">
-        <p className="text-ink/70 mb-4">You haven't saved any addresses yet.</p>
-        <p className="text-sm text-ink/60">Your shipping address will be saved automatically on your next order.</p>
+        <p className="text-ink/70 mb-4">We don't keep a separate address book.</p>
+        <p className="text-sm text-ink/60">Each order keeps the shipping address you enter at checkout, and you can see it on the order. Subscription renewals ship to the address given when you subscribed; to change it, contact us.</p>
       </div>
     </div>
   );

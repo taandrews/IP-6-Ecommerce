@@ -15,8 +15,9 @@ import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Stars } from "@/components/ui/Stars";
 import { FileText } from "lucide-react";
-import { products, getProductBySlug, getProductsBySkus } from "@/content/products";
-import { testimonials } from "@/content/testimonials";
+import { products } from "@/content/products";
+import { getCatalog } from "@/lib/data/catalog";
+import { getPublishedReviews } from "@/lib/data/reviews";
 import { resolveCurrency } from "@/lib/currency";
 import { hreflangAlternates } from "@/lib/i18n";
 import { SupplementSections } from "./_sections/SupplementSections";
@@ -30,7 +31,7 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: Params): Metadata {
-  const product = getProductBySlug(params.slug);
+  const product = products.find((p) => p.slug === params.slug);
   if (!product) return { title: "Product not found" };
   return {
     title: product.name,
@@ -45,19 +46,17 @@ export function generateMetadata({ params }: Params): Metadata {
   };
 }
 
-export default function ProductPage({ params }: Params) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductPage({ params }: Params) {
+  const catalog = await getCatalog();
+  const product = catalog.find((p) => p.slug === params.slug);
   if (!product) notFound();
 
   const currency = resolveCurrency();
-  const related = getProductsBySkus(product.relatedSkus);
-  const productTestimonials = testimonials.filter((t) => t.productSku === product.sku);
+  const related = catalog.filter((p) => product.relatedSkus.includes(p.sku));
+  const published = await getPublishedReviews(product.sku);
   const reviewAggregate =
-    productTestimonials.length > 0
-      ? {
-          avg: productTestimonials.reduce((s, t) => s + t.rating, 0) / productTestimonials.length,
-          count: productTestimonials.length,
-        }
+    published.length > 0
+      ? { avg: published.reduce((s, r) => s + r.rating, 0) / published.length, count: published.length }
       : undefined;
 
   return (
@@ -294,16 +293,7 @@ export default function ProductPage({ params }: Params) {
       <div className="container max-w-4xl">
         <Reviews
           sku={product.sku}
-          initial={productTestimonials.map((t) => ({
-            reviewId: t.id,
-            sku: product.sku,
-            authorName: t.authorName,
-            rating: t.rating,
-            title: `${t.rating}-star review`,
-            body: t.body,
-            verifiedPurchase: !!t.verified,
-            createdAt: t.submittedAt,
-          }))}
+          initial={published.map((r) => ({ ...r, rating: r.rating as 1 | 2 | 3 | 4 | 5 }))}
         />
       </div>
 

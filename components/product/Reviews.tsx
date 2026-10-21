@@ -7,9 +7,10 @@ import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 
 export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[] }) {
-  const [reviews, setReviews] = useState<Review[]>(initial);
+  const [reviews] = useState<Review[]>(initial);
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
 
   const avg =
     reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
@@ -29,11 +30,16 @@ export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[]
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (res.ok) {
-        const { review } = await res.json();
-        setReviews((rs) => [review, ...rs]);
+        // Reviews appear after moderation, so nothing is added to the list yet.
+        setNotice({ ok: true, text: "Thank you. Your review will appear once our team has checked it." });
         setOpen(false);
+      } else {
+        setNotice({ ok: false, text: data.error ?? "We couldn't submit your review. Please try again." });
       }
+    } catch {
+      setNotice({ ok: false, text: "We couldn't submit your review. Please try again." });
     } finally {
       setSubmitting(false);
     }
@@ -61,6 +67,11 @@ export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[]
           Write a review
         </button>
       </div>
+      {notice ? (
+        <p role="status" className={notice.ok ? "mb-6 text-sm text-forest-700" : "mb-6 text-sm text-danger"}>
+          {notice.text}
+        </p>
+      ) : null}
 
       {reviews.length > 0 ? (
         <ul className="space-y-6">
@@ -107,7 +118,8 @@ export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[]
             </div>
             <div>
               <label htmlFor="review-name" className="label">Your name</label>
-              <input id="review-name" name="authorName" required className="input" />
+              <input id="review-name" name="authorName" required className="input" maxLength={60} autoComplete="given-name" />
+              <p className="mt-1 text-xs text-ink/60">Shown publicly with your review. A first name or initials is enough.</p>
             </div>
             <div>
               <label htmlFor="review-title" className="label">Title</label>
@@ -118,7 +130,7 @@ export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[]
               <textarea id="review-body" name="body" required className="input min-h-[120px]" maxLength={1000} />
             </div>
             <p className="text-xs text-ink/60">
-              Please describe your personal experience. Reviews containing disease-claim language or references to other websites will be filtered for compliance review.
+              Please describe your personal experience. Every review is checked by our team before it is published, and reviews that make health or disease claims are not published. By submitting you agree we may show your review and the name above on this site.
             </p>
             <div className="flex justify-end gap-2">
               <button type="button" onClick={() => setOpen(false)} className="btn-ghost">

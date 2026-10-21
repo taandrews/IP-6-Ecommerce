@@ -8,6 +8,9 @@ import { Analytics } from "@/components/layout/Analytics";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { PreBookPopup } from "@/components/layout/PreBookPopup";
 import { isEuOrUk } from "@/lib/utils";
+import { StoreSettingsProvider } from "@/components/store/StoreSettings";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
+import { getBannerSettings, getPreorderSettings, bannerIsLive } from "@/lib/data/settings";
 import { hreflangAlternates } from "@/lib/i18n";
 
 const sans = IBM_Plex_Sans({
@@ -45,8 +48,18 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const hdrs = headers();
+  // Set by middleware for /admin. The admin portal gets a bare document: no
+  // storefront navigation, cart, pop-ups or analytics scripts.
+  if (hdrs.get("x-ip6-area") === "admin") {
+    return (
+      <html lang="en" className={sans.variable} style={{ ["--font-display" as string]: "var(--font-body)" }}>
+        <body>{children}</body>
+      </html>
+    );
+  }
+  const [preorder, banner] = await Promise.all([getPreorderSettings(), getBannerSettings()]);
   const country =
     hdrs.get("cloudfront-viewer-country") ??
     hdrs.get("x-vercel-ip-country") ??
@@ -71,12 +84,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to main content
         </a>
-        <Navigation />
-        <main id="main">{children}</main>
-        <CartDrawer />
-        <CookieBanner isEuOrUk={isEuOrUk(country)} />
-        <PreBookPopup />
-        <Analytics />
+        <StoreSettingsProvider preorder={preorder}>
+          {bannerIsLive(banner) ? <AnnouncementBar banner={banner} /> : null}
+          <Navigation />
+          <main id="main">{children}</main>
+          <CartDrawer />
+          <CookieBanner isEuOrUk={isEuOrUk(country)} />
+          <PreBookPopup />
+          <Analytics />
+        </StoreSettingsProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}

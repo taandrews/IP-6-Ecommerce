@@ -255,11 +255,17 @@
   .cta {
     margin-top: 1.8rem;
   }
-  /* Pause sits beside the dots, clear of the FDA bar along the bottom. */
+  /* Keep the headline and button centred in the part of the screen the FDA bar doesn't cover. */
+  .copy {
+    padding-bottom: calc(7vh + 6.5rem);
+  }
+  /* Phones: dots and pause sit at the top of the hero. The full FDA
+     disclaimer bar takes the bottom of the screen and would cover them. */
   .pause {
     left: auto;
-    right: 1rem;
-    bottom: 5rem;
+    right: 0.75rem;
+    top: 0.9rem;
+    bottom: auto;
   }
   .ph img,
   .ph video {
@@ -267,8 +273,8 @@
   }
   .dots {
     left: 50%;
-    top: auto;
-    bottom: 5.4rem;
+    top: 1.35rem;
+    bottom: auto;
     transform: translateX(-50%);
     flex-direction: row;
     gap: 12px;

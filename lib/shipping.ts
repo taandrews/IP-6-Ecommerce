@@ -1,4 +1,5 @@
 import type { CartLine, Currency } from "@/types";
+import type { PreorderSettings } from "@/types/records";
 import { lineTotalCents } from "@/lib/preorder";
 
 /** Free standard shipping for US addresses once the discounted merchandise subtotal reaches this amount. Mirrors the Shopify rate. */
@@ -27,10 +28,14 @@ export interface ShippingRate {
 }
 
 export interface RateRequest {
-  items: CartLine[];
+  items: Array<Pick<CartLine, "sku" | "qty" | "unitPriceCents" | "subscription">>;
   destinationCountry: string;
   destinationPostal: string;
   currency: Currency;
+  /** Live pre-order settings; defaults apply when omitted. */
+  preorder?: PreorderSettings;
+  /** Merchandise total after all discounts, when the caller already knows it. */
+  merchandiseCents?: number;
 }
 
 const DOMESTIC = ["US"];
@@ -51,7 +56,7 @@ export function calculateRates(req: RateRequest): ShippingRate[] {
         ? 1495
         : 2495;
   const perGram = DOMESTIC.includes(req.destinationCountry.toUpperCase()) ? 0.8 : 1.6;
-  const merchandiseCents = req.items.reduce((s, i) => s + lineTotalCents(i), 0);
+  const merchandiseCents = req.merchandiseCents ?? req.items.reduce((s, i) => s + lineTotalCents(i, req.preorder), 0);
   const freeStandard = qualifiesForFreeShipping(merchandiseCents, req.currency, req.destinationCountry);
   const standard = freeStandard ? 0 : Math.round(base + weight * perGram);
   const expedited = Math.round((freeStandard ? base + weight * perGram : standard) * 1.6);

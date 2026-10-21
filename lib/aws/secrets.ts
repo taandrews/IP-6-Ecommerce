@@ -43,11 +43,15 @@ async function fetchSecret(secretId: string): Promise<Record<string, string>> {
   return parsed;
 }
 
+/** APP_ENV picks the secret set explicitly ("prod" or "staging"); production builds default to prod. */
 function secretName(service: "stripe" | "sanity" | "algolia" | "app") {
+  const explicit = process.env.APP_ENV;
   const env =
-    process.env.NEXT_PUBLIC_SITE_URL?.includes("staging") || process.env.NODE_ENV !== "production"
-      ? "staging"
-      : "prod";
+    explicit === "prod" || explicit === "staging"
+      ? explicit
+      : process.env.NODE_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL?.includes("staging")
+        ? "prod"
+        : "staging";
   return `ip6/${env}/${service}`;
 }
 

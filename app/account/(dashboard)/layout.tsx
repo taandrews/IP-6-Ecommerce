@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { User, Package, MapPin, CreditCard, RefreshCw, LogOut } from "lucide-react";
+import { User, Package, MapPin, CreditCard, RefreshCw, LogOut, ShieldCheck } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 
 const LINKS = [
@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/account/subscriptions", label: "Subscriptions", icon: RefreshCw },
   { href: "/account/addresses", label: "Addresses", icon: MapPin },
   { href: "/account/payment-methods", label: "Payment methods", icon: CreditCard },
+  { href: "/account/privacy", label: "Privacy and data", icon: ShieldCheck },
 ];
 
 export default function AccountDashboardLayout({ children }: { children: React.ReactNode }) {

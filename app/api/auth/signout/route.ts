@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
-import { clearSessionCookies } from "@/lib/auth/session";
+import { clearAuthCookies, getAccessToken } from "@/lib/auth/session";
+import { globalSignOut } from "@/lib/aws/cognito";
 
-export async function POST() {
-  clearSessionCookies();
-  return NextResponse.redirect(new URL("/", process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com"));
+export const runtime = "nodejs";
+
+/** Signs out here and revokes the refresh token so other devices sign out too. */
+export async function POST(req: Request) {
+  const access = getAccessToken();
+  if (access) await globalSignOut(access).catch(() => undefined);
+  clearAuthCookies();
+  return NextResponse.redirect(new URL("/", req.url), { status: 303 });
 }

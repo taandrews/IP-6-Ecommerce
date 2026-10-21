@@ -6,7 +6,8 @@ import type { Product, Currency } from "@/types";
 import { formatPrice, cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartStore";
 import { Badge } from "@/components/ui/Badge";
-import { PREORDER, preorderUnitCents } from "@/lib/preorder";
+import { preorderUnitCents } from "@/lib/preorder";
+import { usePreorder } from "@/components/store/StoreSettings";
 
 type Mode = "one-time" | "subscribe";
 
@@ -26,13 +27,14 @@ export function PurchasePanel({
     [product.variants, variantId],
   );
   const { add } = useCart();
+  const PREORDER = usePreorder();
 
   if (!variant) return null;
 
   const unit = variant.priceCents[currency];
   const sub = product.subscriptionCycles.find((c) => c.days === cycleDays);
   const subDiscount = sub?.discountPct ?? 0;
-  const effective = mode === "subscribe" ? Math.round(unit * (1 - subDiscount / 100)) : preorderUnitCents(unit);
+  const effective = mode === "subscribe" ? Math.round(unit * (1 - subDiscount / 100)) : preorderUnitCents(unit, PREORDER);
   const showPreorder = PREORDER.active && mode === "one-time";
 
   function onAdd() {
@@ -113,7 +115,7 @@ export function PurchasePanel({
             title={PREORDER.active ? "Pre-order, one-time" : "One-time purchase"}
             subtitle={
               PREORDER.active
-                ? `Save ${PREORDER.discountPct}% · ${formatPrice(preorderUnitCents(unit), currency)}`
+                ? `Save ${PREORDER.discountPct}% · ${formatPrice(preorderUnitCents(unit, PREORDER), currency)}`
                 : formatPrice(unit, currency)
             }
             badge={PREORDER.active ? `-${PREORDER.discountPct}%` : undefined}
@@ -177,16 +179,16 @@ export function PurchasePanel({
           </button>
           <span className="px-4 text-sm min-w-[32px] text-center">{qty}</span>
           <button
-            onClick={() => setQty((q) => q + 1)}
+            onClick={() => setQty((q) => Math.min(20, q + 1))}
             aria-label="Increase quantity"
             className="p-2.5 hover:bg-ivory-200"
           >
             <Plus className="size-4" />
           </button>
         </div>
-        <button onClick={onAdd} className="btn-primary flex-1">
+        <button onClick={onAdd} className="btn-primary flex-1" disabled={!variant.inStock}>
           <ShoppingBag className="size-4" />
-          {mode === "subscribe" ? "Subscribe now" : PREORDER.active ? "Pre-order now" : "Add to cart"}
+          {!variant.inStock ? "Out of stock" : mode === "subscribe" ? "Subscribe now" : PREORDER.active ? "Pre-order now" : "Add to cart"}
         </button>
       </div>
 

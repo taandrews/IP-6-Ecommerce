@@ -168,6 +168,7 @@ export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
                   <img src={s.src} alt={s.alt} style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
                 </picture>
               ) : (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={s.src} alt={s.alt} style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
               )}
             </div>

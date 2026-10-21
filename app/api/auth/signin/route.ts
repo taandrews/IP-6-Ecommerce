@@ -1,35 +1,30 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { signIn } from "@/lib/aws/cognito";
-import { setSessionCookies } from "@/lib/auth/session";
-import jwt from "jsonwebtoken";
+import { authErrorMessage, completeAuth } from "@/lib/auth/signin";
+import { safeNextPath } from "@/lib/auth/redirect";
+
+export const runtime = "nodejs";
 
 const Body = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: z.string().trim().email().max(254),
+  password: z.string().min(1).max(256),
+  next: z.string().max(512).optional(),
 });
 
 export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
+  if (!parsed.success) return NextResponse.json({ error: "Enter your email and password." }, { status: 400 });
+  const { email, password } = parsed.data;
+  const next = safeNextPath(parsed.data.next);
   try {
-    const result = await signIn(parsed.data.email, parsed.data.password);
-    const idToken = result.AuthenticationResult?.IdToken;
-    if (!idToken) return NextResponse.json({ error: "Authentication failed" }, { status: 401 });
-    const decoded = jwt.decode(idToken) as Record<string, unknown> | null;
-    setSessionCookies(idToken, {
-      sub: String(decoded?.sub ?? ""),
-      email: String(decoded?.email ?? parsed.data.email),
-      name: typeof decoded?.name === "string" ? decoded.name : undefined,
-      groups: Array.isArray(decoded?.["cognito:groups"])
-        ? (decoded["cognito:groups"] as string[])
-        : [],
-    });
-    return NextResponse.json({ ok: true });
-  } catch (err: unknown) {
-    const message = (err as { message?: string })?.message ?? "Sign in failed";
-    return NextResponse.json({ error: message }, { status: 401 });
+    const res = await signIn(email, password, "customer");
+    const out = await completeAuth("customer", res, { username: email, email, next });
+    if (out.status === "error") return NextResponse.json({ error: out.error }, { status: out.httpStatus });
+    if (out.status === "challenge") return NextResponse.json({ challenge: out.challenge });
+    return NextResponse.json({ ok: true, next: out.next });
+  } catch (err) {
+    const { error, httpStatus } = authErrorMessage(err);
+    return NextResponse.json({ error }, { status: httpStatus });
   }
 }

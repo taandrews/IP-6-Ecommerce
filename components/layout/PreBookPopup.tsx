@@ -192,7 +192,7 @@ export function PreBookPopup() {
     fetch("/api/newsletter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.trim() }),
+      body: JSON.stringify({ email: email.trim(), consent: true, source: "prebook_popup" }),
     }).catch(() => {});
     setStep("q2");
   };

@@ -2,42 +2,51 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import {
+  OPEN_CONSENT_EVENT,
+  gpcEnabled,
+  parseConsent,
+  readConsentCookie,
+  writeConsentCookie,
+  type Consent,
+} from "@/lib/consent";
 
-type ConsentState = "unset" | "all" | "essential" | "custom";
-
-function getCookie(name: string) {
-  if (typeof document === "undefined") return undefined;
-  const m = document.cookie.match(new RegExp(`(^|; )${name}=([^;]+)`));
-  return m?.[2];
-}
-function setCookie(name: string, value: string, days = 365) {
-  document.cookie = `${name}=${value};path=/;max-age=${days * 86400};samesite=lax`;
-}
-
+/**
+ * EU/UK visitors choose before any analytics or marketing cookie is set
+ * (opt-in). Elsewhere the US opt-out model applies: analytics and marketing
+ * run until the visitor opts out through "Your privacy choices" in the
+ * footer, and a Global Privacy Control signal always switches marketing off.
+ */
 export function CookieBanner({ isEuOrUk = false }: { isEuOrUk?: boolean }) {
   const [visible, setVisible] = useState(false);
   const [customOpen, setCustomOpen] = useState(false);
-  const [analytics, setAnalytics] = useState(true);
-  const [marketing, setMarketing] = useState(true);
+  const [analytics, setAnalytics] = useState(false);
+  const [marketing, setMarketing] = useState(false);
+  const gpc = typeof window !== "undefined" && gpcEnabled();
 
   useEffect(() => {
-    const c = getCookie("ip6_consent");
-    if (!c && isEuOrUk) setVisible(true);
-    if (!c && !isEuOrUk) {
-      // In non-EU/UK markets, default-accept with a clear opt-out affordance.
-      setCookie("ip6_consent", "all");
+    const current = parseConsent(readConsentCookie());
+    if (!current) {
+      if (isEuOrUk) setVisible(true);
+      else writeConsentCookie({ analytics: true, marketing: !gpcEnabled() });
     }
+    const open = () => {
+      const c = parseConsent(readConsentCookie());
+      setAnalytics(c?.analytics ?? false);
+      setMarketing((c?.marketing ?? false) && !gpcEnabled());
+      setCustomOpen(true);
+      setVisible(true);
+    };
+    window.addEventListener(OPEN_CONSENT_EVENT, open);
+    return () => window.removeEventListener(OPEN_CONSENT_EVENT, open);
   }, [isEuOrUk]);
 
   if (!visible) return null;
 
-  function accept(state: ConsentState, details?: { analytics: boolean; marketing: boolean }) {
-    const payload =
-      state === "custom"
-        ? `custom:${details?.analytics ? 1 : 0}:${details?.marketing ? 1 : 0}`
-        : state;
-    setCookie("ip6_consent", payload);
+  function save(c: Consent) {
+    writeConsentCookie({ analytics: c.analytics, marketing: c.marketing && !gpcEnabled() });
     setVisible(false);
+    setCustomOpen(false);
   }
 
   return (
@@ -48,8 +57,8 @@ export function CookieBanner({ isEuOrUk = false }: { isEuOrUk?: boolean }) {
     >
       <h2 className="font-display text-lg text-forest-800 mb-2">Cookie preferences</h2>
       <p className="text-sm text-ink/80 mb-4">
-        We use cookies to run this site, measure performance, and personalize your experience. You
-        can customize your choices or read more in our{" "}
+        Essential cookies keep the site and your cart working. With your choice we also use analytics (Google Analytics) to understand visits and
+        marketing (Meta Pixel) to measure ads. Read more in our{" "}
         <Link href="/legal/cookie-policy" className="underline text-forest-700">
           Cookie Policy
         </Link>
@@ -60,34 +69,28 @@ export function CookieBanner({ isEuOrUk = false }: { isEuOrUk?: boolean }) {
         <div className="space-y-3 mb-4">
           <CheckRow label="Essential (always on)" value={true} disabled />
           <CheckRow label="Analytics" value={analytics} onChange={setAnalytics} />
-          <CheckRow label="Marketing" value={marketing} onChange={setMarketing} />
+          <CheckRow label="Marketing and ad measurement" value={marketing && !gpc} onChange={setMarketing} disabled={gpc} />
+          {gpc ? <p className="text-xs text-ink/60">Your browser's Global Privacy Control signal is on, so marketing stays off.</p> : null}
         </div>
       ) : null}
 
       <div className="flex flex-wrap gap-2 justify-end">
-        <button
-          onClick={() => accept("essential")}
-          className="btn-ghost text-sm"
-        >
+        <button onClick={() => save({ analytics: false, marketing: false })} className="btn-ghost text-sm">
           Reject non-essential
         </button>
-        <button
-          onClick={() => setCustomOpen((v) => !v)}
-          className="btn-secondary text-sm"
-        >
-          {customOpen ? "Save selection" : "Customize"}
-        </button>
         {customOpen ? (
-          <button
-            onClick={() => accept("custom", { analytics, marketing })}
-            className="btn-primary text-sm"
-          >
+          <button onClick={() => save({ analytics, marketing })} className="btn-primary text-sm">
             Save selection
           </button>
         ) : (
-          <button onClick={() => accept("all")} className="btn-primary text-sm">
-            Accept all
-          </button>
+          <>
+            <button onClick={() => setCustomOpen(true)} className="btn-secondary text-sm">
+              Customize
+            </button>
+            <button onClick={() => save({ analytics: true, marketing: true })} className="btn-primary text-sm">
+              Accept all
+            </button>
+          </>
         )}
       </div>
     </div>

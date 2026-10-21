@@ -8,18 +8,21 @@ import { useCart } from "./CartStore";
 import { Drawer } from "@/components/ui/Drawer";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
-import { PREORDER, isPreorderLine, lineTotalCents } from "@/lib/preorder";
+import { isPreorderLine, lineTotalCents } from "@/lib/preorder";
+import { usePreorder } from "@/components/store/StoreSettings";
 import { FREE_SHIPPING_THRESHOLD_CENTS, qualifiesForFreeShipping } from "@/lib/shipping";
 
 export function CartDrawer() {
-  const { drawerOpen, closeDrawer, lines, remove, setQty, subtotalCents } = useCart();
+  const { drawerOpen, closeDrawer, lines, remove, setQty } = useCart();
+  const PREORDER = usePreorder();
+  const subtotalCents = lines.reduce((s, l) => s + lineTotalCents(l, PREORDER), 0);
   // Load the saved cart only after hydration (see skipHydration in CartStore).
   useEffect(() => {
     void useCart.persist.rehydrate();
   }, []);
   const currency = lines[0]?.currency ?? "USD";
   const hasSubscription = lines.some((l) => l.subscription);
-  const hasPreorder = lines.some(isPreorderLine);
+  const hasPreorder = lines.some((l) => isPreorderLine(l, PREORDER));
   const freeShipping = qualifiesForFreeShipping(subtotalCents, currency);
   const toFreeShipping = FREE_SHIPPING_THRESHOLD_CENTS - subtotalCents;
 
@@ -58,7 +61,7 @@ export function CartDrawer() {
                         <Badge variant="gold" className="mt-1.5">
                           <RefreshCw className="size-3" /> Every {line.subscription.cycleDays} days · Save {line.subscription.discountPct}%
                         </Badge>
-                      ) : isPreorderLine(line) ? (
+                      ) : isPreorderLine(line, PREORDER) ? (
                         <Badge variant="gold" className="mt-1.5">
                           {PREORDER.label} · {PREORDER.discountPct}% off
                         </Badge>
@@ -95,12 +98,12 @@ export function CartDrawer() {
                       </button>
                     </div>
                     <span className="font-medium text-sm">
-                      {isPreorderLine(line) ? (
+                      {isPreorderLine(line, PREORDER) ? (
                         <s className="mr-2 font-normal text-ink/50">
                           {formatPrice(line.unitPriceCents * line.qty, line.currency)}
                         </s>
                       ) : null}
-                      {formatPrice(lineTotalCents(line), line.currency)}
+                      {formatPrice(lineTotalCents(line, PREORDER), line.currency)}
                     </span>
                   </div>
                 </div>

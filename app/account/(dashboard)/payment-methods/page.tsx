@@ -15,7 +15,7 @@ export default function PaymentMethodsPage() {
           <Lock className="size-3.5" /> Stored securely by Stripe. Never on our servers.
         </div>
         <p className="text-ink/70">
-          You don't have any saved payment methods. Add one at checkout or through Stripe's hosted customer portal.
+          We only keep a card on file (with Stripe) when you have a subscription, so renewals can be charged. To change that card, open the billing portal.
         </p>
         <form action="/api/stripe/portal" method="post">
           <button type="submit" className="btn-primary">Open billing portal</button>

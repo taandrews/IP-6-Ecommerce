@@ -14,6 +14,8 @@ import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as ses from "aws-cdk-lib/aws-ses";
 import * as secrets from "aws-cdk-lib/aws-secretsmanager";
+import * as kms from "aws-cdk-lib/aws-kms";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export interface Ip6StackProps extends StackProps {
   environment: "staging" | "prod";
@@ -29,15 +31,29 @@ export class Ip6Stack extends Stack {
     const removal = isProd ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY;
     const billing = dynamodb.BillingMode.PAY_PER_REQUEST;
 
+    // Customer-managed key for every table that holds personal or order data.
+    // Rotated yearly; the app role below is the only principal granted use.
+    const dataKey = new kms.Key(this, "DataKey", {
+      alias: `alias/ip6-${props.environment}-data`,
+      description: "Encrypts IP6 Original DynamoDB tables (orders, customers, audit log)",
+      enableKeyRotation: true,
+      removalPolicy: isProd ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+    });
+    const tableDefaults = {
+      billingMode: billing,
+      removalPolicy: removal,
+      encryption: dynamodb.TableEncryption.CUSTOMER_MANAGED,
+      encryptionKey: dataKey,
+      pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: isProd },
+    } as const;
+
     // -----------------------
     // DynamoDB tables
     // -----------------------
     const users = new dynamodb.Table(this, "Users", {
       tableName: `${props.tablePrefix}Users`,
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
-      pointInTimeRecovery: isProd,
+      ...tableDefaults,
     });
     users.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -47,9 +63,9 @@ export class Ip6Stack extends Stack {
     const orders = new dynamodb.Table(this, "Orders", {
       tableName: `${props.tablePrefix}Orders`,
       partitionKey: { name: "orderId", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
-      pointInTimeRecovery: isProd,
+      ...tableDefaults,
+      // Unpaid checkouts carry expiresAt and are removed after 7 days; paid orders never expire.
+      timeToLiveAttribute: "expiresAt",
     });
     orders.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -61,13 +77,18 @@ export class Ip6Stack extends Stack {
       partitionKey: { name: "status", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "createdAt", type: dynamodb.AttributeType.STRING },
     });
+    // Lookup by lower-cased email (customer history, account linking, erasure).
+    orders.addGlobalSecondaryIndex({
+      indexName: "GSI3",
+      partitionKey: { name: "emailKey", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "createdAt", type: dynamodb.AttributeType.STRING },
+    });
 
     const orderItems = new dynamodb.Table(this, "OrderItems", {
       tableName: `${props.tablePrefix}OrderItems`,
       partitionKey: { name: "orderId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "sku", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
+      ...tableDefaults,
     });
     orderItems.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -78,8 +99,7 @@ export class Ip6Stack extends Stack {
     const productsTable = new dynamodb.Table(this, "Products", {
       tableName: `${props.tablePrefix}Products`,
       partitionKey: { name: "sku", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
+      ...tableDefaults,
     });
     productsTable.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -89,8 +109,7 @@ export class Ip6Stack extends Stack {
     const inventory = new dynamodb.Table(this, "Inventory", {
       tableName: `${props.tablePrefix}Inventory`,
       partitionKey: { name: "sku", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
+      ...tableDefaults,
     });
     inventory.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -100,9 +119,7 @@ export class Ip6Stack extends Stack {
     const subs = new dynamodb.Table(this, "Subscriptions", {
       tableName: `${props.tablePrefix}Subscriptions`,
       partitionKey: { name: "subscriptionId", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
-      pointInTimeRecovery: isProd,
+      ...tableDefaults,
     });
     subs.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -114,25 +131,33 @@ export class Ip6Stack extends Stack {
       partitionKey: { name: "status", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "nextChargeDate", type: dynamodb.AttributeType.STRING },
     });
+    subs.addGlobalSecondaryIndex({
+      indexName: "GSI3",
+      partitionKey: { name: "emailKey", type: dynamodb.AttributeType.STRING },
+    });
 
     const reviews = new dynamodb.Table(this, "Reviews", {
       tableName: `${props.tablePrefix}Reviews`,
       partitionKey: { name: "sku", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "reviewId", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
+      ...tableDefaults,
     });
     reviews.addGlobalSecondaryIndex({
       indexName: "GSI1",
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "createdAt", type: dynamodb.AttributeType.STRING },
     });
+    // Moderation queue: pending / published / rejected, oldest first.
+    reviews.addGlobalSecondaryIndex({
+      indexName: "GSI2",
+      partitionKey: { name: "status", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "createdAt", type: dynamodb.AttributeType.STRING },
+    });
 
     const discounts = new dynamodb.Table(this, "DiscountCodes", {
       tableName: `${props.tablePrefix}DiscountCodes`,
       partitionKey: { name: "code", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
+      ...tableDefaults,
     });
     discounts.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -140,16 +165,58 @@ export class Ip6Stack extends Stack {
       sortKey: { name: "expiresAt", type: dynamodb.AttributeType.STRING },
     });
 
-    new dynamodb.Table(this, "AnalyticsDaily", {
-      tableName: `${props.tablePrefix}AnalyticsDaily`,
-      partitionKey: { name: "date", type: dynamodb.AttributeType.STRING },
-      billingMode: billing,
-      removalPolicy: removal,
+    // One counter row per customer per code (customer = SHA-256 of the email).
+    const discountRedemptions = new dynamodb.Table(this, "DiscountRedemptions", {
+      tableName: `${props.tablePrefix}DiscountRedemptions`,
+      partitionKey: { name: "code", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "customer", type: dynamodb.AttributeType.STRING },
+      ...tableDefaults,
     });
 
+    const analytics = new dynamodb.Table(this, "AnalyticsDaily", {
+      tableName: `${props.tablePrefix}AnalyticsDaily`,
+      partitionKey: { name: "date", type: dynamodb.AttributeType.STRING },
+      ...tableDefaults,
+    });
+
+    // Store settings edited in the admin portal (pre-order window, site banner).
+    const settings = new dynamodb.Table(this, "Settings", {
+      tableName: `${props.tablePrefix}Settings`,
+      partitionKey: { name: "key", type: dynamodb.AttributeType.STRING },
+      ...tableDefaults,
+    });
+
+    // Who did what in the admin portal, including views and exports of customer data. Kept 2 years.
+    const auditLog = new dynamodb.Table(this, "AuditLog", {
+      tableName: `${props.tablePrefix}AuditLog`,
+      partitionKey: { name: "month", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "sk", type: dynamodb.AttributeType.STRING },
+      ...tableDefaults,
+      pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: true },
+      timeToLiveAttribute: "expiresAt",
+    });
+
+    // Data access / deletion requests. Unverified ones expire after 48 hours.
+    const privacyRequests = new dynamodb.Table(this, "PrivacyRequests", {
+      tableName: `${props.tablePrefix}PrivacyRequests`,
+      partitionKey: { name: "requestId", type: dynamodb.AttributeType.STRING },
+      ...tableDefaults,
+      timeToLiveAttribute: "expiresAt",
+    });
+    privacyRequests.addGlobalSecondaryIndex({
+      indexName: "GSI1",
+      partitionKey: { name: "status", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "createdAt", type: dynamodb.AttributeType.STRING },
+    });
+
+    const appTables = [users, orders, orderItems, productsTable, inventory, subs, reviews, discounts, discountRedemptions, analytics, settings, auditLog, privacyRequests];
+
     // -----------------------
-    // Cognito user pool
+    // Cognito: two separate user pools
     // -----------------------
+    // Customers sign themselves up. Staff are created by an owner only, must
+    // use an authenticator app, and live in a different pool, so a customer
+    // token can never be accepted by the admin portal.
     const userPool = new cognito.UserPool(this, "UserPool", {
       userPoolName: `ip6-${props.environment}`,
       signInAliases: { email: true },
@@ -168,21 +235,70 @@ export class Ip6Stack extends Stack {
         fullname: { required: true, mutable: true },
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+      deletionProtection: isProd,
       removalPolicy: removal,
     });
 
     const userPoolClient = userPool.addClient("WebClient", {
       authFlows: { userPassword: true, userSrp: true },
       preventUserExistenceErrors: true,
+      enableTokenRevocation: true,
       accessTokenValidity: Duration.hours(1),
       idTokenValidity: Duration.hours(1),
       refreshTokenValidity: Duration.days(30),
     });
 
-    new cognito.CfnUserPoolGroup(this, "AdminGroup", {
-      groupName: "admin",
-      userPoolId: userPool.userPoolId,
-      description: "Administrative users with access to /admin",
+    const staffPool = new cognito.UserPool(this, "StaffUserPool", {
+      userPoolName: `ip6-${props.environment}-staff`,
+      signInAliases: { email: true },
+      selfSignUpEnabled: false,
+      mfa: cognito.Mfa.REQUIRED,
+      mfaSecondFactor: { otp: true, sms: false },
+      passwordPolicy: {
+        minLength: 12,
+        requireDigits: true,
+        requireLowercase: true,
+        requireUppercase: true,
+        requireSymbols: true,
+        tempPasswordValidity: Duration.days(1),
+      },
+      standardAttributes: {
+        email: { required: true, mutable: false },
+        fullname: { required: true, mutable: true },
+      },
+      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
+      userInvitation: {
+        emailSubject: "Your IP6 Original admin invitation",
+        emailBody:
+          "You've been given access to the IP6 Original admin portal. Sign in at https://" +
+          props.domainName +
+          "/admin/login with username {username} and temporary password {####}. It expires in 24 hours. You'll be asked to set a new password and an authenticator app.",
+      },
+      deletionProtection: isProd,
+      removalPolicy: removal,
+    });
+
+    const staffPoolClient = staffPool.addClient("StaffWebClient", {
+      authFlows: { userPassword: true },
+      preventUserExistenceErrors: true,
+      enableTokenRevocation: true,
+      accessTokenValidity: Duration.hours(1),
+      idTokenValidity: Duration.hours(1),
+      refreshTokenValidity: Duration.hours(12),
+    });
+
+    const staffGroups = [
+      { name: "owner", description: "Full admin access, including refunds, exports, erasure and staff" },
+      { name: "staff", description: "Fulfilment, stock, subscriptions, reviews and banner" },
+      { name: "viewer", description: "Read-only; customer details masked" },
+    ];
+    staffGroups.forEach((g, i) => {
+      new cognito.CfnUserPoolGroup(this, `StaffGroup${i}`, {
+        groupName: g.name,
+        userPoolId: staffPool.userPoolId,
+        description: g.description,
+        precedence: i,
+      });
     });
 
     // -----------------------
@@ -220,7 +336,7 @@ export class Ip6Stack extends Stack {
     // -----------------------
     // SES: identity + templates
     // -----------------------
-    new ses.EmailIdentity(this, "SesIdentity", {
+    const sesIdentity = new ses.EmailIdentity(this, "SesIdentity", {
       identity: ses.Identity.domain(props.domainName),
     });
 
@@ -308,6 +424,44 @@ export class Ip6Stack extends Stack {
     });
 
     // -----------------------
+    // App runtime role (attach to the Amplify app as its SSR compute role)
+    // -----------------------
+    // Least privilege: data in these tables only, the two user pools only for
+    // the admin calls the app makes, email from the site's own domain only,
+    // and read access to the app's secrets.
+    const appRole = new iam.Role(this, "AppComputeRole", {
+      roleName: `ip6-${props.environment}-app`,
+      assumedBy: new iam.ServicePrincipal("amplify.amazonaws.com"),
+      description: "Runtime permissions for the IP6 Original Next.js app on Amplify",
+    });
+    appTables.forEach((t) => t.grantReadWriteData(appRole));
+    appRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "cognito-idp:AdminGetUser",
+          "cognito-idp:AdminCreateUser",
+          "cognito-idp:AdminDeleteUser",
+          "cognito-idp:AdminDisableUser",
+          "cognito-idp:AdminEnableUser",
+          "cognito-idp:AdminAddUserToGroup",
+          "cognito-idp:AdminRemoveUserFromGroup",
+          "cognito-idp:AdminListGroupsForUser",
+          "cognito-idp:AdminUserGlobalSignOut",
+          "cognito-idp:ListUsers",
+          "cognito-idp:ListUsersInGroup",
+        ],
+        resources: [userPool.userPoolArn, staffPool.userPoolArn],
+      }),
+    );
+    appRole.addToPolicy(
+      new iam.PolicyStatement({
+        actions: ["ses:SendEmail", "ses:SendRawEmail"],
+        resources: [`arn:aws:ses:${this.region}:${this.account}:identity/${sesIdentity.emailIdentityName}`],
+      }),
+    );
+    [stripeSecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
+
+    // -----------------------
     // Outputs
     // -----------------------
     new CfnOutput(this, "UserPoolId", { value: userPool.userPoolId });
@@ -319,5 +473,9 @@ export class Ip6Stack extends Stack {
     new CfnOutput(this, "SanitySecretArn", { value: sanitySecret.secretArn });
     new CfnOutput(this, "AlgoliaSecretArn", { value: algoliaSecret.secretArn });
     new CfnOutput(this, "AppSecretArn", { value: appSecret.secretArn });
+    new CfnOutput(this, "StaffUserPoolId", { value: staffPool.userPoolId });
+    new CfnOutput(this, "StaffUserPoolClientId", { value: staffPoolClient.userPoolClientId });
+    new CfnOutput(this, "DataKeyArn", { value: dataKey.keyArn });
+    new CfnOutput(this, "AppComputeRoleArn", { value: appRole.roleArn });
   }
 }

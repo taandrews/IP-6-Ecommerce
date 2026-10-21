@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
+import { PrivacyChoicesButton } from "./PrivacyChoicesButton";
 
 const GROUPS = [
   {
@@ -101,6 +102,9 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
                 </Link>
               </li>
             ))}
+            <li>
+              <PrivacyChoicesButton className="transition-colors hover:text-gold-300" />
+            </li>
           </ul>
           <span>Made in USA · Free US shipping over $75 · Ships to 27 international countries</span>
         </div>

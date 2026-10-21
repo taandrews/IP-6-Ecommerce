@@ -1,40 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { ArrowLeft, Check, Lock } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import { useCart } from "@/components/cart/CartStore";
+import { usePreorder } from "@/components/store/StoreSettings";
 import { getStripe } from "@/lib/stripe/client";
 import { formatPrice, cn } from "@/lib/utils";
-import type { Address, CartLine } from "@/types";
+import type { Address } from "@/types";
 import { ShippingStep } from "./ShippingStep";
-import { MethodStep } from "./MethodStep";
+import { MethodStep, requestedLines } from "./MethodStep";
 import { PaymentStep } from "./PaymentStep";
-import { ReviewStep } from "./ReviewStep";
 import { ConfirmationStep } from "./ConfirmationStep";
-import type { ShippingRate } from "@/lib/shipping";
-import { PREORDER, isPreorderLine, lineTotalCents } from "@/lib/preorder";
+import { isPreorderLine, lineTotalCents } from "@/lib/preorder";
+import type { ClientQuote } from "./types";
 
-type Step = "shipping" | "method" | "payment" | "review" | "confirmation";
+type Step = "shipping" | "method" | "payment" | "confirmation";
+const ORDER: Step[] = ["shipping", "method", "payment", "confirmation"];
 
-const ORDER: Step[] = ["shipping", "method", "payment", "review", "confirmation"];
-
-export function CheckoutFlow() {
-  const { lines, subtotalCents, clear } = useCart();
-  const [step, setStep] = useState<Step>("shipping");
+export function CheckoutFlow({ signedIn }: { signedIn: boolean }) {
+  const params = useSearchParams();
+  const { lines, clear } = useCart();
+  const preorder = usePreorder();
+  const returning = params.get("step") === "confirmation" && params.get("redirect_status") === "succeeded";
+  const [step, setStep] = useState<Step>(returning ? "confirmation" : "shipping");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState<Address | null>(null);
-  const [rate, setRate] = useState<ShippingRate | null>(null);
+  const [quote, setQuote] = useState<ClientQuote | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(returning ? params.get("order") : null);
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
+
+  // Back from a bank redirect (3-D Secure) with a successful payment.
+  useEffect(() => {
+    if (returning) clear();
+  }, [returning, clear]);
 
   const currency = lines[0]?.currency ?? "USD";
-  const shippingCents = rate?.amountCents ?? 0;
-  const estimatedTaxCents = Math.round(subtotalCents * 0.075);
-  const totalCents = subtotalCents + shippingCents + estimatedTaxCents;
+  const estimateCents = lines.reduce((s, l) => s + lineTotalCents(l, preorder), 0);
   const stepIndex = ORDER.indexOf(step);
+  const onQuote = useCallback((q: ClientQuote | null) => setQuote(q), []);
 
   if (lines.length === 0 && step !== "confirmation") {
     return (
@@ -46,6 +55,39 @@ export function CheckoutFlow() {
     );
   }
 
+  async function startPayment(rateId: string, discountCode: string | null) {
+    if (!address) return;
+    setStarting(true);
+    setStartError(null);
+    try {
+      const res = await fetch("/api/checkout/intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          address,
+          items: requestedLines(lines),
+          currency,
+          shippingRateId: rateId,
+          ...(discountCode ? { discountCode } : {}),
+        }),
+      });
+      const data = (await res.json()) as { clientSecret?: string; orderId?: string; quote?: ClientQuote; error?: string };
+      if (!res.ok || !data.clientSecret || !data.orderId || !data.quote) {
+        setStartError(data.error ?? "We couldn't start payment. Please try again.");
+        return;
+      }
+      setClientSecret(data.clientSecret);
+      setOrderId(data.orderId);
+      setQuote(data.quote);
+      setStep("payment");
+    } catch {
+      setStartError("We couldn't start payment. Please try again.");
+    } finally {
+      setStarting(false);
+    }
+  }
+
   return (
     <div className="container py-10">
       <Link href="/shop" className="inline-flex items-center gap-1 text-sm text-ink/70 hover:text-forest-700 mb-8">
@@ -54,8 +96,7 @@ export function CheckoutFlow() {
       <div className="grid lg:grid-cols-[1fr_420px] gap-10">
         <div>
           <Stepper current={stepIndex} />
-
-          <div className="mt-8">
+          <div className="mt-8 space-y-4">
             {step === "shipping" ? (
               <ShippingStep
                 email={email}
@@ -68,37 +109,21 @@ export function CheckoutFlow() {
               />
             ) : null}
             {step === "method" && address ? (
-              <MethodStep
-                address={address}
-                items={lines}
-                currency={currency}
-                onBack={() => setStep("shipping")}
-                onContinue={async (r) => {
-                  setRate(r);
-                  // Create PaymentIntent
-                  try {
-                    const res = await fetch("/api/checkout/intent", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        email,
-                        address,
-                        items: lines,
-                        shipping: r,
-                        currency,
-                      }),
-                    });
-                    const data = await res.json();
-                    setClientSecret(data.clientSecret);
-                    setOrderId(data.orderId);
-                    setStep("payment");
-                  } catch {
-                    /* noop - user can retry */
-                  }
-                }}
-              />
+              <>
+                <MethodStep
+                  email={email}
+                  address={address}
+                  items={lines}
+                  currency={currency}
+                  onQuote={onQuote}
+                  busy={starting}
+                  onBack={() => setStep("shipping")}
+                  onContinue={startPayment}
+                />
+                {startError ? <p className="rounded-md bg-red-50 border border-red-200 text-danger text-sm p-3" role="alert">{startError}</p> : null}
+              </>
             ) : null}
-            {step === "payment" && clientSecret ? (
+            {step === "payment" && clientSecret && quote && orderId ? (
               <Elements
                 stripe={getStripe()}
                 options={{
@@ -115,84 +140,85 @@ export function CheckoutFlow() {
                 }}
               >
                 <PaymentStep
-                  onBack={() => setStep("method")}
-                  onContinue={() => setStep("review")}
+                  orderId={orderId}
+                  quote={quote}
+                  onBack={() => {
+                    setClientSecret(null);
+                    setStep("method");
+                  }}
+                  onPaid={() => {
+                    clear();
+                    setStep("confirmation");
+                  }}
                 />
               </Elements>
             ) : null}
-            {step === "review" && address && rate ? (
-              <ReviewStep
-                email={email}
-                address={address}
-                items={lines}
-                rate={rate}
-                currency={currency}
-                subtotalCents={subtotalCents}
-                shippingCents={shippingCents}
-                taxCents={estimatedTaxCents}
-                totalCents={totalCents}
-                onBack={() => setStep("payment")}
-                onPlaceOrder={() => {
-                  clear();
-                  setStep("confirmation");
-                }}
-              />
-            ) : null}
-            {step === "confirmation" ? (
-              <ConfirmationStep email={email} orderId={orderId} />
-            ) : null}
+            {step === "confirmation" ? <ConfirmationStep email={email} orderId={orderId} signedIn={signedIn} /> : null}
           </div>
         </div>
 
-        <aside className="lg:sticky lg:top-24 h-fit card p-6">
-          <h2 className="font-display text-lg text-forest-800 mb-4">Order summary</h2>
-          <ul className="divide-y divide-ivory-300">
-            {lines.map((line) => (
-              <li key={line.variantId + (line.subscription ? "-sub" : "")} className="flex gap-3 py-4">
-                <div className="relative size-16 shrink-0 rounded-md overflow-hidden bg-ivory-200">
-                  <Image src={line.image} alt={line.name} fill sizes="64px" className="object-cover" />
-                  <span className="absolute -top-1 -right-1 size-5 rounded-full bg-forest-800 text-ivory-100 grid place-items-center text-[10px] font-bold">
-                    {line.qty}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-forest-800 truncate">{line.name}</p>
-                  <p className="text-xs text-ink/60">{line.variantLabel}</p>
-                  {line.subscription ? (
-                    <p className="text-xs text-gold-500 mt-0.5">
-                      Every {line.subscription.cycleDays} d · {line.subscription.discountPct}% off
-                    </p>
-                  ) : isPreorderLine(line) ? (
-                    <p className="text-xs text-gold-500 mt-0.5">
-                      {PREORDER.label} · {PREORDER.discountPct}% off
-                    </p>
-                  ) : null}
-                </div>
-                <div className="text-sm font-medium">
-                  {formatPrice(lineTotalCents(line), line.currency)}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="border-t border-ivory-300 pt-4 space-y-2 text-sm">
-            <Row label="Subtotal" value={formatPrice(subtotalCents, currency)} />
-            <Row label="Shipping" value={rate ? (shippingCents === 0 ? "Free" : formatPrice(shippingCents, currency)) : "Calculated next step"} />
-            <Row label="Est. tax" value={formatPrice(estimatedTaxCents, currency)} />
-            <div className="border-t border-ivory-300 pt-3 mt-3">
+        {step !== "confirmation" ? (
+          <aside className="lg:sticky lg:top-24 h-fit card p-6">
+            <h2 className="font-display text-lg text-forest-800 mb-4">Order summary</h2>
+            <ul className="divide-y divide-ivory-300">
+              {(quote?.lines ?? null)
+                ? quote!.lines.map((l, i) => (
+                    <li key={l.variantId + i} className="flex gap-3 py-4">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-forest-800 truncate">{l.name} × {l.qty}</p>
+                        <p className="text-xs text-ink/60">{l.variantLabel}</p>
+                        {l.subscriptionCycleDays ? (
+                          <p className="text-xs text-gold-500 mt-0.5">Every {l.subscriptionCycleDays} days · {l.discountPct}% off</p>
+                        ) : l.preorder ? (
+                          <p className="text-xs text-gold-500 mt-0.5">{preorder.label} · {l.discountPct}% off</p>
+                        ) : null}
+                      </div>
+                      <div className="text-sm font-medium">{formatPrice(l.lineTotalCents, quote!.currency)}</div>
+                    </li>
+                  ))
+                : lines.map((line) => (
+                    <li key={line.variantId + (line.subscription ? "-sub" : "")} className="flex gap-3 py-4">
+                      <div className="relative size-16 shrink-0 rounded-md overflow-hidden bg-ivory-200">
+                        <Image src={line.image} alt={line.name} fill sizes="64px" className="object-cover" />
+                        <span className="absolute -top-1 -right-1 size-5 rounded-full bg-forest-800 text-ivory-100 grid place-items-center text-[10px] font-bold">
+                          {line.qty}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-forest-800 truncate">{line.name}</p>
+                        <p className="text-xs text-ink/60">{line.variantLabel}</p>
+                        {line.subscription ? (
+                          <p className="text-xs text-gold-500 mt-0.5">Every {line.subscription.cycleDays} days · {line.subscription.discountPct}% off</p>
+                        ) : isPreorderLine(line, preorder) ? (
+                          <p className="text-xs text-gold-500 mt-0.5">{preorder.label} · {preorder.discountPct}% off</p>
+                        ) : null}
+                      </div>
+                      <div className="text-sm font-medium">{formatPrice(lineTotalCents(line, preorder), line.currency)}</div>
+                    </li>
+                  ))}
+            </ul>
+            <div className="border-t border-ivory-300 pt-4 space-y-2 text-sm">
+              <Row label="Subtotal" value={formatPrice(quote?.subtotalCents ?? estimateCents, currency)} />
+              {quote?.discountCents ? <Row label={`Discount (${quote.discountCode})`} value={`−${formatPrice(quote.discountCents, currency)}`} /> : null}
               <Row
-                label={<strong>Total</strong>}
-                value={<strong>{formatPrice(totalCents, currency)}</strong>}
+                label="Shipping"
+                value={quote ? (quote.shipping.amountCents === 0 ? "Free" : formatPrice(quote.shipping.amountCents, currency)) : "Calculated next step"}
               />
+              {quote && quote.taxCents > 0 ? <Row label="Tax" value={formatPrice(quote.taxCents, currency)} /> : null}
+              <div className="border-t border-ivory-300 pt-3 mt-3">
+                <Row label={<strong>Total</strong>} value={<strong>{quote ? formatPrice(quote.totalCents, currency) : "Calculated next step"}</strong>} />
+              </div>
             </div>
-          </div>
-
-          {lines.some(isPreorderLine) ? (
-            <p className="text-xs text-ink/60 mt-4">{PREORDER.label} items: {PREORDER.shipNote}.</p>
-          ) : null}
-          <div className="flex items-center gap-2 text-xs text-ink/60 mt-4">
-            <Lock className="size-3.5" /> Secure checkout via Stripe
-          </div>
-        </aside>
+            {(quote?.hasPreorder ?? lines.some((l) => isPreorderLine(l, preorder))) ? (
+              <p className="text-xs text-ink/60 mt-4">
+                {preorder.label} items: {preorder.shipNote}. You are charged today and we ship when stock arrives.
+              </p>
+            ) : null}
+            <div className="flex items-center gap-2 text-xs text-ink/60 mt-4">
+              <Lock className="size-3.5" /> Secure checkout via Stripe
+            </div>
+          </aside>
+        ) : null}
       </div>
     </div>
   );
@@ -200,7 +226,7 @@ export function CheckoutFlow() {
 
 function Row({ label, value }: { label: React.ReactNode; value: React.ReactNode }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between gap-4">
       <span className="text-ink/70">{label}</span>
       <span>{value}</span>
     </div>
@@ -208,7 +234,7 @@ function Row({ label, value }: { label: React.ReactNode; value: React.ReactNode 
 }
 
 function Stepper({ current }: { current: number }) {
-  const labels = ["Shipping", "Method", "Payment", "Review", "Confirmation"];
+  const labels = ["Shipping", "Delivery", "Payment", "Confirmation"];
   return (
     <ol className="flex items-center gap-3 overflow-x-auto scrollbar-none">
       {labels.map((label, i) => {

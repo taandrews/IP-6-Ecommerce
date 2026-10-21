@@ -14,13 +14,13 @@ import {
 import { Footer } from "@/components/layout/Footer";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
-import { products } from "@/content/products";
+import { getCatalog } from "@/lib/data/catalog";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
 
-export default function HomePage() {
+export default async function HomePage() {
   const currency = resolveCurrency();
-  const supplement = products.find((p) => p.slug === "ip6-original-supplement")!;
+  const supplement = (await getCatalog()).find((p) => p.slug === "ip6-original-supplement")!;
   const supplementFrom = Math.min(
     ...supplement.variants.map((v) => v.priceCents[currency]),
   );

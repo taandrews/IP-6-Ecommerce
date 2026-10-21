@@ -1,33 +1,38 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { sendEmail } from "@/lib/aws/ses";
+import { createPrivacyRequest } from "@/lib/data/privacy";
+import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
+
+export const runtime = "nodejs";
 
 const Body = z.object({
-  email: z.string().email(),
-  details: z.string().max(2000).optional().or(z.literal("")),
+  email: z.string().trim().email().max(254),
+  type: z.enum(["delete", "export"]).default("delete"),
+  details: z.string().trim().max(2000).optional().or(z.literal("")),
 });
 
+/**
+ * Public privacy request (no account needed). Nothing happens until the
+ * requester clicks the link sent to that email address, which proves they
+ * control it. The reply is the same whatever the email, so the form can't be
+ * used to find out who is a customer.
+ */
 export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
-  if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  const adminInbox = process.env.SES_REPLY_TO;
-  if (!adminInbox) return NextResponse.json({ error: "Contact inbox is not configured" }, { status: 500 });
+  if (!parsed.success) return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   try {
-    await sendEmail(
-      adminInbox,
-      `[Privacy] Data deletion request from ${parsed.data.email}`,
-      `<p>Requester: ${parsed.data.email}</p>
-      ${parsed.data.details ? `<hr><p style="white-space:pre-wrap">${parsed.data.details}</p>` : ""}
-      <p>Follow up within 5 business days; complete within 30 days where legally permitted.</p>`,
-    );
-    await sendEmail(
-      parsed.data.email,
-      "Deletion request received",
-      `<p>We received your data deletion request and will confirm within 5 business days.</p>
-      <p>If you didn't submit this request, reply to this email and we'll discard it.</p>`,
-    );
+    const { record, token } = await createPrivacyRequest({
+      type: parsed.data.type,
+      email: parsed.data.email,
+      details: parsed.data.details || undefined,
+      verified: false,
+    });
+    const site = new URL(req.url).origin;
+    const link = `${site}/api/privacy/verify?id=${encodeURIComponent(record.requestId)}&token=${encodeURIComponent(token!)}`;
+    await sendEmailSafe(parsed.data.email, emailTemplates.privacyVerify(link, parsed.data.type), "privacy verify");
   } catch (err) {
-    console.error("[privacy] send failed", err);
+    console.error("[privacy] request failed", (err as Error).name);
+    return NextResponse.json({ error: "We couldn't record your request. Please try again." }, { status: 500 });
   }
   return NextResponse.json({ ok: true });
 }

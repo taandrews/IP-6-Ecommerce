@@ -5,16 +5,17 @@ import { Input, Textarea } from "@/components/ui/Input";
 
 export function DataDeletionForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [type, setType] = useState<"delete" | "export">("delete");
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("submitting");
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const form = new FormData(e.currentTarget);
     try {
       const res = await fetch("/api/privacy/deletion-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ email: form.get("email"), details: form.get("details") ?? "", type }),
       });
       setStatus(res.ok ? "success" : "error");
     } catch {
@@ -24,27 +25,31 @@ export function DataDeletionForm() {
 
   if (status === "success") {
     return (
-      <p className="text-sm text-forest-700">
-        Request received. You'll receive a confirmation email within 5 business days.
+      <p className="text-sm text-forest-700" role="status">
+        Check your inbox. If we hold data for that address, the email contains a link to confirm your request. The link works for 48 hours.
       </p>
     );
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
-      <Input id="del-email" name="email" type="email" label="Email on file" required />
-      <Textarea
-        id="del-details"
-        name="details"
-        label="Details (optional)"
-        hint="Mention any specific data you want removed or retained for legal reasons (e.g., tax records)."
-      />
+      <fieldset className="space-y-2">
+        <legend className="label">What would you like?</legend>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="radio" name="type" checked={type === "delete"} onChange={() => setType("delete")} /> Delete my data
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="radio" name="type" checked={type === "export"} onChange={() => setType("export")} /> Send me a copy of my data
+        </label>
+      </fieldset>
+      <Input id="del-email" name="email" type="email" label="Email you used with us" required autoComplete="email" />
+      <Textarea id="del-details" name="details" label="Details (optional)" hint="Anything that helps us find your data or understand your request." />
       <button type="submit" className="btn-primary" disabled={status === "submitting"}>
-        {status === "submitting" ? "Submitting…" : "Submit request"}
+        {status === "submitting" ? "Sending…" : "Send confirmation link"}
       </button>
       {status === "error" ? (
         <p className="text-sm text-danger" role="alert">
-          Something went wrong. Please use the contact form instead.
+          Something went wrong. Please try again or use the contact form.
         </p>
       ) : null}
     </form>

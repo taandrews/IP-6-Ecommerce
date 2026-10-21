@@ -1,46 +1,25 @@
 import { NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe/server";
+import { getStripe } from "@/lib/stripe/server";
 import { getSessionUser } from "@/lib/auth/session";
+import { getSubscription, ownsSubscription } from "@/lib/data/subscriptions";
+import { applySubscriptionOp, SUBSCRIPTION_OPS, type SubscriptionOp } from "@/lib/subscriptions/ops";
 
-const OPS = new Set(["pause", "resume", "skip", "cancel"]);
+export const runtime = "nodejs";
 
-export async function POST(
-  _req: Request,
-  { params }: { params: { id: string; op: string } },
-) {
-  const user = getSessionUser();
+/** Customer self-service. The subscription must belong to the signed-in customer. */
+export async function POST(_req: Request, { params }: { params: { id: string; op: string } }) {
+  const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
-  if (!OPS.has(params.op)) return NextResponse.json({ error: "unknown_op" }, { status: 400 });
-
+  if (!SUBSCRIPTION_OPS.includes(params.op as SubscriptionOp)) return NextResponse.json({ error: "unknown_op" }, { status: 400 });
+  const rec = await getSubscription(params.id);
+  // Not found and not yours look the same, so ids can't be probed.
+  if (!rec || !ownsSubscription(rec, user)) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  if (rec.status === "cancelled") return NextResponse.json({ error: "already_cancelled" }, { status: 409 });
   try {
-    switch (params.op) {
-      case "pause":
-        await stripe.subscriptions.update(params.id, {
-          pause_collection: { behavior: "void" },
-        });
-        break;
-      case "resume":
-        await stripe.subscriptions.update(params.id, { pause_collection: "" as never });
-        break;
-      case "skip": {
-        const sub = await stripe.subscriptions.retrieve(params.id);
-        if (sub.current_period_end) {
-          await stripe.subscriptions.update(params.id, {
-            trial_end: sub.current_period_end + 60 * 60 * 24 * 30,
-            proration_behavior: "none",
-          });
-        }
-        break;
-      }
-      case "cancel":
-        await stripe.subscriptions.cancel(params.id);
-        break;
-    }
-    return NextResponse.json({ ok: true });
-  } catch (err: unknown) {
-    return NextResponse.json(
-      { error: (err as { message?: string })?.message ?? "stripe_error" },
-      { status: 500 },
-    );
+    const updated = await applySubscriptionOp(await getStripe(), rec, params.op as SubscriptionOp);
+    return NextResponse.json({ ok: true, status: updated.status, nextChargeDate: updated.nextChargeDate });
+  } catch (err) {
+    console.error("[subscriptions] op failed", params.op, (err as Error).name);
+    return NextResponse.json({ error: "We couldn't update your subscription. Please try again." }, { status: 500 });
   }
 }

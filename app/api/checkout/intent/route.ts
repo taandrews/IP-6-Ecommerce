@@ -1,97 +1,135 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
-import { stripe, STRIPE_TAX_ENABLED } from "@/lib/stripe/server";
-import { cuid } from "@/lib/utils";
-import { PREORDER, isPreorderLine, lineTotalCents } from "@/lib/preorder";
+import crypto from "node:crypto";
+import { CheckoutInputSchema } from "@/lib/checkout/schema";
+import { buildQuote } from "@/lib/checkout/build";
+import { createPendingOrder, emailKey } from "@/lib/data/orders";
+import { getSessionUser } from "@/lib/auth/session";
+import { getStripe } from "@/lib/stripe/server";
+import { getPreorderSettingsFresh } from "@/lib/data/settings";
 
-const Body = z.object({
-  email: z.string().email(),
-  address: z.object({
-    name: z.string(),
-    line1: z.string(),
-    line2: z.string().optional().nullable(),
-    city: z.string(),
-    region: z.string(),
-    postalCode: z.string(),
-    country: z.string().length(2),
-    phone: z.string().optional().nullable(),
-  }),
-  items: z.array(
-    z.object({
-      sku: z.string(),
-      variantId: z.string(),
-      name: z.string(),
-      qty: z.number().int().min(1),
-      unitPriceCents: z.number().int().min(0),
-      currency: z.enum(["USD", "CAD", "GBP", "AUD", "EUR", "INR"]),
-      subscription: z
-        .object({ cycleDays: z.number(), discountPct: z.number() })
-        .optional(),
-    }),
-  ),
-  shipping: z.object({
-    id: z.string(),
-    label: z.string(),
-    carrier: z.string(),
-    etaDays: z.tuple([z.number(), z.number()]),
-    amountCents: z.number().int().min(0),
-    currency: z.enum(["USD", "CAD", "GBP", "AUD", "EUR", "INR"]),
-  }),
-  currency: z.enum(["USD", "CAD", "GBP", "AUD", "EUR", "INR"]),
-});
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
+function newOrderId() {
+  // 10 random base32 characters: unguessable enough to be shown to customers.
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = crypto.randomBytes(10);
+  return `IP6-${[...bytes].map((b) => alphabet[b % alphabet.length]).join("")}`;
+}
+
+/**
+ * Creates the Stripe PaymentIntent for a checkout. The amount comes only
+ * from the server-side quote. The full order (items, address) is stored in
+ * DynamoDB as "pending"; Stripe receives the order id, not the cart.
+ */
 export async function POST(req: Request) {
-  const parsed = Body.safeParse(await req.json().catch(() => null));
-  if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  const { items, shipping, currency, email, address } = parsed.data;
-
-  const subtotal = items.reduce((s, i) => s + lineTotalCents(i), 0);
-  const preorder = items.some(isPreorderLine);
-  const total = subtotal + shipping.amountCents;
-  const orderId = `IP6-${cuid().toUpperCase().slice(0, 12)}`;
+  const parsed = CheckoutInputSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) return NextResponse.json({ error: "Please check your details and try again." }, { status: 400 });
+  const input = parsed.data;
 
   try {
-    const intent = await stripe.paymentIntents.create({
-      amount: total,
-      currency: currency.toLowerCase(),
-      receipt_email: email,
-      description: `Order ${orderId}`,
-      automatic_payment_methods: { enabled: true },
-      metadata: {
-        orderId,
-        email,
-        shippingCarrier: shipping.carrier,
-        shippingLabel: shipping.label,
-        itemCount: String(items.reduce((n, i) => n + i.qty, 0)),
-        preorder: preorder ? "1" : "0",
-        preorderDiscountPct: preorder ? String(PREORDER.discountPct) : "0",
-        shipsFrom: preorder ? PREORDER.shipNote : "",
-        items: JSON.stringify(
-          items.map((i) => ({ sku: i.sku, qty: i.qty, sub: !!i.subscription, pre: isPreorderLine(i) })),
-        ),
-        destinationCountry: address.country,
-      },
-      shipping: {
-        name: address.name,
-        phone: address.phone ?? undefined,
-        address: {
-          line1: address.line1,
-          line2: address.line2 ?? undefined,
-          city: address.city,
-          state: address.region,
-          postal_code: address.postalCode,
-          country: address.country,
+    const built = await buildQuote(input);
+    if (!built.quote) return NextResponse.json({ error: built.error, discountMessage: built.discountMessage }, { status: 422 });
+    const q = built.quote;
+    const user = await getSessionUser();
+    const preorder = await getPreorderSettingsFresh();
+    const stripe = await getStripe();
+    const orderId = newOrderId();
+
+    // Subscriptions need a Stripe customer and a saved payment method so the
+    // renewals can be charged; one-time orders do not create a customer.
+    let customerId: string | undefined;
+    if (q.hasSubscription) {
+      const customer = await stripe.customers.create(
+        {
+          email: input.email,
+          name: input.address.name,
+          phone: input.address.phone,
+          shipping: {
+            name: input.address.name,
+            phone: input.address.phone,
+            address: {
+              line1: input.address.line1,
+              line2: input.address.line2,
+              city: input.address.city,
+              state: input.address.region || undefined,
+              postal_code: input.address.postalCode,
+              country: input.address.country,
+            },
+          },
+          metadata: { ...(user ? { userId: user.sub } : {}) },
+        },
+        { idempotencyKey: `cust-${orderId}` },
+      );
+      customerId = customer.id;
+    }
+
+    const intent = await stripe.paymentIntents.create(
+      {
+        amount: q.totalCents,
+        currency: q.currency.toLowerCase(),
+        receipt_email: input.email,
+        description: `IP6 Original order ${orderId}`,
+        automatic_payment_methods: { enabled: true },
+        ...(customerId ? { customer: customerId, setup_future_usage: "off_session" as const } : {}),
+        shipping: {
+          name: input.address.name,
+          phone: input.address.phone,
+          address: {
+            line1: input.address.line1,
+            line2: input.address.line2,
+            city: input.address.city,
+            state: input.address.region || undefined,
+            postal_code: input.address.postalCode,
+            country: input.address.country,
+          },
+        },
+        metadata: {
+          orderId,
+          ...(built.taxCalculationId ? { taxCalculationId: built.taxCalculationId } : {}),
         },
       },
+      { idempotencyKey: `pi-${orderId}` },
+    );
+
+    const now = new Date().toISOString();
+    await createPendingOrder({
+      orderId,
+      status: "pending",
+      createdAt: now,
+      updatedAt: now,
+      email: input.email,
+      emailKey: emailKey(input.email),
+      ...(user ? { userId: user.sub } : {}),
+      customerName: input.address.name,
+      ...(input.address.phone ? { phone: input.address.phone } : {}),
+      shippingAddress: input.address,
+      items: q.lines,
+      currency: q.currency,
+      subtotalCents: q.subtotalCents,
+      ...(q.discountCode ? { discountCode: q.discountCode } : {}),
+      discountCents: q.discountCents,
+      shippingRateId: q.shipping.id,
+      shippingLabel: `${q.shipping.label} · ${q.shipping.carrier}`,
+      shippingCents: q.shipping.amountCents,
+      taxCents: q.taxCents,
+      totalCents: q.totalCents,
+      ...(q.hasPreorder ? { preorder: "1" as const } : {}),
+      stripePaymentIntentId: intent.id,
+      ...(customerId ? { stripeCustomerId: customerId } : {}),
+      refundedCents: 0,
+      refunds: [],
+      notes: [],
     });
 
     return NextResponse.json({
       clientSecret: intent.client_secret,
       orderId,
-      taxEnabled: STRIPE_TAX_ENABLED,
+      quote: q,
+      preorderShipNote: q.hasPreorder ? preorder.shipNote : undefined,
     });
-  } catch (err: unknown) {
-    const message = (err as { message?: string })?.message ?? "Stripe error";
-    return NextResponse.json({ error: message }, { status: 500 });
+  } catch (err) {
+    console.error("[checkout] intent failed", (err as Error).name);
+    return NextResponse.json({ error: "We couldn't start payment. Please try again." }, { status: 500 });
   }
 }
