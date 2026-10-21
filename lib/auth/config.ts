@@ -1,3 +1,5 @@
+import { awsRegion } from "@/lib/aws/region";
+
 /**
  * Cognito settings shared by the Node routes and the Edge middleware.
  * Nothing here imports Node built-ins, so the middleware can use it.
@@ -38,7 +40,7 @@ export const REFRESH_MAX_AGE: Record<Realm, number> = {
 export const CHALLENGE_MAX_AGE = 60 * 5;
 
 export function cognitoConfig(realm: Realm = "customer") {
-  const region = process.env.AWS_REGION ?? "us-east-1";
+  const region = awsRegion();
   const userPoolId = (realm === "staff" ? process.env.STAFF_COGNITO_USER_POOL_ID : process.env.COGNITO_USER_POOL_ID) ?? "";
   const clientId = (realm === "staff" ? process.env.STAFF_COGNITO_CLIENT_ID : process.env.COGNITO_CLIENT_ID) ?? "";
   const clientSecret = (realm === "staff" ? process.env.STAFF_COGNITO_CLIENT_SECRET : process.env.COGNITO_CLIENT_SECRET) ?? "";

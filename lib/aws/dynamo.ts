@@ -1,7 +1,8 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { awsRegion } from "./region";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
-const region = process.env.AWS_REGION ?? "us-east-1";
+const region = awsRegion();
 const prefix = process.env.DYNAMODB_TABLE_PREFIX ?? "ip6_prod_";
 
 const client = new DynamoDBClient({

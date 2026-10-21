@@ -1,4 +1,5 @@
 import "server-only";
+import { awsRegion } from "./region";
 import {
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
@@ -33,7 +34,7 @@ import { ROLE_GROUPS, type Role } from "@/lib/auth/roles";
  * only, MFA required by the pool). Every function names the pool it uses.
  */
 export const cognitoClient = new CognitoIdentityProviderClient({
-  region: process.env.AWS_REGION ?? "us-east-1",
+  region: awsRegion(),
   ...(process.env.COGNITO_ENDPOINT ? { endpoint: process.env.COGNITO_ENDPOINT } : {}),
   ...(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
     ? {

@@ -1,7 +1,8 @@
 import "server-only";
+import { awsRegion } from "./region";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-const region = process.env.AWS_REGION ?? "us-east-1";
+const region = awsRegion();
 
 export const sesClient = new SESClient({
   region,
@@ -25,6 +26,8 @@ export async function sendEmail(to: string, subject: string, html: string, text?
   return sesClient.send(
     new SendEmailCommand({
       Source: from,
+      // Routes every message through the SES configuration set (TLS, suppression list, bounce alerts).
+      ...(process.env.SES_CONFIGURATION_SET ? { ConfigurationSetName: process.env.SES_CONFIGURATION_SET } : {}),
       ReplyToAddresses: [replyTo],
       Destination: { ToAddresses: [to] },
       Message: {

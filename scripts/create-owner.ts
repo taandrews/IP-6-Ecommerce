@@ -21,7 +21,7 @@ async function main() {
     console.error('Usage: STAFF_COGNITO_USER_POOL_ID=... npx tsx scripts/create-owner.ts <email> "<name>"');
     process.exit(1);
   }
-  const client = new CognitoIdentityProviderClient({ region: process.env.AWS_REGION ?? "us-east-1" });
+  const client = new CognitoIdentityProviderClient({ region: process.env.APP_AWS_REGION ?? process.env.AWS_REGION ?? "us-east-1" });
   const res = await client.send(
     new AdminCreateUserCommand({
       UserPoolId: pool,

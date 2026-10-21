@@ -5,11 +5,11 @@
 //
 //   npm run assets:sync
 //
-// Env overrides: S3_ASSETS_BUCKET, CLOUDFRONT_DISTRIBUTION_ID, AWS_PROFILE.
+// Defaults target production. For staging: S3_ASSETS_BUCKET=ip6original-assets-staging CLOUDFRONT_DISTRIBUTION_ID=E2DO6DIECYYNFX npm run assets:sync
 import { spawnSync } from "node:child_process";
 
-const bucket = process.env.S3_ASSETS_BUCKET || "ip6original-assets-staging";
-const distribution = process.env.CLOUDFRONT_DISTRIBUTION_ID || "E2DO6DIECYYNFX";
+const bucket = process.env.S3_ASSETS_BUCKET || "ip6original-assets-prod";
+const distribution = process.env.CLOUDFRONT_DISTRIBUTION_ID || "E3R3O337UT91I6";
 const profile = process.env.AWS_PROFILE || "ip6";
 
 function aws(args) {

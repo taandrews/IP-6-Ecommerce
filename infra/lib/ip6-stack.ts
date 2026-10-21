@@ -16,11 +16,16 @@ import * as ses from "aws-cdk-lib/aws-ses";
 import * as secrets from "aws-cdk-lib/aws-secretsmanager";
 import * as kms from "aws-cdk-lib/aws-kms";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as sns from "aws-cdk-lib/aws-sns";
+import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
+import * as cwactions from "aws-cdk-lib/aws-cloudwatch-actions";
 
 export interface Ip6StackProps extends StackProps {
   environment: "staging" | "prod";
   tablePrefix: string;
   domainName: string;
+  /** Account-wide alert topic (from Ip6AccountStack); bounces, complaints and CDN errors go here. */
+  alertsTopicArn: string;
 }
 
 export class Ip6Stack extends Stack {
@@ -28,6 +33,7 @@ export class Ip6Stack extends Stack {
     super(scope, id, props);
 
     const isProd = props.environment === "prod";
+    const alertsTopic = sns.Topic.fromTopicArn(this, "AlertsTopic", props.alertsTopicArn);
     const removal = isProd ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY;
     const billing = dynamodb.BillingMode.PAY_PER_REQUEST;
 
@@ -45,6 +51,7 @@ export class Ip6Stack extends Stack {
       encryption: dynamodb.TableEncryption.CUSTOMER_MANAGED,
       encryptionKey: dataKey,
       pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: isProd },
+      deletionProtection: isProd,
     } as const;
 
     // -----------------------
@@ -308,6 +315,8 @@ export class Ip6Stack extends Stack {
       bucketName: `ip6original-assets-${props.environment}`,
       encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
+      versioned: isProd,
       removalPolicy: removal,
       autoDeleteObjects: !isProd,
       cors: [
@@ -330,8 +339,18 @@ export class Ip6Stack extends Stack {
       },
       defaultRootObject: "",
       priceClass: cloudfront.PriceClass.PRICE_CLASS_ALL,
-      comment: `IP-6 ${props.environment} CDN`,
+      httpVersion: cloudfront.HttpVersion.HTTP2_AND_3,
+      comment: `IP6 Original ${props.environment} CDN`,
     });
+
+    new cloudwatch.Alarm(this, "CdnErrorRate", {
+      alarmName: `ip6-${props.environment}-cdn-5xx-rate`,
+      alarmDescription: "More than 5% of CDN responses were 5xx for 15 minutes",
+      metric: distribution.metric5xxErrorRate({ period: Duration.minutes(5) }),
+      threshold: 5,
+      evaluationPeriods: 3,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    }).addAlarmAction(new cwactions.SnsAction(alertsTopic));
 
     // -----------------------
     // SES: identity + templates
@@ -340,15 +359,29 @@ export class Ip6Stack extends Stack {
       identity: ses.Identity.domain(props.domainName),
     });
 
+    // Every message goes through this configuration set: TLS required, reputation
+    // metrics on, addresses that bounced or complained are never mailed again, and
+    // each bounce, complaint or rejection is reported to the alert topic.
+    const sesConfigSet = new ses.ConfigurationSet(this, "SesConfigSet", {
+      configurationSetName: `ip6-${props.environment}`,
+      reputationMetrics: true,
+      suppressionReasons: ses.SuppressionReasons.BOUNCES_AND_COMPLAINTS,
+      tlsPolicy: ses.ConfigurationSetTlsPolicy.REQUIRE,
+    });
+    sesConfigSet.addEventDestination("Alerts", {
+      destination: ses.EventDestination.snsTopic(alertsTopic),
+      events: [ses.EmailSendingEvent.BOUNCE, ses.EmailSendingEvent.COMPLAINT, ses.EmailSendingEvent.REJECT],
+    });
+
     const templates: Array<{ name: string; subject: string; html: string }> = [
       {
         name: `ip6-${props.environment}-order-confirmation`,
-        subject: "IP-6 Research: Order {{orderId}} confirmed",
+        subject: "IP6 Original: Order {{orderId}} confirmed",
         html: "<h1>Thank you, {{name}}.</h1><p>Your order <strong>{{orderId}}</strong> has been received.</p><p><strong>Total:</strong> {{total}}</p>",
       },
       {
         name: `ip6-${props.environment}-shipping-notification`,
-        subject: "Your IP-6 order {{orderId}} has shipped",
+        subject: "Your IP6 Original order {{orderId}} has shipped",
         html: "<h1>On its way, {{name}}.</h1><p>Order {{orderId}} has shipped via {{carrier}}. Tracking: {{tracking}}</p>",
       },
       {
@@ -358,7 +391,7 @@ export class Ip6Stack extends Stack {
       },
       {
         name: `ip6-${props.environment}-password-reset`,
-        subject: "Reset your IP-6 password",
+        subject: "Reset your IP6 Original password",
         html: "<p>Use this code: <strong>{{code}}</strong></p>",
       },
     ];
@@ -456,7 +489,10 @@ export class Ip6Stack extends Stack {
     appRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
-        resources: [`arn:aws:ses:${this.region}:${this.account}:identity/${sesIdentity.emailIdentityName}`],
+        resources: [
+          `arn:aws:ses:${this.region}:${this.account}:identity/${sesIdentity.emailIdentityName}`,
+          `arn:aws:ses:${this.region}:${this.account}:configuration-set/${sesConfigSet.configurationSetName}`,
+        ],
       }),
     );
     [stripeSecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
@@ -477,5 +513,11 @@ export class Ip6Stack extends Stack {
     new CfnOutput(this, "StaffUserPoolClientId", { value: staffPoolClient.userPoolClientId });
     new CfnOutput(this, "DataKeyArn", { value: dataKey.keyArn });
     new CfnOutput(this, "AppComputeRoleArn", { value: appRole.roleArn });
+    new CfnOutput(this, "SesConfigurationSet", { value: sesConfigSet.configurationSetName });
+    // Easy DKIM: create these three CNAME records at the DNS host of the domain; SES then verifies the identity.
+    sesIdentity.dkimRecords.forEach((r, i) => {
+      new CfnOutput(this, `DkimCname${i + 1}Name`, { value: r.name });
+      new CfnOutput(this, `DkimCname${i + 1}Value`, { value: r.value });
+    });
   }
 }

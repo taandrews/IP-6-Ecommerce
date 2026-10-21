@@ -1,3 +1,4 @@
+import { awsRegion } from "./region";
 import {
   SecretsManagerClient,
   GetSecretValueCommand,
@@ -16,7 +17,7 @@ import {
  *   ip6/{env}/app      → { rateLimitSecret }
  */
 
-const region = process.env.AWS_REGION ?? "us-east-1";
+const region = awsRegion();
 const client = new SecretsManagerClient({
   region,
   ...(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY

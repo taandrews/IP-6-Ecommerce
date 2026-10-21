@@ -22,23 +22,19 @@ The admin portal lives at `/admin` on the Amplify site. It manages orders, pre-o
 
 ## Deploying
 
-1. **Deploy the infrastructure** with the IP6 AWS account (verify it first with `aws sts get-caller-identity`):
-   ```bash
-   cd infra && npm run diff:prod && npm run deploy:prod
-   ```
-   This adds the staff user pool, the new tables (Settings, AuditLog, PrivacyRequests, DiscountRedemptions) and new indexes on Orders (GSI3), Reviews (GSI2) and Subscriptions (GSI3). It also adds KMS encryption and the `ip6-prod-app` IAM role. Deleting the customer pool's old `admin` group is intended.
-2. **Attach the role to Amplify.** Attach `AppComputeRoleArn` (a stack output) to the Amplify app as its SSR compute role. Remove any `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` from Amplify's environment.
-3. **Set Amplify environment variables** (see `.env.example`):
-   - `COGNITO_USER_POOL_ID`, `COGNITO_CLIENT_ID`
-   - `STAFF_COGNITO_USER_POOL_ID`, `STAFF_COGNITO_CLIENT_ID`
-   - `DYNAMODB_TABLE_PREFIX=ip6_prod_`
-   - `ADMIN_LINK_KEY` (`openssl rand -base64 32`)
-   - `APP_ENV=prod`
-   - `SES_FROM_EMAIL`, `SES_REPLY_TO`
-   - `STRIPE_TAX_ENABLED` (true only once Stripe Tax is set up)
-   - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-4. **Put the Stripe keys in Secrets Manager** (`ip6/prod/stripe`: `secretKey`, `publishableKey`, `webhookSecret`).
-5. **Create the Stripe webhook endpoint** `https://<site>/api/stripe/webhook` with these events:
+Done on 2026-10-21 (see `infra/README.md`): all four stacks are deployed, the Amplify app runs with the `ip6-prod-app` compute role (no access keys), its environment points at the `ip6_prod_` tables, the prod user pools, the prod assets bucket and CDN, and `APP_ENV=prod`. Local development uses the staging stack through `.env.staging`.
+
+To change infrastructure:
+
+```bash
+cd infra && AWS_PROFILE=ip6 npx cdk diff --all && AWS_PROFILE=ip6 npx cdk deploy --all --concurrency 4
+```
+
+Amplify environment variables are set with `aws amplify update-app --environment-variables` (the call replaces the whole map, so pass every variable). Amplify rejects variable names starting with `AWS`; the app reads its data-plane region from `APP_AWS_REGION`.
+
+### Still owner-only before launch
+
+1. **Stripe live keys** in Secrets Manager: `ip6/prod/stripe` with `secretKey`, `publishableKey`, `webhookSecret`, plus `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` in Amplify. Then create the Stripe webhook endpoint `https://<site>/api/stripe/webhook` with these events:
    - `payment_intent.succeeded`
    - `charge.refunded`
    - `charge.dispute.created`
@@ -48,12 +44,15 @@ The admin portal lives at `/admin` on the Amplify site. It manages orders, pre-o
    - `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`
 
    In Stripe Billing settings, turn on "upcoming renewal" emails to customers (or rely on `invoice.upcoming`, which this app emails) and set how many days ahead.
-6. **Verify the SES domain** and move SES out of the sandbox so customer emails deliver.
-7. **Create the first owner:**
+2. **SES domain verification.** Create the three DKIM CNAME records that `Ip6ProdStack` outputs (`DkimCname1Name`/`Value` through 3) at the DNS host of ip6original.com (GoDaddy). SES verifies the domain within an hour of the records resolving. The production-access (sandbox exit) request was submitted on 2026-10-21 and is pending AWS review.
+3. **Confirm the alert subscriptions.** AWS emailed two SNS confirmation links (one per region) to the alert address. Nothing is delivered until they are confirmed.
+4. **Create the first owner:**
    ```bash
-   STAFF_COGNITO_USER_POOL_ID=<StaffUserPoolId> npx tsx scripts/create-owner.ts you@company.com "Your Name"
+   STAFF_COGNITO_USER_POOL_ID=us-east-1_xtRRPg43p npx tsx scripts/create-owner.ts you@company.com "Your Name"
    ```
-   Sign in at `/admin/login`. You'll set a new password and scan a QR code with an authenticator app. Invite everyone else from Admin, Staff.
+   Sign in at `/admin/login`. You will set a new password and scan a QR code with an authenticator app. Invite everyone else from Admin, Staff.
+5. **At domain cut-over:** attach ip6original.com to the Amplify app, then set `NEXT_PUBLIC_SITE_URL=https://ip6original.com` in Amplify (emailed links are built from it) and redeploy.
+6. **Sales tax:** `STRIPE_TAX_ENABLED` is `true`; leave it only once Stripe Tax is configured in the Stripe dashboard.
 
 ## Testing
 
