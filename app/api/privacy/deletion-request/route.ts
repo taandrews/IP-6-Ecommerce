@@ -27,7 +27,11 @@ export async function POST(req: Request) {
       details: parsed.data.details || undefined,
       verified: false,
     });
-    const site = new URL(req.url).origin;
+    // Never build an emailed link from the request's Host header (it can be spoofed
+    // to send the token to another site). Production uses the configured origin.
+    const configured = process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL).origin : null;
+    if (!configured && process.env.NODE_ENV === "production") throw new Error("NEXT_PUBLIC_SITE_URL is not configured");
+    const site = configured ?? new URL(req.url).origin;
     const link = `${site}/api/privacy/verify?id=${encodeURIComponent(record.requestId)}&token=${encodeURIComponent(token!)}`;
     await sendEmailSafe(parsed.data.email, emailTemplates.privacyVerify(link, parsed.data.type), "privacy verify");
   } catch (err) {
