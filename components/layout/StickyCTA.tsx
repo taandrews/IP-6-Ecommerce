@@ -45,16 +45,16 @@ export function StickyCTA({
       )}
       style={{ bottom: "calc(env(safe-area-inset-bottom, 0) + 5rem)" }}
     >
-      <div className="flex items-center gap-3 bg-forest-800 text-ivory-100 rounded-full shadow-card pl-5 pr-2 py-2">
+      <div className="flex items-center gap-3 bg-surface text-ink border border-cloud-300 rounded-full shadow-card pl-5 pr-2 py-2">
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{label}</p>
           {sublabel ? (
-            <p className="text-[11px] text-ivory-100/65 truncate">{sublabel}</p>
+            <p className="text-[11px] text-ink/60 truncate">{sublabel}</p>
           ) : null}
         </div>
         <Link
           href={href}
-          className="inline-flex items-center gap-1.5 bg-gold-400 hover:bg-gold-500 text-forest-900 font-medium rounded-full px-4 py-2.5 text-sm whitespace-nowrap"
+          className="inline-flex items-center gap-1.5 bg-button hover:bg-button-hover text-surface font-medium rounded-full px-4 py-2.5 text-sm whitespace-nowrap"
         >
           {price ? `Shop · ${price}` : "Shop"}
           <ArrowRight className="size-3.5" />
@@ -62,7 +62,7 @@ export function StickyCTA({
         <button
           onClick={() => setDismissed(true)}
           aria-label="Dismiss"
-          className="p-2 rounded-full hover:bg-forest-700/70"
+          className="p-2 rounded-full hover:bg-cloud-200"
         >
           <X className="size-3.5" />
         </button>

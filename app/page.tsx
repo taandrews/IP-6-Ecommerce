@@ -284,7 +284,7 @@ export default async function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href={`/shop/${supplement.slug}`}
-                className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
+                className="inline-flex items-center gap-2 bg-button hover:bg-button-hover text-surface px-7 py-4 rounded-full font-semibold"
               >
                 Shop IP6 Original
                 <ArrowRight className="size-4" />

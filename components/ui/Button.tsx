@@ -8,10 +8,10 @@ const button = cva(
   {
     variants: {
       variant: {
-        primary: "bg-forest-700 text-ivory-100 hover:bg-forest-800 active:bg-forest-900",
-        secondary: "border border-forest-700 text-forest-700 hover:bg-forest-50",
-        gold: "bg-gold-400 text-forest-900 hover:bg-gold-500 active:bg-gold-600",
-        ghost: "text-forest-700 hover:bg-ivory-200",
+        primary: "bg-button text-surface hover:bg-button-hover active:bg-navy-900",
+        secondary: "border border-button text-button hover:bg-navy-50",
+        gold: "bg-button text-surface hover:bg-button-hover active:bg-navy-900",
+        ghost: "text-button hover:bg-cloud-200",
         danger: "bg-danger text-white hover:bg-red-700",
       },
       size: {

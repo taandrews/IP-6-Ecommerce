@@ -110,7 +110,7 @@ export default function TheDifferencePage() {
           <div className="mt-10">
             <Link
               href="/shop/ip6-original-supplement"
-              className="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-600 text-surface px-7 py-4 rounded-full font-semibold"
+              className="inline-flex items-center gap-2 bg-button hover:bg-button-hover text-surface px-7 py-4 rounded-full font-semibold"
             >
               Shop IP6 Original
               <ArrowRight className="size-4" />
