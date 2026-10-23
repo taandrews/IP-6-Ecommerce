@@ -14,12 +14,12 @@ type Segment = { text: string; em?: boolean };
 // A slide with `video` plays it muted on loop (src is then its poster frame). `cta` overrides the shared button.
 // `msrc` is a portrait version for phones, used when the landscape crop cannot keep everyone in frame.
 // `sub` is the one plain sentence that says what the product is.
-type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; sub: string; cta?: { href: string; label: string } };
+type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; sub: string };
 
 const SLIDES: Slide[] = [
   { src: asset("hero/video/ip6-hero-stock-804268291-poster.webp"), video: asset("hero/video/ip6-hero-stock-804268291.mp4"), pos: "50% 45%", mpos: "50% 50%", alt: "Six children in a circle looking down at the camera and laughing", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." },
   { src: asset("hero/ip6-hero-5.webp"), msrc: asset("hero/ip6-hero-5-m.webp"), pos: "55% 40%", mpos: "52% 62%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." },
-  { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 50%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], sub: "The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub.", cta: { href: "/shop/ip6-original-pet-powder", label: "Shop Pet Powder · 15% off" } },
+  { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 50%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], sub: "The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub." },
   { src: asset("hero/ip6-hero-beach-couple.webp"), msrc: asset("hero/ip6-hero-beach-couple-m.webp"), pos: "62% 0%", mpos: "50% 60%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }], sub: "IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility." },
   { src: asset("hero/ip6-hero-3.webp"), pos: "50% 8%", mpos: "75% 0%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }], sub: "Prof. Shamsuddin researched IP6 at the University of Maryland School of Medicine and formulated IP6 Original to his own specification." },
 ];
@@ -140,9 +140,9 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
 
   return (
     <section className={styles.hero} aria-roledescription="carousel" aria-label="IP6 Original">
+      {/* Pictures: one per slide, crossfaded. */}
       {SLIDES.map((s, i) => {
         const active = i === cur;
-        seen = 0;
         return (
           <div
             key={s.src}
@@ -182,29 +182,42 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
             <div className={styles.shadow} />
             <div className={styles.light} />
             <div className={styles.dim} />
-            <div className={styles.copy}>
-              <p className={styles.eyebrow}>{s.eyebrow}</p>
-              {i === 0 ? (
-                <h1 className={styles.line}>{renderLine(s, active)}</h1>
-              ) : (
-                <p className={styles.line} aria-level={1} role="heading">{renderLine(s, active)}</p>
-              )}
-              <p className={styles.sub}>{s.sub}</p>
-              <div className={styles.actions}>
-                <Link href={s.cta?.href ?? ctaHref} className={styles.cta} tabIndex={active ? 0 : -1}>
-                  {s.cta?.label ?? "Pre-order IP6 Original · 15% off"}
-                  <ArrowRight aria-hidden />
-                </Link>
-                {/* Fixed routes on every slide, on the button's row, so they never sit under the disclaimer bar. */}
-                <nav className={styles.routes} aria-label="Shop by">
-                  <Link href={ctaHref} tabIndex={active ? 0 : -1}>For people</Link>
-                  {petHref ? <Link href={petHref} tabIndex={active ? 0 : -1}>For pets</Link> : null}
-                </nav>
-              </div>
-            </div>
           </div>
         );
       })}
+
+      {/* Words: every slide's text stacked in one cell, so the block never moves; only the active one shows. */}
+      <div className={styles.copy}>
+        <div className={styles.textStack}>
+          {SLIDES.map((s, i) => {
+            const active = i === cur;
+            seen = 0;
+            return (
+              <div key={s.src} className={[styles.text, active ? styles.textOn : "", active && revealed ? styles.textReveal : ""].join(" ")} aria-hidden={!active}>
+                <p className={styles.eyebrow}>{s.eyebrow}</p>
+                {i === 0 ? (
+                  <h1 className={styles.line}>{renderLine(s, active)}</h1>
+                ) : (
+                  <p className={styles.line} aria-level={1} role="heading">{renderLine(s, active)}</p>
+                )}
+                <p className={styles.sub}>{s.sub}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Buttons: rendered once, so they stay put while the pictures change. */}
+      <div className={styles.actions}>
+        <Link href={ctaHref} className={styles.cta}>
+          Pre-order IP6 Original · 15% off
+          <ArrowRight aria-hidden />
+        </Link>
+        <nav className={styles.routes} aria-label="Shop by">
+          <Link href={ctaHref}>For people</Link>
+          {petHref ? <Link href={petHref}>For pets</Link> : null}
+        </nav>
+      </div>
 
       <div className={styles.dots}>
         {SLIDES.map((s, i) => (
@@ -214,10 +227,6 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
       <button type="button" className={styles.pause} aria-label={paused ? "Play slideshow" : "Pause slideshow"} onClick={togglePause}>
         <PauseIcon paused={paused} />
       </button>
-      <div className={styles.scroll} aria-hidden>
-        Scroll
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M12 4v16m0 0 6-6m-6 6-6-6" /></svg>
-      </div>
     </section>
   );
 }
