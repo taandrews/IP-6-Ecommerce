@@ -17,7 +17,7 @@ export function TrustTicker() {
   const row = (ariaHidden: boolean) => (
     <ul className="ticker-row" aria-hidden={ariaHidden || undefined}>
       {ITEMS.map((it) => (
-        <li key={it.text} className="flex items-center gap-2.5 whitespace-nowrap text-sm sm:text-base uppercase tracking-[0.16em] font-bold text-navy-800">
+        <li key={it.text} className="flex items-center gap-2.5 whitespace-nowrap text-[13px] sm:text-sm uppercase tracking-[0.18em] font-semibold text-navy-800">
           <it.icon className="size-5 text-gold-600 shrink-0" aria-hidden />
           {it.text}
         </li>

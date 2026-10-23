@@ -1,26 +1,32 @@
 import Image from "next/image";
 import { asset } from "@/lib/assets";
 import Link from "next/link";
-import { ArrowRight, RefreshCw, Beaker, AlertTriangle } from "lucide-react";
+import { ArrowRight, Award, ShieldCheck, FlaskConical, Leaf } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { TrustTicker } from "@/components/home/TrustTicker";
-import { MoleculeOrbit } from "@/components/home/MoleculeOrbit";
+import { MoleculeModel } from "@/components/home/MoleculeModel";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
+import { Accordion } from "@/components/ui/Accordion";
+import { faqCategories } from "@/content/faqs";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
 import { preorderUnitCents } from "@/lib/preorder";
+import type { Product } from "@/types";
 
 const SERIF = { fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 } as const;
-const H2 = { ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" } as const;
+const H2 = { ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.02em" } as const;
+const EYEBROW = "text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4";
+const CTA = "inline-flex items-center gap-2 bg-button hover:bg-button-hover text-surface px-7 py-3.5 rounded-full font-semibold";
+const TEXT_LINK = "inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2";
 
 /*
-  The page reads in one order: what it is (hero, badges, the molecule), who
-  made it (the scientist), why this one (the standard), then the ask (shop),
-  then how to take it. Every section shares the same container width and
-  vertical rhythm.
+  One idea per screen, in the order a first visit reads: the offer (hero),
+  the two products with a photo and a button each, four short reasons, the
+  scientist in one quote, the molecule in two sentences, how to take it, and
+  three practical questions. Every section shares one width and one rhythm.
 */
 export default async function HomePage() {
   const currency = resolveCurrency();
@@ -28,118 +34,111 @@ export default async function HomePage() {
   const supplement = catalog.find((p) => p.slug === "ip6-original-supplement")!;
   const pet = catalog.find((p) => p.slug === "ip6-original-pet-powder");
 
-  const shopCards = [
+  const priceLine = (p: Product) => {
+    const v = p.variants[0]!;
+    const regular = v.priceCents[currency];
+    const now = preorderUnitCents(regular, preorder);
+    return { regular, now, size: v.size ?? "" };
+  };
+
+  const products: { product: Product; eyebrow: string; title: string; body: string; facts: string[]; image: string; alt: string }[] = [
     {
       product: supplement,
       eyebrow: "For people",
       title: "IP6 Original Supplement",
-      body: "IP6 and Inositol in vegetable capsules. 804 mg IP6 and 196 mg Inositol per 4-capsule serving.",
+      body: "IP6 and Inositol in a vegetable capsule, formulated by the scientist who pioneered the research.",
+      facts: ["804 mg IP6 and 196 mg Inositol per 4-capsule serving", "Third-party tested, made in a cGMP-certified facility", "No magnesium stearate, no silicon dioxide", "60 or 240 capsules"],
       image: asset("products/supplement-240.png"),
+      alt: "IP6 Original Supplement, 240 capsules",
     },
-    pet
-      ? {
+    ...(pet
+      ? [{
           product: pet,
           eyebrow: "For pets",
           title: "IP6 Original Pet Powder",
-          body: "The same IP6 and Inositol as an unflavored powder for dogs and cats, 804 mg IP6 and 196 mg Inositol per 1 g scoop.",
+          body: "The same IP6 and Inositol as an unflavored powder for dogs and cats.",
+          facts: ["804 mg IP6 and 196 mg Inositol per 1 g scoop", "Unflavored, easy to mix into food", "Measuring scoop included", "120 g tub"],
           image: asset("products/pet-powder-120g.png"),
-        }
-      : null,
-  ].filter(Boolean) as Array<{ product: typeof supplement; eyebrow: string; title: string; body: string; image: string }>;
+          alt: "IP6 Original Pet Powder, 120 g",
+        }]
+      : []),
+  ];
+
+  const shippingFaq = faqCategories.find((c) => c.id === "shipping")?.items.slice(0, 2) ?? [];
+  const returnsFaq = faqCategories.find((c) => c.id === "returns")?.items.slice(0, 1) ?? [];
+  const homeFaq = [...shippingFaq, ...returnsFaq];
 
   return (
     <>
-      {/* 1. What it is: the hero and the label's badges */}
+      {/* 1. The offer */}
       <section className="relative bg-surface">
         <HeroSlideshow ctaHref={`/shop/${supplement.slug}`} petHref={pet ? `/shop/${pet.slug}` : undefined} />
         <TrustTicker />
       </section>
 
-      {/* 2. The molecule */}
-      <section className="bg-surface py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-              First, the molecule
-            </p>
-            <h2 className="text-navy-800 text-balance" style={H2}>
-              IP6 and Inositol.
-            </h2>
-            <p className="mt-5 text-lg lg:text-xl text-ink/80 leading-relaxed max-w-3xl">
-              IP6 is{" "}
-              <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
-              <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
-            </p>
-          </div>
-          <div className="w-full max-w-[400px] lg:max-w-[480px] mx-auto px-4">
-            <MoleculeOrbit />
-          </div>
-        </div>
-      </section>
-
-      {/* 3. The scientist */}
-      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16 items-center">
-          <Link href="/story#founder" className="group block max-w-sm mx-auto w-full lg:mx-0">
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cloud-200 border border-cloud-300">
-              <Image
-                src={asset("founder/shamsuddin.png")}
-                alt="Portrait of Professor AbulKalam M. Shamsuddin, MD, PhD."
-                fill
-                sizes="(min-width:1024px) 400px, 100vw"
-                className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.02]"
-              />
+      {/* 2. The products, one at a time */}
+      {products.map(({ product, eyebrow, title, body, facts, image, alt }, i) => {
+        const price = priceLine(product);
+        const flip = i % 2 === 1;
+        return (
+          <section key={product.slug} className={`bg-surface py-16 lg:py-24 ${i > 0 ? "border-t border-cloud-300" : ""}`}>
+            <div className={`container max-w-6xl grid lg:grid-cols-2 gap-10 lg:gap-20 items-center ${flip ? "lg:[&>*:first-child]:order-2" : ""}`}>
+              <Link href={`/shop/${product.slug}`} className="relative block aspect-[4/5] max-w-md w-full mx-auto rounded-2xl bg-cloud-200 overflow-hidden" aria-label={title}>
+                <Image src={image} alt={alt} fill sizes="(min-width:1024px) 440px, 90vw" className="object-contain p-8" priority={i === 0} />
+              </Link>
+              <div className="max-w-lg">
+                <p className={EYEBROW}>{eyebrow}</p>
+                <h2 className="text-navy-800 text-balance" style={H2}>{title}</h2>
+                <p className="mt-4 text-lg text-ink/80 leading-relaxed">{body}</p>
+                <ul className="mt-6 space-y-2 text-base text-ink/80">
+                  {facts.map((f) => (
+                    <li key={f} className="flex items-start gap-3">
+                      <span className="mt-2.5 size-1.5 rounded-full bg-gold-500 shrink-0" aria-hidden />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  <Link href={`/shop/${product.slug}`} className={CTA}>
+                    {preorder.active ? "Pre-order now" : "Shop now"}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                  <p className="text-base">
+                    {price.now !== price.regular ? <s className="text-ink/45 mr-2">{formatPrice(price.regular, currency)}</s> : null}
+                    <span className="font-semibold text-navy-800">{formatPrice(price.now, currency)}</span>
+                    <span className="text-ink/60"> · {price.size}</span>
+                  </p>
+                </div>
+                {preorder.active ? (
+                  <p className="mt-3 text-sm text-ink/60">{preorder.label} price, {preorder.discountPct}% off. {preorder.shipNote}.</p>
+                ) : null}
+              </div>
             </div>
-          </Link>
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-              The scientist
-            </p>
-            <h2 className="text-navy-800 text-balance" style={H2}>
-              The man who researched IP6 formulated it himself.
-            </h2>
-            <blockquote className="mt-6 text-navy-800 leading-snug" style={{ ...SERIF, fontStyle: "italic", fontSize: "clamp(1.15rem, 1.6vw, 1.4rem)" }}>
-              &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for centuries to come.&rdquo;
-            </blockquote>
-            <p className="mt-5 text-navy-800 text-lg" style={SERIF}>Prof. AbulKalam M. Shamsuddin, MD, PhD</p>
-            <p className="text-base text-ink/70 leading-relaxed">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
-            <Link href="/story#founder" className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
-              Meet Prof. Shamsuddin
-              <ArrowRight className="size-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
+          </section>
+        );
+      })}
 
-      {/* 4. The standard: why this one */}
+      {/* 3. Four reasons, one line each */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
         <div className="container max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-            The standard
-          </p>
-          <h2 className="text-navy-800 text-balance" style={H2}>
-            The highest purity. Research grade.
-          </h2>
-          <p className="mt-5 text-lg text-ink/80 leading-relaxed max-w-3xl">
-            IP6 Original is the formula the scientist who pioneered the research built himself.
-          </p>
-
-          <ul className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
+          <p className={EYEBROW}>The difference is in the details</p>
+          <h2 className="text-navy-800 text-balance max-w-2xl" style={H2}>The highest purity. Research grade.</h2>
+          <ul className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-10">
             {[
-              { t: "Highest purity, research grade", d: "The intact molecule the research describes, not broken-down fragments." },
-              { t: "Third-party tested", d: "Independently tested for purity, potency, and quality." },
-              { t: "cGMP-certified manufacturing", d: "Made in a cGMP-certified facility in the USA." },
-              { t: "No magnesium stearate or silicon dioxide", d: "Hypromellose (vegetable) capsules and nothing else." },
+              { icon: FlaskConical, t: "Highest purity", d: "The intact molecule the research describes, not broken-down fragments." },
+              { icon: ShieldCheck, t: "Third-party tested", d: "Independently tested for purity, potency, and quality." },
+              { icon: Award, t: "cGMP certified", d: "Made in a cGMP-certified facility in the USA." },
+              { icon: Leaf, t: "Nothing added", d: "No magnesium stearate, no silicon dioxide. A hypromellose capsule and nothing else." },
             ].map((c) => (
-              <li key={c.t} className="bg-surface p-6 lg:p-7">
-                <p className="text-navy-800 text-lg lg:text-xl leading-snug" style={SERIF}>{c.t}</p>
-                <p className="mt-2 text-base text-ink/80 leading-relaxed">{c.d}</p>
+              <li key={c.t} className="border-t-2 border-gold-500 pt-5">
+                <c.icon className="size-5 text-gold-700" aria-hidden />
+                <p className="mt-3 text-navy-800 text-lg" style={SERIF}>{c.t}</p>
+                <p className="mt-1.5 text-base text-ink/75 leading-relaxed">{c.d}</p>
               </li>
             ))}
           </ul>
-
-          <div className="mt-8">
-            <Link href="/the-difference" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+          <div className="mt-10">
+            <Link href="/the-difference" className={TEXT_LINK}>
               See what goes into it
               <ArrowRight className="size-3.5" />
             </Link>
@@ -147,103 +146,78 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Shop: the ask, once what, who and why have been read */}
-      <section id="shop" className="bg-surface border-t border-cloud-300 py-16 lg:py-24 scroll-mt-20">
-        <div className="container max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-            Shop
-          </p>
-          <h2 className="text-navy-800 text-balance" style={H2}>
-            One formula. For people, and for pets.
-          </h2>
-          <div className="mt-10 grid md:grid-cols-2 gap-6 lg:gap-8">
-            {shopCards.map(({ product, eyebrow, title, body, image }) => (
-              <article key={product.slug} className="group grid grid-cols-[136px_1fr] sm:grid-cols-[180px_1fr] border border-cloud-300 rounded-2xl overflow-hidden hover:border-gold-500 transition-colors bg-surface">
-                <Link href={`/shop/${product.slug}`} className="relative bg-cloud-200" aria-label={title}>
-                  <Image src={image} alt="" fill sizes="180px" className="object-contain p-3 transition-transform duration-500 ease-brand group-hover:scale-[1.03]" />
-                </Link>
-                <div className="p-5 sm:p-6 flex flex-col">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-gold-700 font-bold mb-1.5">{eyebrow}</p>
-                  <h3 className="text-navy-800 text-xl sm:text-2xl leading-tight" style={SERIF}>
-                    <Link href={`/shop/${product.slug}`}>{title}</Link>
-                  </h3>
-                  <p className="mt-2 text-sm text-ink/75 leading-relaxed">{body}</p>
-                  <ul className="mt-4 space-y-1.5 text-sm">
-                    {product.variants.map((v) => {
-                      const regular = v.priceCents[currency];
-                      const now = preorderUnitCents(regular, preorder);
-                      return (
-                        <li key={v.id} className="flex items-baseline justify-between gap-3 border-t border-cloud-300 pt-1.5">
-                          <span className="text-navy-800 font-medium">
-                            {v.size}
-                            {v.servings ? <span className="text-ink/55 font-normal"> · {v.servings} servings</span> : null}
-                          </span>
-                          <span className="whitespace-nowrap">
-                            {now !== regular ? <s className="text-ink/45 mr-1.5">{formatPrice(regular, currency)}</s> : null}
-                            <span className="text-navy-800 font-semibold">{formatPrice(now, currency)}</span>
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  {preorder.active ? (
-                    <p className="mt-2 text-xs text-ink/55">{preorder.label} price, {preorder.discountPct}% off. {preorder.shipNote}.</p>
-                  ) : null}
-                  <Link href={`/shop/${product.slug}`} className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 group-hover:text-gold-700">
-                    Shop {eyebrow.toLowerCase()}
-                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </Link>
-                </div>
-              </article>
-            ))}
+      {/* 4. The scientist, in one quote */}
+      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
+        <div className="container max-w-3xl text-center">
+          <Link href="/story#founder" className="inline-block" aria-label="Meet Prof. Shamsuddin">
+            <span className="relative block size-24 lg:size-28 rounded-full overflow-hidden mx-auto border border-cloud-300">
+              <Image src={asset("founder/shamsuddin.png")} alt="" fill sizes="112px" className="object-cover" />
+            </span>
+          </Link>
+          <blockquote className="mt-7 text-navy-800 text-balance leading-snug" style={{ ...SERIF, fontStyle: "italic", fontSize: "clamp(1.25rem, 2vw, 1.6rem)" }}>
+            &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for centuries to come.&rdquo;
+          </blockquote>
+          <p className="mt-6 text-navy-800 text-base font-semibold">Prof. AbulKalam M. Shamsuddin, MD, PhD</p>
+          <p className="text-sm text-ink/65">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
+          <div className="mt-5">
+            <Link href="/story#founder" className={TEXT_LINK}>
+              Meet Prof. Shamsuddin
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. The molecule, in two sentences */}
+      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
+        <div className="container max-w-6xl grid lg:grid-cols-[220px_1fr] gap-8 lg:gap-16 items-center">
+          <div className="w-full max-w-[220px] mx-auto">
+            <MoleculeModel />
+          </div>
+          <div className="max-w-2xl">
+            <p className={EYEBROW}>The molecule</p>
+            <h2 className="text-navy-800 text-balance" style={H2}>IP6 and Inositol.</h2>
+            <p className="mt-4 text-lg text-ink/80 leading-relaxed">
+              IP6 is inositol hexaphosphate, a molecule found naturally in seeds, grains, and legumes. IP6 Original pairs it with Inositol, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two.
+            </p>
+            <div className="mt-6">
+              <Link href="/the-difference" className={TEXT_LINK}>
+                Why purity matters
+                <ArrowRight className="size-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* 6. How to take it */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
+        <div className="container max-w-6xl grid lg:grid-cols-2 gap-10 lg:gap-20 items-start">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-              How to take it
-            </p>
-            <h2 className="text-navy-800 text-balance" style={H2}>
-              Take it. Here is exactly how.
-            </h2>
-            <p className="mt-5 text-lg text-ink/80 leading-relaxed">
+            <p className={EYEBROW}>How to take it</p>
+            <h2 className="text-navy-800 text-balance" style={H2}>Four capsules, once or twice a day.</h2>
+            <p className="mt-4 text-lg text-ink/80 leading-relaxed">
               Take 4 capsules once or twice daily with water, or as directed by your healthcare professional. Always consult your physician before beginning any supplement regimen.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link
-                href={`/shop/${supplement.slug}`}
-                className="inline-flex items-center gap-2 bg-button hover:bg-button-hover text-surface px-7 py-4 rounded-full font-semibold"
-              >
-                Shop IP6 Original
-                <ArrowRight className="size-4" />
-              </Link>
-              <Link
-                href="/how-to-take"
-                className="text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2"
-              >
-                Full dosing guide →
+            <div className="mt-6">
+              <Link href="/how-to-take" className={TEXT_LINK}>
+                Full directions
+                <ArrowRight className="size-3.5" />
               </Link>
             </div>
           </div>
-          <ol className="divide-y divide-cloud-300 border-y border-cloud-300">
-            {[
-              { icon: Beaker, t: "Once or twice daily", b: "Take 4 capsules once or twice daily, or as directed by your healthcare professional." },
-              { icon: RefreshCw, t: "With water", b: "Take each serving with water." },
-              { icon: AlertTriangle, t: "Consult your physician", b: "Always discuss new supplements with your healthcare professional." },
-            ].map((s, i) => (
-              <li key={i} className="py-5 flex items-start gap-4">
-                <s.icon className="size-5 text-gold-700 shrink-0 mt-0.5" aria-hidden />
-                <div>
-                  <p className="font-semibold text-navy-800">{s.t}</p>
-                  <p className="text-base text-ink/80 mt-1 leading-relaxed">{s.b}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <div>
+            <p className={EYEBROW}>Good to know</p>
+            <Accordion
+              items={homeFaq.map((f, i) => ({ id: `home-faq-${i}`, header: f.q, content: <p>{f.a}</p> }))}
+            />
+            <div className="mt-5">
+              <Link href="/faq" className={TEXT_LINK}>
+                All questions
+                <ArrowRight className="size-3.5" />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
