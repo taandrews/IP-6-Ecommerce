@@ -92,7 +92,7 @@ const config: Config = {
           700: "#7C642F",
         },
         ink: "#0B1F3A",
-        // Button fill and hover, matched to the buttons on ip-6.net.
+        // Button fill and hover (navy), matched to the research site buttons.
         button: { DEFAULT: "#102C45", hover: "#224760" },
         surface: "#FFFFFF",
         cloud: {
