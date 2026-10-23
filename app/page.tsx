@@ -155,7 +155,7 @@ export default async function HomePage() {
             </span>
           </Link>
           <blockquote className="mt-7 text-navy-800 text-balance leading-snug" style={{ ...SERIF, fontStyle: "italic", fontSize: "clamp(1.25rem, 2vw, 1.6rem)" }}>
-            &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for centuries to come.&rdquo;
+            &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for generations to come.&rdquo;
           </blockquote>
           <p className="mt-6 text-navy-800 text-base font-semibold">Professor AbulKalam M. Shamsuddin, MD, PhD</p>
           <p className="text-sm text-ink/65">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
