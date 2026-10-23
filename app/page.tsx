@@ -124,7 +124,7 @@ export default async function HomePage() {
             <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
           </p>
           </div>
-          <div className="w-full max-w-[340px] lg:max-w-[400px] mx-auto px-4">
+          <div className="w-full max-w-[400px] lg:max-w-[480px] mx-auto px-4">
             <MoleculeOrbit />
           </div>
         </div>

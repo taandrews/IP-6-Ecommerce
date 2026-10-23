@@ -3,7 +3,7 @@ import { MoleculeModel } from "@/components/home/MoleculeModel";
 /**
  * The research-site hero figure: three slowly turning orbit rings, a ring of
  * six research areas on spokes, and the rotating IP6 model at the centre,
- * with the Figure 1 caption and atom key beneath. Geometry is drawn in a
+ * Geometry is drawn in a
  * 700x700 viewBox centred on (400, 400) so it scales to any box.
  */
 
@@ -35,7 +35,7 @@ function labelArc(deg: number) {
 
 export function MoleculeOrbit() {
   return (
-    <figure className="w-full">
+    <div className="w-full">
       <div className="relative w-full" style={{ aspectRatio: "1 / 1" }}>
         <svg viewBox="50 50 700 700" aria-hidden="true" focusable="false" className="absolute inset-0 h-full w-full overflow-visible">
           {RINGS.map((ring, i) => (
@@ -72,17 +72,6 @@ export function MoleculeOrbit() {
           <MoleculeModel />
         </div>
       </div>
-      <figcaption className="mt-6 text-center text-xs sm:text-sm text-ink/70 leading-relaxed">
-        <p>
-          <strong className="text-navy-800 font-semibold">Figure 1.</strong> Inositol hexaphosphate, C<sub>6</sub>H<sub>18</sub>O<sub>24</sub>P<sub>6</sub>: six phosphate groups bonded to a six-carbon inositol ring.
-        </p>
-        <div className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[11px] sm:text-xs" aria-label="Atom colors">
-          <span className="inline-flex items-center gap-1.5"><i className="inline-block size-2 rounded-full" style={{ background: "#39424c" }} />Carbon</span>
-          <span className="inline-flex items-center gap-1.5"><i className="inline-block size-2 rounded-full border border-cloud-400" style={{ background: "#e1e6ec" }} />Hydrogen</span>
-          <span className="inline-flex items-center gap-1.5"><i className="inline-block size-2 rounded-full" style={{ background: "#db342d" }} />Oxygen</span>
-          <span className="inline-flex items-center gap-1.5"><i className="inline-block size-2 rounded-full" style={{ background: "#e6a02b" }} />Phosphorus</span>
-        </div>
-      </figcaption>
-    </figure>
+    </div>
   );
 }
