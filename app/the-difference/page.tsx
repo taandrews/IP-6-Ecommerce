@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { hreflangAlternates } from "@/lib/i18n";
@@ -12,14 +12,43 @@ export const metadata: Metadata = {
   alternates: hreflangAlternates("/the-difference"),
 };
 
-// `more` points at the material behind each line where it exists: the label itself,
-// or the research site. Lines without a public document say so plainly.
-const ROWS: { label: string; original: string; more?: { href: string; label: string }; note?: string }[] = [
-  { label: "Purity", original: "Highest purity, research grade", note: "Third-party tested for purity, potency, and quality." },
-  { label: "Verification", original: "Third-party tested", note: "Stated on the label." , more: { href: "/shop/ip6-original-supplement", label: "See the label" } },
-  { label: "Formulation", original: "No magnesium stearate or silicon dioxide", more: { href: "/shop/ip6-original-supplement", label: "See the ingredients" } },
-  { label: "Manufacturing", original: "cGMP-certified facility", note: "Stated on the label." },
-  { label: "Formulated by", original: "Prof. Shamsuddin, founder & formulator", more: { href: "/story#founder", label: "Meet Prof. Shamsuddin" } },
+// Every value is label wording, an approved claim, or the founder's public bio.
+// `more` points at the page that carries the material behind the line.
+const ROWS: { label: string; value: string; detail: string; more?: { href: string; label: string } }[] = [
+  {
+    label: "Purity",
+    value: "Highest purity, research grade",
+    detail: "The intact molecule the research describes, not broken-down fragments.",
+  },
+  {
+    label: "Formulation",
+    value: "804 mg IP6, 196 mg Inositol",
+    detail: "Per 4-capsule serving. Calcium-magnesium inositol hexaphosphate paired with Inositol, in a hypromellose (vegetable) capsule. No magnesium stearate, no silicon dioxide, no unnecessary additives.",
+    more: { href: "/shop/ip6-original-supplement", label: "See the ingredients" },
+  },
+  {
+    label: "Verification",
+    value: "Third-party tested",
+    detail: "Independently tested for purity, potency, and quality. Stated on the label.",
+    more: { href: "/shop/ip6-original-supplement", label: "See the label" },
+  },
+  {
+    label: "Manufacturing",
+    value: "cGMP-certified facility, made in USA",
+    detail: "Manufactured to current Good Manufacturing Practice standards. Stated on the label.",
+  },
+  {
+    label: "Formulated by",
+    value: "Prof. AbulKalam M. Shamsuddin, MD, PhD",
+    detail: "Physician-scientist and pioneer of published research on inositol hexaphosphate. Founder and formulator of IP6 Original.",
+    more: { href: "/story#founder", label: "Meet Prof. Shamsuddin" },
+  },
+  {
+    label: "Sizes",
+    value: "60 or 240 capsules",
+    detail: "15 or 60 servings of 4 capsules.",
+    more: { href: "/shop/ip6-original-supplement", label: "Choose a size" },
+  },
 ];
 
 export default function TheDifferencePage() {
@@ -58,47 +87,46 @@ export default function TheDifferencePage() {
           </div>
         </section>
 
-        {/* Specification table: IP6 Original's own strengths only, no competitor column */}
-        <section className="container max-w-4xl pb-12">
-          <div className="border-y border-cloud-300">
-            {/* Header row */}
-            <div className="grid grid-cols-[1fr_1.6fr] py-5 lg:py-6 border-b border-cloud-300">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 font-bold">
-                  Specification
-                </p>
-              </div>
-              <div className="border-l-2 border-gold-500 pl-5 lg:pl-6">
-                <p className="text-[10px] uppercase tracking-[0.22em] text-navy-800 font-bold mb-1">
-                  IP6 Original
-                </p>
-                <p className="text-xs text-ink/65">From the lab of Prof. Shamsuddin</p>
-              </div>
+        {/* Specification sheet: IP6 Original's own facts only, no competitor column */}
+        <section className="container max-w-4xl pb-12 lg:pb-16" aria-labelledby="spec-title">
+          <h2
+            id="spec-title"
+            className="text-navy-800 text-balance"
+            style={{ fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.1, letterSpacing: "-0.02em" }}
+          >
+            What is in every bottle.
+          </h2>
+          <p className="mt-3 mb-8 text-base lg:text-lg text-ink/75 leading-relaxed max-w-2xl">
+            Each line below is taken from the label or from the founder&rsquo;s own record. Nothing here is a comparison with anyone else.
+          </p>
+
+          <div className="border-t-2 border-navy-800">
+            {/* Column headers, desktop only */}
+            <div className="hidden sm:grid grid-cols-[180px_1fr] lg:grid-cols-[220px_1fr] gap-x-8 py-3 border-b border-navy-100">
+              <p className="text-sm font-semibold text-navy-800">Specification</p>
+              <p className="text-sm font-semibold text-navy-800">IP6 Original Supplement</p>
             </div>
 
-            {/* Data rows */}
-            {ROWS.map((row, i) => (
+            {ROWS.map((row) => (
               <div
                 key={row.label}
-                className={`grid grid-cols-[1fr_1.6fr] py-5 lg:py-6 ${
-                  i < ROWS.length - 1 ? "border-b border-cloud-300" : ""
-                }`}
+                className="grid sm:grid-cols-[180px_1fr] lg:grid-cols-[220px_1fr] gap-x-8 gap-y-2 py-6 border-b border-navy-100"
               >
-                <div className="flex items-center">
-                  <p className="font-semibold text-navy-800 text-sm lg:text-base">{row.label}</p>
-                </div>
-                <div className="border-l-2 border-gold-500 pl-5 lg:pl-6 flex items-start gap-3">
-                  <Check className="size-4 text-gold-700 shrink-0 mt-0.5" aria-hidden />
-                  <div>
-                    <p className="text-sm lg:text-base text-navy-800 font-medium">{row.original}</p>
-                    {row.note ? <p className="mt-1 text-sm text-ink/70">{row.note}</p> : null}
-                    {row.more ? (
-                      <a href={row.more.href} className="mt-1.5 inline-flex items-center gap-1 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
-                        {row.more.label}
-                        <ArrowRight className="size-3" aria-hidden />
-                      </a>
-                    ) : null}
-                  </div>
+                <p
+                  className="text-navy-800"
+                  style={{ fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400, fontSize: "1.25rem", lineHeight: 1.2 }}
+                >
+                  {row.label}
+                </p>
+                <div className="sm:border-l-2 sm:border-gold-500 sm:pl-6">
+                  <p className="text-[17px] text-navy-800 font-semibold leading-snug">{row.value}</p>
+                  <p className="mt-1.5 text-[15px] text-ink/75 leading-relaxed">{row.detail}</p>
+                  {row.more ? (
+                    <a href={row.more.href} className="mt-2.5 inline-flex items-center gap-1 text-[15px] font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+                      {row.more.label}
+                      <ArrowRight className="size-3.5" aria-hidden />
+                    </a>
+                  ) : null}
                 </div>
               </div>
             ))}
