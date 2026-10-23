@@ -184,6 +184,9 @@ export default async function HomePage() {
                 className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.02]"
               />
             </div>
+            <blockquote className="mt-5 text-navy-800 leading-snug" style={{ ...SERIF, fontStyle: "italic", fontSize: "clamp(1.05rem, 1.4vw, 1.2rem)" }}>
+              &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for centuries to come.&rdquo;
+            </blockquote>
             <p className="mt-4 text-navy-800 text-lg" style={SERIF}>Prof. AbulKalam M. Shamsuddin, MD, PhD</p>
             <p className="text-sm text-ink/70 leading-relaxed">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
             <span className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 group-hover:text-gold-700">
