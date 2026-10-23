@@ -103,6 +103,46 @@
   width: 100%;
   justify-items: center;
 }
+@media (min-width: 901px) {
+  /* Desktop: the text area stops a full button row plus a gap above the buttons.
+     The words are centred when they fit; when they do not, they grow upward,
+     never down under the buttons. */
+  .copy {
+    justify-content: flex-end;
+    padding-bottom: 11.5rem;
+  }
+  .textStack {
+    margin-block: auto;
+  }
+  /* Visor slide: its four-line headline is sized to the window height so the
+     block fits on laptop screens. */
+  .textSplit .line {
+    font-size: clamp(1.8rem, min(4.4vw, 6.4vh), 4.4rem);
+  }
+}
+/* Short desktop windows only: headlines and spacing scale down with the window
+   height so every slide's words fit between the top of the photo and the buttons. */
+@media (min-width: 901px) and (max-height: 760px) {
+  .copy {
+    padding-top: 2rem;
+    padding-bottom: 10.5rem;
+  }
+  .line {
+    font-size: clamp(1.6rem, min(5.6vw, 6.4vh), 5.4rem);
+  }
+  .sub {
+    font-size: 0.95rem;
+  }
+  .textSplit .line {
+    font-size: clamp(1.5rem, min(4.4vw, 5.6vh), 4.4rem);
+  }
+  .eyebrow {
+    margin-bottom: 1rem;
+  }
+  .sub {
+    margin-top: 0.7rem;
+  }
+}
 .text {
   grid-area: 1 / 1;
   display: flex;
