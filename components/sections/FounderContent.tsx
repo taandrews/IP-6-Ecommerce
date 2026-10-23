@@ -35,7 +35,7 @@ export function FounderContent() {
             The scientist behind IP6 Original.
           </h2>
           <p className="mt-5 text-lg text-ink/65 leading-snug">
-            Prof. AbulKalam M. Shamsuddin, MD, PhD
+            Professor AbulKalam M. Shamsuddin, MD, PhD
           </p>
           <p className="text-base text-ink/65">
             Physician-scientist · Retired from the University of Maryland School of Medicine in 2020 · Founder and formulator, IP6 Original

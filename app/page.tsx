@@ -149,7 +149,7 @@ export default async function HomePage() {
       {/* 4. The scientist, in one quote */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
         <div className="container max-w-3xl text-center">
-          <Link href="/story#founder" className="inline-block" aria-label="Meet Prof. Shamsuddin">
+          <Link href="/story#founder" className="inline-block" aria-label="Meet Professor Shamsuddin">
             <span className="relative block size-24 lg:size-28 rounded-full overflow-hidden mx-auto border border-cloud-300">
               <Image src={asset("founder/shamsuddin.png")} alt="" fill sizes="112px" className="object-cover" />
             </span>
@@ -157,11 +157,11 @@ export default async function HomePage() {
           <blockquote className="mt-7 text-navy-800 text-balance leading-snug" style={{ ...SERIF, fontStyle: "italic", fontSize: "clamp(1.25rem, 2vw, 1.6rem)" }}>
             &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for centuries to come.&rdquo;
           </blockquote>
-          <p className="mt-6 text-navy-800 text-base font-semibold">Prof. AbulKalam M. Shamsuddin, MD, PhD</p>
+          <p className="mt-6 text-navy-800 text-base font-semibold">Professor AbulKalam M. Shamsuddin, MD, PhD</p>
           <p className="text-sm text-ink/65">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
           <div className="mt-5">
             <Link href="/story#founder" className={TEXT_LINK}>
-              Meet Prof. Shamsuddin
+              Meet Professor Shamsuddin
               <ArrowRight className="size-3.5" />
             </Link>
           </div>
@@ -178,7 +178,7 @@ export default async function HomePage() {
             <p className={EYEBROW}>The molecule</p>
             <h2 className="text-navy-800 text-balance" style={H2}>IP6 and Inositol.</h2>
             <p className="mt-4 text-lg text-ink/80 leading-relaxed">
-              IP6 is inositol hexaphosphate, a molecule found naturally in seeds, grains, and legumes. IP6 Original pairs it with Inositol, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two.
+              IP6 is inositol hexaphosphate, a molecule found naturally in seeds, grains, and legumes. IP6 Original pairs it with Inositol, the simpler compound at its core, the way Professor Shamsuddin&rsquo;s research describes the two.
             </p>
             <div className="mt-6">
               <Link href="/the-difference" className={TEXT_LINK}>

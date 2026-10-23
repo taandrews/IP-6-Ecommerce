@@ -39,9 +39,9 @@ const ROWS: { label: string; value: string; detail: string; more?: { href: strin
   },
   {
     label: "Formulated by",
-    value: "Prof. AbulKalam M. Shamsuddin, MD, PhD",
+    value: "Professor AbulKalam M. Shamsuddin, MD, PhD",
     detail: "Physician-scientist and pioneer of published research on inositol hexaphosphate. Founder and formulator of IP6 Original.",
-    more: { href: "/story#founder", label: "Meet Prof. Shamsuddin" },
+    more: { href: "/story#founder", label: "Meet Professor Shamsuddin" },
   },
   {
     label: "Sizes",
@@ -82,7 +82,7 @@ export default function TheDifferencePage() {
             <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
               First, what it is. IP6, or{" "}
               <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, is a naturally occurring molecule of inositol carrying six phosphate groups, found in the bran of seeds and grains.{" "}
-              <strong className="text-navy-800 font-semibold">Inositol</strong> is the simpler compound at its core, and IP6 Original pairs the two as Prof. Shamsuddin&rsquo;s research describes them. Because IP6 is defined by those six phosphate groups, the purity of the compound, how much of it remains the intact molecule rather than broken-down fragments, is what determines its quality. That is why purity comes first below.
+              <strong className="text-navy-800 font-semibold">Inositol</strong> is the simpler compound at its core, and IP6 Original pairs the two as Professor Shamsuddin&rsquo;s research describes them. Because IP6 is defined by those six phosphate groups, the purity of the compound, how much of it remains the intact molecule rather than broken-down fragments, is what determines its quality. That is why purity comes first below.
             </p>
           </div>
         </section>

@@ -37,7 +37,7 @@ export const products: Product[] = [
     heroClaim: "High-purity formula",
     highlights: [
       "High-Purity Formula, third-party tested",
-      "Formulated by Prof. Shamsuddin, founder and formulator",
+      "Formulated by Professor Shamsuddin, founder and formulator",
       "Manufactured in a cGMP-certified facility",
       "No magnesium stearate, no silicon dioxide, no unnecessary additives",
       "Hypromellose (vegetable) capsule",

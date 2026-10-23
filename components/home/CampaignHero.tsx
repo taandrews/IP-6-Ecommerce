@@ -27,7 +27,7 @@ export function CampaignHero({ productHref }: { productHref: string }) {
       </div>
       <div className={styles.standards}>
         <p>Original research.<br /><span>Since 1988.</span></p>
-        <p>Formulated by<br /><span>Prof. Shamsuddin</span></p>
+        <p>Formulated by<br /><span>Professor Shamsuddin</span></p>
         <p>Independently<br /><span>Third-party tested</span></p>
         <p>Manufactured in a<br /><span>cGMP-certified facility</span></p>
       </div>

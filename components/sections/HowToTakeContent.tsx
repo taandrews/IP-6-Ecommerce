@@ -37,7 +37,7 @@ export function HowToTakeContent() {
           <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
             IP6 is{" "}
             <strong className="text-navy-800 font-semibold">inositol</strong> carrying six phosphate groups;{" "}
-            <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original combines Calcium-Magnesium IP6 with Inositol, the pairing Prof. Shamsuddin&rsquo;s research is built around.
+            <strong className="text-navy-800 font-semibold">Inositol</strong> is the same core molecule without them. IP6 Original combines Calcium-Magnesium IP6 with Inositol, the pairing Professor Shamsuddin&rsquo;s research is built around.
           </p>
         </div>
       </section>
