@@ -58,7 +58,7 @@ export const faqCategories: FaqCategory[] = [
       },
       {
         q: "My order arrived damaged or incorrect. What do I do?",
-        a: "Use the contact form, choose Order question, and include your order number and photos of the item and the packaging. We reply by email and make it right.",
+        a: "Contact us right away through the contact form with your order number and photos of the item and the packaging. We reply within one business day and review each case individually to make it right. No need to send the item back.",
         more: { href: "/contact", label: "Open the contact form" },
       },
     ],

@@ -29,7 +29,7 @@ export default function ContactPage() {
             </div>
             <div>
               <dt className="font-semibold text-navy-800">Damaged or incorrect orders</dt>
-              <dd>Choose Order question, add your order number, and describe what arrived. Photos of the item and the packaging help us sort it out in one reply.</dd>
+              <dd>Contact us as soon as it arrives. Choose Order question, add your order number, and attach photos of the item and the packaging so we can review it and make it right.</dd>
             </div>
             <div>
               <dt className="font-semibold text-navy-800">After you send</dt>
