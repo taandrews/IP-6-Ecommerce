@@ -310,6 +310,14 @@
     background: #001840;
     padding: 1.75rem 6vw 2.25rem;
   }
+  /* On the navy block the button is white so it still reads as a button. */
+  .cta {
+    background: #fff;
+    color: #001840;
+  }
+  .cta:hover {
+    background: #e8c870;
+  }
   /* Phones: darker band behind the centred copy so white and gold text read on bright photos. */
   .dim {
     background: linear-gradient(to bottom, rgba(6, 18, 42, 0.2), rgba(6, 18, 42, 0.62) 38%, rgba(6, 18, 42, 0.62) 72%, rgba(6, 18, 42, 0.35));
