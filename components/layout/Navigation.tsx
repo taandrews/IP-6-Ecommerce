@@ -38,7 +38,7 @@ export function Navigation() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm font-medium text-ink/80 hover:text-forest-700"
+              className="text-base font-semibold text-navy-800 hover:text-gold-700"
             >
               {l.label}
             </Link>
@@ -112,7 +112,7 @@ export function Navigation() {
                 <Link
                   href={l.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block py-3 border-b border-ivory-300 text-lg text-forest-800"
+                  className="block py-3 border-b border-ivory-300 text-lg font-semibold text-navy-800"
                 >
                   {l.label}
                 </Link>

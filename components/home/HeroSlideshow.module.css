@@ -64,8 +64,9 @@
   background: #c9a961;
   mix-blend-mode: multiply;
 }
+/* Navy band behind the copy so white and gold text read on bright photos. */
 .dim {
-  background: linear-gradient(to top, rgba(6, 18, 42, 0.55), rgba(6, 18, 42, 0.08) 45%, rgba(6, 18, 42, 0.18));
+  background: linear-gradient(to top, rgba(6, 18, 42, 0.72), rgba(6, 18, 42, 0.5) 30%, rgba(6, 18, 42, 0.5) 72%, rgba(6, 18, 42, 0.3));
 }
 .reveal .ph img,
 .reveal .ph video {
@@ -76,7 +77,7 @@
   opacity: 0;
 }
 .reveal .dim {
-  opacity: 0.85;
+  opacity: 1;
 }
 
 .copy {
@@ -95,7 +96,8 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   font-weight: 600;
-  color: #bfedf6;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
   opacity: 0;
   transition: opacity 0.6s ease 0.3s;
 }
@@ -117,9 +119,10 @@
 }
 .line {
   margin: 0;
-  font-weight: 300;
+  font-weight: 400;
   text-transform: uppercase;
   font-size: clamp(2rem, min(4.8vw, 8vh), 4.4rem);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.5);
   line-height: 1.08;
   letter-spacing: 0.02em;
   max-width: 15ch;
@@ -146,8 +149,8 @@
   max-width: 50ch;
   font-size: clamp(0.95rem, 1.25vw, 1.1rem);
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.7), 0 1px 2px rgba(0, 0, 0, 0.6);
   opacity: 0;
   transition: opacity 0.6s ease;
 }

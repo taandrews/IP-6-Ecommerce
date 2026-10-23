@@ -138,8 +138,10 @@ export function PreBookPopup() {
     // Visitors get to read first: the questionnaire opens once they have scrolled
     // past the first screen, after 45 seconds on the page, or on exit intent.
     const t = setTimeout(show, 45000);
+    const loadedAt = Date.now();
     const onScroll = () => {
-      if (window.scrollY > window.innerHeight * 0.9) show();
+      // A browser restoring an old scroll position on reload is not the visitor scrolling.
+      if (Date.now() - loadedAt > 1500 && window.scrollY > window.innerHeight * 0.9) show();
     };
     const onMouseOut = (e: MouseEvent) => {
       if (e.clientY <= 0) show();
