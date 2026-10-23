@@ -145,8 +145,15 @@
 .reveal .sub {
   opacity: 1;
 }
+.actions {
+  margin-top: 1.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem 0.9rem;
+}
 .routes {
-  margin-top: 1.3rem;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -169,7 +176,7 @@
   border-color: #001840;
 }
 .cta {
-  margin-top: 1.8rem;
+  margin: 0;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -342,11 +349,9 @@
     max-width: 34ch;
     margin-top: 0.8rem;
   }
-  .cta {
+  .actions {
     margin-top: 1.3rem;
-  }
-  .routes {
-    margin-top: 1rem;
+    gap: 0.8rem;
   }
   .routes a {
     font-size: 12px;

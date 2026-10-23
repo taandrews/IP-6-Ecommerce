@@ -190,15 +190,17 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
                 <p className={styles.line} aria-level={1} role="heading">{renderLine(s, active)}</p>
               )}
               <p className={styles.sub}>{s.sub}</p>
-              <Link href={s.cta?.href ?? ctaHref} className={styles.cta} tabIndex={active ? 0 : -1}>
-                {s.cta?.label ?? "Pre-order IP6 Original · 15% off"}
-                <ArrowRight aria-hidden />
-              </Link>
-              {/* Fixed routes, the same on every slide, so the choice never depends on which photo is showing. */}
-              <nav className={styles.routes} aria-label="Shop by">
-                <Link href={ctaHref} tabIndex={active ? 0 : -1}>Supplement for people</Link>
-                {petHref ? <Link href={petHref} tabIndex={active ? 0 : -1}>Powder for pets</Link> : null}
-              </nav>
+              <div className={styles.actions}>
+                <Link href={s.cta?.href ?? ctaHref} className={styles.cta} tabIndex={active ? 0 : -1}>
+                  {s.cta?.label ?? "Pre-order IP6 Original · 15% off"}
+                  <ArrowRight aria-hidden />
+                </Link>
+                {/* Fixed routes on every slide, on the button's row, so they never sit under the disclaimer bar. */}
+                <nav className={styles.routes} aria-label="Shop by">
+                  <Link href={ctaHref} tabIndex={active ? 0 : -1}>For people</Link>
+                  {petHref ? <Link href={petHref} tabIndex={active ? 0 : -1}>For pets</Link> : null}
+                </nav>
+              </div>
             </div>
           </div>
         );
