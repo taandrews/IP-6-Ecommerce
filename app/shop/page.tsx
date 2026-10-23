@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ProductCard } from "@/components/product/ProductCard";
+import { Suspense } from "react";
+import { ShopCatalog } from "@/components/store/ShopCatalog";
 import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { getCatalog } from "@/lib/data/catalog";
@@ -19,7 +20,7 @@ export default async function ShopPage() {
   const [products, preorder] = await Promise.all([getCatalog(), getPreorderSettings()]);
   return (
     <>
-      <section className="container py-16 lg:py-24 text-center max-w-2xl mx-auto">
+      <section className="container pt-16 pb-10 lg:pt-20 lg:pb-12 text-center max-w-2xl mx-auto">
         <p className="eyebrow mb-3">The collection</p>
         <h1 className="font-display text-display-xl text-forest-800 mb-6 text-balance">
           IP6 Original, for people and pets.
@@ -29,13 +30,9 @@ export default async function ShopPage() {
         </p>
       </section>
 
-      <section className="container pb-20">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((p) => (
-            <ProductCard key={p.sku} product={p} currency={currency} preorder={preorder} />
-          ))}
-        </div>
-      </section>
+      <Suspense fallback={null}>
+        <ShopCatalog products={products} currency={currency} preorder={preorder} />
+      </Suspense>
 
       <StickyDisclaimer />
       <Footer showDshea />

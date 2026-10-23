@@ -92,7 +92,7 @@
 }
 .eyebrow {
   margin: 0 0 1.6rem;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   font-weight: 600;
@@ -118,7 +118,7 @@
 }
 .line em {
   font-style: normal;
-  color: #d9bd79;
+  color: #e8c870;
 }
 .ch,
 .chIn {
@@ -164,15 +164,15 @@
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 .routes a:hover {
-  background: #102c45;
-  border-color: #102c45;
+  background: #001840;
+  border-color: #001840;
 }
 .cta {
   margin-top: 1.8rem;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  background: #102c45;
+  background: #001840;
   color: #fff;
   padding: 1rem 1.75rem;
   border-radius: 999px;
@@ -184,7 +184,7 @@
   transition: opacity 0.6s ease, transform 0.6s ease, background-color 0.2s ease;
 }
 .cta:hover {
-  background: #224760;
+  background: #0c2c5e;
 }
 .reveal .cta {
   opacity: 1;
@@ -219,7 +219,7 @@
   background: rgba(255, 255, 255, 0.55);
 }
 .dotOn {
-  background: #c9a961;
+  background: #e8c870;
   transform: scale(1.25);
 }
 
@@ -289,7 +289,7 @@
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   }
   .line em {
-    color: #ecd08f;
+    color: #e8c870;
   }
   .sub {
     font-size: 14px;

@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { asset } from "@/lib/assets";
 import s from "./PreBookPopup.module.css";
+import { products } from "@/content/products";
+import { preorderUnitCents } from "@/lib/preorder";
+import { usePreorder } from "@/components/store/StoreSettings";
+import { formatPrice } from "@/lib/utils";
 
 const KEY = "ip6quiz_seen_v1";
 const LAUNCH_MS = Date.parse("2026-11-01T04:00:00Z");
@@ -108,6 +112,8 @@ export function PreBookPopup() {
   const [error, setError] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<Element | null>(null);
+  const PREORDER = usePreorder();
+  const listUsd = products.find((p) => p.slug === "ip6-original-supplement")?.variants[0]?.priceCents.USD ?? 0;
 
   const show = useCallback(() => {
     if (seenBefore()) return;
@@ -311,7 +317,7 @@ export function PreBookPopup() {
                   <h2 className={s.h2}>IP6 Original is your match.</h2>
                   <p className={s.sub}>{result}</p>
                   <p className={s.price}>
-                    Pre-order price with 15% off: <b>$41.65</b> <s>$49.00</s>
+                    Pre-order price with {PREORDER.discountPct}% off: <b>{formatPrice(preorderUnitCents(listUsd, PREORDER), "USD")}</b> <s>{formatPrice(listUsd, "USD")}</s>
                   </p>
                   <p className={s.micro}>Your pre-order offer will be emailed to {email.trim()}. Starts shipping November 2026.</p>
                   <a className={s.cta} href={PRODUCT_URL} onClick={markSeen}>

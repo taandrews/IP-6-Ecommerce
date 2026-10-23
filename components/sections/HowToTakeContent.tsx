@@ -70,7 +70,7 @@ export function HowToTakeContent() {
                 <s.icon className="size-5 text-gold-700" aria-hidden />
               </div>
               <h3 className="font-semibold text-navy-800 text-lg mb-2">{s.title}</h3>
-              <p className="text-sm text-ink/70 leading-relaxed">{s.body}</p>
+              <p className="text-base text-ink/80 leading-relaxed">{s.body}</p>
             </li>
           ))}
         </ol>
@@ -93,7 +93,7 @@ export function HowToTakeContent() {
           >
             Daily dose, pairing, timing.
           </h2>
-          <div className="space-y-4 text-base lg:text-lg text-ink/80 leading-relaxed">
+          <div className="space-y-4 text-lg lg:text-xl text-ink/85 leading-relaxed">
             <p>
               <strong className="text-navy-800 font-semibold">Serving size is 4 capsules.</strong> Take 4 capsules once or twice daily with water, or as directed by a healthcare professional. The 240-capsule bottle holds 60 servings.
             </p>
@@ -120,7 +120,7 @@ export function HowToTakeContent() {
         >
           Cautions and contraindications.
         </h2>
-        <div className="space-y-4 text-base lg:text-lg text-ink/80 leading-relaxed">
+        <div className="space-y-4 text-lg lg:text-xl text-ink/85 leading-relaxed">
           <p>
             If you are pregnant, nursing, taking medication, or managing a health condition, consult your healthcare provider before use.
           </p>
@@ -128,7 +128,7 @@ export function HowToTakeContent() {
             Stop taking IP6 Original and contact your physician if you experience any adverse reaction.
           </p>
         </div>
-        <p className="mt-8 text-sm text-ink/55 italic">
+        <p className="mt-8 text-base text-ink/65 italic">
           Always consult your physician before beginning any supplement regimen, including IP6 Original.
         </p>
       </section>

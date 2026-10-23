@@ -8,7 +8,7 @@ export function FounderContent() {
   return (
     <article id="founder" className="scroll-mt-24">
       {/* Hero */}
-      <section className="container py-20 lg:py-28 grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-16 items-center">
+      <section className="container py-16 lg:py-24 grid lg:grid-cols-[1fr_1.2fr] gap-12 lg:gap-16 items-center">
         <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-cloud-200 max-w-md mx-auto w-full">
           <Image
             src={asset("founder/shamsuddin.png")}
@@ -37,54 +37,17 @@ export function FounderContent() {
           <p className="mt-5 text-lg text-ink/65 leading-snug">
             Prof. AbulKalam M. Shamsuddin, MD, PhD
           </p>
-          <p className="text-sm text-ink/55">
+          <p className="text-base text-ink/65">
             Physician-scientist · Retired from the University of Maryland School of Medicine in 2020 · Founder and formulator, IP6 Original
           </p>
-        </div>
-      </section>
-
-      {/* Body */}
-      <section className="bg-surface border-y border-cloud-300">
-        <div className="container max-w-3xl py-16 lg:py-20 space-y-8 text-lg text-ink/85 leading-relaxed">
-          <p>
-            Professor AbulKalam M. Shamsuddin, MD, PhD is a physician-scientist and pioneer of published research on inositol hexaphosphate. He researched the molecule at the University of Maryland School of Medicine before retiring from the university in 2020. He formulated IP6 Original to bring the product of that research directly to consumers.
+          <p className="mt-6 text-lg text-ink/85 leading-relaxed">
+            A physician-scientist and pioneer of published research on inositol hexaphosphate, he researched the molecule at the University of Maryland School of Medicine before retiring from the university in 2020. He formulated IP6 Original to bring the product of that research directly to consumers.
           </p>
-
-        </div>
-      </section>
-
-      {/* Credential strip */}
-      <section className="bg-surface border-b border-cloud-300">
-        <div className="container py-16 lg:py-20 grid sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-10 max-w-6xl">
-          {[
-            { t: "Physician-Scientist", l: "University of Maryland School of Medicine, retired 2020" },
-            { t: "Pioneer in IP6 Research", l: "A body of published, peer-reviewed work" },
-            { t: "Founder", l: "IP6 Original" },
-            { t: "Formulator", l: "Formulated IP6 Original himself" },
-          ].map((c) => (
-            <div key={c.t}>
-              <span aria-hidden className="block h-px w-12 bg-gold-500 mb-5" />
-              <p
-                className="font-serif text-navy-800 leading-snug"
-                style={{
-                  fontFamily: "var(--font-display), Georgia, serif",
-                  fontSize: "clamp(1.35rem, 2vw, 1.6rem)",
-                  letterSpacing: "-0.015em",
-                  fontWeight: 400,
-                }}
-              >
-                {c.t}
-              </p>
-              <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
-                {c.l}
-              </p>
-            </div>
-          ))}
         </div>
       </section>
 
       {/* Closing CTA */}
-      <section className="container py-20 lg:py-24 max-w-3xl text-center">
+      <section className="container pb-16 lg:pb-24 max-w-3xl text-center border-t border-cloud-300 pt-12">
         <p
           className="font-serif text-navy-800 text-balance leading-tight"
           style={{

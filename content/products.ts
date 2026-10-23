@@ -1,5 +1,19 @@
-import type { Product } from "@/types";
+import type { Product, Currency } from "@/types";
 import { asset } from "@/lib/assets";
+
+// Every price is set in USD and converted with one rate table so no currency
+// can drift from the others. Rates are a fixed snapshot; update them here.
+const USD_RATES: Record<Currency, number> = { USD: 1, CAD: 1.37, GBP: 0.8, AUD: 1.51, EUR: 0.92, INR: 83.65 };
+
+/** USD cents in, every supported currency out, rounded to a .99 price (whole rupees for INR). */
+export function pricesFromUsd(usdCents: number): Record<Currency, number> {
+  const out = {} as Record<Currency, number>;
+  for (const [c, rate] of Object.entries(USD_RATES) as [Currency, number][]) {
+    const raw = usdCents * rate;
+    out[c] = c === "USD" ? usdCents : c === "INR" ? Math.round(raw / 100) * 100 : Math.max(99, Math.round(raw / 100) * 100 - 1);
+  }
+  return out;
+}
 
 // Product photos, served from the S3/CloudFront assets bucket (see lib/assets.ts; sources in assets/products/).
 const HERO_SUPPLEMENT = asset("products/supplement-240.png");
@@ -44,7 +58,7 @@ export const products: Product[] = [
         name: "Capsules",
         format: "Capsule",
         size: "240 count",
-        priceCents: { USD: 4900, CAD: 6700, GBP: 3900, AUD: 7400, EUR: 4500, INR: 409900 },
+        priceCents: pricesFromUsd(4999),
         weightGrams: 150,
         inStock: true,
         servings: 60,
@@ -57,7 +71,7 @@ export const products: Product[] = [
         name: "Capsules",
         format: "Capsule",
         size: "60 count",
-        priceCents: { USD: 2900, CAD: 4000, GBP: 2300, AUD: 4400, EUR: 2700, INR: 242600 },
+        priceCents: pricesFromUsd(2900),
         weightGrams: 95,
         inStock: true,
         servings: 15,
@@ -129,7 +143,7 @@ export const products: Product[] = [
         name: "Powder",
         format: "Powder",
         size: "120 g",
-        priceCents: { USD: 3400, CAD: 4700, GBP: 2700, AUD: 5100, EUR: 3100, INR: 284400 },
+        priceCents: pricesFromUsd(2999),
         weightGrams: 160,
         inStock: true,
         servings: 120,

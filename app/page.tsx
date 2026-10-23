@@ -1,19 +1,10 @@
 import Image from "next/image";
 import { asset } from "@/lib/assets";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ShieldCheck,
-  Award,
-  RefreshCw,
-  Truck,
-  CheckCircle2,
-  FlaskConical,
-  Beaker,
-  AlertTriangle,
-} from "lucide-react";
+import { ArrowRight, RefreshCw, Beaker, AlertTriangle } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
+import { TrustTicker } from "@/components/home/TrustTicker";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
@@ -57,33 +48,15 @@ export default async function HomePage() {
       <section className="relative bg-surface">
         <HeroSlideshow ctaHref={`/shop/${supplement.slug}`} petHref={pet ? `/shop/${pet.slug}` : undefined} />
 
-        {/* Trust strip */}
-        <div className="border-t border-cloud-300 bg-surface">
-          <div className="container py-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-xs uppercase tracking-[0.18em] text-navy-800 font-semibold">
-            <span className="flex items-center gap-2">
-              <Award className="size-4 text-gold-700" /> cGMP Certified
-            </span>
-            <span className="flex items-center gap-2">
-              <ShieldCheck className="size-4 text-gold-700" /> Third-Party Tested
-            </span>
-            <span className="flex items-center gap-2">
-              <FlaskConical className="size-4 text-gold-700" /> High-Purity Formula
-            </span>
-            <span className="flex items-center gap-2">
-              <Truck className="size-4 text-gold-700" /> Free US shipping over $75
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-gold-700" /> Made in USA
-            </span>
-          </div>
-        </div>
+        {/* The label's badges, large, as a slow ticker */}
+        <TrustTicker />
       </section>
 
       {/* =============================================
          SHOP - the two products, each size with its price.
          Fixed routes for people and pets, so the rotating hero never has to carry them.
       ============================================== */}
-      <section id="shop" className="bg-surface border-t border-cloud-300 py-14 lg:py-20 scroll-mt-20">
+      <section id="shop" className="bg-surface py-16 lg:py-24 scroll-mt-20">
         <div className="container max-w-6xl">
           <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
             Shop
@@ -138,7 +111,7 @@ export default async function HomePage() {
       {/* =============================================
          PRIMER - What IP6 and Inositol are, beside the label that lists them.
       ============================================== */}
-      <section className="bg-surface border-t border-cloud-300 py-14 lg:py-20">
+      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
         <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-16 items-center">
           <div>
             <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
@@ -226,7 +199,7 @@ export default async function HomePage() {
          Take it. Here is exactly how.
       ============================================== */}
       <section className="bg-surface py-16 lg:py-24 border-t border-cloud-300">
-        <div className="container max-w-5xl grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
+        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
           <div>
             <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
               The Action

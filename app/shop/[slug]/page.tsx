@@ -247,7 +247,7 @@ export default async function ProductPage({ params }: Params) {
       ) : null}
 
       {/* How to use */}
-      <section className="container py-16 max-w-3xl">
+      <section id="how-to-use" className="container py-16 max-w-3xl scroll-mt-24">
         <h2 className="font-display text-display-md text-forest-800 mb-6">How to use</h2>
         <ol className="space-y-4">
           {product.howToUse.map((step, i) => (

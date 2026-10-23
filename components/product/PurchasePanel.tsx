@@ -82,7 +82,7 @@ export function PurchasePanel({
       </div>
       {PREORDER.active ? (
         <p className="text-sm text-ink/70 -mt-3">
-          {PREORDER.label}: {PREORDER.discountPct}% off one-time purchases, applied in your cart. {PREORDER.shipNote}. Free US shipping on orders over $75.
+{PREORDER.label} offer, for a limited time: {PREORDER.discountPct}% off one-time purchases while pre-orders are open, applied in your cart. {PREORDER.shipNote}. Free US shipping on orders over $75.
         </p>
       ) : null}
 
@@ -232,6 +232,18 @@ export function PurchasePanel({
       <p className="text-sm text-ink/70 leading-relaxed">
         {PREORDER.active ? `${PREORDER.shipNote}, in the order received. ` : ""}You get a tracking email the day your order ships. After that, US standard delivery usually takes {TRANSIT_DAYS.domesticStandard[0]} to {TRANSIT_DAYS.domesticStandard[1]} business days ({TRANSIT_DAYS.domesticExpedited[0]} to {TRANSIT_DAYS.domesticExpedited[1]} expedited) and international orders {TRANSIT_DAYS.internationalStandard[0]} to {TRANSIT_DAYS.internationalStandard[1]}; carrier delays can stretch that.{PREORDER.active ? " If the shipping date changes, we email you the new date and you can cancel for a full refund." : ""}
       </p>
+
+      {/* Directions, right beside the purchase controls */}
+      {product.howToUse[0] ? (
+        <div className="rounded-md border border-cloud-300 px-4 py-3 text-sm text-ink/80 leading-relaxed">
+          <p>
+            <strong className="text-navy-800">How to take:</strong> {product.howToUse[0]}
+          </p>
+          <a href={product.category === "supplement" ? "/how-to-take" : "#how-to-use"} className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+            Full directions
+          </a>
+        </div>
+      ) : null}
 
       {/* Reassurance */}
       <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-ink/75">

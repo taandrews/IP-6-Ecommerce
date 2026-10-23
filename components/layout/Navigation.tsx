@@ -55,6 +55,12 @@ export function Navigation() {
           </Link>
           <CurrencySwitcher />
           <Link
+            href="/shop/ip6-original-supplement"
+            className="btn-primary text-sm px-4 py-2 ml-1 whitespace-nowrap"
+          >
+            Order now
+          </Link>
+          <Link
             href="/account"
             aria-label="Account"
             className="p-2 rounded-md hover:bg-ivory-200"
@@ -100,7 +106,7 @@ export function Navigation() {
             mobileOpen ? "translate-x-0" : "translate-x-full",
           )}
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <span className="font-display text-xl text-forest-800">Menu</span>
             <button onClick={() => setMobileOpen(false)} className="p-2" aria-label="Close">
               <X className="size-5" />
