@@ -41,30 +41,30 @@ const LEGAL_LINKS = [
 
 export function Footer({ showDshea = false }: { showDshea?: boolean }) {
   return (
-    <footer className="mt-24 border-t-[3px] border-navy-800 bg-surface text-navy-800">
+    <footer className="mt-10 border-t-[3px] border-navy-800 bg-surface text-navy-800">
       <div className="container">
-        <div className="grid gap-12 py-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-0">
+        <div className="grid gap-10 py-10 lg:py-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-0">
           <div className="lg:pr-14">
             <Link href="/" aria-label="IP6 Original, Home" className="inline-block">
-              <Image src={asset("brand/ip6-original-logo.png")} alt="IP6 Original" width={324} height={216} className="h-20 w-auto" />
+              <Image src={asset("brand/ip6-original-logo.png")} alt="IP6 Original" width={324} height={216} className="h-14 w-auto" />
             </Link>
-            <p className="mt-6 max-w-[30ch] text-xl font-medium leading-snug tracking-[-0.01em]">
+            <p className="mt-4 max-w-[30ch] text-lg font-medium leading-snug tracking-[-0.01em]">
               One supplement, made to the specification his research describes.
             </p>
             <Link
               href="/shop/ip6-original-supplement"
-              className="mt-7 inline-flex items-center rounded-full bg-button px-7 py-3 text-sm font-semibold text-surface transition-colors hover:bg-button-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600"
+              className="mt-5 inline-flex items-center rounded-full bg-button px-7 py-3 text-sm font-semibold text-surface transition-colors hover:bg-button-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600"
             >
               Shop IP6 Original
             </Link>
-            <address className="mt-8 not-italic text-sm leading-relaxed text-navy-800/70">
+            <address className="mt-6 not-italic text-sm leading-relaxed text-navy-800/70">
               Lutherville, Maryland
               <br />
               <Link href="/contact" className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">Contact us</Link>
             </address>
           </div>
 
-          <div className="grid grid-cols-2 gap-y-10 border-t border-navy-800/10 pt-10 sm:grid-cols-3 lg:border-l lg:border-t-0 lg:pt-0">
+          <div className="grid grid-cols-2 gap-y-8 border-t border-navy-800/10 pt-8 sm:grid-cols-3 lg:border-l lg:border-t-0 lg:pt-0 content-start">
             {GROUPS.map((g, i) => (
               <nav
                 key={g.heading}
@@ -73,7 +73,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
               >
                 <h3 className="text-[15px] font-semibold">{g.heading}</h3>
                 <span className="mt-2 block h-0.5 w-6 bg-gold-500" aria-hidden />
-                <ul className="mt-5 space-y-3">
+                <ul className="mt-4 space-y-2.5">
                   {g.links.map((l) => (
                     <li key={l.href}>
                       <Link href={l.href} className="text-[15px] text-navy-800/70 transition-colors hover:text-gold-700">
@@ -88,12 +88,12 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
         </div>
 
         {showDshea ? (
-          <p className="border-t border-navy-800/10 py-6 text-xs leading-relaxed text-navy-800/55">{DSHEA_DISCLAIMER}</p>
+          <p className="border-t border-navy-800/10 py-4 text-xs leading-relaxed text-navy-800/55">{DSHEA_DISCLAIMER}</p>
         ) : null}
       </div>
 
       <div className="bg-navy-800 text-surface/75">
-        <div className="container flex flex-col items-center gap-3 py-5 text-xs sm:flex-row sm:justify-between">
+        <div className="container flex flex-col items-center gap-3 py-4 text-xs sm:flex-row sm:justify-between">
           <span>© {new Date().getFullYear()} IP6 Original. All rights reserved.</span>
           <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             {LEGAL_LINKS.map((l) => (

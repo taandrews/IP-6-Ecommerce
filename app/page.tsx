@@ -5,6 +5,7 @@ import { ArrowRight, RefreshCw, Beaker, AlertTriangle } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { TrustTicker } from "@/components/home/TrustTicker";
+import { MoleculeDiagram } from "@/components/home/MoleculeDiagram";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
@@ -112,7 +113,8 @@ export default async function HomePage() {
          PRIMER - What IP6 and Inositol are, beside the label that lists them.
       ============================================== */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl">
+        <div className="container max-w-6xl grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
+          <div>
           <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
             First, the molecule
           </p>
@@ -121,6 +123,8 @@ export default async function HomePage() {
             <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
             <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
           </p>
+          </div>
+          <MoleculeDiagram />
         </div>
       </section>
 
