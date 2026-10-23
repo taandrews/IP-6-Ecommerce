@@ -234,7 +234,6 @@
 }
 
 .scroll {
-  display: none; /* the people/pets routes now sit where the hint was */
   position: absolute;
   left: 50%;
   bottom: 1.6rem;
@@ -243,7 +242,7 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   font-weight: 600;
-  display: flex;
+  display: none; /* the people/pets routes now sit where the hint was */
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
