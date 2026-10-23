@@ -36,8 +36,6 @@
   object-fit: cover;
   object-position: var(--pos, 50% 50%);
   display: block;
-  filter: grayscale(1) contrast(1.05);
-  transition: filter 1.4s ease;
 }
 .on .ph img,
 .on .ph video {
@@ -57,27 +55,15 @@
   inset: 0;
   transition: opacity 1.4s ease;
 }
-.shadow {
-  background: #06122a;
-  mix-blend-mode: screen;
-}
+.shadow,
 .light {
-  background: #c9a961;
-  mix-blend-mode: multiply;
+  display: none;
 }
 /* Navy band behind the copy so white and gold text read on bright photos. */
 .dim {
   background: linear-gradient(to top, rgba(6, 18, 42, 0.72), rgba(6, 18, 42, 0.5) 30%, rgba(6, 18, 42, 0.5) 72%, rgba(6, 18, 42, 0.3));
 }
-.reveal .ph img,
-.reveal .ph video {
-  filter: none;
-}
-.reveal .shadow,
-.reveal .light {
-  opacity: 0;
-}
-.reveal .dim {
+.dim {
   opacity: 1;
 }
 
@@ -362,6 +348,9 @@
   .eyebrow {
     color: #fff;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.55);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    max-width: 34ch;
   }
   .on .eyebrow {
     opacity: 1;
