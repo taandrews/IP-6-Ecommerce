@@ -104,24 +104,11 @@
 .on .eyebrow {
   opacity: 0.9;
 }
-.pack {
-  height: clamp(110px, 22vh, 240px);
-  width: auto;
-  margin: 0 0 1.1rem;
-  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45));
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
-}
-.on .pack {
-  opacity: 1;
-  transform: none;
-}
 .line {
   margin: 0;
   font-weight: 400;
   text-transform: uppercase;
-  font-size: clamp(2rem, min(4.8vw, 8vh), 4.4rem);
+  font-size: clamp(2.1rem, min(5.6vw, 9.5vh), 5.4rem);
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.5);
   line-height: 1.08;
   letter-spacing: 0.02em;
@@ -304,10 +291,6 @@
   .line em {
     color: #ecd08f;
   }
-  .pack {
-    height: clamp(84px, 14vh, 130px);
-    margin-bottom: 0.8rem;
-  }
   .sub {
     font-size: 14px;
     max-width: 34ch;
@@ -382,8 +365,7 @@
     opacity: 1;
   }
   .cta,
-  .sub,
-  .pack {
+  .sub {
     opacity: 1;
     transform: none;
   }
