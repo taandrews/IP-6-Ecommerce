@@ -14,7 +14,14 @@ import { formatPrice } from "@/lib/utils";
 import { preorderUnitCents } from "@/lib/preorder";
 
 const SERIF = { fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 } as const;
+const H2 = { ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" } as const;
 
+/*
+  The page reads in one order: what it is (hero, badges, the molecule), who
+  made it (the scientist), why this one (the standard), then the ask (shop),
+  then how to take it. Every section shares the same container width and
+  vertical rhythm.
+*/
 export default async function HomePage() {
   const currency = resolveCurrency();
   const [catalog, preorder] = await Promise.all([getCatalog(), getPreorderSettings()]);
@@ -42,27 +49,111 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* =============================================
-         CHAPTER 1 - HOOK
-         Full-bleed photo slideshow with the packaging and one plain sentence.
-      ============================================== */}
+      {/* 1. What it is: the hero and the label's badges */}
       <section className="relative bg-surface">
         <HeroSlideshow ctaHref={`/shop/${supplement.slug}`} petHref={pet ? `/shop/${pet.slug}` : undefined} />
-
-        {/* The label's badges, large, as a slow ticker */}
         <TrustTicker />
       </section>
 
-      {/* =============================================
-         SHOP - the two products, each size with its price.
-         Fixed routes for people and pets, so the rotating hero never has to carry them.
-      ============================================== */}
-      <section id="shop" className="bg-surface py-16 lg:py-24 scroll-mt-20">
+      {/* 2. The molecule */}
+      <section className="bg-surface py-16 lg:py-24">
+        <div className="container max-w-6xl grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
+              First, the molecule
+            </p>
+            <h2 className="text-navy-800 text-balance" style={H2}>
+              IP6 and Inositol.
+            </h2>
+            <p className="mt-5 text-lg lg:text-xl text-ink/80 leading-relaxed max-w-3xl">
+              IP6 is{" "}
+              <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
+              <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
+            </p>
+          </div>
+          <div className="w-full max-w-[400px] lg:max-w-[480px] mx-auto px-4">
+            <MoleculeOrbit />
+          </div>
+        </div>
+      </section>
+
+      {/* 3. The scientist */}
+      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
+        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.4fr] gap-10 lg:gap-16 items-center">
+          <Link href="/story#founder" className="group block max-w-sm mx-auto w-full lg:mx-0">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cloud-200 border border-cloud-300">
+              <Image
+                src={asset("founder/shamsuddin.png")}
+                alt="Portrait of Professor AbulKalam M. Shamsuddin, MD, PhD."
+                fill
+                sizes="(min-width:1024px) 400px, 100vw"
+                className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.02]"
+              />
+            </div>
+          </Link>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
+              The scientist
+            </p>
+            <h2 className="text-navy-800 text-balance" style={H2}>
+              The man who researched IP6 formulated it himself.
+            </h2>
+            <blockquote className="mt-6 text-navy-800 leading-snug" style={{ ...SERIF, fontStyle: "italic", fontSize: "clamp(1.15rem, 1.6vw, 1.4rem)" }}>
+              &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for centuries to come.&rdquo;
+            </blockquote>
+            <p className="mt-5 text-navy-800 text-lg" style={SERIF}>Prof. AbulKalam M. Shamsuddin, MD, PhD</p>
+            <p className="text-base text-ink/70 leading-relaxed">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
+            <Link href="/story#founder" className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+              Meet Prof. Shamsuddin
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. The standard: why this one */}
+      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
+        <div className="container max-w-6xl">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
+            The standard
+          </p>
+          <h2 className="text-navy-800 text-balance" style={H2}>
+            The highest purity. Research grade.
+          </h2>
+          <p className="mt-5 text-lg text-ink/80 leading-relaxed max-w-3xl">
+            IP6 Original is the formula the scientist who pioneered the research built himself.
+          </p>
+
+          <ul className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
+            {[
+              { t: "Highest purity, research grade", d: "The intact molecule the research describes, not broken-down fragments." },
+              { t: "Third-party tested", d: "Independently tested for purity, potency, and quality." },
+              { t: "cGMP-certified manufacturing", d: "Made in a cGMP-certified facility in the USA." },
+              { t: "No magnesium stearate or silicon dioxide", d: "Hypromellose (vegetable) capsules and nothing else." },
+            ].map((c) => (
+              <li key={c.t} className="bg-surface p-6 lg:p-7">
+                <p className="text-navy-800 text-lg lg:text-xl leading-snug" style={SERIF}>{c.t}</p>
+                <p className="mt-2 text-base text-ink/80 leading-relaxed">{c.d}</p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-8">
+            <Link href="/the-difference" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+              See what goes into it
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Shop: the ask, once what, who and why have been read */}
+      <section id="shop" className="bg-surface border-t border-cloud-300 py-16 lg:py-24 scroll-mt-20">
         <div className="container max-w-6xl">
           <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
             Shop
           </p>
-          <h2 className="text-navy-800 text-balance" style={{ ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+          <h2 className="text-navy-800 text-balance" style={H2}>
             One formula. For people, and for pets.
           </h2>
           <div className="mt-10 grid md:grid-cols-2 gap-6 lg:gap-8">
@@ -109,100 +200,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* =============================================
-         PRIMER - What IP6 and Inositol are, beside the label that lists them.
-      ============================================== */}
+      {/* 6. How to take it */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
-          <div>
-          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-            First, the molecule
-          </p>
-          <p className="text-lg lg:text-xl text-ink/80 leading-relaxed max-w-3xl">
-            IP6 is{" "}
-            <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
-            <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
-          </p>
-          </div>
-          <div className="w-full max-w-[400px] lg:max-w-[480px] mx-auto px-4">
-            <MoleculeOrbit />
-          </div>
-        </div>
-      </section>
-
-      {/* =============================================
-         CHAPTER 2 - STRENGTHS, with the man who formulated it.
-         One section carries the purity, testing and manufacturing points; they are not repeated below.
-      ============================================== */}
-      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 items-start">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-              IP6 Original
-            </p>
-            <h2 className="text-navy-800 text-balance" style={{ ...SERIF, fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-              The highest purity. Research grade.
-            </h2>
-            <p className="mt-5 text-lg text-ink/80 leading-relaxed max-w-2xl">
-              IP6 Original is the formula the scientist who pioneered the research built himself.
-            </p>
-
-            <ul className="mt-10 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
-              {[
-                { t: "Highest purity, research grade", d: "The intact molecule the research describes, not broken-down fragments." },
-                { t: "Third-party tested", d: "Independently tested for purity, potency, and quality." },
-                { t: "cGMP-certified manufacturing", d: "Made in a cGMP-certified facility in the USA." },
-                { t: "No magnesium stearate or silicon dioxide", d: "Hypromellose (vegetable) capsules and nothing else." },
-              ].map((c) => (
-                <li key={c.t} className="bg-surface p-6 lg:p-7">
-                  <p className="text-navy-800 text-lg lg:text-xl leading-snug" style={SERIF}>{c.t}</p>
-                  <p className="mt-2 text-base text-ink/80 leading-relaxed">{c.d}</p>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Link href="/the-difference" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
-                See what goes into it
-                <ArrowRight className="size-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          <Link href="/story#founder" className="group block">
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cloud-200 border border-cloud-300">
-              <Image
-                src={asset("founder/shamsuddin.png")}
-                alt="Portrait of Professor AbulKalam M. Shamsuddin, MD, PhD."
-                fill
-                sizes="(min-width:1024px) 400px, 100vw"
-                className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.02]"
-              />
-            </div>
-            <blockquote className="mt-5 text-navy-800 leading-snug" style={{ ...SERIF, fontStyle: "italic", fontSize: "clamp(1.05rem, 1.4vw, 1.2rem)" }}>
-              &ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for centuries to come.&rdquo;
-            </blockquote>
-            <p className="mt-4 text-navy-800 text-lg" style={SERIF}>Prof. AbulKalam M. Shamsuddin, MD, PhD</p>
-            <p className="text-sm text-ink/70 leading-relaxed">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
-            <span className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 group-hover:text-gold-700">
-              Meet Prof. Shamsuddin
-              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </Link>
-        </div>
-      </section>
-
-      {/* =============================================
-         CHAPTER 5 - ACTION
-         Take it. Here is exactly how.
-      ============================================== */}
-      <section className="bg-surface py-16 lg:py-24 border-t border-cloud-300">
         <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
           <div>
             <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-              The Action
+              How to take it
             </p>
-            <h2 className="text-navy-800 text-balance" style={{ ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+            <h2 className="text-navy-800 text-balance" style={H2}>
               Take it. Here is exactly how.
             </h2>
             <p className="mt-5 text-lg text-ink/80 leading-relaxed">
