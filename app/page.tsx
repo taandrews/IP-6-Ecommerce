@@ -5,7 +5,7 @@ import { ArrowRight, RefreshCw, Beaker, AlertTriangle } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { TrustTicker } from "@/components/home/TrustTicker";
-import { MoleculeModel } from "@/components/home/MoleculeModel";
+import { MoleculeOrbit } from "@/components/home/MoleculeOrbit";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
@@ -113,7 +113,7 @@ export default async function HomePage() {
          PRIMER - What IP6 and Inositol are, beside the label that lists them.
       ============================================== */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1.4fr_1fr] gap-8 lg:gap-12 items-center">
+        <div className="container max-w-6xl grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
           <div>
           <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
             First, the molecule
@@ -124,8 +124,8 @@ export default async function HomePage() {
             <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
           </p>
           </div>
-          <div className="w-full max-w-[260px] lg:max-w-[300px] mx-auto">
-            <MoleculeModel />
+          <div className="w-full max-w-[340px] lg:max-w-[400px] mx-auto px-4">
+            <MoleculeOrbit />
           </div>
         </div>
       </section>
