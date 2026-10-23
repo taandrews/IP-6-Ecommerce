@@ -335,6 +335,20 @@
   .headlineOnly .sub {
     visibility: hidden;
   }
+  /* Visor slide: the name line is pinned to the top of the photo, the headline and
+     sentence sit low with clear space above the button. */
+  .textSplit {
+    grid-area: 1 / 1 / 3 / 2;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+  .textSplit .eyebrow {
+    margin: 0 0 auto;
+  }
+  .textSplit .sub {
+    margin-bottom: 1.75rem;
+  }
   /* Yoga and beach: the headline sits just above the button, below the faces. */
   .textLow {
     align-self: end;
