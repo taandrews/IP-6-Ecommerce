@@ -114,7 +114,7 @@ export function CartDrawer() {
           <div className="border-t border-ivory-300 p-6 space-y-3">
             {hasPreorder ? (
               <div className="rounded-md bg-gold-50 border border-gold-200 px-3 py-2.5 text-xs text-forest-900">
-                {PREORDER.label}: {PREORDER.discountPct}% off is applied to one-time items. {PREORDER.shipNote}.
+                {PREORDER.label}: {PREORDER.discountPct}% off is applied to one-time items. {PREORDER.shipNote}. Delivery estimates are shown at checkout and we email tracking when it ships.
               </div>
             ) : null}
             {hasSubscription ? (

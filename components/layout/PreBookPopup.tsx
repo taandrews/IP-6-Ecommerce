@@ -111,8 +111,11 @@ export function PreBookPopup() {
 
   const show = useCallback(() => {
     if (seenBefore()) return;
-    lastFocused.current = document.activeElement;
-    setOpen(true);
+    setOpen((already) => {
+      if (already) return already;
+      lastFocused.current = document.activeElement;
+      return true;
+    });
   }, []);
 
   const close = useCallback(() => {
@@ -132,13 +135,20 @@ export function PreBookPopup() {
       return () => clearTimeout(t);
     }
     if (seenBefore()) return;
-    const t = setTimeout(show, 5000);
+    // Visitors get to read first: the questionnaire opens once they have scrolled
+    // past the first screen, after 45 seconds on the page, or on exit intent.
+    const t = setTimeout(show, 45000);
+    const onScroll = () => {
+      if (window.scrollY > window.innerHeight * 0.9) show();
+    };
     const onMouseOut = (e: MouseEvent) => {
       if (e.clientY <= 0) show();
     };
+    window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("mouseout", onMouseOut);
     return () => {
       clearTimeout(t);
+      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("mouseout", onMouseOut);
     };
   }, [show]);

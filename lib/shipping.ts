@@ -1,6 +1,7 @@
 import type { CartLine, Currency } from "@/types";
 import type { PreorderSettings } from "@/types/records";
 import { lineTotalCents } from "@/lib/preorder";
+import { SHIP_COUNTRY_CODES } from "@/lib/countries";
 
 /** Free standard shipping for US addresses once the discounted merchandise subtotal reaches this amount. Mirrors the Shopify rate. */
 export const FREE_SHIPPING_THRESHOLD_CENTS = 7500;
@@ -10,9 +11,10 @@ export function qualifiesForFreeShipping(subtotalCents: number, currency: Curren
   return currency === "USD" && FREE_SHIPPING_COUNTRIES.includes(country.toUpperCase()) && subtotalCents >= FREE_SHIPPING_THRESHOLD_CENTS;
 }
 
-const SUPPLEMENT_COUNTRIES = (process.env.PERMITTED_SUPPLEMENT_COUNTRIES ?? "US,CA,GB,AU")
-  .split(",")
-  .map((c) => c.trim().toUpperCase());
+// Defaults to every country on the shipping page; PERMITTED_SUPPLEMENT_COUNTRIES can narrow it.
+const SUPPLEMENT_COUNTRIES = process.env.PERMITTED_SUPPLEMENT_COUNTRIES
+  ? process.env.PERMITTED_SUPPLEMENT_COUNTRIES.split(",").map((c) => c.trim().toUpperCase())
+  : SHIP_COUNTRY_CODES;
 
 export function canShipSupplement(countryCode: string) {
   return SUPPLEMENT_COUNTRIES.includes(countryCode.toUpperCase());

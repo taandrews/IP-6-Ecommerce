@@ -3,6 +3,7 @@ import { asset } from "@/lib/assets";
 
 // Product photos, served from the S3/CloudFront assets bucket (see lib/assets.ts; sources in assets/products/).
 const HERO_SUPPLEMENT = asset("products/supplement-240.png");
+const HERO_SUPPLEMENT_60 = asset("products/supplement-60.png");
 // The client's USA 240-count label artwork (Supplement Facts on the right panel).
 const DETAIL_SUPPLEMENT_LABEL = asset("products/supplement-240-label.jpg");
 
@@ -46,6 +47,9 @@ export const products: Product[] = [
         priceCents: { USD: 4900, CAD: 6700, GBP: 3900, AUD: 7400, EUR: 4500, INR: 409900 },
         weightGrams: 150,
         inStock: true,
+        servings: 60,
+        servingLabel: "4 capsules",
+        image: { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement, 240 capsules. Navy bottle with a gold label reading IP6 Original, Pioneer in IP6 Research and Cellular Health.", width: 870, height: 1160 },
       },
       {
         id: "sup-capsule-60",
@@ -56,6 +60,9 @@ export const products: Product[] = [
         priceCents: { USD: 2900, CAD: 4000, GBP: 2300, AUD: 4400, EUR: 2700, INR: 242600 },
         weightGrams: 95,
         inStock: true,
+        servings: 15,
+        servingLabel: "4 capsules",
+        image: { url: HERO_SUPPLEMENT_60, alt: "IP6 Original Supplement, 60 capsules. The smaller navy bottle with the same gold IP6 Original label.", width: 870, height: 1160 },
       },
     ],
     subscriptionCycles: [
@@ -63,8 +70,9 @@ export const products: Product[] = [
       { days: 90, discountPct: 20 },
     ],
     images: [
-            { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement, 240 vegetarian capsules. Navy bottle with a gold label reading IP6 Original, Pioneer in IP6 Research and Cellular Health.", width: 870, height: 1160 },
-            { url: DETAIL_SUPPLEMENT_LABEL, alt: "IP6 Original 240-count label. Supplement Facts: serving size 4 capsules, 60 servings per container, 804 mg calcium magnesium inositol hexaphosphate (IP6) and 196 mg Inositol per serving.", width: 1600, height: 622 },
+      { url: HERO_SUPPLEMENT, alt: "IP6 Original Supplement, 240 vegetarian capsules. Navy bottle with a gold label reading IP6 Original, Pioneer in IP6 Research and Cellular Health.", width: 870, height: 1160 },
+      { url: HERO_SUPPLEMENT_60, alt: "IP6 Original Supplement, 60 capsules. The smaller navy bottle with the same gold IP6 Original label.", width: 870, height: 1160 },
+      { url: DETAIL_SUPPLEMENT_LABEL, alt: "IP6 Original 240-count label. Supplement Facts: serving size 4 capsules, 60 servings per container, 804 mg calcium magnesium inositol hexaphosphate (IP6) and 196 mg Inositol per serving.", width: 1600, height: 622 },
     ],
     faq: [
       {
@@ -124,6 +132,8 @@ export const products: Product[] = [
         priceCents: { USD: 3400, CAD: 4700, GBP: 2700, AUD: 5100, EUR: 3100, INR: 284400 },
         weightGrams: 160,
         inStock: true,
+        servings: 120,
+        servingLabel: "1 g level scoop",
       },
     ],
     subscriptionCycles: [],

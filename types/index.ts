@@ -14,6 +14,12 @@ export interface ProductVariant {
   stripePriceId?: string;
   stripePriceIdSubscription?: Record<string, string>;
   inStock: boolean;
+  /** Servings in this size, from the label (capsules per serving or scoops per container). */
+  servings?: number;
+  /** What one serving is called on the label, e.g. "4 capsules" or "1 g scoop". */
+  servingLabel?: string;
+  /** Photo of this size. Falls back to the product's first image. */
+  image?: { url: string; alt: string; width: number; height: number };
 }
 
 export interface Product {

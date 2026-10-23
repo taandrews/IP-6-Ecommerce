@@ -8,10 +8,11 @@ import { cn } from "@/lib/utils";
 /**
  * Persistent DSHEA disclaimer bar (21 CFR 101.93) modeled after
  * pharmaceutical Important Safety Information bands. Sits fixed at the
- * bottom of the viewport; the user can dismiss it for the session. On
- * desktop it collapses to two lines with an expand control. On phones the
- * whole statement always shows (it is legally required wording, so it is
- * never cut off), and the bottom padding clears the iPhone home indicator.
+ * bottom of the viewport; the user can dismiss it for the session. It
+ * opens collapsed to a single line on every screen size and expands on
+ * tap, so phones keep room for the price and purchase controls. The full
+ * statement is also printed in the footer of every page that mounts this
+ * bar, so the wording is never out of reach.
  *
  * Mount on pages that carry the supplement/skincare disclaimer.
  */
@@ -43,33 +44,32 @@ export function StickyDisclaimer() {
         "transition-all duration-300 ease-brand",
       )}
     >
-      <div className="container pt-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] flex flex-wrap sm:flex-nowrap items-start gap-x-3 gap-y-1">
-        <span
-          className="order-1 text-[10px] uppercase tracking-[0.28em] font-medium shrink-0 mt-1"
-          style={{ color: "rgb(176 142 53)" }}
-        >
-          FDA Disclaimer
-        </span>
-        <p
-          className={cn(
-            "order-3 sm:order-2 w-full sm:w-auto sm:flex-1 text-xs sm:text-sm text-ink/80 leading-snug",
-            expanded ? "" : "sm:line-clamp-2",
-          )}
-        >
-          {DSHEA_DISCLAIMER}
-        </p>
+      <div className="container pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-start gap-x-3">
         <button
           onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
-          aria-label={expanded ? "Collapse disclaimer" : "Expand disclaimer"}
-          className="order-2 sm:order-3 p-1.5 hover:bg-ivory-200 rounded shrink-0 hidden sm:inline-flex"
+          className="flex-1 min-w-0 flex items-start gap-x-3 text-left"
         >
-          <ChevronUp className={cn("size-4 transition-transform", expanded && "rotate-180")} />
+          <span
+            className="text-[10px] uppercase tracking-[0.28em] font-medium shrink-0 mt-1"
+            style={{ color: "rgb(176 142 53)" }}
+          >
+            FDA Disclaimer
+          </span>
+          <span
+            className={cn(
+              "flex-1 min-w-0 text-xs sm:text-sm text-ink/80 leading-snug",
+              expanded ? "" : "truncate",
+            )}
+          >
+            {DSHEA_DISCLAIMER}
+          </span>
+          <ChevronUp aria-hidden className={cn("size-4 shrink-0 mt-0.5 text-ink/60 transition-transform", expanded && "rotate-180")} />
         </button>
         <button
           onClick={() => setDismissed(true)}
           aria-label="Dismiss disclaimer for this session"
-          className="order-2 sm:order-4 ml-auto sm:ml-0 -mt-1 sm:mt-0 p-1.5 hover:bg-ivory-200 rounded shrink-0"
+          className="-mt-1 p-1.5 hover:bg-ivory-200 rounded shrink-0"
         >
           <X className="size-4" />
         </button>

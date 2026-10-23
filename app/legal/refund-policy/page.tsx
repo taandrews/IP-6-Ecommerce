@@ -22,10 +22,18 @@ export default function RefundPolicyPage() {
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">Damaged or incorrect orders</h2>
           <p>
-            If your order arrives damaged or you received the wrong item, use our{" "}
-            <a href="/contact" className="underline text-forest-700">contact form</a>{" "}
-            with your order number and photos, and we will make it right.
+            If your order arrives damaged or you received the wrong item, we will make it right. Here is how:
           </p>
+          <ol className="list-decimal pl-5 mt-3 space-y-2">
+            <li>
+              Open the{" "}
+              <a href="/contact" className="underline text-forest-700">contact form</a>{" "}
+              and choose <strong>Order question</strong>.
+            </li>
+            <li>Include your order number, what you ordered, and what arrived.</li>
+            <li>Attach or describe photos of the item and the packaging, including the shipping label if the box was damaged.</li>
+            <li>We reply by email within one business day with the next step. Keep the item and packaging until you hear from us.</li>
+          </ol>
         </section>
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">Subscriptions</h2>

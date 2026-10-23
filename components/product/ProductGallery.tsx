@@ -25,7 +25,8 @@ export function ProductGallery({ images }: { images: GalleryImage[] }) {
   const isPortrait = ratio < 1;
   // Very wide images (a flat label) are shown whole, never cropped.
   const isWide = ratio > 1.6;
-  const containerAspect = isPortrait ? "aspect-[3/4]" : "aspect-[4/3]";
+  // Phones cap the photo height so the price and size controls arrive sooner.
+  const containerAspect = isPortrait ? "aspect-[4/5] max-h-[46vh] lg:max-h-none lg:aspect-[3/4]" : "aspect-[4/3]";
 
   return (
     <div className="grid gap-4 lg:grid-cols-[80px_1fr] lg:gap-6">
@@ -78,7 +79,7 @@ export function ProductGallery({ images }: { images: GalleryImage[] }) {
             priority={active === 0}
             className={cn(
               "transition-transform duration-500 ease-brand",
-              isPortrait ? "object-contain p-6" : isWide ? "object-contain p-3" : "object-cover",
+              isPortrait ? "object-contain p-4 lg:p-6" : isWide ? "object-contain p-3" : "object-cover",
               zoomed ? "scale-150" : "group-hover:scale-105",
             )}
           />

@@ -16,242 +16,211 @@ import { Footer } from "@/components/layout/Footer";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { getCatalog } from "@/lib/data/catalog";
+import { getPreorderSettings } from "@/lib/data/settings";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
+import { preorderUnitCents } from "@/lib/preorder";
+
+const SERIF = { fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 } as const;
 
 export default async function HomePage() {
   const currency = resolveCurrency();
-  const supplement = (await getCatalog()).find((p) => p.slug === "ip6-original-supplement")!;
-  const supplementFrom = Math.min(
-    ...supplement.variants.map((v) => v.priceCents[currency]),
-  );
+  const [catalog, preorder] = await Promise.all([getCatalog(), getPreorderSettings()]);
+  const supplement = catalog.find((p) => p.slug === "ip6-original-supplement")!;
+  const pet = catalog.find((p) => p.slug === "ip6-original-pet-powder");
+
+  const shopCards = [
+    {
+      product: supplement,
+      eyebrow: "For people",
+      title: "IP6 Original Supplement",
+      body: "IP6 and Inositol in vegetable capsules. 804 mg IP6 and 196 mg Inositol per 4-capsule serving.",
+      image: asset("products/supplement-240.png"),
+    },
+    pet
+      ? {
+          product: pet,
+          eyebrow: "For pets",
+          title: "IP6 Original Pet Powder",
+          body: "The same IP6 and Inositol as an unflavored powder for dogs and cats, 804 mg IP6 and 196 mg Inositol per 1 g scoop.",
+          image: asset("products/pet-powder-120g.png"),
+        }
+      : null,
+  ].filter(Boolean) as Array<{ product: typeof supplement; eyebrow: string; title: string; body: string; image: string }>;
 
   return (
     <>
       {/* =============================================
          CHAPTER 1 - HOOK
-         "There is only one IP6 Original."
-         From the lab of Prof. Shamsuddin. One supplement.
+         Full-bleed photo slideshow with the packaging and one plain sentence.
       ============================================== */}
       <section className="relative bg-surface">
-        {/* Full-bleed photo slideshow: duotone tint, typed headline, reveal. */}
-        <HeroSlideshow ctaHref={`/shop/${supplement.slug}`} />
+        <HeroSlideshow ctaHref={`/shop/${supplement.slug}`} petHref={pet ? `/shop/${pet.slug}` : undefined} />
 
         {/* Trust strip */}
         <div className="border-t border-cloud-300 bg-surface">
-          <div className="container py-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-[11px] uppercase tracking-[0.2em] text-ink/65 font-semibold">
+          <div className="container py-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-xs uppercase tracking-[0.18em] text-navy-800 font-semibold">
             <span className="flex items-center gap-2">
-              <Award className="size-3.5 text-sky-700" /> cGMP Certified
+              <Award className="size-4 text-gold-700" /> cGMP Certified
             </span>
             <span className="flex items-center gap-2">
-              <ShieldCheck className="size-3.5 text-sky-700" /> Third-Party Tested
+              <ShieldCheck className="size-4 text-gold-700" /> Third-Party Tested
             </span>
             <span className="flex items-center gap-2">
-              <FlaskConical className="size-3.5 text-sky-700" /> High-Purity Formula
+              <FlaskConical className="size-4 text-gold-700" /> High-Purity Formula
             </span>
             <span className="flex items-center gap-2">
-              <Truck className="size-3.5 text-sky-700" /> Free US shipping over $75
+              <Truck className="size-4 text-gold-700" /> Free US shipping over $75
             </span>
             <span className="flex items-center gap-2">
-              <CheckCircle2 className="size-3.5 text-sky-700" /> Made in USA
+              <CheckCircle2 className="size-4 text-gold-700" /> Made in USA
             </span>
           </div>
         </div>
       </section>
 
       {/* =============================================
-         PRIMER - What IP6 and Inositol are.
-         A short orientation that lands before the purity argument,
-         so a first-time visitor knows the molecule before comparing it.
+         SHOP - the two products, each size with its price.
+         Fixed routes for people and pets, so the rotating hero never has to carry them.
       ============================================== */}
-      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-20">
-        <div className="container max-w-3xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
-            First, the molecule
-          </p>
-          <p className="text-lg lg:text-xl text-ink/75 leading-relaxed">
-            IP6 is{" "}
-            <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
-            <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
-          </p>
-        </div>
-      </section>
-
-      {/* =============================================
-         CHAPTER 2 - STRENGTHS
-         IP6 Original's own strengths only, no competitor comparison.
-      ============================================== */}
-      <section className="bg-surface py-20 lg:py-28">
-        <div className="container max-w-5xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
-            IP6 Original
-          </p>
-          <h2
-            className="font-serif text-navy-800 text-balance"
-            style={{
-              fontFamily: "var(--font-display), Georgia, serif",
-              fontSize: "clamp(2rem, 4vw, 3.25rem)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-              fontWeight: 400,
-            }}
-          >
-            The highest purity. Research grade.
-          </h2>
-          <p className="mt-6 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            IP6 Original is the formula the scientist who pioneered the research built himself, third-party tested and manufactured in a cGMP-certified facility.
-          </p>
-
-          <ul className="mt-12 lg:mt-16 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
-            {[
-              "Highest purity, research grade",
-              "No magnesium stearate or silicon dioxide",
-              "Third-party tested, cGMP-certified manufacturing",
-              "Formulated by the scientist who pioneered the research",
-            ].map((t) => (
-              <li key={t} className="bg-surface p-7 lg:p-8 text-navy-800 leading-relaxed">
-                {t}
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-12">
-            <Link
-              href="/the-difference"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 hover:text-sky-800 underline underline-offset-4 decoration-sky-300 decoration-2"
-            >
-              See what goes into it
-              <ArrowRight className="size-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* =============================================
-         CHAPTER 4 - PROOF (4-tile credential strip)
-         Soft white ground. Color lives in the gold rule and serif numerals.
-      ============================================== */}
-      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+      <section id="shop" className="bg-surface border-t border-cloud-300 py-14 lg:py-20 scroll-mt-20">
         <div className="container max-w-6xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
-            The Proof
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
+            Shop
           </p>
-          <h2
-            className="font-serif text-navy-800 text-balance mb-14 lg:mb-16 max-w-3xl"
-            style={{
-              fontFamily: "var(--font-display), Georgia, serif",
-              fontSize: "clamp(1.75rem, 3vw, 2.75rem)",
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-              fontWeight: 400,
-            }}
-          >
-            Made to the standard the research describes.
+          <h2 className="text-navy-800 text-balance" style={{ ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+            One formula. For people, and for pets.
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-10">
-            {[
-              { t: "Pioneer in IP6 Research", l: "Built on the founder's body of published work" },
-              { t: "Founder & Formulator", l: "Formulated by Prof. Shamsuddin himself" },
-              { t: "cGMP Certified", l: "Manufactured in a cGMP-certified facility" },
-              { t: "Third-Party Tested", l: "Independently tested for purity, potency, and quality" },
-            ].map((c) => (
-              <div key={c.t}>
-                <span aria-hidden className="block h-px w-12 bg-gold-500 mb-5" />
-                <p
-                  className="font-serif text-navy-800 leading-snug"
-                  style={{
-                    fontFamily: "var(--font-display), Georgia, serif",
-                    fontSize: "clamp(1.35rem, 2vw, 1.6rem)",
-                    letterSpacing: "-0.015em",
-                    fontWeight: 400,
-                  }}
-                >
-                  {c.t}
-                </p>
-                <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-ink/65 font-semibold leading-snug">
-                  {c.l}
-                </p>
-              </div>
+          <div className="mt-10 grid md:grid-cols-2 gap-6 lg:gap-8">
+            {shopCards.map(({ product, eyebrow, title, body, image }) => (
+              <article key={product.slug} className="group grid grid-cols-[136px_1fr] sm:grid-cols-[180px_1fr] border border-cloud-300 rounded-2xl overflow-hidden hover:border-gold-500 transition-colors bg-surface">
+                <Link href={`/shop/${product.slug}`} className="relative bg-cloud-200" aria-label={title}>
+                  <Image src={image} alt="" fill sizes="180px" className="object-contain p-3 transition-transform duration-500 ease-brand group-hover:scale-[1.03]" />
+                </Link>
+                <div className="p-5 sm:p-6 flex flex-col">
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-gold-700 font-bold mb-1.5">{eyebrow}</p>
+                  <h3 className="text-navy-800 text-xl sm:text-2xl leading-tight" style={SERIF}>
+                    <Link href={`/shop/${product.slug}`}>{title}</Link>
+                  </h3>
+                  <p className="mt-2 text-sm text-ink/75 leading-relaxed">{body}</p>
+                  <ul className="mt-4 space-y-1.5 text-sm">
+                    {product.variants.map((v) => {
+                      const regular = v.priceCents[currency];
+                      const now = preorderUnitCents(regular, preorder);
+                      return (
+                        <li key={v.id} className="flex items-baseline justify-between gap-3 border-t border-cloud-300 pt-1.5">
+                          <span className="text-navy-800 font-medium">
+                            {v.size}
+                            {v.servings ? <span className="text-ink/55 font-normal"> · {v.servings} servings</span> : null}
+                          </span>
+                          <span className="whitespace-nowrap">
+                            {now !== regular ? <s className="text-ink/45 mr-1.5">{formatPrice(regular, currency)}</s> : null}
+                            <span className="text-navy-800 font-semibold">{formatPrice(now, currency)}</span>
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {preorder.active ? (
+                    <p className="mt-2 text-xs text-ink/55">{preorder.label} price, {preorder.discountPct}% off. {preorder.shipNote}.</p>
+                  ) : null}
+                  <Link href={`/shop/${product.slug}`} className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 group-hover:text-gold-700">
+                    Shop {eyebrow.toLowerCase()}
+                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </div>
+              </article>
             ))}
-          </div>
-          <div className="mt-14">
-            <Link
-              href="/story#founder"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-gold-500 decoration-2"
-            >
-              Meet Prof. Shamsuddin
-              <ArrowRight className="size-3.5" />
-            </Link>
           </div>
         </div>
       </section>
 
       {/* =============================================
-         CHAPTER 3 EXIT-RAMP - The Solution (product card link)
+         PRIMER - What IP6 and Inositol are, beside the label that lists them.
       ============================================== */}
-      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
-        <div className="container max-w-5xl">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
-            The Solution
-          </p>
-          <h2
-            className="font-serif text-navy-800 text-balance"
-            style={{
-              fontFamily: "var(--font-display), Georgia, serif",
-              fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-              fontWeight: 400,
-            }}
-          >
-            One formula, from the scientist who pioneered the research.
-          </h2>
-          <p className="mt-5 text-lg text-ink/75 leading-relaxed max-w-3xl">
-            Highest purity, research grade, third-party tested, manufactured in a cGMP-certified facility, formulated by the scientist who pioneered the research behind it.
-          </p>
+      <section className="bg-surface border-t border-cloud-300 py-14 lg:py-20">
+        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-16 items-center">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
+              First, the molecule
+            </p>
+            <p className="text-lg lg:text-xl text-ink/80 leading-relaxed">
+              IP6 is{" "}
+              <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
+              <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
+            </p>
+          </div>
+          <Link href={`/shop/${supplement.slug}`} className="relative block aspect-[1600/622] rounded-xl overflow-hidden border border-cloud-300 bg-cloud-200" aria-label="See the IP6 Original label">
+            <Image
+              src={asset("products/supplement-240-label.jpg")}
+              alt="IP6 Original 240-count label. Supplement Facts: serving size 4 capsules, 60 servings per container, 804 mg IP6 and 196 mg Inositol per serving."
+              fill
+              sizes="(min-width:1024px) 640px, 100vw"
+              className="object-contain"
+            />
+          </Link>
+        </div>
+      </section>
 
-          <Link
-            href={`/shop/${supplement.slug}`}
-            className="mt-10 group block border-y border-cloud-300 hover:border-gold-500 transition-colors max-w-2xl"
-          >
-            <div className="grid sm:grid-cols-[180px_1fr]">
-              <div className="relative aspect-square sm:aspect-auto">
-                <Image
-                  src={asset("products/supplement-240.png")}
-                  alt=""
-                  fill
-                  sizes="180px"
-                  className="object-contain p-3"
-                />
-              </div>
-              <div className="p-6 lg:p-7 flex flex-col">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-sky-700 font-bold mb-2">
-                  IP6 Original Supplement
-                </p>
-                <h3 className="font-serif text-navy-800 text-xl lg:text-2xl mb-2"
-                  style={{ fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 }}>
-                  Pioneer in IP6 Research and Cellular Health
-                </h3>
-                <p className="text-sm text-ink/65 mb-5 flex-1">
-                  240 capsules · 60 servings · 804 mg IP6 and 196 mg Inositol per serving. cGMP manufactured. Third-party tested.
-                </p>
-                <div className="flex items-center justify-between">
-                  <p>
-                    <span className="text-[10px] uppercase tracking-[0.22em] text-ink/55 font-semibold block">
-                      From
-                    </span>
-                    <span className="font-serif text-navy-800 text-2xl"
-                      style={{ fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 }}>
-                      {formatPrice(supplementFrom, currency)}
-                    </span>
-                  </p>
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-700 group-hover:text-sky-800">
-                    Shop now
-                    <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </span>
-                </div>
-              </div>
+      {/* =============================================
+         CHAPTER 2 - STRENGTHS, with the man who formulated it.
+         One section carries the purity, testing and manufacturing points; they are not repeated below.
+      ============================================== */}
+      <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
+        <div className="container max-w-6xl grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 items-start">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
+              IP6 Original
+            </p>
+            <h2 className="text-navy-800 text-balance" style={{ ...SERIF, fontSize: "clamp(1.75rem, 3.2vw, 2.75rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+              The highest purity. Research grade.
+            </h2>
+            <p className="mt-5 text-lg text-ink/80 leading-relaxed max-w-2xl">
+              IP6 Original is the formula the scientist who pioneered the research built himself.
+            </p>
+
+            <ul className="mt-10 grid sm:grid-cols-2 gap-px bg-cloud-300 border border-cloud-300 rounded-2xl overflow-hidden">
+              {[
+                { t: "Highest purity, research grade", d: "The intact molecule the research describes, not broken-down fragments." },
+                { t: "Third-party tested", d: "Independently tested for purity, potency, and quality." },
+                { t: "cGMP-certified manufacturing", d: "Made in a cGMP-certified facility in the USA." },
+                { t: "No magnesium stearate or silicon dioxide", d: "Hypromellose (vegetable) capsules and nothing else." },
+              ].map((c) => (
+                <li key={c.t} className="bg-surface p-6 lg:p-7">
+                  <p className="text-navy-800 text-lg lg:text-xl leading-snug" style={SERIF}>{c.t}</p>
+                  <p className="mt-2 text-base text-ink/80 leading-relaxed">{c.d}</p>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+              <Link href="/the-difference" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+                See what goes into it
+                <ArrowRight className="size-3.5" />
+              </Link>
+              <a href="https://www.ip-6.net/#papers" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+                Read the published research at ip-6.net
+                <ArrowRight className="size-3.5" />
+              </a>
             </div>
+          </div>
+
+          <Link href="/story#founder" className="group block">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-cloud-200 border border-cloud-300">
+              <Image
+                src={asset("founder/shamsuddin.png")}
+                alt="Portrait of Professor AbulKalam M. Shamsuddin, MD, PhD."
+                fill
+                sizes="(min-width:1024px) 400px, 100vw"
+                className="object-cover transition-transform duration-500 ease-brand group-hover:scale-[1.02]"
+              />
+            </div>
+            <p className="mt-4 text-navy-800 text-lg" style={SERIF}>Prof. AbulKalam M. Shamsuddin, MD, PhD</p>
+            <p className="text-sm text-ink/70 leading-relaxed">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
+            <span className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 group-hover:text-gold-700">
+              Meet Prof. Shamsuddin
+              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
           </Link>
         </div>
       </section>
@@ -260,25 +229,16 @@ export default async function HomePage() {
          CHAPTER 5 - ACTION
          Take it. Here is exactly how.
       ============================================== */}
-      <section className="bg-surface py-20 lg:py-24 border-t border-cloud-300">
+      <section className="bg-surface py-16 lg:py-24 border-t border-cloud-300">
         <div className="container max-w-5xl grid lg:grid-cols-[1fr_1.2fr] gap-12 items-start">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
               The Action
             </p>
-            <h2
-              className="font-serif text-navy-800 text-balance"
-              style={{
-                fontFamily: "var(--font-display), Georgia, serif",
-                fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
-                lineHeight: 1.05,
-                letterSpacing: "-0.02em",
-                fontWeight: 400,
-              }}
-            >
+            <h2 className="text-navy-800 text-balance" style={{ ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
               Take it. Here is exactly how.
             </h2>
-            <p className="mt-5 text-lg text-ink/75 leading-relaxed">
+            <p className="mt-5 text-lg text-ink/80 leading-relaxed">
               Take 4 capsules once or twice daily with water, or as directed by your healthcare professional. Always consult your physician before beginning any supplement regimen.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -290,8 +250,8 @@ export default async function HomePage() {
                 <ArrowRight className="size-4" />
               </Link>
               <Link
-                href="/faq#how-to-take"
-                className="text-sm font-semibold text-navy-800 hover:text-sky-700 underline underline-offset-4 decoration-sky-300 decoration-2"
+                href="/how-to-take"
+                className="text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2"
               >
                 Full dosing guide →
               </Link>
@@ -304,10 +264,10 @@ export default async function HomePage() {
               { icon: AlertTriangle, t: "Consult your physician", b: "Always discuss new supplements with your healthcare professional." },
             ].map((s, i) => (
               <li key={i} className="py-5 flex items-start gap-4">
-                <s.icon className="size-5 text-gold-500 shrink-0 mt-0.5" aria-hidden />
+                <s.icon className="size-5 text-gold-700 shrink-0 mt-0.5" aria-hidden />
                 <div>
                   <p className="font-semibold text-navy-800">{s.t}</p>
-                  <p className="text-sm text-ink/65 mt-1 leading-relaxed">{s.b}</p>
+                  <p className="text-base text-ink/80 mt-1 leading-relaxed">{s.b}</p>
                 </div>
               </li>
             ))}

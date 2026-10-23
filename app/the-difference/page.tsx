@@ -12,12 +12,14 @@ export const metadata: Metadata = {
   alternates: hreflangAlternates("/the-difference"),
 };
 
-const ROWS: { label: string; original: string }[] = [
-  { label: "Purity", original: "Highest purity, research grade" },
-  { label: "Verification", original: "Third-party tested" },
-  { label: "Formulation", original: "No magnesium stearate or silicon dioxide" },
-  { label: "Manufacturing", original: "cGMP-certified facility" },
-  { label: "Formulated by", original: "Prof. Shamsuddin, founder & formulator" },
+// `more` points at the material behind each line where it exists: the label itself,
+// or the research site. Lines without a public document say so plainly.
+const ROWS: { label: string; original: string; more?: { href: string; label: string }; note?: string }[] = [
+  { label: "Purity", original: "Highest purity, research grade", note: "Third-party tested for purity, potency, and quality." },
+  { label: "Verification", original: "Third-party tested", note: "Stated on the label." , more: { href: "/shop/ip6-original-supplement", label: "See the label" } },
+  { label: "Formulation", original: "No magnesium stearate or silicon dioxide", more: { href: "/shop/ip6-original-supplement", label: "See the ingredients" } },
+  { label: "Manufacturing", original: "cGMP-certified facility", note: "Stated on the label." },
+  { label: "Formulated by", original: "Prof. Shamsuddin, founder & formulator", more: { href: "https://www.ip-6.net/#papers", label: "Read his published research" } },
 ];
 
 export default function TheDifferencePage() {
@@ -25,7 +27,7 @@ export default function TheDifferencePage() {
     <>
       <article className="bg-surface">
         <section className="container max-w-4xl pt-20 pb-12 lg:pt-28 lg:pb-16">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-6">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-6">
             The Difference
           </p>
           <h1
@@ -41,7 +43,7 @@ export default function TheDifferencePage() {
             What goes into IP6 Original.
           </h1>
           <p className="mt-6 text-lg lg:text-xl text-ink/70 leading-relaxed max-w-2xl">
-            The purity, verification, and source of the formula, line by line.
+            The purity, verification, and source of the formula, line by line, with the label or the research behind each line where one exists.
           </p>
         </section>
 
@@ -86,8 +88,17 @@ export default function TheDifferencePage() {
                   <p className="font-semibold text-navy-800 text-sm lg:text-base">{row.label}</p>
                 </div>
                 <div className="border-l-2 border-gold-500 pl-5 lg:pl-6 flex items-start gap-3">
-                  <Check className="size-4 text-sky-700 shrink-0 mt-0.5" aria-hidden />
-                  <p className="text-sm text-navy-800 font-medium">{row.original}</p>
+                  <Check className="size-4 text-gold-700 shrink-0 mt-0.5" aria-hidden />
+                  <div>
+                    <p className="text-sm lg:text-base text-navy-800 font-medium">{row.original}</p>
+                    {row.note ? <p className="mt-1 text-sm text-ink/70">{row.note}</p> : null}
+                    {row.more ? (
+                      <a href={row.more.href} className="mt-1.5 inline-flex items-center gap-1 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
+                        {row.more.label}
+                        <ArrowRight className="size-3" aria-hidden />
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             ))}

@@ -10,7 +10,8 @@
 .bar i { display: block; height: 100%; background: #0B1F3A; transition: width .35s ease-out; }
 .top { display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(20px,4vw,48px); }
 .brand { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #7C642F; }
-.close { background: none; border: 1px solid #0B1F3A; padding: 4px 12px; font-size: 14px; color: #5B6470; cursor: pointer; }
+.close { background: #fff; border: 1.5px solid #102C45; color: #102C45; border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; }
+.close:hover { background: #102C45; color: #fff; }
 .body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px clamp(20px,5vw,48px) 40px; }
 .inner { width: 100%; max-width: 640px; text-align: center; animation: qf .4s ease-out; }
 @keyframes qf { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }

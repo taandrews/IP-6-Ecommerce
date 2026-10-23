@@ -8,7 +8,7 @@ export function SupplementSections() {
           What our formulation is designed to support.
         </h2>
         <p className="text-ink/85 leading-relaxed">
-          IP6 Original Supplement is formulated to support immune health and healthy cell function. We use structure-function language because that is the language that survives scientific and regulatory review.
+          IP6 Original Supplement is formulated to support immune health and healthy cell function.
         </p>
       </section>
     </>

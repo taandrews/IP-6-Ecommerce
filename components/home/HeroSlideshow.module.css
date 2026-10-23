@@ -102,11 +102,24 @@
 .on .eyebrow {
   opacity: 0.9;
 }
+.pack {
+  height: clamp(110px, 22vh, 240px);
+  width: auto;
+  margin: 0 0 1.1rem;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45));
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s;
+}
+.on .pack {
+  opacity: 1;
+  transform: none;
+}
 .line {
   margin: 0;
   font-weight: 300;
   text-transform: uppercase;
-  font-size: clamp(2.1rem, min(5.6vw, 9.5vh), 5.4rem);
+  font-size: clamp(2rem, min(4.8vw, 8vh), 4.4rem);
   line-height: 1.08;
   letter-spacing: 0.02em;
   max-width: 15ch;
@@ -128,8 +141,44 @@
   opacity: 1;
 }
 
+.sub {
+  margin: 1.1rem 0 0;
+  max-width: 50ch;
+  font-size: clamp(0.95rem, 1.25vw, 1.1rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.reveal .sub {
+  opacity: 1;
+}
+.routes {
+  margin-top: 1.3rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.routes a {
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  background: rgba(6, 18, 42, 0.35);
+  backdrop-filter: blur(4px);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.routes a:hover {
+  background: #102c45;
+  border-color: #102c45;
+}
 .cta {
-  margin-top: 2.4rem;
+  margin-top: 1.8rem;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -185,6 +234,7 @@
 }
 
 .scroll {
+  display: none; /* the people/pets routes now sit where the hint was */
   position: absolute;
   left: 50%;
   bottom: 1.6rem;
@@ -245,19 +295,35 @@
     opacity: 1;
   }
   .line {
-    font-size: clamp(2rem, 9.4vw, 2.6rem);
+    font-size: clamp(1.7rem, 7.8vw, 2.2rem);
     font-weight: 400;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
   }
   .line em {
     color: #ecd08f;
   }
-  .cta {
-    margin-top: 1.8rem;
+  .pack {
+    height: clamp(84px, 14vh, 130px);
+    margin-bottom: 0.8rem;
   }
-  /* Keep the headline and button centred in the part of the screen the FDA bar doesn't cover. */
+  .sub {
+    font-size: 14px;
+    max-width: 34ch;
+    margin-top: 0.8rem;
+  }
+  .cta {
+    margin-top: 1.3rem;
+  }
+  .routes {
+    margin-top: 1rem;
+  }
+  .routes a {
+    font-size: 12px;
+    padding: 0.45rem 0.85rem;
+  }
+  /* Keep the headline and button centred in the part of the screen the one-line FDA bar doesn't cover. */
   .copy {
-    padding-bottom: calc(7vh + 6.5rem);
+    padding-bottom: calc(4vh + 3.5rem);
   }
   /* Phones: dots and pause sit at the top of the hero. The full FDA
      disclaimer bar takes the bottom of the screen and would cover them. */
@@ -313,7 +379,9 @@
   .ch {
     opacity: 1;
   }
-  .cta {
+  .cta,
+  .sub,
+  .pack {
     opacity: 1;
     transform: none;
   }

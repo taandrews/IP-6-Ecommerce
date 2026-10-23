@@ -7,7 +7,7 @@ export function HowToTakeContent() {
       {/* Hero */}
       <section className="bg-surface border-b border-cloud-300">
         <div className="container max-w-3xl py-20 lg:py-24">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
             How to Take
           </p>
           <h2
@@ -31,7 +31,7 @@ export function HowToTakeContent() {
       {/* Primer - how IP6 and Inositol work together, framing the dosing that follows */}
       <section className="bg-surface">
         <div className="container max-w-3xl pt-14 lg:pt-16">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-4">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
             How IP6 and Inositol work together
           </p>
           <p className="text-base lg:text-lg text-ink/75 leading-relaxed">
@@ -67,7 +67,7 @@ export function HowToTakeContent() {
               className="bg-surface border border-cloud-300 rounded-xl p-6 lg:p-7 flex flex-col"
             >
               <div className="mb-5">
-                <s.icon className="size-5 text-sky-700" aria-hidden />
+                <s.icon className="size-5 text-gold-700" aria-hidden />
               </div>
               <h3 className="font-semibold text-navy-800 text-lg mb-2">{s.title}</h3>
               <p className="text-sm text-ink/70 leading-relaxed">{s.body}</p>
@@ -79,7 +79,7 @@ export function HowToTakeContent() {
       {/* Dosing protocol */}
       <section className="bg-surface border-y border-cloud-300">
         <div className="container max-w-3xl py-16 lg:py-20">
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-3">
             Dosing protocol
           </p>
           <h2
@@ -106,7 +106,7 @@ export function HowToTakeContent() {
 
       {/* When not to take */}
       <section className="container max-w-3xl py-16 lg:py-20">
-        <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
+        <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-3">
           When not to take it
         </p>
         <h2

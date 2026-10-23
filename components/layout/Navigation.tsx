@@ -5,9 +5,14 @@ import { asset } from "@/lib/assets";
 import Link from "next/link";
 import { Menu, ShoppingBag, User, Search, X } from "lucide-react";
 import { useCart } from "@/components/cart/CartStore";
-import { CurrencySwitcher } from "@/components/layout/CurrencySwitcher";
+import { CurrencySwitcher, CurrencyMenu } from "@/components/layout/CurrencySwitcher";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+
+const SHOP_LINKS = [
+  { href: "/shop/ip6-original-supplement", label: "Supplement for people" },
+  { href: "/shop/ip6-original-pet-powder", label: "Powder for pets" },
+];
 
 const LINKS = [
   { href: "/shop", label: "Shop" },
@@ -101,16 +106,29 @@ export function Navigation() {
               <X className="size-5" />
             </button>
           </div>
-          <nav className="flex flex-col gap-1">
+          <nav className="flex flex-col gap-1 overflow-y-auto">
             {LINKS.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setMobileOpen(false)}
-                className="py-3 border-b border-ivory-300 text-lg text-forest-800"
-              >
-                {l.label}
-              </Link>
+              <div key={l.href}>
+                <Link
+                  href={l.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block py-3 border-b border-ivory-300 text-lg text-forest-800"
+                >
+                  {l.label}
+                </Link>
+                {l.href === "/shop"
+                  ? SHOP_LINKS.map((sl) => (
+                      <Link
+                        key={sl.href}
+                        href={sl.href}
+                        onClick={() => setMobileOpen(false)}
+                        className="block py-2.5 pl-4 border-b border-ivory-300 text-base text-forest-700"
+                      >
+                        {sl.label}
+                      </Link>
+                    ))
+                  : null}
+              </div>
             ))}
             <Link
               href="/account"
@@ -119,6 +137,9 @@ export function Navigation() {
             >
               Account
             </Link>
+            <div className="mt-6 pt-6 border-t border-ivory-300">
+              <CurrencyMenu />
+            </div>
           </nav>
         </div>
       </div>

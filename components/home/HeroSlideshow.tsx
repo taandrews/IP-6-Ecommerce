@@ -13,13 +13,17 @@ import styles from "./HeroSlideshow.module.css";
 type Segment = { text: string; em?: boolean };
 // A slide with `video` plays it muted on loop (src is then its poster frame). `cta` overrides the shared button.
 // `msrc` is a portrait version for phones, used when the landscape crop cannot keep everyone in frame.
-type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; cta?: { href: string; label: string } };
+// `pack` is the packaging shown with the headline; `sub` is the one plain sentence that says what the product is.
+type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; sub: string; pack: { src: string; alt: string }; cta?: { href: string; label: string } };
+
+const PACK_SUPPLEMENT = { src: asset("products/supplement-240.png"), alt: "IP6 Original Supplement bottle, 240 capsules" };
+const PACK_PET = { src: asset("products/pet-powder-120g.png"), alt: "IP6 Original Pet Powder tub, 120 g" };
 
 const SLIDES: Slide[] = [
-  { src: asset("hero/ip6-hero-5.webp"), msrc: asset("hero/ip6-hero-5-m.webp"), pos: "55% 40%", mpos: "52% 62%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }] },
-  { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 50%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], cta: { href: "/shop/ip6-original-pet-powder", label: "Shop Pet Powder · 15% off" } },
-  { src: asset("hero/ip6-hero-beach-couple.webp"), msrc: asset("hero/ip6-hero-beach-couple-m.webp"), pos: "62% 0%", mpos: "50% 60%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }] },
-  { src: asset("hero/ip6-hero-3.webp"), pos: "50% 8%", mpos: "75% 0%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }] },
+  { src: asset("hero/ip6-hero-5.webp"), msrc: asset("hero/ip6-hero-5-m.webp"), pos: "55% 40%", mpos: "52% 62%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research.", pack: PACK_SUPPLEMENT },
+  { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 50%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], sub: "The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub.", pack: PACK_PET, cta: { href: "/shop/ip6-original-pet-powder", label: "Shop Pet Powder · 15% off" } },
+  { src: asset("hero/ip6-hero-beach-couple.webp"), msrc: asset("hero/ip6-hero-beach-couple-m.webp"), pos: "62% 0%", mpos: "50% 60%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }], sub: "IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility.", pack: PACK_SUPPLEMENT },
+  { src: asset("hero/ip6-hero-3.webp"), pos: "50% 8%", mpos: "75% 0%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }], sub: "Prof. Shamsuddin researched IP6 at the University of Maryland School of Medicine and formulated IP6 Original to his own specification.", pack: PACK_SUPPLEMENT },
 ];
 
 const TYPE_MS = 42;
@@ -38,7 +42,7 @@ function PauseIcon({ paused }: { paused: boolean }) {
   );
 }
 
-export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
+export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?: string }) {
   const [cur, setCur] = useState(0);
   const [typed, setTyped] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -177,16 +181,24 @@ export function HeroSlideshow({ ctaHref }: { ctaHref: string }) {
             <div className={styles.light} />
             <div className={styles.dim} />
             <div className={styles.copy}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={styles.pack} src={s.pack.src} alt={s.pack.alt} loading={i === 0 ? "eager" : "lazy"} />
               <p className={styles.eyebrow}>{s.eyebrow}</p>
               {i === 0 ? (
                 <h1 className={styles.line}>{renderLine(s, active)}</h1>
               ) : (
                 <p className={styles.line} aria-level={1} role="heading">{renderLine(s, active)}</p>
               )}
+              <p className={styles.sub}>{s.sub}</p>
               <Link href={s.cta?.href ?? ctaHref} className={styles.cta} tabIndex={active ? 0 : -1}>
                 {s.cta?.label ?? "Pre-order IP6 Original · 15% off"}
                 <ArrowRight aria-hidden />
               </Link>
+              {/* Fixed routes, the same on every slide, so the choice never depends on which photo is showing. */}
+              <nav className={styles.routes} aria-label="Shop by">
+                <Link href={ctaHref} tabIndex={active ? 0 : -1}>Supplement for people</Link>
+                {petHref ? <Link href={petHref} tabIndex={active ? 0 : -1}>Powder for pets</Link> : null}
+              </nav>
             </div>
           </div>
         );

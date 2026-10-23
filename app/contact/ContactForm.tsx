@@ -30,9 +30,9 @@ export function ContactForm() {
   if (status === "success") {
     return (
       <div className="rounded-lg border border-forest-200 bg-forest-50 p-8">
-        <h2 className="font-display text-xl text-forest-800 mb-2">Thank you.</h2>
+        <h2 className="font-display text-xl text-forest-800 mb-2">Message received.</h2>
         <p className="text-ink/80">
-          We received your message and will respond within one business day.
+          Thank you. We will reply by email within one business day (Monday to Friday).
         </p>
       </div>
     );

@@ -3,19 +3,8 @@
 import { useState } from "react";
 import { Input, Select } from "@/components/ui/Input";
 import type { Address } from "@/types";
+import { SHIP_COUNTRIES } from "@/lib/countries";
 
-const COUNTRIES = [
-  ["US", "United States"],
-  ["CA", "Canada"],
-  ["GB", "United Kingdom"],
-  ["AU", "Australia"],
-  ["DE", "Germany"],
-  ["FR", "France"],
-  ["IE", "Ireland"],
-  ["NL", "Netherlands"],
-  ["NZ", "New Zealand"],
-  ["IN", "India"],
-] as const;
 
 export function ShippingStep({
   email,
@@ -128,7 +117,7 @@ export function ShippingStep({
         value={form.country}
         onChange={(e) => set("country", e.target.value)}
       >
-        {COUNTRIES.map(([code, name]) => (
+        {SHIP_COUNTRIES.map(([code, name]) => (
           <option key={code} value={code}>
             {name}
           </option>

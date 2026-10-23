@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, Leaf, ShieldCheck, Award, Zap } from "lucide-react";
+import { ProductShowcase } from "@/components/product/ProductShowcase";
 import { ProductGallery } from "@/components/product/ProductGallery";
-import { PurchasePanel } from "@/components/product/PurchasePanel";
 import { Reviews } from "@/components/product/Reviews";
 import { ProductSchema } from "@/components/product/ProductSchema";
 import { DsheaDisclaimer } from "@/components/product/Dshea";
@@ -14,7 +14,7 @@ import { Grain } from "@/components/ui/Grain";
 import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Stars } from "@/components/ui/Stars";
-import { FileText } from "lucide-react";
+import { FileText, FlaskConical } from "lucide-react";
 import { products } from "@/content/products";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPublishedReviews } from "@/lib/data/reviews";
@@ -59,10 +59,60 @@ export default async function ProductPage({ params }: Params) {
       ? { avg: published.reduce((s, r) => s + r.rating, 0) / published.length, count: published.length }
       : undefined;
 
+  const heading = (
+    <div className="mb-5">
+      <p className="eyebrow mb-4">{product.category === "supplement" ? "Supplement" : product.category === "pet" ? "For pets" : product.category === "skincare" ? "Skincare" : "Water filtration"}</p>
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Badge variant="gold">{product.heroClaim}</Badge>
+        {product.comingSoon ? (
+          <span className="inline-flex items-center gap-1 rounded-full bg-navy-800 text-surface px-3 py-0.5 text-xs font-semibold uppercase tracking-[0.18em]">
+            Coming Soon
+          </span>
+        ) : null}
+      </div>
+      <h1
+        className="font-serif text-balance text-navy-800 mb-4"
+        style={{
+          fontFamily: "var(--font-display), Georgia, serif",
+          fontSize: "clamp(2rem, 4vw, 3.25rem)",
+          lineHeight: 1.05,
+          letterSpacing: "-0.025em",
+          fontWeight: 400,
+        }}
+      >
+        {product.name}
+      </h1>
+      {product.category === "supplement" ? (
+        <p
+          className="font-serif text-gold-700 mb-4"
+          style={{
+            fontFamily: "var(--font-display), Georgia, serif",
+            fontSize: "clamp(1.05rem, 1.4vw, 1.25rem)",
+            fontStyle: "italic",
+            fontWeight: 400,
+            lineHeight: 1.3,
+          }}
+        >
+          The highest purity. Research grade.
+        </p>
+      ) : null}
+      <p className="text-lg text-ink/75 leading-relaxed">{product.shortDescription}</p>
+      {reviewAggregate ? (
+        <div className="mt-4 flex items-center gap-2 text-sm text-ink/70">
+          <Stars rating={reviewAggregate.avg} size={16} />
+          <span>
+            {reviewAggregate.avg.toFixed(1)} · {reviewAggregate.count} review
+            {reviewAggregate.count === 1 ? "" : "s"}
+          </span>
+        </div>
+      ) : null}
+    </div>
+  );
+
   return (
     <>
-      {/* Atmospheric product hero with gradient ground + serial detail */}
-      <section className="bg-atmosphere-deep relative">
+      {/* Product hero */}
+      <section className="bg-atmosphere relative">
         <nav aria-label="Breadcrumb" className="container pt-6 text-sm text-ink/60">
           <ol className="flex items-center gap-1.5">
             <li>
@@ -77,62 +127,13 @@ export default async function ProductPage({ params }: Params) {
           </ol>
         </nav>
 
-        <div className="container py-10 lg:py-14 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16 stagger">
-          <ProductGallery images={product.images} />
-
-          <div className="flex flex-col">
-            <div className="mb-5">
-              <p className="eyebrow mb-4">{product.category === "supplement" ? "Supplement" : product.category === "pet" ? "For pets" : product.category === "skincare" ? "Skincare" : "Water filtration"}</p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Badge variant="gold">{product.heroClaim}</Badge>
-                {product.comingSoon ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-navy-800 text-surface px-3 py-0.5 text-xs font-semibold uppercase tracking-[0.18em]">
-                    Coming Soon
-                  </span>
-                ) : null}
-              </div>
-              <h1
-                className="font-serif text-balance text-navy-800 mb-4"
-                style={{
-                  fontFamily: "var(--font-display), Georgia, serif",
-                  fontSize: "clamp(2rem, 4vw, 3.25rem)",
-                  lineHeight: 1.05,
-                  letterSpacing: "-0.025em",
-                  fontWeight: 400,
-                }}
-              >
-                {product.name}
-              </h1>
-              {product.category === "supplement" ? (
-                <p
-                  className="font-serif text-sky-700 mb-4"
-                  style={{
-                    fontFamily: "var(--font-display), Georgia, serif",
-                    fontSize: "clamp(1.05rem, 1.4vw, 1.25rem)",
-                    fontStyle: "italic",
-                    fontWeight: 400,
-                    lineHeight: 1.3,
-                  }}
-                >
-                  The highest purity. Research grade.
-                </p>
-              ) : null}
-              <p className="text-lg text-ink/75 leading-relaxed">{product.shortDescription}</p>
-              <p className="sku-serial mt-6 text-ink/55">{product.sku}</p>
-            {reviewAggregate ? (
-              <div className="mt-4 flex items-center gap-2 text-sm text-ink/70">
-                <Stars rating={reviewAggregate.avg} size={16} />
-                <span>
-                  {reviewAggregate.avg.toFixed(1)} · {reviewAggregate.count} review
-                  {reviewAggregate.count === 1 ? "" : "s"}
-                </span>
-              </div>
-            ) : null}
-          </div>
-
-            {product.comingSoon ? (
+        {product.comingSoon ? (
+          <div className="container py-10 lg:py-14 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+            <ProductGallery images={product.images} />
+            <div className="flex flex-col">
+              {heading}
               <div className="rounded-lg border border-cloud-300 bg-cloud-100 p-8">
-                <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-3">
+                <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-3">
                   Status
                 </p>
                 <p className="font-sans font-bold text-navy-800 mb-3" style={{ fontSize: "clamp(2rem, 3.5vw, 2.75rem)", lineHeight: 1.05, letterSpacing: "-0.025em" }}>
@@ -167,35 +168,37 @@ export default async function ProductPage({ params }: Params) {
                   No spam, no other emails. We&apos;ll send you one note when {product.name} is in stock.
                 </p>
               </div>
-            ) : (
-              <PurchasePanel product={product} currency={currency} />
-            )}
-
-            {product.labReport && !product.comingSoon ? (
-              <a
-                href={product.labReport.url}
-                className="mt-8 group flex items-start gap-4 p-5 rounded-md border border-ivory-300 hover:border-forest-400 hover:bg-ivory-100 transition-colors"
-                data-cursor="Download"
-              >
-                <FileText className="size-5 text-gold-500 mt-0.5 shrink-0" aria-hidden />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 mb-1">
-                    Certificate of analysis · batch {product.labReport.batchId}
-                  </p>
-                  <p className="font-display text-forest-800 text-lg leading-tight">
-                    Third-party batch report
-                  </p>
-                  <p className="text-xs text-ink/60 mt-1">
-                    {product.labReport.labName} · issued {new Date(product.labReport.issuedOn).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-                  </p>
-                </div>
-                <span className="text-xs uppercase tracking-[0.22em] text-forest-700 group-hover:text-gold-500 self-center">
-                  PDF →
-                </span>
-              </a>
-            ) : null}
+            </div>
           </div>
-        </div>
+        ) : (
+          <ProductShowcase product={product} currency={currency} heading={heading} />
+        )}
+
+        {product.labReport && !product.comingSoon ? (
+          <div className="container pb-10 lg:pb-14">
+            <a
+              href={product.labReport.url}
+              className="group flex items-start gap-4 p-5 rounded-md border border-ivory-300 hover:border-forest-400 hover:bg-ivory-100 transition-colors max-w-2xl lg:ml-auto"
+              data-cursor="Download"
+            >
+              <FileText className="size-5 text-gold-500 mt-0.5 shrink-0" aria-hidden />
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 mb-1">
+                  Certificate of analysis · batch {product.labReport.batchId}
+                </p>
+                <p className="font-display text-forest-800 text-lg leading-tight">
+                  Third-party batch report
+                </p>
+                <p className="text-xs text-ink/60 mt-1">
+                  {product.labReport.labName} · issued {new Date(product.labReport.issuedOn).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                </p>
+              </div>
+              <span className="text-xs uppercase tracking-[0.22em] text-forest-700 group-hover:text-gold-500 self-center">
+                PDF →
+              </span>
+            </a>
+          </div>
+        ) : null}
       </section>
 
       {/* Highlights */}
@@ -215,6 +218,24 @@ export default async function ProductPage({ params }: Params) {
 
       {/* Category-specific content */}
       {product.category === "supplement" ? <SupplementSections /> : null}
+
+      {/* Where the research claim leads */}
+      {product.category === "supplement" ? (
+        <section className="container max-w-3xl pb-4">
+          <a
+            href="https://www.ip-6.net/#papers"
+            className="group flex items-start gap-4 p-5 rounded-md border border-cloud-300 hover:border-gold-500 transition-colors"
+          >
+            <FlaskConical className="size-5 text-gold-700 mt-0.5 shrink-0" aria-hidden />
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 mb-1">The research behind the formula</p>
+              <p className="font-display text-forest-800 text-lg leading-tight">Published papers on IP6, at ip-6.net</p>
+              <p className="text-xs text-ink/60 mt-1">Prof. Shamsuddin&apos;s research site lists the peer-reviewed work. It is a research site, not a store.</p>
+            </div>
+            <span className="text-xs uppercase tracking-[0.22em] text-forest-700 group-hover:text-gold-700 self-center">Open →</span>
+          </a>
+        </section>
+      ) : null}
 
       {/* Ingredients / spec list */}
       {product.ingredients ? (

@@ -36,7 +36,6 @@ const nextConfig = {
       { source: "/science", destination: "/story", permanent: false },
       { source: "/about", destination: "/story#founder", permanent: false },
       { source: "/founder", destination: "/story#founder", permanent: true },
-      { source: "/how-to-take", destination: "/faq#how-to-take", permanent: true },
       { source: "/why-ip6", destination: "/the-difference", permanent: false },
       { source: "/why-ip6/:path*", destination: "/the-difference", permanent: false },
       { source: "/lifestyle", destination: "/story", permanent: false },

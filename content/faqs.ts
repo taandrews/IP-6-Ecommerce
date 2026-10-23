@@ -1,6 +1,8 @@
 export interface FaqItem {
   q: string;
   a: string;
+  /** Optional link under the answer, for the one place a longer page covers the topic. */
+  more?: { href: string; label: string };
 }
 export interface FaqCategory {
   id: string;
@@ -10,6 +12,84 @@ export interface FaqCategory {
 }
 
 export const faqCategories: FaqCategory[] = [
+  {
+    id: "shipping",
+    label: "Shipping and delivery",
+    items: [
+      {
+        q: "Where does IP6 Original ship?",
+        a: "IP6 Original ships to the United States and 27 other countries. The same list of countries is offered at checkout. US orders over $75 ship free. Other rates are shown at checkout from your address.",
+        more: { href: "/international-shipping", label: "See every country we ship to" },
+      },
+      {
+        q: "When will my order arrive?",
+        a: "Pre-orders start shipping in November 2026. Delivery estimates for your address and chosen shipping method are shown at checkout, and we email tracking the day your order ships.",
+      },
+      {
+        q: "Do I pay duties or import taxes?",
+        a: "Where possible, import duties and taxes are calculated at checkout. Otherwise, duties are the responsibility of the recipient and are collected by the carrier on delivery.",
+        more: { href: "/legal/shipping-policy", label: "Read the shipping policy" },
+      },
+    ],
+  },
+  {
+    id: "subscriptions",
+    label: "Subscriptions",
+    items: [
+      {
+        q: "How do subscriptions work?",
+        a: "Choose Subscribe & save on the product page and pick a delivery every 30 days (15% off) or every 90 days (20% off). Your first delivery is charged at checkout. Each later delivery is charged at the same subscription price plus standard shipping, to the same card, and we email a reminder before each renewal.",
+      },
+      {
+        q: "Can I pause, skip, or cancel?",
+        a: "Yes. Skip a delivery, pause, or cancel at any time from your account dashboard. Changes made before a renewal is charged apply to that renewal, and cancelling stops all future charges.",
+        more: { href: "/account/subscriptions", label: "Manage your subscription" },
+      },
+    ],
+  },
+  {
+    id: "returns",
+    label: "Returns and refunds",
+    items: [
+      {
+        q: "What is the return policy?",
+        a: "All sales are final once shipped. Dietary supplements cannot be restocked or resold after they leave our care.",
+        more: { href: "/legal/refund-policy", label: "Read the refund policy" },
+      },
+      {
+        q: "My order arrived damaged or incorrect. What do I do?",
+        a: "Use the contact form, choose Order question, and include your order number and photos of the item and the packaging. We reply by email and make it right.",
+        more: { href: "/contact", label: "Open the contact form" },
+      },
+    ],
+  },
+  {
+    id: "taking-ip6",
+    label: "Taking IP6 Original",
+    items: [
+      {
+        q: "How do I take IP6 Original?",
+        a: "The label directions: take 4 capsules once or twice daily with water, or as directed by your healthcare professional. The full directions, serving size, and cautions are on one page.",
+        more: { href: "/how-to-take", label: "Read the full directions" },
+      },
+      {
+        q: "Is IP6 Original safe to take daily?",
+        a: "The suggested use is 4 capsules once or twice daily with water, or as directed by a healthcare professional. Always consult your physician before beginning any supplement regimen, including IP6 Original.",
+      },
+      {
+        q: "Are there any side effects?",
+        a: "Always consult your physician before beginning any supplement regimen. Stop taking IP6 Original and contact your physician if you experience any adverse reaction.",
+      },
+      {
+        q: "Can I take IP6 Original with other medications or supplements?",
+        a: "Consult your healthcare professional to coordinate IP6 Original with any medications or other supplements you take.",
+      },
+      {
+        q: "Is IP6 Original safe during pregnancy or nursing?",
+        a: "If you are pregnant, nursing, taking medication, or managing a health condition, consult your healthcare provider before use.",
+      },
+    ],
+  },
   {
     id: "what-is-ip6",
     label: "What is IP6",
@@ -28,12 +108,9 @@ export const faqCategories: FaqCategory[] = [
         a: "Professor Shamsuddin's research centers on IP6 and Inositol as a pair rather than IP6 alone, and IP6 Original reflects that approach by combining both in one formula.",
       },
       {
-        q: "Where does IP6 come from?",
-        a: "IP6 occurs naturally in the bran of seeds, grains, and legumes. The IP6 in IP6 Original is produced as a high-purity formula and third-party tested.",
-      },
-      {
-        q: "Who discovered IP6's potential?",
-        a: "Professor Shamsuddin pioneered the published research on inositol hexaphosphate and has authored a substantial body of peer-reviewed work on the molecule.",
+        q: "Where can I read the research?",
+        a: "Professor Shamsuddin's published, peer-reviewed papers on IP6 are listed on his research site, ip-6.net. It is a research site, not a store.",
+        more: { href: "https://www.ip-6.net/#papers", label: "Read the papers at ip-6.net" },
       },
     ],
   },
@@ -44,72 +121,19 @@ export const faqCategories: FaqCategory[] = [
       {
         q: "What makes IP6 Original different from other IP6 supplements?",
         a: "IP6 Original is of the highest purity, research grade, third-party tested, formulated by the scientist who pioneered that research.",
+        more: { href: "/the-difference", label: "See what goes into it" },
       },
       {
         q: "Why does purity matter?",
         a: "If the molecule is not intact, it is not the molecule the research describes.",
       },
       {
+        q: "How is IP6 Original manufactured and tested?",
+        a: "IP6 Original is manufactured in a cGMP-certified facility and independently third-party tested for purity, potency, and quality.",
+      },
+      {
         q: "Is IP6 Original FDA approved?",
         a: "IP6 Original is a dietary supplement, not a drug. Under DSHEA, dietary supplements are regulated differently from pharmaceuticals.",
-      },
-    ],
-  },
-  {
-    id: "how-is-it-made",
-    label: "How is it made",
-    items: [
-      {
-        q: "How is IP6 Original manufactured?",
-        a: "IP6 Original is manufactured in a cGMP-certified facility and third-party tested.",
-      },
-      {
-        q: "Is every batch tested?",
-        a: "Yes. IP6 Original is independently third-party tested for purity, potency, and quality.",
-      },
-    ],
-  },
-  {
-    id: "subscriptions-and-shipping",
-    label: "Subscriptions and shipping",
-    items: [
-      {
-        q: "How do subscriptions work?",
-        a: "Choose your delivery cycle at checkout. Subscriptions are managed entirely from your account dashboard. Pause, skip, change frequency, or cancel anytime in one click.",
-      },
-      {
-        q: "Where does IP6 Original ship?",
-        a: "IP6 Original ships to the United States and 27 international countries. US orders over $75 ship free. Other rates are shown at checkout.",
-      },
-      {
-        q: "What is the return policy?",
-        a: "All sales are final once shipped. If your order arrives damaged, contact support with your order number and photos. See our Refund Policy page.",
-      },
-      {
-        q: "When will my order arrive?",
-        a: "Tracking is emailed when your order ships.",
-      },
-    ],
-  },
-  {
-    id: "safety",
-    label: "Safety",
-    items: [
-      {
-        q: "Is IP6 Original safe to take daily?",
-        a: "The suggested use is 4 capsules once or twice daily with water, or as directed by a healthcare professional. Always consult your physician before beginning any supplement regimen, including IP6 Original.",
-      },
-      {
-        q: "Are there any side effects?",
-        a: "Always consult your physician before beginning any supplement regimen. Stop taking IP6 Original and contact your physician if you experience any adverse reaction.",
-      },
-      {
-        q: "Can I take IP6 Original with other medications or supplements?",
-        a: "Consult your healthcare professional to coordinate IP6 Original with any medications or other supplements you take.",
-      },
-      {
-        q: "Is IP6 Original safe during pregnancy or nursing?",
-        a: "If you are pregnant, nursing, taking medication, or managing a health condition, consult your healthcare provider before use.",
       },
     ],
   },

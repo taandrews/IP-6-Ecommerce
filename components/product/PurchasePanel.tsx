@@ -14,11 +14,21 @@ type Mode = "one-time" | "subscribe";
 export function PurchasePanel({
   product,
   currency,
+  variantId: controlledId,
+  onVariantChange,
 }: {
   product: Product;
   currency: Currency;
+  /** When given, the parent owns the selected size (so the gallery can follow it). */
+  variantId?: string;
+  onVariantChange?: (id: string) => void;
 }) {
-  const [variantId, setVariantId] = useState(product.variants[0]?.id ?? "");
+  const [ownId, setOwnId] = useState(product.variants[0]?.id ?? "");
+  const variantId = controlledId ?? ownId;
+  const setVariantId = (id: string) => {
+    setOwnId(id);
+    onVariantChange?.(id);
+  };
   const [qty, setQty] = useState(1);
   const [mode, setMode] = useState<Mode>("one-time");
   const [cycleDays, setCycleDays] = useState<number>(product.subscriptionCycles[0]?.days ?? 30);
@@ -34,7 +44,8 @@ export function PurchasePanel({
   const unit = variant.priceCents[currency];
   const sub = product.subscriptionCycles.find((c) => c.days === cycleDays);
   const subDiscount = sub?.discountPct ?? 0;
-  const effective = mode === "subscribe" ? Math.round(unit * (1 - subDiscount / 100)) : preorderUnitCents(unit, PREORDER);
+  const subUnit = Math.round(unit * (1 - subDiscount / 100));
+  const effective = mode === "subscribe" ? subUnit : preorderUnitCents(unit, PREORDER);
   const showPreorder = PREORDER.active && mode === "one-time";
 
   function onAdd() {
@@ -43,7 +54,7 @@ export function PurchasePanel({
       variantId: variant!.id,
       name: product.name,
       variantLabel: [variant!.name, variant!.size].filter(Boolean).join(" · "),
-      image: product.images[0]?.url ?? "",
+      image: variant!.image?.url ?? product.images[0]?.url ?? "",
       qty,
       unitPriceCents: unit,
       currency,
@@ -74,14 +85,16 @@ export function PurchasePanel({
         </p>
       ) : null}
 
-      {/* Variant selector */}
+      {/* Size selector: each size shows its price, servings and price per serving so the two can be compared in place. */}
       {product.variants.length > 1 ? (
         <div>
-          <span className="label">Format</span>
-          <div className="flex flex-wrap gap-2">
+          <span className="label">Size</span>
+          <div className="grid gap-2 sm:grid-cols-2">
             {product.variants.map((v) => {
               const active = v.id === variantId;
               const available = v.inStock;
+              const vUnit = v.priceCents[currency];
+              const vShown = mode === "subscribe" ? Math.round(vUnit * (1 - subDiscount / 100)) : preorderUnitCents(vUnit, PREORDER);
               return (
                 <button
                   key={v.id}
@@ -89,20 +102,31 @@ export function PurchasePanel({
                   disabled={!available}
                   aria-pressed={active}
                   className={cn(
-                    "rounded-md border-2 px-3 py-2 text-sm text-left transition-colors",
+                    "rounded-md border-2 px-4 py-3 text-left transition-colors",
                     active
                       ? "border-forest-700 bg-forest-50"
                       : "border-ivory-300 hover:border-forest-300",
                     !available && "opacity-50 cursor-not-allowed",
                   )}
                 >
-                  <div className="font-medium">{v.name}</div>
-                  <div className="text-xs text-ink/60">{v.size}</div>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="font-medium text-navy-800">{v.size}</span>
+                    <span className="font-medium text-navy-800">{formatPrice(vShown, currency)}</span>
+                  </div>
+                  {v.servings ? (
+                    <div className="mt-1 text-xs text-ink/65">
+                      {v.servings} servings of {v.servingLabel} · {formatPrice(Math.round(vShown / v.servings), currency)} per serving
+                    </div>
+                  ) : null}
                 </button>
               );
             })}
           </div>
         </div>
+      ) : variant.servings ? (
+        <p className="text-sm text-ink/65 -mt-2">
+          {variant.size}: {variant.servings} servings of {variant.servingLabel} · {formatPrice(Math.round(effective / variant.servings), currency)} per serving
+        </p>
       ) : null}
 
       {/* Purchase mode toggle */}
@@ -127,7 +151,7 @@ export function PurchasePanel({
               title="Subscribe & save"
               subtitle={
                 subDiscount > 0
-                  ? `Save ${subDiscount}% · ${formatPrice(Math.round(unit * (1 - subDiscount / 100)), currency)}`
+                  ? `Save ${subDiscount}% · ${formatPrice(subUnit, currency)} every delivery`
                   : "Flexible delivery"
               }
               badge={subDiscount > 0 ? `-${subDiscount}%` : undefined}
@@ -136,29 +160,40 @@ export function PurchasePanel({
         </div>
       </fieldset>
 
-      {/* Subscription cycle */}
+      {/* Subscription cycle, with what each delivery costs and how to stop. */}
       {mode === "subscribe" ? (
-        <div>
-          <span className="label">Delivery frequency</span>
-          <div className="flex gap-2 flex-wrap">
-            {product.subscriptionCycles.map((c) => {
-              const active = c.days === cycleDays;
-              return (
-                <button
-                  key={c.days}
-                  onClick={() => setCycleDays(c.days)}
-                  aria-pressed={active}
-                  className={cn(
-                    "rounded-full border-2 px-3.5 py-1.5 text-sm",
-                    active
-                      ? "border-forest-700 bg-forest-700 text-ivory-100"
-                      : "border-ivory-300 hover:border-forest-300",
-                  )}
-                >
-                  Every {c.days} days · {c.discountPct}% off
-                </button>
-              );
-            })}
+        <div className="space-y-3">
+          <div>
+            <span className="label">Delivery frequency</span>
+            <div className="flex gap-2 flex-wrap">
+              {product.subscriptionCycles.map((c) => {
+                const active = c.days === cycleDays;
+                return (
+                  <button
+                    key={c.days}
+                    onClick={() => setCycleDays(c.days)}
+                    aria-pressed={active}
+                    className={cn(
+                      "rounded-full border-2 px-3.5 py-1.5 text-sm",
+                      active
+                        ? "border-forest-700 bg-forest-700 text-ivory-100"
+                        : "border-ivory-300 hover:border-forest-300",
+                    )}
+                  >
+                    Every {c.days} days · {c.discountPct}% off
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="rounded-md bg-cloud-200 border border-cloud-300 px-4 py-3 text-sm text-ink/80 leading-relaxed">
+            <p>
+              <strong className="text-navy-800">First delivery:</strong> {formatPrice(subUnit * qty, currency)} today.{" "}
+              <strong className="text-navy-800">Then:</strong> {formatPrice(subUnit * qty, currency)} every {cycleDays} days, plus standard shipping, charged to the same card until you cancel. The {subDiscount}% discount applies to every delivery.
+            </p>
+            <p className="mt-1.5">
+              We email a reminder before each renewal. Skip, pause or cancel any time from your account.
+            </p>
           </div>
         </div>
       ) : null}
@@ -191,6 +226,11 @@ export function PurchasePanel({
           {!variant.inStock ? "Out of stock" : mode === "subscribe" ? "Subscribe now" : PREORDER.active ? "Pre-order now" : "Add to cart"}
         </button>
       </div>
+
+      {/* Delivery */}
+      <p className="text-sm text-ink/70 leading-relaxed">
+        {PREORDER.active ? `${PREORDER.shipNote}. ` : ""}Delivery estimates for your address are shown at checkout, and we email tracking the day your order ships.
+      </p>
 
       {/* Reassurance */}
       <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-ink/75">

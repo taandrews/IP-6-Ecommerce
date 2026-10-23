@@ -100,7 +100,7 @@
 
   /* Eyebrow stripped of decorative rule for clinical look. */
   .eyebrow {
-    @apply inline-block text-[11px] uppercase tracking-[0.18em] text-sky-600 font-semibold;
+    @apply inline-block text-[11px] uppercase tracking-[0.18em] text-gold-700 font-semibold;
   }
 
   .hairline-gold,

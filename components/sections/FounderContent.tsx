@@ -19,7 +19,7 @@ export function FounderContent() {
           />
         </div>
         <div>
-          <p className="text-[11px] uppercase tracking-[0.28em] text-sky-700 font-bold mb-5">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-5">
             The Founder
           </p>
           <h2

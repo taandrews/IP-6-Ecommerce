@@ -3,6 +3,7 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { Footer } from "@/components/layout/Footer";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { getCatalog } from "@/lib/data/catalog";
+import { getPreorderSettings } from "@/lib/data/settings";
 import { resolveCurrency } from "@/lib/currency";
 import { hreflangAlternates } from "@/lib/i18n";
 
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function ShopPage() {
   const currency = resolveCurrency();
-  const products = await getCatalog();
+  const [products, preorder] = await Promise.all([getCatalog(), getPreorderSettings()]);
   return (
     <>
       <section className="container py-16 lg:py-24 text-center max-w-2xl mx-auto">
@@ -31,7 +32,7 @@ export default async function ShopPage() {
       <section className="container pb-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((p) => (
-            <ProductCard key={p.sku} product={p} currency={currency} />
+            <ProductCard key={p.sku} product={p} currency={currency} preorder={preorder} />
           ))}
         </div>
       </section>

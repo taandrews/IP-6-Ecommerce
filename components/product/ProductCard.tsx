@@ -2,12 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Product, Currency } from "@/types";
+import type { PreorderSettings } from "@/types/records";
 import { formatPrice } from "@/lib/utils";
+import { DEFAULT_PREORDER, preorderUnitCents } from "@/lib/preorder";
 
-export function ProductCard({ product, currency }: { product: Product; currency: Currency }) {
+export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: { product: Product; currency: Currency; preorder?: PreorderSettings }) {
   const image = product.images[0];
-  const prices = product.variants.map((v) => v.priceCents[currency]);
-  const startingFrom = Math.min(...prices);
   const categoryLabel = {
     supplement: "Supplement",
     pet: "For pets",
@@ -92,15 +92,20 @@ export function ProductCard({ product, currency }: { product: Product; currency:
             </>
           ) : (
             <>
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.24em] text-ink/55 mb-0.5">From</p>
-                <p
-                  className="font-display text-xl text-forest-800"
-                  style={{ fontVariationSettings: '"opsz" 48, "SOFT" 30' }}
-                >
-                  {formatPrice(startingFrom, currency)}
-                </p>
-              </div>
+              <ul className="text-sm space-y-1">
+                {product.variants.map((v) => {
+                  const regular = v.priceCents[currency];
+                  const now = preorderUnitCents(regular, preorder);
+                  return (
+                    <li key={v.id} className="flex items-baseline gap-2">
+                      <span className="text-ink/70 min-w-[7ch]">{v.size}</span>
+                      {now !== regular ? <s className="text-ink/45">{formatPrice(regular, currency)}</s> : null}
+                      <span className="font-semibold text-forest-800">{formatPrice(now, currency)}</span>
+                    </li>
+                  );
+                })}
+                {preorder.active ? <li className="text-[11px] text-ink/55">{preorder.label}, {preorder.discountPct}% off</li> : null}
+              </ul>
               <Link
                 href={`/shop/${product.slug}`}
                 className="btn-primary text-sm px-4 py-2.5 group/btn"
