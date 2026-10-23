@@ -112,26 +112,15 @@ export default async function HomePage() {
          PRIMER - What IP6 and Inositol are, beside the label that lists them.
       ============================================== */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1fr_1.1fr] gap-10 lg:gap-16 items-center">
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
-              First, the molecule
-            </p>
-            <p className="text-lg lg:text-xl text-ink/80 leading-relaxed">
-              IP6 is{" "}
-              <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
-              <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
-            </p>
-          </div>
-          <Link href={`/shop/${supplement.slug}`} className="relative block aspect-[1600/622] rounded-xl overflow-hidden border border-cloud-300 bg-cloud-200" aria-label="See the IP6 Original label">
-            <Image
-              src={asset("products/supplement-240-label.jpg")}
-              alt="IP6 Original 240-count label. Supplement Facts: serving size 4 capsules, 60 servings per container, 804 mg IP6 and 196 mg Inositol per serving."
-              fill
-              sizes="(min-width:1024px) 640px, 100vw"
-              className="object-contain"
-            />
-          </Link>
+        <div className="container max-w-6xl">
+          <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
+            First, the molecule
+          </p>
+          <p className="text-lg lg:text-xl text-ink/80 leading-relaxed max-w-3xl">
+            IP6 is{" "}
+            <strong className="text-navy-800 font-semibold">inositol hexaphosphate</strong>, a molecule found naturally in seeds, grains, and legumes, where it stores energy and minerals. IP6 Original pairs it with{" "}
+            <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
+          </p>
         </div>
       </section>
 
