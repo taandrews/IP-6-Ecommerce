@@ -86,13 +86,17 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
     return clear;
   }, [cur, reduce, runKey, clear]);
 
-  // Only the active slide's video plays; reduced motion keeps the poster frame.
+  // The active slide's video plays. When the show moves on, the video keeps
+  // looping through the whole crossfade so it never freezes mid-fade; it is
+  // paused only once its slide is fully hidden. Reduced motion keeps the poster.
   useEffect(() => {
+    const pauses: number[] = [];
     videos.current.forEach((v, i) => {
       if (!v) return;
       if (i === cur && !reduce) void v.play().catch(() => {});
-      else v.pause();
+      else pauses.push(window.setTimeout(() => v.pause(), 1200));
     });
+    return () => pauses.forEach((t) => window.clearTimeout(t));
   }, [cur, reduce]);
 
   // Stop the clock while the tab is hidden; restart the current slide when it comes back.
