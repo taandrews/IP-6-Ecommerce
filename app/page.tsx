@@ -5,7 +5,7 @@ import { ArrowRight, RefreshCw, Beaker, AlertTriangle } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSlideshow } from "@/components/home/HeroSlideshow";
 import { TrustTicker } from "@/components/home/TrustTicker";
-import { MoleculeDiagram } from "@/components/home/MoleculeDiagram";
+import { MoleculeModel } from "@/components/home/MoleculeModel";
 import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
@@ -124,7 +124,12 @@ export default async function HomePage() {
             <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
           </p>
           </div>
-          <MoleculeDiagram />
+          <figure className="max-w-md mx-auto w-full">
+            <MoleculeModel />
+            <figcaption className="mt-2 text-center text-sm text-ink/70 leading-relaxed">
+              IP6: an inositol ring carrying six phosphate groups. Take the phosphates away and what remains is Inositol.
+            </figcaption>
+          </figure>
         </div>
       </section>
 
