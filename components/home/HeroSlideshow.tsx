@@ -13,11 +13,12 @@ import styles from "./HeroSlideshow.module.css";
 type Segment = { text: string; em?: boolean };
 // A slide with `video` plays it muted on loop (src is then its poster frame). `cta` overrides the shared button.
 // `msrc` is a portrait version for phones, used when the landscape crop cannot keep everyone in frame.
-// `sub` is the one plain sentence that says what the product is.
-type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; sub: string; cta?: { href: string; label: string } };
+// `sub` is the one plain sentence that says what the product is. `fit: "contain"` shows the
+// whole frame (no one cropped out) over a blurred copy of itself instead of a cover crop.
+type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; sub: string; fit?: "contain"; cta?: { href: string; label: string } };
 
 const SLIDES: Slide[] = [
-  { src: asset("hero/video/ip6-hero-stock-804268291-poster.webp"), video: asset("hero/video/ip6-hero-stock-804268291.mp4"), pos: "50% 45%", mpos: "50% 50%", alt: "Six children in a circle looking down at the camera and laughing", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." },
+  { src: asset("hero/video/ip6-hero-stock-804268291-poster.webp"), video: asset("hero/video/ip6-hero-stock-804268291.mp4"), pos: "50% 45%", mpos: "50% 50%", alt: "Six children in a circle looking down at the camera and laughing", fit: "contain", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." },
   { src: asset("hero/ip6-hero-5.webp"), msrc: asset("hero/ip6-hero-5-m.webp"), pos: "55% 40%", mpos: "52% 62%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." },
   { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 50%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], sub: "The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub.", cta: { href: "/shop/ip6-original-pet-powder", label: "Shop Pet Powder · 15% off" } },
   { src: asset("hero/ip6-hero-beach-couple.webp"), msrc: asset("hero/ip6-hero-beach-couple-m.webp"), pos: "62% 0%", mpos: "50% 60%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }], sub: "IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility." },
@@ -152,7 +153,11 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
             aria-label={`${i + 1} of ${SLIDES.length}`}
             aria-hidden={!active}
           >
-            <div className={styles.ph}>
+            <div className={[styles.ph, s.fit === "contain" ? styles.contain : ""].join(" ")}>
+              {s.fit === "contain" ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className={styles.blur} src={s.src} alt="" aria-hidden />
+              ) : null}
               {/* Plain img: the slides are full-bleed covers with a hand-set focal point. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {s.video ? (
