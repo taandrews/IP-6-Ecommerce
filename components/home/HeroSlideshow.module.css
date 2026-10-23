@@ -22,8 +22,6 @@
 .ph {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  isolation: isolate;
 }
 .ph picture {
   display: block;
@@ -48,30 +46,6 @@
 @keyframes kb {
   from { transform: scale(1); }
   to { transform: scale(1.06); }
-}
-/* Whole-frame slides: the video is letterboxed inside a blurred, enlarged copy of its own poster. */
-.contain video,
-.contain img:not(.blur) {
-  position: relative;
-  object-fit: contain;
-  object-position: 50% 50%;
-  z-index: 1;
-}
-.contain .blur {
-  position: absolute;
-  inset: -6%;
-  width: 112%;
-  height: 112%;
-  object-fit: cover;
-  filter: blur(28px) grayscale(1) brightness(0.8);
-  z-index: 0;
-}
-.on .contain video,
-.on .contain img:not(.blur) {
-  animation: none;
-}
-.reveal .contain .blur {
-  filter: blur(28px) brightness(0.8);
 }
 
 /* Duotone: shadows lifted to navy, highlights tinted cyan. Both fade on reveal. */
@@ -358,16 +332,6 @@
   }
   .scroll {
     display: none;
-  }
-  /* Whole-frame video on phones: the strip sits at the top, the words below it on the blurred ground. */
-  .contain video,
-  .contain img:not(.blur) {
-    object-position: 50% 0%;
-    padding-top: 3.6rem;
-  }
-  .ph.contain ~ .copy {
-    justify-content: flex-end;
-    padding-bottom: calc(3vh + 3.5rem);
   }
 }
 
