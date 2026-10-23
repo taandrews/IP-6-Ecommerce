@@ -41,6 +41,14 @@ export interface RateRequest {
 }
 
 const DOMESTIC = ["US"];
+
+/** Business days in transit after dispatch, by lane. Quoted at checkout and in site copy. */
+export const TRANSIT_DAYS = {
+  domesticStandard: [3, 6] as [number, number],
+  domesticExpedited: [1, 3] as [number, number],
+  internationalStandard: [7, 14] as [number, number],
+  internationalExpedited: [3, 6] as [number, number],
+};
 const SAME_ECONOMIC_ZONE = ["CA", "GB", "AU", "DE", "FR", "IE", "NL", "NZ"];
 
 // Baseline rate table. Replace with Shippo / EasyPost integration in production.
@@ -68,7 +76,7 @@ export function calculateRates(req: RateRequest): ShippingRate[] {
       id: "standard",
       label: "Standard",
       carrier: "USPS / Local Post",
-      etaDays: DOMESTIC.includes(req.destinationCountry.toUpperCase()) ? [3, 6] : [7, 14],
+      etaDays: DOMESTIC.includes(req.destinationCountry.toUpperCase()) ? TRANSIT_DAYS.domesticStandard : TRANSIT_DAYS.internationalStandard,
       amountCents: standard,
       currency: req.currency,
     },
@@ -76,7 +84,7 @@ export function calculateRates(req: RateRequest): ShippingRate[] {
       id: "expedited",
       label: "Expedited",
       carrier: "UPS / DHL Express",
-      etaDays: DOMESTIC.includes(req.destinationCountry.toUpperCase()) ? [1, 3] : [3, 6],
+      etaDays: DOMESTIC.includes(req.destinationCountry.toUpperCase()) ? TRANSIT_DAYS.domesticExpedited : TRANSIT_DAYS.internationalExpedited,
       amountCents: expedited,
       currency: req.currency,
     },

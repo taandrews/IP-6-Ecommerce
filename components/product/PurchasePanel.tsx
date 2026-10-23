@@ -8,6 +8,7 @@ import { useCart } from "@/components/cart/CartStore";
 import { Badge } from "@/components/ui/Badge";
 import { preorderUnitCents } from "@/lib/preorder";
 import { usePreorder } from "@/components/store/StoreSettings";
+import { TRANSIT_DAYS } from "@/lib/shipping";
 
 type Mode = "one-time" | "subscribe";
 
@@ -229,7 +230,7 @@ export function PurchasePanel({
 
       {/* Delivery */}
       <p className="text-sm text-ink/70 leading-relaxed">
-        {PREORDER.active ? `${PREORDER.shipNote}. ` : ""}Delivery estimates for your address are shown at checkout, and we email tracking the day your order ships.
+        {PREORDER.active ? `${PREORDER.shipNote}, in the order received. ` : ""}You get a tracking email the day your order ships. After that, US standard delivery usually takes {TRANSIT_DAYS.domesticStandard[0]} to {TRANSIT_DAYS.domesticStandard[1]} business days ({TRANSIT_DAYS.domesticExpedited[0]} to {TRANSIT_DAYS.domesticExpedited[1]} expedited) and international orders {TRANSIT_DAYS.internationalStandard[0]} to {TRANSIT_DAYS.internationalStandard[1]}; carrier delays can stretch that.{PREORDER.active ? " If the shipping date changes, we email you the new date and you can cancel for a full refund." : ""}
       </p>
 
       {/* Reassurance */}

@@ -211,7 +211,7 @@ export function CheckoutFlow({ signedIn }: { signedIn: boolean }) {
             </div>
             {(quote?.hasPreorder ?? lines.some((l) => isPreorderLine(l, preorder))) ? (
               <p className="text-xs text-ink/60 mt-4">
-                {preorder.label} items: {preorder.shipNote}. You are charged today and we ship when stock arrives.
+                {preorder.label} items: {preorder.shipNote}, in the order received. You are charged today. If the shipping date changes, we email you the new date and you can cancel for a full refund.
               </p>
             ) : null}
             <div className="flex items-center gap-2 text-xs text-ink/60 mt-4">
