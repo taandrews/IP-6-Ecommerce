@@ -69,9 +69,10 @@
 .dim {
   background: linear-gradient(to top, rgba(6, 18, 42, 0.72), rgba(6, 18, 42, 0.5) 30%, rgba(6, 18, 42, 0.5) 72%, rgba(6, 18, 42, 0.3));
 }
+/* End of the fade: the colour photo is brightened so the hero does not read dark. */
 .reveal .ph img,
 .reveal .ph video {
-  filter: none;
+  filter: brightness(1.2);
 }
 .reveal .shadow,
 .reveal .light {
