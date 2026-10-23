@@ -1,7 +1,8 @@
+/* The hero takes the exact shape of the video (1920 x 1013), so no frame is ever cropped or boxed. */
 .hero {
   position: relative;
-  height: min(calc(100svh - 80px), 820px);
-  min-height: 560px;
+  width: 100%;
+  aspect-ratio: 1920 / 1013;
   overflow: hidden;
   background: #06122a;
   color: #fff;
@@ -267,10 +268,47 @@
 }
 
 @media (max-width: 900px) {
+  /* Phones: the media keeps its own shape at the top and the words sit under it,
+     so nothing is cropped and nothing covers the picture. Slides stack in one
+     grid cell so the crossfade still works. */
   .hero {
-    /* Phone header is 64px, not the desktop 80px. */
-    height: min(calc(100svh - 64px), 820px);
-    min-height: 540px;
+    aspect-ratio: auto;
+    display: grid;
+  }
+  .slide {
+    position: relative;
+    inset: auto;
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .ph {
+    position: relative;
+    aspect-ratio: 1920 / 1013;
+    width: 100%;
+    overflow: hidden;
+  }
+  /* The media fills the box without setting its height, so every slide's box is the same shape. */
+  .ph picture,
+  .ph img,
+  .ph video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .shadow,
+  .light,
+  .dim {
+    inset: 0 0 auto 0;
+    aspect-ratio: 1920 / 1013;
+  }
+  .copy {
+    position: relative;
+    inset: auto;
+    flex: 1;
+    background: #001840;
+    padding: 1.75rem 6vw 2.25rem;
   }
   /* Phones: darker band behind the centred copy so white and gold text read on bright photos. */
   .dim {
@@ -306,9 +344,8 @@
     font-size: 12px;
     padding: 0.45rem 0.85rem;
   }
-  /* Keep the headline and button centred in the part of the screen the one-line FDA bar doesn't cover. */
   .copy {
-    padding-bottom: calc(4vh + 3.5rem);
+    padding-bottom: 2.25rem;
   }
   /* Phones: dots and pause sit at the top of the hero. The full FDA
      disclaimer bar takes the bottom of the screen and would cover them. */
