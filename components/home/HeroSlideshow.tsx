@@ -21,7 +21,7 @@ const SLIDES: Slide[] = [
   { src: asset("hero/ip6-hero-5.webp"), msrc: asset("hero/ip6-hero-5-m.webp"), pos: "55% 30%", mpos: "52% 88%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." , mobileHeadlineOnly: true, mobileLow: true},
   { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 20%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], sub: "The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub." , mobileHeadlineOnly: true},
   { src: asset("hero/ip6-hero-beach-couple.webp"), msrc: asset("hero/ip6-hero-beach-couple-m.webp"), pos: "62% 0%", mpos: "50% 72%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }], sub: "IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility." , mobileHeadlineOnly: true, mobileLow: true},
-  { src: asset("hero/ip6-hero-3.webp"), pos: "50% 8%", mpos: "70% 0%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "The man who researched IP6 " }, { text: "formulated it himself", em: true }, { text: "." }], sub: "Professor Shamsuddin researched IP6 at the University of Maryland School of Medicine and formulated IP6 Original to his own specification." , mobileTopEyebrow: true},
+  { src: asset("hero/ip6-hero-3.webp"), pos: "50% 8%", mpos: "70% 0%", alt: "A woman laughing in golden evening light, a visor on her head", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "His research. " }, { text: "His formula.", em: true }], sub: "" , mobileTopEyebrow: true},
 ];
 
 const TYPE_MS = 42;
@@ -200,7 +200,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
                 ) : (
                   <p className={styles.line} aria-level={1} role="heading">{renderLine(s, active)}</p>
                 )}
-                <p className={styles.sub}>{s.sub}</p>
+                {s.sub ? <p className={styles.sub}>{s.sub}</p> : null}
               </div>
             );
           })}

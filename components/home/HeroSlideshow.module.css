@@ -119,6 +119,16 @@
   .textSplit .line {
     font-size: clamp(1.8rem, min(4.4vw, 6.4vh), 4.4rem);
   }
+  /* Visor slide: words sit on the left, clear of her face (right of centre). */
+  .textSplit {
+    justify-self: start;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 34vw;
+  }
+  .textSplit .line {
+    max-width: none;
+  }
 }
 /* Short desktop windows only: headlines and spacing scale down with the window
    height so every slide's words fit between the top of the photo and the buttons. */
