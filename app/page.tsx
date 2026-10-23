@@ -113,7 +113,7 @@ export default async function HomePage() {
          PRIMER - What IP6 and Inositol are, beside the label that lists them.
       ============================================== */}
       <section className="bg-surface border-t border-cloud-300 py-16 lg:py-24">
-        <div className="container max-w-6xl grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
+        <div className="container max-w-6xl grid lg:grid-cols-[1.4fr_1fr] gap-8 lg:gap-12 items-center">
           <div>
           <p className="text-[11px] uppercase tracking-[0.28em] text-gold-700 font-bold mb-4">
             First, the molecule
@@ -124,12 +124,9 @@ export default async function HomePage() {
             <strong className="text-navy-800 font-semibold">Inositol</strong>, the simpler compound at its core, the way Prof. Shamsuddin&rsquo;s research describes the two. Knowing what the molecule is makes the next question, how pure is it, the one that matters.
           </p>
           </div>
-          <figure className="max-w-md mx-auto w-full">
+          <div className="w-full max-w-[260px] lg:max-w-[300px] mx-auto">
             <MoleculeModel />
-            <figcaption className="mt-2 text-center text-sm text-ink/70 leading-relaxed">
-              IP6: an inositol ring carrying six phosphate groups. Take the phosphates away and what remains is Inositol.
-            </figcaption>
-          </figure>
+          </div>
         </div>
       </section>
 
