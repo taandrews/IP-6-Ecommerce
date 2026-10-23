@@ -14,7 +14,7 @@ import { Grain } from "@/components/ui/Grain";
 import { Accordion } from "@/components/ui/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { Stars } from "@/components/ui/Stars";
-import { FileText, FlaskConical } from "lucide-react";
+import { FileText } from "lucide-react";
 import { products } from "@/content/products";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPublishedReviews } from "@/lib/data/reviews";
@@ -219,23 +219,6 @@ export default async function ProductPage({ params }: Params) {
       {/* Category-specific content */}
       {product.category === "supplement" ? <SupplementSections /> : null}
 
-      {/* Where the research claim leads */}
-      {product.category === "supplement" ? (
-        <section className="container max-w-3xl pb-4">
-          <a
-            href="https://www.ip-6.net/#papers"
-            className="group flex items-start gap-4 p-5 rounded-md border border-cloud-300 hover:border-gold-500 transition-colors"
-          >
-            <FlaskConical className="size-5 text-gold-700 mt-0.5 shrink-0" aria-hidden />
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] uppercase tracking-[0.28em] text-ink/55 mb-1">The research behind the formula</p>
-              <p className="font-display text-forest-800 text-lg leading-tight">Published papers on IP6, at ip-6.net</p>
-              <p className="text-xs text-ink/60 mt-1">Prof. Shamsuddin&apos;s research site lists the peer-reviewed work. It is a research site, not a store.</p>
-            </div>
-            <span className="text-xs uppercase tracking-[0.22em] text-forest-700 group-hover:text-gold-700 self-center">Open →</span>
-          </a>
-        </section>
-      ) : null}
 
       {/* Ingredients / spec list */}
       {product.ingredients ? (

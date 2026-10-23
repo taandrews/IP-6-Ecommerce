@@ -107,11 +107,6 @@ export const faqCategories: FaqCategory[] = [
         q: "Why are IP6 and Inositol taken together?",
         a: "Professor Shamsuddin's research centers on IP6 and Inositol as a pair rather than IP6 alone, and IP6 Original reflects that approach by combining both in one formula.",
       },
-      {
-        q: "Where can I read the research?",
-        a: "Professor Shamsuddin's published, peer-reviewed papers on IP6 are listed on his research site, ip-6.net. It is a research site, not a store.",
-        more: { href: "https://www.ip-6.net/#papers", label: "Read the papers at ip-6.net" },
-      },
     ],
   },
   {

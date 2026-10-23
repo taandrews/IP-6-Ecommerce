@@ -31,7 +31,7 @@ const MOMENTS: { label: string; body: string; emphasis?: boolean }[] = [
   },
   {
     label: "2020",
-    body: "Professor Shamsuddin retires from the University of Maryland School of Medicine. The research continues, and his published papers are collected at ip-6.net.",
+    body: "Professor Shamsuddin retires from the University of Maryland School of Medicine. The research continues.",
   },
   {
     label: "IP6 Original",
@@ -72,11 +72,7 @@ export default function StoryPage() {
               </li>
             ))}
           </ol>
-          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
-            <a href="https://www.ip-6.net/#papers" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
-              Read the published research at ip-6.net
-              <ArrowRight className="size-3.5" />
-            </a>
+          <div className="mt-10">
             <Link href="/the-difference" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
               What goes into IP6 Original
               <ArrowRight className="size-3.5" />

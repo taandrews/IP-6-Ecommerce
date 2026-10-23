@@ -193,15 +193,11 @@ export default async function HomePage() {
               ))}
             </ul>
 
-            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
+            <div className="mt-8">
               <Link href="/the-difference" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
                 See what goes into it
                 <ArrowRight className="size-3.5" />
               </Link>
-              <a href="https://www.ip-6.net/#papers" className="inline-flex items-center gap-1.5 text-sm font-semibold text-navy-800 hover:text-gold-700 underline underline-offset-4 decoration-gold-500 decoration-2">
-                Read the published research at ip-6.net
-                <ArrowRight className="size-3.5" />
-              </a>
             </div>
           </div>
 

@@ -19,7 +19,7 @@ const ROWS: { label: string; original: string; more?: { href: string; label: str
   { label: "Verification", original: "Third-party tested", note: "Stated on the label." , more: { href: "/shop/ip6-original-supplement", label: "See the label" } },
   { label: "Formulation", original: "No magnesium stearate or silicon dioxide", more: { href: "/shop/ip6-original-supplement", label: "See the ingredients" } },
   { label: "Manufacturing", original: "cGMP-certified facility", note: "Stated on the label." },
-  { label: "Formulated by", original: "Prof. Shamsuddin, founder & formulator", more: { href: "https://www.ip-6.net/#papers", label: "Read his published research" } },
+  { label: "Formulated by", original: "Prof. Shamsuddin, founder & formulator", more: { href: "/story#founder", label: "Meet Prof. Shamsuddin" } },
 ];
 
 export default function TheDifferencePage() {
