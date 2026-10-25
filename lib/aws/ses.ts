@@ -1,6 +1,7 @@
 import "server-only";
 import { awsRegion } from "./region";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { EMAIL } from "@/lib/email-addresses";
 
 const region = awsRegion();
 
@@ -11,22 +12,46 @@ export const sesClient = new SESClient({
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com").replace(/\/$/, "");
 
-export async function sendEmail(to: string, subject: string, html: string, text?: string) {
-  const from = process.env.SES_FROM_EMAIL;
-  const replyTo = process.env.SES_REPLY_TO;
-  if (!from || !replyTo) throw new Error("SES_FROM_EMAIL and SES_REPLY_TO must be configured");
+/** Mailbox each message is sent from; the domain is the SES identity of this environment. */
+export type Sender = "orders" | "privacy" | "hello";
+
+const DEFAULT_REPLY_TO: Record<Sender, string> = {
+  orders: EMAIL.support,
+  privacy: EMAIL.privacy,
+  hello: EMAIL.hello,
+};
+
+// SES only sends from the domain verified for this environment (ip6original.com in production,
+// staging.ip6original.com in staging), so the domain comes from SES_FROM_EMAIL.
+function fromAddress(sender: Sender, name: string) {
+  const domain = process.env.SES_FROM_EMAIL?.split("@")[1];
+  if (!domain) throw new Error("SES_FROM_EMAIL must be configured");
+  return `${name} <${sender}@${domain}>`;
+}
+
+export interface SendOptions {
+  sender?: Sender;
+  /** Display name on the From line. */
+  fromName?: string;
+  /** Defaults to the inbox that answers for the sender (support@ for orders@). */
+  replyTo?: string;
+  text?: string;
+}
+
+export async function sendEmail(to: string, subject: string, html: string, opts: SendOptions = {}) {
+  const sender = opts.sender ?? "orders";
   return sesClient.send(
     new SendEmailCommand({
-      Source: from,
+      Source: fromAddress(sender, opts.fromName ?? "IP6 Original"),
       // Routes every message through the SES configuration set (TLS, suppression list, bounce alerts).
       ...(process.env.SES_CONFIGURATION_SET ? { ConfigurationSetName: process.env.SES_CONFIGURATION_SET } : {}),
-      ReplyToAddresses: [replyTo],
+      ReplyToAddresses: [opts.replyTo ?? DEFAULT_REPLY_TO[sender]],
       Destination: { ToAddresses: [to] },
       Message: {
         Subject: { Charset: "UTF-8", Data: subject.replace(/[\r\n]/g, " ") },
         Body: {
           Html: { Charset: "UTF-8", Data: html },
-          ...(text ? { Text: { Charset: "UTF-8", Data: text } } : {}),
+          ...(opts.text ? { Text: { Charset: "UTF-8", Data: opts.text } } : {}),
         },
       },
     }),
@@ -34,9 +59,9 @@ export async function sendEmail(to: string, subject: string, html: string, text?
 }
 
 /** Sends and logs failures without the recipient or body (no PII in logs). */
-export async function sendEmailSafe(to: string, msg: { subject: string; html: string }, label: string) {
+export async function sendEmailSafe(to: string, msg: { subject: string; html: string; sender?: Sender }, label: string) {
   try {
-    await sendEmail(to, msg.subject, msg.html);
+    await sendEmail(to, msg.subject, msg.html, { sender: msg.sender });
     return true;
   } catch (err) {
     console.error(`[ses] ${label} failed`, (err as Error).name);
@@ -152,6 +177,7 @@ export const emailTemplates = {
     `),
   }),
   privacyVerify: (link: string, type: "export" | "delete") => ({
+    sender: "privacy" as const,
     subject: `Confirm your ${type === "delete" ? "data deletion" : "data copy"} request · IP6 Original`,
     html: baseEmail(`
       <h1 style="font-size:22px;">Confirm your request</h1>
@@ -161,6 +187,7 @@ export const emailTemplates = {
     `),
   }),
   privacyReceived: (type: "export" | "delete") => ({
+    sender: "privacy" as const,
     subject: "We received your privacy request · IP6 Original",
     html: baseEmail(`
       <h1 style="font-size:22px;">Request confirmed</h1>
@@ -168,6 +195,7 @@ export const emailTemplates = {
     `),
   }),
   privacyDeleted: () => ({
+    sender: "privacy" as const,
     subject: "Your personal data has been deleted · IP6 Original",
     html: baseEmail(`
       <h1 style="font-size:22px;">Deletion complete</h1>
@@ -175,6 +203,7 @@ export const emailTemplates = {
     `),
   }),
   privacyExportReady: () => ({
+    sender: "privacy" as const,
     subject: "Your data copy is ready · IP6 Original",
     html: baseEmail(`
       <h1 style="font-size:22px;">Your data copy</h1>
@@ -182,6 +211,7 @@ export const emailTemplates = {
     `),
   }),
   staffPrivacyAlert: (type: "export" | "delete") => ({
+    sender: "privacy" as const,
     subject: `New ${type} request in the admin portal`,
     html: baseEmail(`<p>A verified ${e(type)} request is waiting in Admin, Privacy requests. It must be completed within 30 days.</p>`),
   }),

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { hreflangAlternates } from "@/lib/i18n";
+import { EMAIL } from "@/lib/email-addresses";
 
 export const metadata: Metadata = {
   title: "Refund Policy",
@@ -11,7 +12,7 @@ export default function RefundPolicyPage() {
     <>
       <p className="eyebrow mb-4">Legal</p>
       <h1 className="font-display text-display-xl text-forest-800 mb-6">Refund Policy</h1>
-      <p className="text-sm text-ink/60 mb-10">Last updated: October 14, 2026</p>
+      <p className="text-sm text-ink/60 mb-10">Last updated: October 25, 2026</p>
       <div className="space-y-8 text-ink/80 leading-relaxed">
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">All sales are final</h2>
@@ -22,8 +23,8 @@ export default function RefundPolicyPage() {
         <section>
           <h2 className="font-display text-display-md text-forest-800 mb-3">Damaged or incorrect orders</h2>
           <p>
-            Please inspect your order when it arrives. If an item is damaged, defective, or not what you ordered, contact us right away through the{" "}
-            <a href="/contact" className="underline text-forest-700">contact form</a>: choose <strong>Order question</strong>, include your order number, and attach photos of the item and the packaging. We reply by email within one business day. Each case is reviewed by a person so we can make it right. You do not need to return the item; keep it, with the packaging, until you hear from us.
+            Please inspect your order when it arrives. If an item is damaged, defective, or not what you ordered, email us right away at{" "}
+            <a href={`mailto:${EMAIL.support}`} className="underline text-forest-700">{EMAIL.support}</a> with your order number and photos of the item and the packaging. We reply by email within one business day. Each case is reviewed by a person so we can make it right. You do not need to return the item; keep it, with the packaging, until you hear from us.
           </p>
         </section>
         <section>

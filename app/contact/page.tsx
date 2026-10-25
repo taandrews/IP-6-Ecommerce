@@ -2,6 +2,15 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { ContactForm } from "./ContactForm";
 import { hreflangAlternates } from "@/lib/i18n";
+import { EMAIL } from "@/lib/email-addresses";
+
+const INBOXES = [
+  { label: "Orders and support", address: EMAIL.support },
+  { label: "Wholesale", address: EMAIL.wholesale },
+  { label: "Press", address: EMAIL.press },
+  { label: "Privacy", address: EMAIL.privacy },
+  { label: "Everything else", address: EMAIL.hello },
+];
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -29,7 +38,23 @@ export default function ContactPage() {
             </div>
             <div>
               <dt className="font-semibold text-navy-800">Damaged or incorrect orders</dt>
-              <dd>Contact us as soon as it arrives. Choose Order question, add your order number, and attach photos of the item and the packaging so we can review it and make it right.</dd>
+              <dd>
+                Email <a href={`mailto:${EMAIL.support}`} className="underline text-forest-700">{EMAIL.support}</a> as soon as it arrives with your order
+                number and photos of the item and the packaging so we can review it and make it right.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-navy-800">Email us directly</dt>
+              <dd>
+                <ul className="mt-1 space-y-1">
+                  {INBOXES.map((i) => (
+                    <li key={i.address}>
+                      <span className="text-ink/60">{i.label}:</span>{" "}
+                      <a href={`mailto:${i.address}`} className="underline text-forest-700 break-all">{i.address}</a>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
             </div>
             <div>
               <dt className="font-semibold text-navy-800">After you send</dt>

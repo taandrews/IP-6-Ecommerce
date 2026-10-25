@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifyPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
+import { EMAIL } from "@/lib/email-addresses";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,8 +23,7 @@ export async function GET(req: Request) {
       return NextResponse.redirect(back, { status: 303 });
     }
     await sendEmailSafe(rec.email, emailTemplates.privacyReceived(rec.type), "privacy received");
-    const inbox = process.env.SES_REPLY_TO;
-    if (inbox) await sendEmailSafe(inbox, emailTemplates.staffPrivacyAlert(rec.type), "privacy staff alert");
+    await sendEmailSafe(EMAIL.privacy, emailTemplates.staffPrivacyAlert(rec.type), "privacy staff alert");
     back.searchParams.set("request", "confirmed");
   } catch (err) {
     console.error("[privacy] verify failed", (err as Error).name);

@@ -3,6 +3,7 @@ import { asset } from "@/lib/assets";
 import Image from "next/image";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 import { PrivacyChoicesButton } from "./PrivacyChoicesButton";
+import { EMAIL } from "@/lib/email-addresses";
 
 const GROUPS = [
   {
@@ -61,6 +62,8 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
               Lutherville, Maryland
               <br />
               <Link href="/contact" className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">Contact us</Link>
+              <br />
+              <a href={`mailto:${EMAIL.hello}`} className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">{EMAIL.hello}</a>
             </address>
           </div>
 

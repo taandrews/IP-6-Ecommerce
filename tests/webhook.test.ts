@@ -8,7 +8,6 @@ import type { OrderRecord } from "@/types/records";
 vi.mock("next/cache", () => ({ revalidateTag: () => undefined, unstable_cache: (fn: () => unknown) => fn }));
 
 process.env.SES_FROM_EMAIL = "orders@ip6.test";
-process.env.SES_REPLY_TO = "support@ip6.test";
 
 const ddb = mockClient(DynamoDBDocumentClient);
 const ses = mockClient(SESClient);
@@ -61,6 +60,9 @@ describe("payment_intent.succeeded", () => {
     expect(updates.some((u) => String(u.UpdateExpression).includes("stock = stock - :q"))).toBe(true);
     expect(updates.some((u) => String(u.TableName).endsWith("AnalyticsDaily"))).toBe(true);
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(1);
+    const sent = ses.commandCalls(SendEmailCommand)[0]!.args[0].input;
+    expect(sent.Source).toBe("IP6 Original <orders@ip6.test>");
+    expect(sent.ReplyToAddresses).toEqual(["support@ip6original.com"]);
   });
 
   it("does nothing on a retried event (already paid)", async () => {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DataDeletionForm } from "./DataDeletionForm";
 import { hreflangAlternates } from "@/lib/i18n";
+import { EMAIL } from "@/lib/email-addresses";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -16,7 +17,7 @@ export default function PrivacyPage({ searchParams }: { searchParams: { request?
     <>
       <p className="eyebrow mb-4">Legal</p>
       <h1 className="font-display text-display-xl text-forest-800 mb-6">Privacy Policy</h1>
-      <p className="text-sm text-ink/60 mb-10">Last updated: October 20, 2026</p>
+      <p className="text-sm text-ink/60 mb-10">Last updated: October 25, 2026</p>
 
       {request === "confirmed" ? (
         <p className="mb-8 rounded-md border border-forest-200 bg-forest-50 p-4 text-sm text-forest-800" role="status">
@@ -33,8 +34,8 @@ export default function PrivacyPage({ searchParams }: { searchParams: { request?
           <h2 className={H2}>1. Who we are</h2>
           <p>
             IP6 Original (&ldquo;we&rdquo;, &ldquo;us&rdquo;) runs ip6original.com from Lutherville, Maryland, USA, and is responsible (the
-            &ldquo;controller&rdquo;) for the personal data described here. Questions or requests: use our{" "}
-            <a href="/contact" className="underline text-forest-700">contact form</a> or the request form at the end of this page.
+            &ldquo;controller&rdquo;) for the personal data described here. Questions or requests: email{" "}
+            <a href={`mailto:${EMAIL.privacy}`} className="underline text-forest-700">{EMAIL.privacy}</a> or use the request form at the end of this page.
           </p>
         </section>
 
@@ -151,7 +152,10 @@ export default function PrivacyPage({ searchParams }: { searchParams: { request?
               <strong>Get a copy</strong> of your data. Signed-in customers can download it any time from{" "}
               <a href="/account/privacy" className="underline text-forest-700">Account, Privacy and data</a>; otherwise use the form below.
             </li>
-            <li><strong>Correct</strong> it, through the contact form.</li>
+            <li>
+              <strong>Correct</strong> it, by emailing{" "}
+              <a href={`mailto:${EMAIL.privacy}`} className="underline text-forest-700">{EMAIL.privacy}</a>.
+            </li>
             <li><strong>Delete</strong> it, from your account page or with the form below.</li>
             <li><strong>Stop marketing emails</strong> from your account page, or by contacting us.</li>
             <li><strong>Withdraw consent</strong> to cookies at any time with Your privacy choices.</li>

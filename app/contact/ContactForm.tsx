@@ -18,7 +18,10 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Request failed");
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error ?? "Your message could not be sent. Please try again.");
+      }
       setStatus("success");
       e.currentTarget.reset();
     } catch (err) {

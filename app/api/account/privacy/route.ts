@@ -6,6 +6,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { newsletterKey } from "@/lib/data/customers";
 import { createPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
+import { EMAIL } from "@/lib/email-addresses";
 
 export const runtime = "nodejs";
 
@@ -29,8 +30,7 @@ export async function POST(req: Request) {
     if (!user.emailVerified) return NextResponse.json({ error: "Verify your email first, or use the form on our Privacy Policy page." }, { status: 403 });
     await createPrivacyRequest({ type: "delete", email: user.email, userId: user.sub, details: parsed.data.details, verified: true });
     await sendEmailSafe(user.email, emailTemplates.privacyReceived("delete"), "privacy received");
-    const inbox = process.env.SES_REPLY_TO;
-    if (inbox) await sendEmailSafe(inbox, emailTemplates.staffPrivacyAlert("delete"), "privacy staff alert");
+    await sendEmailSafe(EMAIL.privacy, emailTemplates.staffPrivacyAlert("delete"), "privacy staff alert");
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[account] privacy action failed", (err as Error).name);
