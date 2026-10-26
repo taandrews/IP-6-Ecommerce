@@ -14,7 +14,7 @@
   #ip6quiz .media .mtag { position: absolute; left: 28px; right: 28px; bottom: 26px; z-index: 1; color: #fff; text-shadow: 0 2px 16px rgba(8,18,32,.95); }
   #ip6quiz .media .mtag .e { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; opacity: .95; }
   #ip6quiz .media .mtag .h { font-family: var(--serif); font-style: italic; font-size: 26px; margin-top: 6px; line-height: 1.15; max-width: 16ch; }
-  #ip6quiz .side { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; }
+  #ip6quiz .side { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; }
   @media (max-width: 860px) {
     #ip6quiz .panel { flex-direction: column; }
     #ip6quiz .media { flex: 0 0 190px; background-position: center 24%; }
@@ -27,7 +27,7 @@
   #ip6quiz .top { display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(20px,4vw,48px); }
   #ip6quiz .brand { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--teal,#006c82); }
   #ip6quiz .close { background: none; border: 0; font-size: 14px; color: var(--muted,#5b6470); cursor: pointer; }
-  #ip6quiz .body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px clamp(20px,5vw,48px) 40px; }
+  #ip6quiz .body { flex: 1 0 auto; display: flex; align-items: center; justify-content: center; padding: 8px clamp(20px,5vw,48px) 40px; }
   #ip6quiz .inner { width: 100%; max-width: 640px; text-align: center; }
   #ip6quiz .step { display: none; }
   #ip6quiz .step.active { display: block; animation: qf .4s ease-out; }
@@ -68,6 +68,24 @@
   #ip6quiz .reveal .reassure span::before { content: "\2713  "; color: var(--teal); }
   #ip6quiz .disc { padding: 14px clamp(20px,5vw,48px) 24px; text-align: center; font-size: 11px; line-height: 1.5; color: var(--muted); border-top: 1px solid var(--line); }
   @media (max-width: 600px) { #ip6quiz h2 { font-size: 26px; } }
+  #ip6quiz .product-offer { display: grid; grid-template-columns: minmax(0,.85fr) minmax(0,1fr); gap: 20px; align-items: center; padding: 20px 28px 20px 16px; background: transparent; border: 1px solid transparent; border-radius: 18px; text-align: left; }
+  #ip6quiz .product-stage { display: flex; align-items: center; justify-content: center; }
+  #ip6quiz .product-image { display: block; width: 100%; max-width: 240px; height: 280px; object-fit: contain; filter: drop-shadow(0 12px 10px rgba(0,24,64,.12)); }
+  #ip6quiz .offer-copy { min-width: 0; }
+  #ip6quiz .product-name { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink,#0b1f3a); }
+  #ip6quiz .product-detail { margin: 6px 0 0; font-size: 12px; line-height: 1.5; color: var(--muted,#5b6470); }
+  #ip6quiz .product-offer .l-offer { margin: 20px 0 0; font-size: clamp(30px,3vw,42px); line-height: 1.12; }
+  #ip6quiz .product-offer .l-offer b { display: block; margin-top: 5px; font-size: 1.18em; }
+  #ip6quiz .launch .l-kicker { margin-top: 20px; font-size: 11px; }
+  #ip6quiz .result-product .product-image { width: 180px; height: 220px; margin: 0 auto 20px; }
+  @media (max-width: 600px) {
+    #ip6quiz .product-offer { grid-template-columns: minmax(0,.8fr) minmax(0,1fr); gap: 12px; padding: 20px 14px 20px 6px; border-radius: 14px; }
+    #ip6quiz .product-image { height: 200px; }
+    #ip6quiz .product-name { font-size: 10px; letter-spacing: .1em; }
+    #ip6quiz .product-detail { font-size: 11px; }
+    #ip6quiz .product-offer .l-offer { font-size: 26px; margin-top: 14px; }
+    #ip6quiz .launch .l-kicker { font-size: 10px; line-height: 1.6; letter-spacing: .12em; }
+  }
 </style>
 
 <div id="ip6quiz" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Pre-order IP6 Original and receive 15% off">
@@ -89,8 +107,21 @@
         <div class="step active" data-step="intent">
           <span class="eyebrow">From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
           <div class="launch">
-            <div class="l-kicker">Pre-order open · Starts shipping November 2026</div>
-            <div class="l-offer">Pre-Order Now &amp; Receive <b>15% Off</b></div>
+            <div class="product-offer">
+              <div class="product-stage">
+              {%- if quiz_product.featured_image != blank -%}
+                {{ quiz_product.featured_image | image_url: width: 720 | image_tag: class: 'product-image', alt: quiz_product.title, loading: 'eager', sizes: '(max-width: 600px) 140px, 240px' }}
+              {%- else -%}
+                <img class="product-image" src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original supplement bottle" width="500" height="625" loading="eager">
+              {%- endif -%}
+              </div>
+              <div class="offer-copy">
+                <p class="product-name">IP6 Original</p>
+                <p class="product-detail">IP6 + Inositol</p>
+                <h2 class="l-offer">Pre-Order Now<br>&amp; Receive <b>15% Off</b></h2>
+              </div>
+            </div>
+            <div class="l-kicker">Pre-order open &middot; Starts shipping November 2026</div>
             <div class="l-count" id="ip6q-count" aria-label="Time until launch">
               <div class="u"><div class="n" data-cd="d">–</div><div class="l">Days</div></div>
               <div class="u"><div class="n" data-cd="h">–</div><div class="l">Hours</div></div>
@@ -181,6 +212,13 @@
 
         <!-- Reveal -->
         <div class="step reveal" data-step="reveal">
+          <div class="result-product">
+              {%- if quiz_product.featured_image != blank -%}
+                {{ quiz_product.featured_image | image_url: width: 720 | image_tag: class: 'product-image', alt: quiz_product.title, loading: 'eager', sizes: '(max-width: 600px) 140px, 240px' }}
+              {%- else -%}
+                <img class="product-image" src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original supplement bottle" width="500" height="625" loading="eager">
+              {%- endif -%}
+          </div>
           <span class="eyebrow">Your match</span>
           <h2>IP6 Original is your match.</h2>
           <p class="sub" id="ip6q-result">A high-purity IP6 and Inositol formula, made to the standard the research describes.</p>

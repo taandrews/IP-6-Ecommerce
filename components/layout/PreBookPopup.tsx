@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { asset } from "@/lib/assets";
 import s from "./PreBookPopup.module.css";
 import { products } from "@/content/products";
@@ -11,6 +12,9 @@ import { formatPrice } from "@/lib/utils";
 const KEY = "ip6quiz_seen_v1";
 const LAUNCH_MS = Date.parse("2026-11-01T04:00:00Z");
 const PRODUCT_URL = "/shop/ip6-original-supplement";
+const QUIZ_PRODUCT = products.find((p) => p.slug === "ip6-original-supplement")!;
+const QUIZ_VARIANT = QUIZ_PRODUCT.variants[0]!;
+const QUIZ_IMAGE = QUIZ_VARIANT.image ?? QUIZ_PRODUCT.images[0]!;
 
 type Step = "intent" | "email" | "q2" | "q3" | "q4" | "q5" | "q6" | "reveal";
 const ORDER: Step[] = ["intent", "email", "q2", "q3", "q4", "q5", "q6", "reveal"];
@@ -245,10 +249,25 @@ export function PreBookPopup() {
                 <>
                   <span className={s.eyebrow}>From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
                   <div className={s.launch}>
-                    <div className={s.kicker}>Pre-order open · Starts shipping November 2026</div>
-                    <div className={s.offer}>
-                      Pre-Order Now &amp; Receive <b>15% Off</b>
+                    <div className={s.productOffer}>
+                      <div className={s.productStage}>
+                        <Image
+                          className={s.productImage}
+                          src={QUIZ_IMAGE.url}
+                          alt={QUIZ_IMAGE.alt}
+                          width={QUIZ_IMAGE.width}
+                          height={QUIZ_IMAGE.height}
+                          sizes="(max-width: 600px) 140px, 240px"
+                          priority
+                        />
+                      </div>
+                      <div className={s.offerCopy}>
+                        <p className={s.productName}>IP6 Original</p>
+                        <p className={s.productDetail}>IP6 + Inositol{QUIZ_VARIANT.size && <> &middot; {QUIZ_VARIANT.size.replace(" count", "")} capsules</>}</p>
+                        <h2 className={s.offer}>Pre-Order Now<br />&amp; Receive <b>15% Off</b></h2>
+                      </div>
                     </div>
+                    <div className={s.kicker}>Pre-order open &middot; Starts shipping November 2026</div>
                     <Countdown />
                   </div>
                   <p className={s.sub}>What brings you to IP6 Original?</p>
@@ -313,6 +332,14 @@ export function PreBookPopup() {
 
               {step === "reveal" && (
                 <>
+                  <Image
+                    className={s.resultImage}
+                    src={QUIZ_IMAGE.url}
+                    alt={QUIZ_IMAGE.alt}
+                    width={QUIZ_IMAGE.width}
+                    height={QUIZ_IMAGE.height}
+                    sizes="180px"
+                  />
                   <span className={s.eyebrow}>Your match</span>
                   <h2 className={s.h2}>IP6 Original is your match.</h2>
                   <p className={s.sub}>{result}</p>
