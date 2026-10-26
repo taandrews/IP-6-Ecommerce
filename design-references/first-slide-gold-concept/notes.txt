@@ -1,0 +1,19 @@
+﻿First-slide gold concept
+Status: REFERENCE ONLY. NOT APPROVED.
+Saved: 2026-10-26
+User feedback: "keep for future reference but i dont think this is it"
+
+The preview shows the capsule bottle and pet powder container resting on a gold platform against a bright gold background.
+Retain as a past exploration, not as the selected design or approval to implement.
+
+Standing constraints for future work:
+- Scope is the first slide only, not the entire hero.
+- Show proposed designs as standalone images before making site changes.
+- Products must be visibly supported, not floating.
+- Keep the scene bright enough; avoid an overly dark design.
+- References supplied: https://ritual.com/ https://www.timeline.com/ https://drinkag1.com/
+- Evaluate every requested requirement before presenting work.
+
+Saving this reference did not change or revert website files.
+
+Latest feedback: The gold design does not speak to the product. User requested restoring the plain first slide and discussing improvements. Plain first slide restored; gold concept remains reference only, not approved. Future new design proposals must be image-only until implementation is authorized.
