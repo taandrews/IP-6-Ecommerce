@@ -7,7 +7,12 @@ import type { BannerSettings, PreorderSettings } from "@/types/records";
 
 export const SETTINGS_TAG = "store-settings";
 
-const DEFAULT_BANNER: BannerSettings = { enabled: false, text: "" };
+const DEFAULT_BANNER: BannerSettings = {
+  enabled: true,
+  text: "Launch offer: 15% off",
+  linkLabel: "Order Now",
+  linkHref: "/shop/ip6-original-supplement",
+};
 
 async function read<T>(key: string, fallback: T): Promise<T> {
   try {

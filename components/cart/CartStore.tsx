@@ -62,7 +62,11 @@ export const useCart = create<CartState>()(
       // drawer and the nav badge. CartDrawer rehydrates after mount instead.
       skipHydration: true,
       onRehydrateStorage: () => (state) => {
-        if (state) Object.assign(state, derive(state.lines));
+        if (state) {
+          // The retired 60-count option must not return from a saved cart.
+          state.lines = state.lines.filter((line) => line.variantId !== "sup-capsule-60");
+          Object.assign(state, derive(state.lines));
+        }
       },
     },
   ),

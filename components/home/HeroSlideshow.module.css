@@ -531,7 +531,8 @@
   .productPetsLink { left: 51.5%; }
 }
 
-/* Keep all of slide one's artwork above the fixed disclaimer without resizing the hero. */
+/* Keep slide one's frame and artwork above the fixed disclaimer. */
+.hero.productActive { min-height: 0; max-height: var(--product-visible-height, calc(100svh - 123px)); }
 .productCanvas { position: relative; width: 100%; height: min(100%, var(--product-visible-height, var(--product-initial-height))); container-type: size; }
 @media (min-width: 901px) {
   .productActive .dots { top: min(50%, calc(var(--product-visible-height, 100svh) / 2)); }
