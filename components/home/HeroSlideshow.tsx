@@ -188,7 +188,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
         <div className={styles.productCanvas}>
           <div className={styles.productArtwork}>
             <picture className={styles.productPicture}>
-              <source media="(max-width: 900px)" srcSet={approvedMobileSlide.src} />
+              <source media="(max-width: 900px) and (orientation: portrait)" srcSet={approvedMobileSlide.src} />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={approvedSlide.src} alt="IP6 + Inositol. For people. For pets. 15% off. Pre-order now. Ships November 2026. Capsules and powder appearance illustrative." fetchPriority="high" />
             </picture>
