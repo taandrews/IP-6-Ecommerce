@@ -81,7 +81,7 @@ export function HeroCinemagraphTyped({ ctaHref }: { ctaHref: string }) {
         <p className={styles.eyebrow}>{EYEBROW}</p>
         <h1 className={styles.line}>{line}</h1>
         <Link href={ctaHref} className={styles.cta}>
-          Pre-order IP6 Original · 15% off
+          Pre Order Now
           <ArrowRight aria-hidden />
         </Link>
       </div>

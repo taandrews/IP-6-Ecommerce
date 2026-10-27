@@ -59,7 +59,7 @@ export function PaymentStep({
       <div className="pt-2 flex justify-between">
         <button type="button" onClick={onBack} className="btn-ghost" disabled={loading}>Back</button>
         <button type="submit" disabled={!stripe || loading} className="btn-primary">
-          {loading ? "Processing…" : `Pay ${formatPrice(quote.totalCents, quote.currency)}`}
+          {loading ? "Processing…" : `Pre Order Now · ${formatPrice(quote.totalCents, quote.currency)}`}
         </button>
       </div>
     </form>

@@ -10,7 +10,7 @@ export const SETTINGS_TAG = "store-settings";
 const DEFAULT_BANNER: BannerSettings = {
   enabled: true,
   text: "Launch offer: 15% off",
-  linkLabel: "Order Now",
+  linkLabel: "Pre Order Now",
   linkHref: "/shop/ip6-original-supplement",
 };
 

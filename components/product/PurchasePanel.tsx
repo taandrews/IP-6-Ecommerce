@@ -224,7 +224,7 @@ export function PurchasePanel({
         </div>
         <button onClick={onAdd} className="btn-primary flex-1" disabled={!variant.inStock}>
           <ShoppingBag className="size-4" />
-          {!variant.inStock ? "Out of stock" : mode === "subscribe" ? "Subscribe now" : PREORDER.active ? "Pre-order now" : "Add to cart"}
+          {!variant.inStock ? "Out of stock" : "Pre Order Now"}
         </button>
       </div>
 

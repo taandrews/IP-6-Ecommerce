@@ -267,7 +267,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
       {/* Buttons: rendered once, so they stay put while the pictures change. */}
       <div className={styles.actions} aria-hidden={cur === -1}>
         <Link href={ctaHref} className={styles.cta}>
-          Pre-order IP6 Original · 15% off
+          Pre Order Now
           <ArrowRight aria-hidden />
         </Link>
         <nav className={styles.routes} aria-label="Shop by">

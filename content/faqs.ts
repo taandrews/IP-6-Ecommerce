@@ -17,11 +17,6 @@ export const faqCategories: FaqCategory[] = [
     label: "Shipping and delivery",
     items: [
       {
-        q: "Where does IP6 Original ship?",
-        a: "IP6 Original ships to the United States and 27 other countries. The same list of countries is offered at checkout. US orders over $75 ship free. Other rates are shown at checkout from your address.",
-        more: { href: "/international-shipping", label: "See every country we ship to" },
-      },
-      {
         q: "When will my order arrive?",
         a: "Pre-orders start shipping in November 2026, in the order they were received. You get a tracking email the day your order ships. From there, US standard delivery usually takes 3 to 6 business days (1 to 3 expedited) and international orders 7 to 14 business days, though busy periods and carrier delays can stretch that. If your package is past that window, contact us with your order number and we will check on it within one business day.",
       },

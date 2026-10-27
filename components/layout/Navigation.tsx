@@ -28,7 +28,7 @@ export function Navigation() {
   return (
     <>
     <header className="sticky top-0 z-40 border-b border-ivory-300/80 bg-surface/90 backdrop-blur">
-      <div className="container flex items-center justify-between h-16 lg:h-20">
+      <div className="container flex items-center justify-between h-16 lg:h-20 max-[360px]:px-2">
         <Link href="/" aria-label="IP6 Original, Home" className="block">
           <Image src={asset("brand/ip6-original-logo.png")} alt="IP6 Original" width={324} height={216} priority className="h-11 lg:h-14 w-auto" />
         </Link>
@@ -45,7 +45,7 @@ export function Navigation() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 max-[360px]:gap-0">
           <Link
             href="/shop?search=1"
             aria-label="Search"
@@ -56,9 +56,9 @@ export function Navigation() {
           <CurrencySwitcher />
           <Link
             href="/shop/ip6-original-supplement"
-            className="btn-primary text-sm px-4 py-2 ml-1 whitespace-nowrap"
+            className="btn-primary text-sm px-4 py-2 ml-1 whitespace-nowrap max-[360px]:text-xs max-[360px]:px-2 max-[360px]:ml-0"
           >
-            Order now
+            Pre Order Now
           </Link>
           <Link
             href="/account"
