@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import speakerPhoto from "@/assets/hero/doctor-cutout-v1.webp";
+import yogaPhoto from "@/assets/hero/yoga-full-scene-desktop.webp";
+import yogaMobilePhoto from "@/assets/hero/yoga-full-scene-mobile.webp";
 import approvedSlide from "@/assets/hero/ip6-corrected-slide-desktop.webp";
 import approvedMobileSlide from "@/assets/hero/ip6-approved-slide-mobile.webp";
 import { asset } from "@/lib/assets";
@@ -21,7 +23,7 @@ type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: s
 
 const SLIDES: Slide[] = [
   { src: asset("hero/video/ip6-hero-stock-804268291-poster.webp"), video: asset("hero/video/ip6-hero-stock-804268291.mp4"), pos: "50% 45%", mpos: "50% 50%", alt: "Six children in a circle looking down at the camera and laughing", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." },
-  { src: asset("hero/ip6-hero-5.webp"), msrc: asset("hero/ip6-hero-5-m.webp"), pos: "55% 30%", mpos: "52% 88%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." , mobileHeadlineOnly: true, mobileLow: true},
+  { src: yogaPhoto.src, msrc: yogaMobilePhoto.src, pos: "65% 50%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." , mobileHeadlineOnly: true, mobileLow: true},
   { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 20%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], sub: "The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub." , mobileHeadlineOnly: true},
   { src: asset("hero/ip6-hero-beach-couple.webp"), msrc: asset("hero/ip6-hero-beach-couple-m.webp"), pos: "62% 0%", mpos: "50% 72%", alt: "An older couple holding hands and playing at the water's edge on a sunny beach", eyebrow: "From the lab of Professor Shamsuddin, MD, PhD", line: [{ text: "There is only one " }, { text: "IP6 Original", em: true }, { text: "." }], sub: "IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility." , mobileHeadlineOnly: true, mobileLow: true},
   { src: speakerPhoto.src, pos: "50% 45%", mpos: "50% 50%", alt: "A doctor wearing glasses and a bow tie, holding a microphone", eyebrow: "Professor AbulKalam M. Shamsuddin, MD, PhD", line: [{ text: "His research. " }, { text: "His formula.", em: true }], sub: "" , mobileTopEyebrow: true},
@@ -181,7 +183,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
     });
 
   return (
-    <section ref={heroRef} className={[styles.hero, cur === -1 ? styles.productActive : "", SLIDES[cur]?.src === speakerPhoto.src ? styles.doctorActive : ""].join(" ")} aria-roledescription="carousel" aria-label="IP6 Original">
+    <section ref={heroRef} className={[styles.hero, cur === -1 ? styles.productActive : "", SLIDES[cur]?.src === speakerPhoto.src ? styles.doctorActive : "", cur === 1 ? styles.yogaActive : ""].join(" ")} aria-roledescription="carousel" aria-label="IP6 Original">
       <div className={[styles.slide, styles.productSlide, cur === -1 ? styles.on : ""].join(" ")} role="group" aria-roledescription="slide" aria-label={`1 of ${SLIDE_COUNT}`} aria-hidden={cur !== -1}>
         <div className={styles.productCanvas}>
           <div className={styles.productArtwork}>
@@ -201,7 +203,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
         return (
           <div
             key={s.src}
-            className={[styles.slide, i === 0 ? styles.slideCentered : "", s.src === speakerPhoto.src ? styles.doctorSlide : "", active ? styles.on : "", active && revealed ? styles.reveal : ""].join(" ")}
+            className={[styles.slide, i === 0 ? styles.slideCentered : "", s.src === speakerPhoto.src ? styles.doctorSlide : "", i === 1 ? styles.yogaSlide : "", active ? styles.on : "", active && revealed ? styles.reveal : ""].join(" ")}
             role="group"
             aria-roledescription="slide"
             aria-label={`${i + 2} of ${SLIDE_COUNT}`}
@@ -226,7 +228,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
                 />
               ) : s.msrc ? (
                 <picture>
-                  <source media="(max-width: 900px)" srcSet={s.msrc} />
+                  <source media={i === 1 ? "(max-width: 900px) and (orientation: portrait)" : "(max-width: 900px)"} srcSet={s.msrc} />
                   <img src={s.src} alt={s.alt} style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
                 </picture>
               ) : (
