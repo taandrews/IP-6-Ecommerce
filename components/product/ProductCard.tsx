@@ -1,3 +1,4 @@
+import { productHref } from "@/lib/product-links";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -20,7 +21,7 @@ export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: 
 
   return (
     <article className="group rounded-lg overflow-hidden border border-ivory-300 bg-surface hover:shadow-card transition-shadow duration-300 flex flex-col">
-      <Link href={`/shop/${product.slug}`} className="block relative aspect-[4/3] overflow-hidden bg-ivory-200">
+      <Link href={productHref(product.slug)} className="block relative aspect-[4/3] overflow-hidden bg-ivory-200">
         {image ? (
           <Image
             src={image.url}
@@ -45,7 +46,7 @@ export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: 
       </Link>
 
       <div className="p-6 flex-1 flex flex-col">
-        <Link href={`/shop/${product.slug}`}>
+        <Link href={productHref(product.slug)}>
           <h3
             className="font-display text-2xl text-forest-800 leading-tight hover:text-forest-700 transition-colors"
             style={{ fontVariationSettings: '"opsz" 72, "SOFT" 40' }}
@@ -83,7 +84,7 @@ export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: 
                 </p>
               </div>
               <Link
-                href={`/shop/${product.slug}`}
+                href={productHref(product.slug)}
                 className="btn-secondary text-sm px-4 py-2.5 group/btn"
               >
                 Notify me
@@ -107,7 +108,7 @@ export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: 
                 {preorder.active ? <li className="text-[11px] text-ink/55">{preorder.label}, {preorder.discountPct}% off</li> : null}
               </ul>
               <Link
-                href={`/shop/${product.slug}`}
+                href={productHref(product.slug)}
                 className="btn-primary text-sm px-4 py-2.5 group/btn"
               >
                 Shop

@@ -61,7 +61,7 @@ export function FounderContent() {
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link
-            href="/shop/ip6-original-supplement"
+            href="/shop#people"
             className="inline-flex items-center gap-2 bg-button hover:bg-button-hover text-surface px-7 py-4 rounded-full font-semibold"
           >
             Shop IP6 Original

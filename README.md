@@ -54,3 +54,5 @@ All keys live in `.env.example`. Nothing is hard-coded.
 ## Production checklist
 
 See `PLAN.md` §12 for the full launch checklist.
+
+For repeatable pricing checks and sandbox payments, see [Checkout testing](docs/CHECKOUT-TESTING.md).

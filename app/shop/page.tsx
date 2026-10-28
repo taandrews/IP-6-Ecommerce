@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ShopCatalog } from "@/components/store/ShopCatalog";
+import { ShopHero } from "@/components/store/ShopHero";
+import { TrustTicker } from "@/components/home/TrustTicker";
 import { Footer } from "@/components/layout/Footer";
-import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
+import { ProductSchema } from "@/components/product/ProductSchema";
+import { getPublishedReviews } from "@/lib/data/reviews";
+import type { Review } from "@/types";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
 import { resolveCurrency } from "@/lib/currency";
@@ -18,23 +22,21 @@ export const metadata: Metadata = {
 export default async function ShopPage() {
   const currency = resolveCurrency();
   const [products, preorder] = await Promise.all([getCatalog(), getPreorderSettings()]);
+  const reviewsBySku: Record<string, Review[]> = Object.fromEntries(await Promise.all(products.map(async (product) => [product.sku, (await getPublishedReviews(product.sku)).map(review => ({ ...review, rating: review.rating as Review["rating"] }))])));
   return (
     <>
-      <section className="container pt-16 pb-10 lg:pt-20 lg:pb-12 text-center max-w-2xl mx-auto">
-        <p className="eyebrow mb-3">The collection</p>
-        <h1 className="font-display text-display-xl text-forest-800 mb-6 text-balance">
-          IP6 Original, for people and pets.
-        </h1>
-        <p className="text-lg text-ink/75 leading-relaxed">
-          The highest purity, research grade, third-party tested, and manufactured to cGMP standards.
-        </p>
-      </section>
-
+      <h1 className="sr-only">Shop IP6 Original</h1>
+      <ShopHero />
+      <TrustTicker />
       <Suspense fallback={null}>
-        <ShopCatalog products={products} currency={currency} preorder={preorder} />
+        <ShopCatalog products={products} currency={currency} preorder={preorder} reviewsBySku={reviewsBySku} />
       </Suspense>
 
-      <StickyDisclaimer />
+      {products.map(product => {
+        const reviews = reviewsBySku[product.sku] ?? [];
+        const reviewAggregate = reviews.length ? { avg: reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length, count: reviews.length } : undefined;
+        return <ProductSchema key={product.sku} product={product} currency={currency} reviewAggregate={reviewAggregate} />;
+      })}
       <Footer showDshea />
     </>
   );

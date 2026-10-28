@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { products } from "@/content/products";
+import { productHref } from "@/lib/product-links";
 
 const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com";
 
@@ -30,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly" as const,
       priority: p === "" ? 1 : 0.7,
     })),
-    ...products.map((p) => ({
+    ...products.filter(p => !productHref(p.slug).startsWith("/shop#")).map((p) => ({
       url: `${base}/shop/${p.slug}`,
       lastModified: now,
       changeFrequency: "weekly" as const,

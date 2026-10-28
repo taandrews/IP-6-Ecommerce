@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { Check, Leaf, ShieldCheck, Award, Zap } from "lucide-react";
 import { ProductShowcase } from "@/components/product/ProductShowcase";
+import { productHref } from "@/lib/product-links";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { Reviews } from "@/components/product/Reviews";
 import { ProductSchema } from "@/components/product/ProductSchema";
@@ -36,7 +37,7 @@ export function generateMetadata({ params }: Params): Metadata {
   return {
     title: product.name,
     description: product.shortDescription,
-    alternates: hreflangAlternates(`/shop/${product.slug}`),
+    alternates: hreflangAlternates(productHref(product.slug).split("#")[0] ?? "/shop"),
     openGraph: {
       type: "website",
       title: product.name,
@@ -47,6 +48,8 @@ export function generateMetadata({ params }: Params): Metadata {
 }
 
 export default async function ProductPage({ params }: Params) {
+  const destination = productHref(params.slug);
+  if (destination.startsWith("/shop#")) permanentRedirect(destination);
   const catalog = await getCatalog();
   const product = catalog.find((p) => p.slug === params.slug);
   if (!product) notFound();

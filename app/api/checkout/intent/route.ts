@@ -4,7 +4,7 @@ import { CheckoutInputSchema } from "@/lib/checkout/schema";
 import { buildQuote } from "@/lib/checkout/build";
 import { createPendingOrder, emailKey } from "@/lib/data/orders";
 import { getSessionUser } from "@/lib/auth/session";
-import { getStripe } from "@/lib/stripe/server";
+import { getStripe, StripeConfigurationError } from "@/lib/stripe/server";
 import { getPreorderSettingsFresh } from "@/lib/data/settings";
 
 export const runtime = "nodejs";
@@ -130,6 +130,9 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("[checkout] intent failed", (err as Error).name);
+    if (err instanceof StripeConfigurationError) {
+      return NextResponse.json({ error: "Checkout is temporarily unavailable. Please try again later." }, { status: 503 });
+    }
     return NextResponse.json({ error: "We couldn't start payment. Please try again." }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { asset } from "@/lib/assets";
 import Image from "next/image";
+import { Instagram } from "lucide-react";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 import { PrivacyChoicesButton } from "./PrivacyChoicesButton";
 import { EMAIL } from "@/lib/email-addresses";
@@ -9,8 +10,8 @@ const GROUPS = [
   {
     heading: "Shop",
     links: [
-      { href: "/shop/ip6-original-supplement", label: "IP6 Original" },
-      { href: "/shop/ip6-original-pet-powder", label: "Pet Powder" },
+      { href: "/shop#people", label: "IP6 Original" },
+      { href: "/shop#pets", label: "Pet Powder" },
       { href: "/how-to-take", label: "How to Take" },
       { href: "/account", label: "My Account" },
     ],
@@ -53,7 +54,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
               One supplement, made to the specification his research describes.
             </p>
             <Link
-              href="/shop/ip6-original-supplement"
+              href="/shop#people"
               className="mt-3 inline-flex items-center rounded-full bg-button px-5 py-2.5 text-sm font-semibold text-surface transition-colors hover:bg-button-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600"
             >
               Shop IP6 Original
@@ -87,6 +88,10 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
           <span>Lutherville, Maryland</span>
           <Link href="/contact" className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">Contact us</Link>
           <a href={`mailto:${EMAIL.hello}`} className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">{EMAIL.hello}</a>
+          <a href="https://www.instagram.com/IP6original/" target="_blank" rel="noopener noreferrer" aria-label="IP6original on Instagram (opens in a new tab)" className="inline-flex min-h-11 items-center gap-2 text-navy-800 hover:text-gold-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600 sm:ml-auto">
+            <Instagram size={20} aria-hidden="true" />
+            <span>@IP6original</span>
+          </a>
         </address>
 
         {showDshea ? (

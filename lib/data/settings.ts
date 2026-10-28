@@ -11,7 +11,7 @@ const DEFAULT_BANNER: BannerSettings = {
   enabled: true,
   text: "Launch offer: 15% off",
   linkLabel: "Pre Order Now",
-  linkHref: "/shop/ip6-original-supplement",
+  linkHref: "/shop#people",
 };
 
 async function read<T>(key: string, fallback: T): Promise<T> {

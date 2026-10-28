@@ -9,10 +9,17 @@ import { getStripeSecrets } from "@/lib/aws/secrets";
 
 let cached: { stripe: Stripe; webhookSecret: string } | null = null;
 
+export class StripeConfigurationError extends Error {
+  constructor() {
+    super("Stripe secret key is not configured");
+    this.name = "StripeConfigurationError";
+  }
+}
+
 async function init() {
   if (cached) return cached;
   const s = await getStripeSecrets();
-  if (!s.secretKey || s.secretKey.includes("REPLACE_ME")) throw new Error("Stripe secret key is not configured");
+  if (!s.secretKey || s.secretKey.includes("REPLACE_ME")) throw new StripeConfigurationError();
   // STRIPE_API_BASE points at a local Stripe test double; it is ignored in production.
   const base = process.env.NODE_ENV !== "production" && process.env.STRIPE_API_BASE ? new URL(process.env.STRIPE_API_BASE) : null;
   cached = {

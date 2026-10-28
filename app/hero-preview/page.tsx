@@ -11,6 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default function HeroPreviewPage({ searchParams }: { searchParams: { v?: string } }) {
-  const cta = "/shop/ip6-original-supplement";
+  const cta = "/shop#people";
   return searchParams.v === "2" ? <HeroCinemagraph ctaHref={cta} /> : <HeroCinemagraphTyped ctaHref={cta} />;
 }

@@ -10,8 +10,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const SHOP_LINKS = [
-  { href: "/shop/ip6-original-supplement", label: "Supplement for people" },
-  { href: "/shop/ip6-original-pet-powder", label: "Powder for pets" },
+  { href: "/shop#people", label: "Supplement for people" },
+  { href: "/shop#pets", label: "Powder for pets" },
 ];
 
 const LINKS = [
@@ -55,7 +55,7 @@ export function Navigation() {
           </Link>
           <CurrencySwitcher />
           <Link
-            href="/shop/ip6-original-supplement"
+            href="/shop#people"
             className="btn-primary text-sm px-4 py-2 ml-1 whitespace-nowrap max-[360px]:text-xs max-[360px]:px-2 max-[360px]:ml-0"
           >
             Pre Order Now

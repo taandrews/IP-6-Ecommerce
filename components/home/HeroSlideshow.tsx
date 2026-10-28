@@ -6,6 +6,7 @@ import yogaPhoto from "@/assets/hero/yoga-full-scene-desktop.webp";
 import yogaMobilePhoto from "@/assets/hero/yoga-full-scene-mobile.webp";
 import approvedSlide from "@/assets/hero/ip6-corrected-slide-desktop.webp";
 import approvedMobileSlide from "@/assets/hero/ip6-approved-slide-mobile.webp";
+import productScene from "@/assets/hero/ip6-products-mobile-cutout-v1.png";
 import { asset } from "@/lib/assets";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
@@ -183,7 +184,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
     });
 
   return (
-    <section ref={heroRef} className={[styles.hero, cur === -1 ? styles.productActive : "", SLIDES[cur]?.src === speakerPhoto.src ? styles.doctorActive : "", cur === 1 ? styles.yogaActive : "", cur === 0 || cur === 2 ? styles.viewportVideoActive : ""].join(" ")} aria-roledescription="carousel" aria-label="IP6 Original">
+    <section ref={heroRef} className={[styles.hero, cur === -1 ? styles.productActive : "", SLIDES[cur]?.src === speakerPhoto.src ? styles.doctorActive : "", cur === 1 ? styles.yogaActive : "", cur === 0 || cur === 2 ? styles.viewportVideoActive : "", cur === 3 ? styles.beachActive : ""].join(" ")} aria-roledescription="carousel" aria-label="IP6 Original">
       <div className={[styles.slide, styles.productSlide, cur === -1 ? styles.on : ""].join(" ")} role="group" aria-roledescription="slide" aria-label={`1 of ${SLIDE_COUNT}`} aria-hidden={cur !== -1}>
         <div className={styles.productCanvas}>
           <div className={styles.productArtwork}>
@@ -194,6 +195,27 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
             </picture>
             <Link href={ctaHref} className={[styles.productImageLink, styles.productPeopleLink].join(" ")} aria-label="Shop for people" tabIndex={cur === -1 ? undefined : -1} />
             {petHref ? <Link href={petHref} className={[styles.productImageLink, styles.productPetsLink].join(" ")} aria-label="Shop for pets" tabIndex={cur === -1 ? undefined : -1} /> : null}
+          </div>
+          <div className={styles.mobileProduct}>
+            <div className={styles.mobileProductHeading}>
+              <p className={styles.mobileProductEyebrow}>Science driven. Purity first.</p>
+              <h2>IP6 + Inositol<span>For people. For pets.</span></h2>
+              <p>The original formula. In capsules for you.<br />A powder for them.</p>
+            </div>
+            <div className={styles.mobileProductPhoto}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={productScene.src} width={productScene.width} height={productScene.height} alt="IP6 Original capsules and pet powder, with both containers, capsules and a scoop of powder fully visible" />
+            </div>
+            <div className={styles.mobileProductOffer}>
+              <strong>15% off</strong>
+              <p>Pre-order now.</p>
+              <small>Ships November 2026.</small>
+              <div className={styles.mobileProductLinks}>
+                <Link href={ctaHref} tabIndex={cur === -1 ? undefined : -1}>Shop for people<ArrowRight size={16} aria-hidden /></Link>
+                {petHref && <Link href={petHref} tabIndex={cur === -1 ? undefined : -1}>Shop for pets<ArrowRight size={16} aria-hidden /></Link>}
+              </div>
+              <span className={styles.mobileProductNote}>Concept preview: capsule and powder appearance illustrative.</span>
+            </div>
           </div>
         </div>
       </div>

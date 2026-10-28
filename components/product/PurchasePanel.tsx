@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { preorderUnitCents } from "@/lib/preorder";
 import { usePreorder } from "@/components/store/StoreSettings";
 import { TRANSIT_DAYS } from "@/lib/shipping";
+import styles from "./ProductDetail.module.css";
 
 type Mode = "one-time" | "subscribe";
 
@@ -17,12 +18,14 @@ export function PurchasePanel({
   currency,
   variantId: controlledId,
   onVariantChange,
+  presentation,
 }: {
   product: Product;
   currency: Currency;
   /** When given, the parent owns the selected size (so the gallery can follow it). */
   variantId?: string;
   onVariantChange?: (id: string) => void;
+  presentation?: "editorial" | "catalog";
 }) {
   const [ownId, setOwnId] = useState(product.variants[0]?.id ?? "");
   const variantId = controlledId ?? ownId;
@@ -65,6 +68,48 @@ export function PurchasePanel({
           : undefined,
     });
   }
+
+  if (presentation === "editorial" || presentation === "catalog") return (
+    <div className={`${styles.purchase} ${presentation === "catalog" ? styles.catalogPurchase : ""}`}>
+      <div className={styles.packRow}>
+        <strong>{product.category === "pet" ? variant.size : `${variant.size?.replace(/\s*count/, "")} capsules`}</strong>
+        {showPreorder && <span className={styles.offer}>{PREORDER.discountPct}% LAUNCH OFFER</span>}
+      </div>
+      <div className={styles.price} aria-live="polite">
+        <strong>{formatPrice(effective, currency)}</strong>
+        {effective < unit && <del>{formatPrice(unit, currency)}</del>}
+      </div>
+      <p className={styles.serving}>{variant.servingLabel}{product.category === "supplement" ? " per serving" : ""}</p>
+      {product.variants.length > 1 && <label className={styles.selectLabel}>Size
+        <select value={variantId} onChange={(event) => setVariantId(event.target.value)}>
+          {product.variants.map((v) => <option key={v.id} value={v.id} disabled={!v.inStock}>{v.size}</option>)}
+        </select>
+      </label>}
+      {product.subscriptionCycles.length > 0 && <>
+        <label className={styles.selectLabel}>Purchase option
+          <select value={mode} onChange={(event) => setMode(event.target.value as Mode)}>
+            <option value="one-time">One-time purchase</option>
+            <option value="subscribe">Subscribe &amp; save</option>
+          </select>
+        </label>
+        {mode === "subscribe" && <div className={styles.subscription}>
+          <label className={styles.selectLabel}>Delivery frequency
+            <select value={cycleDays} onChange={(event) => setCycleDays(Number(event.target.value))}>
+              {product.subscriptionCycles.map((cycle) => <option key={cycle.days} value={cycle.days}>Every {cycle.days} days · {cycle.discountPct}% off</option>)}
+            </select>
+          </label>
+          <p>{formatPrice(subUnit * qty, currency)} per delivery, plus standard shipping, every {cycleDays} days until canceled. Skip, pause or cancel from your account.</p>
+        </div>}
+      </>}
+      <div className={styles.quantity} role="group" aria-label="Quantity">
+        <button type="button" disabled={qty === 1} onClick={() => setQty(q => Math.max(1, q - 1))} aria-label="Decrease quantity"><Minus size={16} /></button>
+        <output aria-live="polite">{qty}</output>
+        <button type="button" disabled={qty === 20} onClick={() => setQty(q => Math.min(20, q + 1))} aria-label="Increase quantity"><Plus size={16} /></button>
+      </div>
+      <button type="button" className={styles.orderButton} onClick={onAdd} disabled={!variant.inStock}>{!variant.inStock ? "Out of stock" : "Pre Order Now"}</button>
+      {PREORDER.active && <p className={styles.shipNote}>{PREORDER.shipNote}</p>}
+    </div>
+  );
 
   return (
     <div className="space-y-6">

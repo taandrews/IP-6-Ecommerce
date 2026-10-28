@@ -6,7 +6,8 @@ import { Stars } from "@/components/ui/Stars";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 
-export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[] }) {
+export function Reviews({ sku, initial = [], compact = false }: { sku: string; initial?: Review[]; compact?: boolean }) {
+  const headingId = `reviews-${sku}`;
   const [reviews] = useState<Review[]>(initial);
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -46,10 +47,10 @@ export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[]
   }
 
   return (
-    <section aria-labelledby="reviews-heading" className="py-16 border-t border-ivory-300">
+    <section aria-labelledby={headingId} className={compact ? "py-6" : "py-16 border-t border-ivory-300"}>
       <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
         <div>
-          <h2 id="reviews-heading" className="font-display text-display-md text-forest-800 mb-2">
+          <h2 id={headingId} className={compact ? "text-xl font-semibold text-navy-800 mb-2" : "font-display text-display-md text-forest-800 mb-2"}>
             Customer reviews
           </h2>
           {reviews.length > 0 ? (
@@ -117,17 +118,17 @@ export function Reviews({ sku, initial = [] }: { sku: string; initial?: Review[]
               </select>
             </div>
             <div>
-              <label htmlFor="review-name" className="label">Your name</label>
-              <input id="review-name" name="authorName" required className="input" maxLength={60} autoComplete="given-name" />
+              <label htmlFor={`${headingId}-name`} className="label">Your name</label>
+              <input id={`${headingId}-name`} name="authorName" required className="input" maxLength={60} autoComplete="given-name" />
               <p className="mt-1 text-xs text-ink/60">Shown publicly with your review. A first name or initials is enough.</p>
             </div>
             <div>
-              <label htmlFor="review-title" className="label">Title</label>
-              <input id="review-title" name="title" required className="input" maxLength={80} />
+              <label htmlFor={`${headingId}-title`} className="label">Title</label>
+              <input id={`${headingId}-title`} name="title" required className="input" maxLength={80} />
             </div>
             <div>
-              <label htmlFor="review-body" className="label">Review</label>
-              <textarea id="review-body" name="body" required className="input min-h-[120px]" maxLength={1000} />
+              <label htmlFor={`${headingId}-body`} className="label">Review</label>
+              <textarea id={`${headingId}-body`} name="body" required className="input min-h-[120px]" maxLength={1000} />
             </div>
             <p className="text-xs text-ink/60">
               Please describe your personal experience. Every review is checked by our team before it is published, and reviews that make health or disease claims are not published. By submitting you agree we may show your review and the name above on this site.

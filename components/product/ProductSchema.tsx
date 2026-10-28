@@ -1,4 +1,5 @@
 import type { Product, Currency } from "@/types";
+import { productHref } from "@/lib/product-links";
 
 export function ProductSchema({
   product,
@@ -10,7 +11,7 @@ export function ProductSchema({
   reviewAggregate?: { avg: number; count: number };
 }) {
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com";
-  const url = `${base}/shop/${product.slug}`;
+  const url = `${base}${productHref(product.slug)}`;
   const minPrice =
     Math.min(...product.variants.map((v) => v.priceCents[currency])) / 100;
 

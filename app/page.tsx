@@ -1,3 +1,4 @@
+import { productHref } from "@/lib/product-links";
 import Image from "next/image";
 import { asset } from "@/lib/assets";
 import Link from "next/link";
@@ -61,7 +62,7 @@ export default async function HomePage() {
     <>
       {/* 1. The offer */}
       <section className="relative bg-surface">
-        <HeroSlideshow ctaHref={`/shop/${supplement.slug}`} petHref={pet ? `/shop/${pet.slug}` : undefined} />
+        <HeroSlideshow ctaHref={productHref(supplement.slug)} petHref={pet ? productHref(pet.slug) : undefined} />
         <TrustTicker />
       </section>
 
@@ -77,7 +78,7 @@ export default async function HomePage() {
               const price = priceLine(product);
               return (
                 <article key={product.slug} aria-labelledby={`${product.slug}-title`} className="flex flex-col min-w-0">
-                  <Link href={`/shop/${product.slug}`} className="relative block rounded-xl bg-[#f6f3ed] overflow-hidden" aria-label={`View ${title}`}>
+                  <Link href={productHref(product.slug)} className="relative block rounded-xl bg-[#f6f3ed] overflow-hidden" aria-label={`View ${title}`}>
                     <div className="flex justify-between items-center gap-3 px-5 pt-5 sm:px-7">
                       <span className="text-sm font-semibold text-navy-800">{eyebrow}</span>
                       {preorder.active ? <span className="text-xs font-semibold text-gold-700 bg-gold-100 rounded-full px-3 py-1">{preorder.discountPct}% launch offer</span> : null}
@@ -97,7 +98,7 @@ export default async function HomePage() {
                         {price.now !== price.regular ? <s className="text-sm text-ink/50">{formatPrice(price.regular, currency)}</s> : null}
                         <span className="text-sm text-ink/65 ml-auto">{price.size}</span>
                       </div>
-                      <Link href={`/shop/${product.slug}`} className={`${CTA} w-full justify-center mt-5`}>
+                      <Link href={productHref(product.slug)} className={`${CTA} w-full justify-center mt-5`}>
                         Pre Order Now
                         <ArrowRight className="size-4" aria-hidden />
                       </Link>

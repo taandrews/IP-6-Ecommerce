@@ -1,0 +1,168 @@
+IP6 ORIGINAL
+BRAND GUIDELINES
+Version 1.0 | October 27, 2026
+
+PURPOSE
+
+This working guide brings together the existing IP6 Original website identity and the owner's established design requirements. Use it when creating website pages, product photography, marketing materials and social content. It documents the current direction; it does not authorize changes to approved designs, packaging or product claims.
+
+1. BRAND CHARACTER
+
+IP6 Original should feel credible, clear, polished and grounded in its product and scientific origins. The visual identity combines deep navy, restrained gold accents, bright photography and readable typography.
+
+The product should be easy to recognize and understand. Show what it is, what is inside and how it fits into a daily routine. Avoid generic wellness imagery that could belong to any brand.
+
+Keep layouts purposeful. A clean design still needs visual hierarchy, thoughtful composition and useful imagery. Large empty areas or a different background color alone do not constitute a finished design.
+
+2. BRAND AND PRODUCT NAMES
+
+Brand: IP6 Original
+Human supplement: IP6 Original Supplement
+Pet supplement: IP6 Original Pet Powder
+
+Use the full product name on the first reference. Use "capsules" for the human product and "powder" for the pet product. Use "bottle" or "container" when describing packaging.
+
+Keep human and pet product content distinct. Do not interchange their ingredients, serving directions, packaging or photography.
+
+Product sizes, ingredients, directions, prices and availability must come from the current approved catalog and labels. Do not create new facts to fill a layout.
+
+3. LOGO AND BRAND GRAPHICS
+
+Use the supplied IP6 Original logo artwork. Preserve the original colors, proportions, lettering, molecule elements and surrounding structure.
+
+Do not redraw the logo, substitute a typed wordmark, stretch it, crop it, recolor it or add effects. Keep it legible against its background and give it enough space to remain separate from nearby content.
+
+The established molecule graphic includes its surrounding circular structure. Keep that structure intact unless the owner explicitly requests a change.
+
+Primary logo source:
+assets/brand/ip6-original-logo.png
+
+4. COLOR PALETTE
+
+PRIMARY BRAND COLORS
+
+Navy          #001840   Main text, headings, navigation and primary buttons
+Gold          #B08830   Brand accents and restrained decorative details
+Gold highlight #E8C870  Supporting highlights
+White         #FFFFFF  Main page backgrounds and reversed button text
+
+SUPPORTING WEBSITE COLORS
+
+Cream         #F6F2E8   Product and purchase panels
+Pale gold     #F4DFA0   Offer badges and small highlights
+Cloud         #F7F9FB   Light supporting surfaces
+Soft border   #E8EDF3   Subtle divisions and borders
+Navy hover    #0C2C5E   Primary-button hover state
+Dark gold     #7E5A14   Small accent text where appropriate
+
+The existing theme also includes cyan (#00B4D8). Keep it secondary and use it only where it belongs to an established design or product identity.
+
+Navy and gold establish recognition. Keep most page surfaces light. Do not turn an entire page dark or introduce unrelated colors without direction. Preserve specifically approved dark treatments, including the doctor's black-background hero slide.
+
+Light gold is an accent, not a default body-text color. Check readability against the actual background.
+
+5. TYPOGRAPHY
+
+Primary typeface: IBM Plex Sans.
+Fallbacks: system-ui, sans-serif.
+
+The website uses IBM Plex Sans for both body and display text. Use consistent typography across pages instead of introducing a new font for each section.
+
+Use medium or semibold headings, regular body text and clear button labels. Keep heading line lengths controlled and body copy comfortable to read. Short uppercase labels may use modest letter spacing; paragraphs should use normal sentence case.
+
+Scale headings for the available screen width. Do not shrink all content to preserve a desktop composition on mobile. Avoid oversized text that obscures product photography or causes layout movement during loading.
+
+6. PHOTOGRAPHY AND PRODUCT PRESENTATION
+
+Use bright, natural-looking photography with believable lighting, shadows and physical placement. Products should rest on a counter, shelf or another plausible surface. Do not show floating bottles, containers, capsules or props.
+
+The current product-page direction uses natural kitchen daylight, pale counters, navy fabric and accurate navy-and-gold packaging. Show both the container and the product itself.
+
+Human product imagery may include:
+- The correct bottle with visible capsules and a glass of water.
+- A close view of capsules on a simple dish.
+- A natural hand-held capsule and water scene.
+- An open bottle with its lid resting nearby.
+
+Pet product imagery may include:
+- The correct powder container and measuring scoop.
+- A close view of the powder.
+- Powder being added to a pet's food.
+- A dog and cat in a believable feeding setting.
+
+Keep packaging proportions, label details and product identity accurate. Images illustrating use must not contradict approved directions. Generated concept photography must be reviewed before publication and must not substitute for verified product information.
+
+IMAGE FIT
+
+Preserve natural proportions. Do not stretch an image to fit a container. Do not cut off required subjects or important details. Do not introduce letterboxing, sidebars, artificial side extensions or empty bars to force a fit.
+
+Choose image dimensions and responsive layouts that work together. If a fixed layout cannot show the complete image without cropping or bars, resolve that mismatch before presenting the work. Do not silently sacrifice one requirement to meet another.
+
+7. WEBSITE DESIGN
+
+Carry the brand identity from page to page through color, typography, spacing, imagery and controls. Each page should have a structure suited to its purpose. Carrying over the identity does not mean copying the homepage layout or its sections.
+
+Product pages should give clear priority to photography, product name, package size, price, purchase controls and directions. Organize supporting information into readable sections or clearly labeled accordions.
+
+Use navy primary buttons with white text and rounded ends. Keep secondary actions visually quieter, using clear text links and restrained borders. Do not compete with the main action through excessive badges, boxes or decorative effects.
+
+Keep navigation and footer treatments consistent. Avoid unexplained gaps, empty footer space and content that appears randomly placed beneath products.
+
+The homepage is the established design reference. Work on another page does not authorize alterations to the homepage, hero or other approved sections.
+
+HERO REQUIREMENTS
+
+PROHIBITED HERO DESIGN: Do not use a split-panel hero with an image or video beside a separate product-and-text panel. This includes the rejected pet hero with the animal video on the left and a cream panel containing the product, text and button on the right, and its stacked mobile version. Do not reuse this layout or treat the earlier approval as continuing authorization. The owner explicitly rejected it.
+
+The pet video must span the full hero width, matching the homepage hero. Do not narrow the video and fill the remaining width with a content panel.
+
+The entire hero must fit within the available screen area without requiring a scroll to see its bottom. Account for the navigation and announcement bar above it. Images and video must remain fully visible, correctly proportioned and free from empty bars.
+
+A change to one slide must not alter other slides. Preserve approved overlays, backgrounds and slide behavior unless the owner requests a change.
+
+8. VOICE AND COPY
+
+Write in clear, direct English. Be informative and confident without exaggeration. Explain unfamiliar terms when needed. Avoid vague lifestyle promises, jargon, decorative filler and unsupported scientific or medical claims.
+
+Do not invent shipping destinations, delivery dates, guarantees, endorsements, certifications, reviews or product benefits. Use verified business information and approved product copy. Keep required disclaimers intact.
+
+Use consistent spelling and punctuation. Proofread all visible text, including buttons, labels, banners and image text. Avoid em dashes.
+
+During the current pre-order phase, the approved purchase-button wording is:
+Pre Order Now
+
+Promotional percentages, prices and shipping messages must come from current store settings. A campaign offer is not a permanent brand rule.
+
+9. SOCIAL IDENTITY
+
+Instagram: @IP6original
+Profile: https://www.instagram.com/IP6original/
+
+Use the recognizable Instagram icon with a clear link. Maintain the same logo, product identity, color palette and plain-English voice in social content.
+
+10. REVIEW BEFORE DELIVERY
+
+Evaluate the finished work against every instruction, not a selected subset.
+
+- Confirm that only the requested pages or elements changed.
+- Compare the result with the latest approved reference.
+- Check complete images, natural proportions and accurate packaging.
+- Check for cropping, sidebars, letterboxing and empty bars.
+- Check typography, spacing, contrast and spelling.
+- Confirm all copy and product facts have a verified source.
+- Test buttons, links, purchase options and quantity controls.
+- Inspect desktop and mobile screenshots with Playwright for website work.
+- Check for horizontal overflow, clipped controls and loading flashes.
+- Present the work only after all requested requirements pass review.
+
+Do not replace an approved layout, image, overlay or graphic without an explicit request. If two requirements conflict, identify the conflict rather than silently dropping one.
+
+SOURCE REFERENCES
+
+Visual identity: current website and owner instructions.
+Brand colors and typography tokens: tailwind.config.ts.
+Loaded typeface: app/layout.tsx.
+Supporting shop colors and controls: components/store/ShopCatalog.module.css.
+Product facts and directions: content/products.ts and approved product labels.
+
+This guide was consolidated from those sources on October 27, 2026.

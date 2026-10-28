@@ -11,7 +11,7 @@ import { formatPrice } from "@/lib/utils";
 
 const KEY = "ip6quiz_seen_v1";
 const LAUNCH_MS = Date.parse("2026-11-01T04:00:00Z");
-const PRODUCT_URL = "/shop/ip6-original-supplement";
+const PRODUCT_URL = "/shop#people";
 const QUIZ_PRODUCT = products.find((p) => p.slug === "ip6-original-supplement")!;
 const QUIZ_VARIANT = QUIZ_PRODUCT.variants[0]!;
 const QUIZ_IMAGE = QUIZ_VARIANT.image ?? QUIZ_PRODUCT.images[0]!;

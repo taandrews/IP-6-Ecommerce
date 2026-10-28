@@ -9,6 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:checkout": "vitest run tests/checkout.test.ts tests/pricing.test.ts tests/webhook.test.ts",
+    "checkout:check": "tsx scripts/check-checkout.ts",
     "compliance:check": "tsx scripts/compliance-check.ts",
     "assets:sync": "node scripts/sync-assets.mjs"
   },

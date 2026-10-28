@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { BannerSettings } from "@/types/records";
+import { normalizeProductHref } from "@/lib/product-links";
 
 /**
  * Site-wide announcement set in Admin, Site banner. Text is rendered as
@@ -7,7 +8,7 @@ import type { BannerSettings } from "@/types/records";
  * URLs by the admin API.
  */
 export function AnnouncementBar({ banner }: { banner: BannerSettings }) {
-  const href = banner.linkHref?.trim();
+  const href = banner.linkHref ? normalizeProductHref(banner.linkHref.trim()) : undefined;
   const internal = href?.startsWith("/");
   return (
     <div className="bg-navy-800 text-surface text-center text-xs sm:text-sm px-4 py-2" role="region" aria-label="Announcement">

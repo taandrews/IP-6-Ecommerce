@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { CheckoutInputSchema } from "@/lib/checkout/schema";
 import { buildQuote } from "@/lib/checkout/build";
+import { StripeConfigurationError } from "@/lib/stripe/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,6 +16,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ quote: built.quote, rates: built.rates, discountMessage: built.discountMessage });
   } catch (err) {
     console.error("[checkout] quote failed", (err as Error).name);
+    if (err instanceof StripeConfigurationError) {
+      return NextResponse.json({ error: "Checkout is temporarily unavailable. Please try again later." }, { status: 503 });
+    }
     return NextResponse.json({ error: "We couldn't price your order. Please try again." }, { status: 500 });
   }
 }

@@ -150,7 +150,7 @@ export function HowToTakeContent() {
           <span className="inline-block h-px w-12 bg-gold-500 mb-7" aria-hidden />
           <div>
             <Link
-              href="/shop/ip6-original-supplement"
+              href="/shop#people"
               className="inline-flex items-center gap-2 bg-button hover:bg-button-hover text-surface px-8 py-4 rounded-full font-semibold"
             >
               Shop IP6 Original

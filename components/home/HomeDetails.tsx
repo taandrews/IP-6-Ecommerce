@@ -1,3 +1,4 @@
+import { productHref } from "@/lib/product-links";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -11,7 +12,7 @@ import styles from "./HomeDetails.module.css";
 
 export function HomeDetails({ supplement, pet, preorder }: { supplement: Product; pet?: Product; preorder: PreorderSettings }) {
   const options: [RoutineOption, ...RoutineOption[]] = [{ id: "people", label: "For people", title: "Four capsules. With water.", directions: supplement.howToUse, href: "/how-to-take" }];
-  if (pet) options.push({ id: "pets", label: "For pets", title: "Measure. Mix into food.", directions: pet.howToUse, href: `/shop/${pet.slug}` });
+  if (pet) options.push({ id: "pets", label: "For pets", title: "Measure. Mix into food.", directions: pet.howToUse, href: productHref(pet.slug) });
   const questions = [
     { id: "formula-ip6", header: "What is IP6?", content: <p>{supplement.faq.find((item) => item.q === "What is IP6?")?.a}</p> },
     { id: "formula-ingredients", header: "What is in the capsules?", content: <ul className="space-y-2">{supplement.ingredients?.map((item) => <li key={item}>{item}</li>)}</ul> },
