@@ -16,6 +16,8 @@ export function CartDrawer() {
   const { drawerOpen, closeDrawer, lines, remove, setQty } = useCart();
   const PREORDER = usePreorder();
   const subtotalCents = lines.reduce((s, l) => s + lineTotalCents(l, PREORDER), 0);
+  const listCents = lines.reduce((s, l) => s + l.unitPriceCents * l.qty, 0);
+  const savingsCents = listCents - subtotalCents;
   // Load the saved cart only after hydration (see skipHydration in CartStore).
   useEffect(() => {
     void useCart.persist.rehydrate();
@@ -121,6 +123,18 @@ export function CartDrawer() {
               <div className="rounded-md bg-gold-50 border border-gold-200 px-3 py-2.5 text-xs text-forest-900">
                 Subscription items will renew on your chosen cycle. Manage anytime in your account.
               </div>
+            ) : null}
+            {savingsCents > 0 ? (
+              <>
+                <div className="flex justify-between text-sm">
+                  <span className="text-ink/70">Items</span>
+                  <span className="text-ink/70">{formatPrice(listCents, currency)}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gold-700">
+                  <span>{hasPreorder && !hasSubscription ? `${PREORDER.label} discount (${PREORDER.discountPct}% off)` : "Discounts"}</span>
+                  <span className="font-medium">&minus;{formatPrice(savingsCents, currency)}</span>
+                </div>
+              </>
             ) : null}
             <div className="flex justify-between text-sm">
               <span className="text-ink/70">Subtotal</span>

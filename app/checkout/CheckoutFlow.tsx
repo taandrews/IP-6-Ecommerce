@@ -42,6 +42,10 @@ export function CheckoutFlow({ signedIn }: { signedIn: boolean }) {
 
   const currency = lines[0]?.currency ?? "USD";
   const estimateCents = lines.reduce((s, l) => s + lineTotalCents(l, preorder), 0);
+  // What the items cost at list price, so the discount shows as its own line.
+  const listCents = quote ? quote.lines.reduce((s, l) => s + l.unitPriceCents * l.qty, 0) : lines.reduce((s, l) => s + l.unitPriceCents * l.qty, 0);
+  const savingsCents = listCents - (quote?.subtotalCents ?? estimateCents);
+  const onlyPreorderSavings = quote ? quote.lines.every((l) => !l.discountPct || l.preorder) : lines.every((l) => !l.subscription);
   const stepIndex = ORDER.indexOf(step);
   const onQuote = useCallback((q: ClientQuote | null) => setQuote(q), []);
 
@@ -173,7 +177,10 @@ export function CheckoutFlow({ signedIn }: { signedIn: boolean }) {
                           <p className="text-xs text-gold-500 mt-0.5">{preorder.label} · {l.discountPct}% off</p>
                         ) : null}
                       </div>
-                      <div className="text-sm font-medium">{formatPrice(l.lineTotalCents, quote!.currency)}</div>
+                      <div className="text-sm font-medium">
+                        {l.discountPct ? <s className="mr-2 font-normal text-ink/50">{formatPrice(l.unitPriceCents * l.qty, quote!.currency)}</s> : null}
+                        {formatPrice(l.lineTotalCents, quote!.currency)}
+                      </div>
                     </li>
                   ))
                 : lines.map((line) => (
@@ -193,11 +200,20 @@ export function CheckoutFlow({ signedIn }: { signedIn: boolean }) {
                           <p className="text-xs text-gold-500 mt-0.5">{preorder.label} · {preorder.discountPct}% off</p>
                         ) : null}
                       </div>
-                      <div className="text-sm font-medium">{formatPrice(lineTotalCents(line, preorder), line.currency)}</div>
+                      <div className="text-sm font-medium">
+                        {lineTotalCents(line, preorder) < line.unitPriceCents * line.qty ? <s className="mr-2 font-normal text-ink/50">{formatPrice(line.unitPriceCents * line.qty, line.currency)}</s> : null}
+                        {formatPrice(lineTotalCents(line, preorder), line.currency)}
+                      </div>
                     </li>
                   ))}
             </ul>
             <div className="border-t border-ivory-300 pt-4 space-y-2 text-sm">
+              {savingsCents > 0 ? (
+                <>
+                  <Row label="Items" value={formatPrice(listCents, currency)} />
+                  <Row label={<span className="text-gold-700">{onlyPreorderSavings ? `${preorder.label} discount (${preorder.discountPct}% off)` : "Discounts"}</span>} value={<span className="text-gold-700">−{formatPrice(savingsCents, currency)}</span>} />
+                </>
+              ) : null}
               <Row label="Subtotal" value={formatPrice(quote?.subtotalCents ?? estimateCents, currency)} />
               {quote?.discountCents ? <Row label={`Discount (${quote.discountCode})`} value={`−${formatPrice(quote.discountCents, currency)}`} /> : null}
               <Row
