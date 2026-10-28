@@ -183,7 +183,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
     });
 
   return (
-    <section ref={heroRef} className={[styles.hero, cur === -1 ? styles.productActive : "", SLIDES[cur]?.src === speakerPhoto.src ? styles.doctorActive : "", cur === 1 ? styles.yogaActive : ""].join(" ")} aria-roledescription="carousel" aria-label="IP6 Original">
+    <section ref={heroRef} className={[styles.hero, cur === -1 ? styles.productActive : "", SLIDES[cur]?.src === speakerPhoto.src ? styles.doctorActive : "", cur === 1 ? styles.yogaActive : "", cur === 0 || cur === 2 ? styles.viewportVideoActive : ""].join(" ")} aria-roledescription="carousel" aria-label="IP6 Original">
       <div className={[styles.slide, styles.productSlide, cur === -1 ? styles.on : ""].join(" ")} role="group" aria-roledescription="slide" aria-label={`1 of ${SLIDE_COUNT}`} aria-hidden={cur !== -1}>
         <div className={styles.productCanvas}>
           <div className={styles.productArtwork}>

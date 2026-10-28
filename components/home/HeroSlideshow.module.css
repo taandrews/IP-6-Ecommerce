@@ -8,6 +8,11 @@
   color: #fff;
 }
 
+/* Only the kids and cat-and-dog slides use this viewport limit. */
+.hero.viewportVideoActive { min-height: 0; max-height: var(--product-visible-height, calc(100svh - 158px)); }
+.viewportVideoActive .copy { height: 100%; }
+.viewportVideoActive .actions { top: calc(100% - 36px); }
+
 .slide {
   position: absolute;
   inset: 0;
