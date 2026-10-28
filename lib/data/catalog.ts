@@ -5,6 +5,11 @@ import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { products as baseProducts } from "@/content/products";
 import type { Currency, Product } from "@/types";
 import type { InventoryItem, ProductOverride } from "@/types/records";
+import { mergeCatalog } from "./merge-catalog";
+import { getStripe } from "@/lib/stripe/server";
+import { syncProductToStripe, type SyncSummary } from "@/lib/stripe/sync";
+
+export { mergeCatalog };
 
 export const CATALOG_TAG = "catalog";
 export const DEFAULT_LOW_STOCK = 25;
@@ -32,32 +37,6 @@ async function loadOverrides() {
     console.error("[catalog] override read failed", (err as Error).name);
     return { overrides: [] as ProductOverride[], stock: [] as InventoryItem[] };
   }
-}
-
-export function mergeCatalog(base: Product[], overrides: ProductOverride[], stock: InventoryItem[]): Product[] {
-  const bySku = new Map(overrides.map((o) => [o.sku, o]));
-  const stockBySku = new Map(stock.map((s) => [s.sku, s]));
-  return base.map((p) => {
-    const o = bySku.get(p.sku);
-    return {
-      ...p,
-      variants: p.variants.map((v) => {
-        const prices = o?.prices?.[v.id];
-        const manual = o?.available?.[v.id];
-        const inv = stockBySku.get(v.sku);
-        const hasStock = !inv || inv.stock > 0 || inv.allowBackorder;
-        return {
-          ...v,
-          priceCents: prices ? { ...v.priceCents, ...stripUndefined(prices) } : v.priceCents,
-          inStock: v.inStock && manual !== false && hasStock,
-        };
-      }),
-    };
-  });
-}
-
-function stripUndefined(p: Partial<Record<Currency, number>>): Partial<Record<Currency, number>> {
-  return Object.fromEntries(Object.entries(p).filter(([, n]) => typeof n === "number" && Number.isFinite(n)));
 }
 
 const cachedCatalog = unstable_cache(
@@ -110,6 +89,19 @@ export async function saveVariantPricing(
   };
   await docClient.send(new PutCommand({ TableName: TABLES.Products, Item: next }));
   revalidateTag(CATALOG_TAG);
+  await mirrorToStripe(productSku);
+}
+
+/** Keeps Stripe's copy of the product and prices in step with the database. A Stripe outage never blocks a price change. */
+async function mirrorToStripe(productSku: string) {
+  try {
+    const product = (await getCatalogFresh()).find((p) => p.sku === productSku);
+    if (!product) return;
+    const summary: SyncSummary = { products: 0, pricesCreated: 0, pricesKept: 0, pricesArchived: 0, productsArchived: 0 };
+    await syncProductToStripe(await getStripe(), product, summary);
+  } catch (err) {
+    console.error("[catalog] stripe sync failed", (err as Error).name);
+  }
 }
 
 export async function listOverrides(): Promise<ProductOverride[]> {

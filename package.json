@@ -12,7 +12,8 @@
     "test:checkout": "vitest run tests/checkout.test.ts tests/pricing.test.ts tests/webhook.test.ts",
     "checkout:check": "tsx scripts/check-checkout.ts",
     "compliance:check": "tsx scripts/compliance-check.ts",
-    "assets:sync": "node scripts/sync-assets.mjs"
+    "assets:sync": "node scripts/sync-assets.mjs",
+    "stripe:sync": "tsx scripts/stripe-sync.ts"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.645.0",

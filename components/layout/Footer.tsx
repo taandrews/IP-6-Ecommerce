@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { asset } from "@/lib/assets";
 import Image from "next/image";
-import { Instagram } from "lucide-react";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 import { PrivacyChoicesButton } from "./PrivacyChoicesButton";
+import { SocialLinks } from "./SocialLinks";
 import { EMAIL } from "@/lib/email-addresses";
 
 const GROUPS = [
@@ -88,10 +88,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
           <span>Lutherville, Maryland</span>
           <Link href="/contact" className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">Contact us</Link>
           <a href={`mailto:${EMAIL.hello}`} className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">{EMAIL.hello}</a>
-          <a href="https://www.instagram.com/IP6original/" target="_blank" rel="noopener noreferrer" aria-label="IP6original on Instagram (opens in a new tab)" className="inline-flex min-h-11 items-center gap-2 text-navy-800 hover:text-gold-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600 sm:ml-auto">
-            <Instagram size={20} aria-hidden="true" />
-            <span>@IP6original</span>
-          </a>
+          <SocialLinks className="sm:ml-auto" />
         </address>
 
         {showDshea ? (

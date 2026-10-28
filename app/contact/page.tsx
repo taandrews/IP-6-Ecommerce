@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Instagram } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
+import { SocialLinks } from "@/components/layout/SocialLinks";
 import { ContactForm } from "./ContactForm";
 import { hreflangAlternates } from "@/lib/i18n";
 import { EMAIL } from "@/lib/email-addresses";
@@ -58,12 +58,9 @@ export default function ContactPage() {
               </dd>
             </div>
             <div>
-              <dt className="font-semibold text-navy-800">Instagram</dt>
+              <dt className="font-semibold text-navy-800">Follow us</dt>
               <dd>
-                <a href="https://www.instagram.com/IP6original/" target="_blank" rel="noopener noreferrer" aria-label="IP6original on Instagram (opens in a new tab)" className="inline-flex min-h-11 items-center gap-2 text-forest-700 hover:text-gold-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-600">
-                  <Instagram size={20} aria-hidden="true" />
-                  <span className="underline underline-offset-4">@IP6original</span>
-                </a>
+                <SocialLinks className="mt-1 text-forest-700" />
               </dd>
             </div>
             <div>

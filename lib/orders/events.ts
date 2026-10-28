@@ -9,6 +9,7 @@ import { recordRedemption } from "@/lib/data/discounts";
 import { recordRefund, recordSale } from "@/lib/data/analytics";
 import { getSubscription, upsertFromStripe } from "@/lib/data/subscriptions";
 import { ensureStripeProduct } from "@/lib/stripe/products";
+import { findSubscriptionPrice } from "@/lib/stripe/sync";
 import { calculateRates } from "@/lib/shipping";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { formatPrice } from "@/lib/utils";
@@ -116,8 +117,12 @@ async function startSubscriptions(stripe: Stripe, order: OrderRecord, pi: Stripe
       currency: order.currency,
       merchandiseCents: unit * line.qty,
     }).find((r) => r.id === "standard");
+    // The synced catalog Price when it matches what was sold; otherwise an ad-hoc price for this subscription.
+    const synced = await findSubscriptionPrice(stripe, line.sku, order.currency, cycle, unit);
     const items: Stripe.SubscriptionCreateParams.Item[] = [
-      { price_data: { currency, product: product.id, unit_amount: unit, recurring: { interval: "day", interval_count: cycle } }, quantity: line.qty },
+      synced
+        ? { price: synced.id, quantity: line.qty }
+        : { price_data: { currency, product: product.id, unit_amount: unit, recurring: { interval: "day", interval_count: cycle } }, quantity: line.qty },
     ];
     if (shipping && shipping.amountCents > 0) {
       const shipProduct = await ensureStripeProduct(stripe, "SHIPPING", "Shipping");

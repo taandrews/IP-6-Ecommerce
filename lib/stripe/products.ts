@@ -1,9 +1,10 @@
 import "server-only";
 import type Stripe from "stripe";
+import { productId } from "./sync";
 
 /** Stripe product used to price recurring subscription items, one per SKU. */
 export async function ensureStripeProduct(stripe: Stripe, sku: string, name: string) {
-  const id = `ip6_${sku.toLowerCase().replace(/[^a-z0-9_]/g, "_")}`;
+  const id = productId(sku);
   try {
     return await stripe.products.retrieve(id);
   } catch (err) {
