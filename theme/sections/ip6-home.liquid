@@ -1,0 +1,247 @@
+{%- comment -%}
+  Home page. The product leads: packshot, headline, price and buy controls on
+  the first screen, then the standards, both products, the benefits, the
+  formula and label, the scientist, directions and the five most-asked
+  questions. All words and photographs are the ones on ip6original.com.
+{%- endcomment -%}
+{%- liquid
+  assign cdn = settings.ip6_cdn
+  assign sup = all_products['ip-6-original']
+  assign pet = all_products['ip6-original-pet-powder']
+  assign pct = settings.ip6_preorder_pct | default: 15
+-%}
+{%- capture arrow -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>{%- endcapture -%}
+<style>
+  /* Hero */
+  .h-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; padding: 56px 0 72px; }
+  .h-hero .s-shot { aspect-ratio: 1 / 1; border: 0; background: #fff; }
+  .h-hero .s-shot img { width: 78%; height: 88%; }
+  .h-hero .s-kicker { display: block; margin-bottom: 18px; }
+  .h-hero .s-h1 { margin-bottom: 18px; }
+  .h-hero .s-h1 em { font-style: italic; color: var(--gold-ink); }
+  .h-hero .s-lead { margin-bottom: 26px; max-width: 46ch; }
+  .h-hero .facts { display: flex; gap: 0; margin: 0 0 28px; border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong); }
+  .h-hero .facts div { flex: 1; padding: 14px 0; }
+  .h-hero .facts div + div { padding-left: 20px; border-left: 1px solid var(--rule); }
+  .h-hero .facts dt { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .h-hero .facts dd { font-family: var(--serif); font-size: 24px; margin-top: 2px; }
+  .h-hero .s-buy { max-width: 460px; }
+  .h-hero .pets { margin-top: 18px; font-size: 14px; color: var(--muted); }
+  .h-hero .pets a { color: var(--navy); font-weight: 600; border-bottom: 1px solid var(--gold); }
+  @media (max-width: 989px) { .h-hero { grid-template-columns: 1fr; gap: 24px; padding: 24px 0 48px; } .h-hero .s-shot { max-width: 420px; margin: 0 auto; width: 100%; } }
+
+  /* Products */
+  .h-products { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--rule); }
+  .h-products article { padding: 32px; display: flex; flex-direction: column; }
+  .h-products article + article { border-left: 1px solid var(--rule); }
+  .h-products .s-shot { aspect-ratio: 4 / 3; border: 0; margin-bottom: 24px; }
+  .h-products .s-shot img { width: 60%; height: 92%; }
+  .h-products .for { display: block; margin-bottom: 8px; }
+  .h-products .s-h3 { margin-bottom: 8px; }
+  .h-products .s-body { margin-bottom: 20px; }
+  .h-products .s-buy { margin-top: auto; }
+  .h-products .s-price .now { font-size: 26px; }
+  .h-products .size { font-size: 13px; color: var(--faint); margin-left: auto; }
+  @media (max-width: 749px) { .h-products { grid-template-columns: 1fr; } .h-products article { padding: 24px; } .h-products article + article { border-left: 0; border-top: 1px solid var(--rule); } }
+
+  /* Benefits */
+  .h-benefits { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule-strong); }
+  .h-benefits li { padding: 28px 28px 0 0; }
+  .h-benefits li + li { padding-left: 28px; border-left: 1px solid var(--rule); }
+  .h-benefits svg { width: 28px; height: 28px; color: var(--gold); margin-bottom: 18px; }
+  .h-benefits h3 { font-family: var(--serif); font-size: 21px; font-weight: 500; margin-bottom: 8px; }
+  .h-benefits p { font-size: 15px; line-height: 1.6; color: var(--muted); }
+  @media (max-width: 989px) { .h-benefits { grid-template-columns: 1fr 1fr; } .h-benefits li { padding: 24px 20px 24px 0; border-bottom: 1px solid var(--rule); } .h-benefits li + li { border-left: 0; padding-left: 0; } .h-benefits li:nth-child(even) { padding-left: 20px; border-left: 1px solid var(--rule); } }
+  @media (max-width: 560px) { .h-benefits { grid-template-columns: 1fr; } .h-benefits li:nth-child(even) { padding-left: 0; border-left: 0; } }
+
+  /* Formula */
+  .h-formula { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 64px; align-items: center; }
+  .h-formula .amounts { display: grid; grid-template-columns: 1fr 1fr; margin: 28px 0 8px; border-top: 1px solid var(--rule-strong); }
+  .h-formula .amounts div { padding-top: 16px; }
+  .h-formula .amounts div + div { padding-left: 24px; border-left: 1px solid var(--rule); }
+  .h-formula .amounts dt { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .h-formula .amounts dd { font-family: var(--serif); font-size: clamp(44px, 5vw, 64px); line-height: 1.05; }
+  .h-formula .amounts dd span { font-size: 20px; color: var(--gold-ink); margin-left: 4px; }
+  .h-formula .label { border: 1px solid var(--rule); background: #fff; padding: 16px; }
+  .h-formula .s-link { margin-top: 24px; }
+  @media (max-width: 989px) { .h-formula { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* Scientist */
+  .h-sci { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 56px; align-items: center; }
+  .h-sci img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: top; border: 1px solid var(--rule); }
+  .h-sci blockquote { font-family: var(--serif); font-style: italic; font-size: clamp(22px, 2.4vw, 30px); line-height: 1.35; margin: 18px 0 24px; }
+  .h-sci .name { font-weight: 600; font-size: 16px; }
+  .h-sci .role { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  @media (max-width: 749px) { .h-sci { grid-template-columns: 1fr; gap: 24px; } .h-sci img { max-width: 260px; } }
+
+  /* Directions */
+  .h-how { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: start; }
+  .h-how .tabs { display: flex; border-bottom: 1px solid var(--rule-strong); margin-bottom: 24px; }
+  .h-how .tabs button { padding: 12px 20px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .h-how .tabs button[aria-selected="true"] { color: var(--navy); border-bottom-color: var(--navy); }
+  .h-how ol { counter-reset: step; display: grid; gap: 0; }
+  .h-how ol li { counter-increment: step; display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--rule); font-size: 15px; line-height: 1.6; color: var(--muted); }
+  .h-how ol li::before { content: counter(step); font-family: var(--serif); font-size: 22px; color: var(--gold-ink); line-height: 1.2; }
+  .h-how .photo { border: 1px solid var(--rule); background: #fff; }
+  .h-how .photo img { width: 100%; }
+  .h-how .s-link { margin-top: 20px; }
+  .h-how [role="tabpanel"][hidden] { display: none; }
+  @media (max-width: 989px) { .h-how { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* FAQ */
+  .h-faq { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 64px; }
+  .h-faq .s-link { margin-top: 20px; }
+  @media (max-width: 989px) { .h-faq { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+<div class="s">
+  <section class="s-wrap h-hero" aria-labelledby="hero-title">
+    <div class="s-shot"><img src="{{ cdn }}/products/supplement-240.png" alt="IP6 Original Supplement, 240 vegetarian capsules" width="870" height="1160" fetchpriority="high"></div>
+    <div>
+      <span class="s-kicker">From the lab of Professor Shamsuddin, MD, PhD</span>
+      <h1 id="hero-title" class="s-h1">There is only one <em>IP6 Original.</em></h1>
+      <p class="s-lead">IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility.</p>
+      <dl class="facts">
+        <div><dt>IP6</dt><dd>804 mg</dd></div>
+        <div><dt>Inositol</dt><dd>196 mg</dd></div>
+        <div><dt>Servings</dt><dd>60</dd></div>
+      </dl>
+      {%- if sup -%}{% render 'ip6-buy', product: sup %}{%- endif -%}
+      <p class="pets">For dogs and cats: <a href="{{ pet.url }}">IP6 Original Pet Powder</a></p>
+    </div>
+  </section>
+
+  {% render 'ip6-trust' %}
+
+  <section class="s-band" aria-labelledby="products-title">
+    <div class="s-wrap">
+      <div class="s-head"><div><span class="s-kicker">Find your formula</span><h2 id="products-title" class="s-h2">For people. For pets.</h2></div><a href="{{ routes.collections_url }}/shop" class="s-link">Shop all {{ arrow }}</a></div>
+      <div class="h-products">
+        {%- for item in (1..2) -%}
+          {%- liquid
+            if item == 1
+              assign p = sup
+              assign img = cdn | append: '/products/supplement-240.png'
+              assign label = 'For people'
+              assign desc = 'The original IP6 and Inositol formula in vegetable capsules for your daily routine.'
+            else
+              assign p = pet
+              assign img = cdn | append: '/products/pet-powder-120g.png'
+              assign label = 'For pets'
+              assign desc = 'Unflavored IP6 and Inositol powder, easy to mix into food for dogs and cats.'
+            endif
+            if p == blank
+              continue
+            endif
+          -%}
+          <article aria-labelledby="hp-{{ item }}">
+            <a href="{{ p.url }}" class="s-shot" aria-label="View {{ p.title }}"><img src="{{ img }}" alt="{{ p.title }}, {{ p.selected_or_first_available_variant.title }}" width="870" height="1160" loading="lazy"></a>
+            <span class="s-kicker for">{{ label }}</span>
+            <h3 id="hp-{{ item }}" class="s-h3"><a href="{{ p.url }}">{{ p.title }}</a></h3>
+            <p class="s-body">{{ desc }}</p>
+            {% render 'ip6-buy', product: p, compact: true %}
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  <section class="s-band s-band--wash" aria-labelledby="why-title">
+    <div class="s-wrap">
+      <div class="s-head"><div><span class="s-kicker">Why IP6 Original</span><h2 id="why-title" class="s-h2">Original science. Pure and simple.</h2></div></div>
+      <ul class="h-benefits">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><h3>Third-party tested</h3><p>Independently tested for purity, potency, and quality.</p></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg><h3>Made in the USA</h3><p>Manufactured in a cGMP-certified facility.</p></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg><h3>Only what belongs</h3><p>No magnesium stearate, no silicon dioxide, no unnecessary additives.</p></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg><h3>From the scientist</h3><p>Pioneer in IP6 research. Founder and formulator of IP6 Original.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="s-band" aria-labelledby="formula-title">
+    <div class="s-wrap h-formula">
+      <div>
+        <span class="s-kicker">The formula</span>
+        <h2 id="formula-title" class="s-h2" style="margin-top:12px">IP6 + Inositol. The original pairing.</h2>
+        <dl class="amounts"><div><dt>IP6</dt><dd>804<span>mg</span></dd></div><div><dt>Inositol</dt><dd>196<span>mg</span></dd></div></dl>
+        <p class="s-small">Per 4-capsule serving of IP6 Original Supplement.</p>
+        <a href="/pages/the-difference" class="s-link">See what goes into it {{ arrow }}</a>
+      </div>
+      <a href="{{ cdn }}/products/supplement-240-label.jpg" target="_blank" rel="noopener noreferrer" class="label" aria-label="Open the full Supplement Facts label in a new tab"><img src="{{ cdn }}/products/supplement-240-label.jpg" alt="IP6 Original 240-count label. Supplement Facts: serving size 4 capsules, 60 servings per container, 804 mg IP6 and 196 mg Inositol per serving." width="1600" height="622" loading="lazy"></a>
+    </div>
+  </section>
+
+  <section class="s-band s-band--rule" aria-labelledby="sci-title">
+    <div class="s-wrap h-sci">
+      <img src="{{ cdn }}/founder/shamsuddin.png" alt="Professor AbulKalam M. Shamsuddin in a suit and red bow tie" width="1024" height="1536" loading="lazy">
+      <div>
+        <span class="s-kicker" id="sci-title">Meet the scientist</span>
+        <blockquote>&ldquo;Nature has sprinkled IP6 throughout the planet: in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for generations to come.&rdquo;</blockquote>
+        <p class="name">Professor AbulKalam M. Shamsuddin, MD, PhD</p>
+        <p class="role">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
+        <a href="/pages/story" class="s-link" style="margin-top:20px">Read his story {{ arrow }}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="s-band s-band--wash" aria-labelledby="how-title">
+    <div class="s-wrap h-how">
+      <div data-tabs>
+        <span class="s-kicker">How to use it</span>
+        <h2 id="how-title" class="s-h2" style="margin:12px 0 24px">Make it part of your day.</h2>
+        <div class="tabs" role="tablist" aria-label="Choose directions">
+          <button type="button" role="tab" aria-selected="true" aria-controls="how-people" id="tab-people">For people</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="how-pets" id="tab-pets">For pets</button>
+        </div>
+        <div role="tabpanel" id="how-people" aria-labelledby="tab-people">
+          <ol>
+            <li>Take 4 capsules once or twice daily with water, or as directed by your healthcare professional.</li>
+            <li>Consult a healthcare professional before starting any supplement regimen.</li>
+          </ol>
+          <a href="/pages/how-to-take" class="s-link">Full directions {{ arrow }}</a>
+        </div>
+        <div role="tabpanel" id="how-pets" aria-labelledby="tab-pets" hidden>
+          <ol>
+            <li>Dogs up to 25 lb: 1 level scoop once daily.</li>
+            <li>Dogs 26 to 50 lb: 1 level scoop twice daily.</li>
+            <li>Dogs over 50 lb: 2 level scoops twice daily.</li>
+            <li>Cats: 1 level scoop once daily.</li>
+            <li>Use the enclosed measuring scoop and mix into your pet's food.</li>
+          </ol>
+          <a href="{{ pet.url }}" class="s-link">Shop the pet powder {{ arrow }}</a>
+        </div>
+      </div>
+      <figure class="photo"><img src="{{ cdn }}/hero/ip6-capsules-powder-scene.webp" width="1536" height="1024" alt="IP6 Original capsules and pet powder with capsules and a measuring scoop on the counter" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <section class="s-band" aria-labelledby="faq-title">
+    <div class="s-wrap h-faq">
+      <div>
+        <span class="s-kicker">Good to know</span>
+        <h2 id="faq-title" class="s-h2" style="margin-top:12px">Good questions. Clear answers.</h2>
+        <a href="/pages/faq" class="s-link">All questions {{ arrow }}</a>
+      </div>
+      <div class="s-acc">
+        <details open><summary>When will my order arrive?</summary><div class="a"><p>Pre-orders start shipping in November 2026, in the order they were received. You get a tracking email the day your order ships. From there, US standard delivery usually takes 3 to 6 business days (1 to 3 expedited) and international orders 7 to 14 business days, though busy periods and carrier delays can stretch that.</p></div></details>
+        <details><summary>What is IP6?</summary><div class="a"><p>IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. IP6 Original pairs it with Inositol in a high-purity formula, third-party tested for purity, potency, and quality.</p></div></details>
+        <details><summary>How do I take IP6 Original?</summary><div class="a"><p>The label directions: take 4 capsules once or twice daily with water, or as directed by your healthcare professional.</p></div></details>
+        <details><summary>What makes IP6 Original different from other IP6 supplements?</summary><div class="a"><p>IP6 Original is of the highest purity, research grade, third-party tested, formulated by the scientist who pioneered that research.</p></div></details>
+        <details><summary>What is the return policy?</summary><div class="a"><p>All sales are final once shipped. Dietary supplements cannot be restocked or resold after they leave our care.</p></div></details>
+      </div>
+    </div>
+  </section>
+</div>
+<script src="{{ 'ip6-buy.js' | asset_url }}" defer></script>
+<script>
+  document.querySelectorAll('[data-tabs]').forEach(function (box) {
+    var tabs = box.querySelectorAll('[role="tab"]');
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on ? 'true' : 'false'); document.getElementById(x.getAttribute('aria-controls')).hidden = !on; });
+      });
+    });
+  });
+</script>
+{% schema %}
+{ "name": "IP6 Home", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Home" }] }
+{% endschema %}

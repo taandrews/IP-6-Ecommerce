@@ -1,0 +1,100 @@
+{%- comment -%} Home, section 2: both products side by side, the way ip6original.com compares them. {%- endcomment -%}
+{%- liquid
+  assign cdn = settings.ip6_cdn
+  assign sup = section.settings.supplement | default: all_products['ip-6-original']
+  assign pet = section.settings.pet | default: all_products['ip6-original-pet-powder']
+  assign pct = settings.ip6_preorder_pct | default: 15
+  assign keep = 100 | minus: pct
+  assign active = settings.ip6_preorder_active
+-%}
+<style>
+  #hp-{{ section.id }} { background: #fff; padding: 48px 0; scroll-margin-top: 96px; }
+  #hp-{{ section.id }} .head { margin-bottom: 32px; }
+  #hp-{{ section.id }} .head .ip6-eyebrow { display: block; margin-bottom: 16px; }
+  #hp-{{ section.id }} .head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.08; letter-spacing: -.02em; font-weight: 400; }
+  #hp-{{ section.id }} .grid { display: grid; gap: 32px; }
+  #hp-{{ section.id }} .card { display: flex; flex-direction: column; min-width: 0; }
+  #hp-{{ section.id }} .tile { display: block; position: relative; border-radius: 12px; background: #f6f3ed; overflow: hidden; }
+  #hp-{{ section.id }} .tileTop { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 20px 0; }
+  #hp-{{ section.id }} .tileTop span:first-child { font-size: 14px; font-weight: 600; }
+  #hp-{{ section.id }} .pill { font-size: 12px; font-weight: 600; color: var(--ip6-gold-700); background: #FBF3D9; border-radius: 999px; padding: 4px 12px; }
+  #hp-{{ section.id }} .photo { position: relative; height: 280px; }
+  #hp-{{ section.id }} .photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 12px 32px 24px; }
+  #hp-{{ section.id }} .body { display: flex; flex-direction: column; flex: 1; padding-top: 24px; }
+  #hp-{{ section.id }} h3 { font-size: 24px; font-weight: 600; letter-spacing: -.02em; }
+  #hp-{{ section.id }} .desc { margin-top: 8px; font-size: 16px; line-height: 1.6; color: #001840bf; }
+  #hp-{{ section.id }} .bottom { margin-top: auto; padding-top: 20px; }
+  #hp-{{ section.id }} .priceRow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  #hp-{{ section.id }} .ip6-price-now { font-size: 24px; font-weight: 600; }
+  #hp-{{ section.id }} .ip6-price-was { font-size: 14px; color: #00184080; }
+  #hp-{{ section.id }} .size { font-size: 14px; color: #001840a6; margin-left: auto; }
+  #hp-{{ section.id }} .ip6-btn { width: 100%; margin-top: 20px; }
+  #hp-{{ section.id }} .ip6-btn svg { width: 16px; height: 16px; }
+  #hp-{{ section.id }} .note { margin-top: 24px; text-align: center; font-size: 14px; color: #001840a6; }
+  @media (min-width: 768px) { #hp-{{ section.id }} .grid { grid-template-columns: 1fr 1fr; } #hp-{{ section.id }} .desc { min-height: 3rem; } #hp-{{ section.id }} .photo { height: 320px; } #hp-{{ section.id }} .tileTop { padding: 20px 28px 0; } }
+  @media (min-width: 1024px) { #hp-{{ section.id }} { padding: 64px 0; } #hp-{{ section.id }} .head { margin-bottom: 40px; } #hp-{{ section.id }} .grid { gap: 40px; } #hp-{{ section.id }} .photo { height: 340px; } }
+</style>
+<section id="hp-{{ section.id }}" class="ip6" aria-labelledby="products-heading-{{ section.id }}">
+  <div class="ip6-wrap">
+    <div class="head">
+      <p class="ip6-eyebrow">Find your formula</p>
+      <h2 id="products-heading-{{ section.id }}">For people. For pets.</h2>
+    </div>
+    <div class="grid" id="products">
+      {%- for item in (1..2) -%}
+        {%- liquid
+          if item == 1
+            assign p = sup
+            assign eyebrow = 'For people'
+            assign title = 'IP6 Original Supplement'
+            assign img = cdn | append: '/products/supplement-240.png'
+            assign alt = 'IP6 Original Supplement, 240 capsules'
+            assign desc = 'The original IP6 and Inositol formula in vegetable capsules for your daily routine.'
+            assign href = routes.collections_url | append: '/shop#people'
+          else
+            assign p = pet
+            assign eyebrow = 'For pets'
+            assign title = 'IP6 Original Pet Powder'
+            assign img = cdn | append: '/products/pet-powder-120g.png'
+            assign alt = 'IP6 Original Pet Powder, 120 g'
+            assign desc = 'Unflavored IP6 and Inositol powder, easy to mix into food for dogs and cats.'
+            assign href = routes.collections_url | append: '/shop#pets'
+          endif
+          if p == blank
+            continue
+          endif
+          assign v = p.selected_or_first_available_variant
+        -%}
+        <article class="card" aria-labelledby="hp-title-{{ section.id }}-{{ item }}">
+          <a href="{{ href }}" class="tile" aria-label="View {{ title }}">
+            <div class="tileTop">
+              <span>{{ eyebrow }}</span>
+              {%- if active -%}<span class="pill">{{ pct }}% launch offer</span>{%- endif -%}
+            </div>
+            <div class="photo"><img src="{{ img }}" alt="{{ alt }}" width="870" height="1160" loading="{% if item == 1 %}eager{% else %}lazy{% endif %}"></div>
+          </a>
+          <div class="body">
+            <h3 id="hp-title-{{ section.id }}-{{ item }}">{{ title }}</h3>
+            <p class="desc">{{ desc }}</p>
+            <div class="bottom">
+              <div class="priceRow">{% render 'ip6-price', price: v.price %}<span class="size">{{ v.title }}</span></div>
+              <a href="{{ href }}" class="ip6-btn">Pre Order Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+    {%- if active -%}<p class="note">{{ pct }}% off for launch. {{ settings.ip6_preorder_ship | default: 'Starts shipping November 2026' }}.</p>{%- endif -%}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "IP6 Home products",
+  "tag": "section",
+  "settings": [
+    { "type": "product", "id": "supplement", "label": "Supplement (for people)" },
+    { "type": "product", "id": "pet", "label": "Pet powder" }
+  ],
+  "presets": [{ "name": "IP6 Home products" }]
+}
+{% endschema %}

@@ -1,0 +1,161 @@
+{%- comment -%}
+  Home, sections 3 to 6, from components/home/HomeDetails on ip6original.com:
+  the molecule (orbit figure with the rotating model), the scientist, the
+  routine guide (label directions for people and for pets), and the closing
+  questions. Styles: ip6-pages.css, scoped under .ip6hd.
+{%- endcomment -%}
+{%- liquid
+  assign cdn = settings.ip6_cdn
+  assign pct = settings.ip6_preorder_pct | default: 15
+  assign people = routes.collections_url | append: '/shop#people'
+  assign pets = routes.collections_url | append: '/shop#pets'
+-%}
+{%- capture arrow -%}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>{%- endcapture -%}
+<div class="ip6hd ip6">
+  <section id="why-ip6" aria-labelledby="why-ip6-heading" class="section science">
+    <div class="wrap">
+      <div class="scienceGrid">
+        <div class="scienceCopy">
+          <p class="eyebrow">Why IP6 Original</p>
+          <h2 id="why-ip6-heading" class="title">Original science.<br>Pure and simple.</h2>
+          <p class="body">IP6 and Inositol. The pairing at the heart of Professor Shamsuddin&rsquo;s research, brought together in the original formula.</p>
+          <p class="body">IP6 is a naturally occurring molecule found in seeds, grains, and legumes. Explore the molecule behind the name.</p>
+          <a href="{{ pages.the-difference.url | default: '/pages/the-difference' }}" class="link">Explore the formula {{ arrow }}</a>
+        </div>
+        <figure class="orbit">
+          <div class="orbitBox">
+            {% render 'ip6-orbit-svg' %}
+            <div class="orbitModel" data-ip6-molecule>
+              <img src="{{ cdn }}/brand/ip6-molecule.png" alt="Molecular model of IP6 with six phosphate groups" width="1790" height="2000" loading="lazy">
+              <canvas role="img" aria-label="Three-dimensional molecular model of IP6, rotating to show its inositol ring and six phosphate groups" style="opacity:0"></canvas>
+            </div>
+          </div>
+          <figcaption>The IP6 molecule and its six phosphate groups</figcaption>
+        </figure>
+      </div>
+      <dl class="standards">
+        <div><dt>Third-party tested</dt><dd>Independently tested for purity, potency, and quality.</dd></div>
+        <div><dt>Made in the USA</dt><dd>Manufactured in a cGMP-certified facility.</dd></div>
+        <div><dt>Only what belongs</dt><dd>No magnesium stearate, no silicon dioxide, no unnecessary additives.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="scientist" aria-labelledby="scientist-heading" class="section founder">
+    <div class="wrap">
+      <div class="founderGrid">
+        <img src="{{ cdn }}/founder/shamsuddin.png" alt="Professor AbulKalam M. Shamsuddin in a suit and red bow tie" width="1024" height="1536" class="portrait" loading="lazy">
+        <div class="founderCopy">
+          <p class="eyebrow">Meet the scientist</p>
+          <h2 id="scientist-heading" class="title">His research.<br>His original formula.</h2>
+          <p class="founderName">Professor AbulKalam M. Shamsuddin, MD, PhD</p>
+          <p class="credentials">Pioneer in IP6 research. Founder and formulator of IP6 Original.</p>
+          <blockquote class="quote">&ldquo;Nature has sprinkled IP6 throughout the planet - in the soil, the seeds, the grains staple to all humanity, and in all our cells for good reasons; let&rsquo;s learn those and enjoy the benefits for generations to come.&rdquo;</blockquote>
+          <a href="{{ pages.story.url | default: '/pages/story' }}#founder" class="link">Read his story {{ arrow }}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how-to-use" aria-labelledby="how-to-use-heading" class="section routine">
+    <div class="wrap">
+      <div class="routineHeader">
+        <div><p class="eyebrow">How to use it</p><h2 id="how-to-use-heading" class="title">Make it part<br>of your day.</h2></div>
+        <p class="body">Capsules for you. Easy-to-mix powder for them. Choose your format for the label directions.</p>
+      </div>
+      <div class="routineGrid">
+        <figure class="routinePhoto">
+          <img src="{{ cdn }}/hero/ip6-capsules-powder-scene.webp" width="1536" height="1024" alt="IP6 Original capsules and pet powder with capsules and a measuring scoop on the counter" loading="lazy">
+          <figcaption>Capsule and powder appearance illustrative.</figcaption>
+        </figure>
+        <div class="routineContent" data-routine>
+          <div class="choices" role="group" aria-label="Choose directions">
+            <button type="button" class="choice" aria-pressed="true" aria-controls="routine-directions" data-choice="people">For people</button>
+            <button type="button" class="choice" aria-pressed="false" aria-controls="routine-directions" data-choice="pets">For pets</button>
+          </div>
+          <div id="routine-directions" class="routinePanel" aria-live="polite" aria-atomic="true">
+            <div data-pane="people">
+              <h3>Four capsules. With water.</h3>
+              <ul class="directions">
+                <li>Take 4 capsules once or twice daily with water, or as directed by your healthcare professional.</li>
+                <li>Consult a healthcare professional before starting any supplement regimen.</li>
+              </ul>
+              <a href="{{ pages.how-to-take.url | default: '/pages/how-to-take' }}" class="link">Full directions {{ arrow }}</a>
+            </div>
+            <div data-pane="pets" hidden>
+              <h3>Measure. Mix into food.</h3>
+              <ul class="directions">
+                <li>Dogs up to 25 lb: 1 level scoop once daily.</li>
+                <li>Dogs 26 to 50 lb: 1 level scoop twice daily.</li>
+                <li>Dogs over 50 lb: 2 level scoops twice daily.</li>
+                <li>Cats: 1 level scoop once daily.</li>
+                <li>Use the enclosed measuring scoop and mix into your pet's food.</li>
+              </ul>
+              <a href="{{ pets }}" class="link">Full directions {{ arrow }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="before-you-order" aria-labelledby="before-you-order-heading" class="section questions">
+    <div class="wrap">
+      <div class="questionsGrid">
+        <div>
+          <p class="eyebrow">A little more to know</p>
+          <h2 id="before-you-order-heading" class="title">Good questions.<br>Clear answers.</h2>
+          <p class="body">A closer look at the formula and the two formats.</p>
+          <a href="{{ pages.contact.url | default: '/pages/contact' }}" class="link">Ask us a question {{ arrow }}</a>
+        </div>
+        <div class="accordion" data-accordion>
+          {%- assign qs = "What is IP6?|What is in the capsules?|Is the pet powder flavored?" | split: "|" -%}
+          {%- for q in qs -%}
+            <div>
+              <button type="button" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="hq-{{ forloop.index }}">
+                <span>{{ q }}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div id="hq-{{ forloop.index }}" data-panel {% unless forloop.first %}hidden{% endunless %}>
+                {%- case forloop.index -%}
+                  {%- when 1 -%}<p>IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. IP6 Original pairs it with Inositol in a high-purity formula, third-party tested for purity, potency, and quality.</p>
+                  {%- when 2 -%}<ul><li>IP6 (Calcium Magnesium Inositol Hexaphosphate), 804 mg per 4-capsule serving</li><li>Inositol, 196 mg per serving</li><li>Other ingredients: hypromellose (vegetable capsule)</li></ul>
+                  {%- when 3 -%}<p>No. It is unflavored and easy to mix into food.</p>
+                {%- endcase -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+      <div class="closing">
+        <p>For people. For pets.{% if settings.ip6_preorder_active %}<small>{{ pct }}% off for launch. {{ settings.ip6_preorder_ship | default: 'Starts shipping November 2026' }}.</small>{% endif %}</p>
+        <a href="#products" class="order">Pre Order Now {{ arrow }}</a>
+      </div>
+    </div>
+  </section>
+</div>
+<script src="{{ 'ip6-molecule.js' | asset_url }}" defer></script>
+<script>
+  (function () {
+    var r = document.querySelector('[data-routine]');
+    if (r) r.querySelectorAll('[data-choice]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-choice');
+        r.querySelectorAll('[data-choice]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+        r.querySelectorAll('[data-pane]').forEach(function (p) { p.hidden = p.getAttribute('data-pane') !== id; });
+      });
+    });
+    document.querySelectorAll('[data-accordion]').forEach(function (acc) {
+      acc.querySelectorAll('button[aria-controls]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('aria-expanded') === 'true';
+          acc.querySelectorAll('button[aria-controls]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); document.getElementById(b.getAttribute('aria-controls')).hidden = true; });
+          if (!open) { btn.setAttribute('aria-expanded', 'true'); document.getElementById(btn.getAttribute('aria-controls')).hidden = false; }
+        });
+      });
+    });
+  })();
+</script>
+{% schema %}
+{ "name": "IP6 Home details", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Home details" }] }
+{% endschema %}

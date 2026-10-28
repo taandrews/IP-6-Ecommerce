@@ -1,74 +1,70 @@
+{%- comment -%} Footer: four link columns, contact and socials, the disclaimer, and a hairline legal row. {%- endcomment -%}
 <style>
- #ftr-{{ section.id }} { background: var(--ink); color: #aeb9cb; }
- #ftr-{{ section.id }} .top { display: grid; grid-template-columns: 1.3fr repeat(4, 1fr); gap: 40px; padding: clamp(48px,6vw,80px) 0 56px; }
- #ftr-{{ section.id }} .brand .mark { font-family: var(--serif); font-size: 26px; color: #fff; letter-spacing: -0.01em; }
- #ftr-{{ section.id }} .brand p { margin: 16px 0 0; font-size: 14px; line-height: 1.7; max-width: 34ch; }
- #ftr-{{ section.id }} .brand a { color: var(--gold); text-decoration: none; }
- #ftr-{{ section.id }} .col h4 { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #7e8aa0; margin: 0 0 18px; }
- #ftr-{{ section.id }} .col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
- #ftr-{{ section.id }} .col a { color: #cdd6e6; text-decoration: none; font-size: 15px; transition: color .15s ease-out; }
- #ftr-{{ section.id }} .col a:hover { color: #fff; }
- #ftr-{{ section.id }} .bottom { border-top: 1px solid rgba(255,255,255,.12); padding: 24px 0 40px; display: flex; flex-wrap: wrap; gap: 12px 28px; justify-content: space-between; align-items: center; }
- #ftr-{{ section.id }} .bottom p { margin: 0; font-size: 12.5px; color: #7e8aa0; }
- #ftr-{{ section.id }} .disclaimer { padding: 22px 0; border-top: 1px solid rgba(255,255,255,.08); }
- #ftr-{{ section.id }} .disclaimer p { margin: 0; font-size: 12px; line-height: 1.6; color: #6b7790; max-width: 90ch; }
- @media (max-width: 749px) { #ftr-{{ section.id }} .top { grid-template-columns: 1fr 1fr; gap: 32px 24px; } #ftr-{{ section.id }} .brand { grid-column: 1 / -1; } }
+  .f { border-top: 1px solid var(--rule-strong); background: #fff; margin-top: 0; }
+  .f-top { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 40px; padding: 56px 0 40px; }
+  .f-brand img { height: 52px; width: auto; }
+  .f-brand p { margin-top: 16px; max-width: 30ch; font-family: var(--serif); font-size: 18px; line-height: 1.4; }
+  .f-col h2 { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-ink); margin-bottom: 16px; }
+  .f-col ul { display: grid; gap: 10px; }
+  .f-col a { font-size: 14px; color: var(--muted); }
+  .f-col a:hover { color: var(--navy); }
+  .f-mid { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; padding: 20px 0; border-top: 1px solid var(--rule); font-size: 14px; color: var(--muted); }
+  .f-mid a:hover { color: var(--navy); }
+  .f-social { display: flex; gap: 18px; margin-left: auto; }
+  .f-social a { display: inline-flex; min-height: 44px; align-items: center; color: var(--navy); }
+  .f-social svg { width: 20px; height: 20px; }
+  .f-legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; padding: 18px 0 28px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--faint); }
+  .f-legal ul { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+  .f-legal a:hover { color: var(--navy); }
+  @media (max-width: 989px) { .f-top { grid-template-columns: 1fr 1fr 1fr; } .f-brand { grid-column: 1 / -1; } }
+  @media (max-width: 560px) { .f-top { grid-template-columns: 1fr 1fr; gap: 28px; } .f-social { margin-left: 0; } }
 </style>
-<footer id="ftr-{{ section.id }}" class="ip6">
- <div class="ip6-wrap">
- <div class="top">
- <div class="brand">
- <div class="mark">IP6 Original</div>
- <p>Lutherville, Maryland<br><a href="/pages/contact">Contact us</a></p>
- </div>
- <div class="col">
- <h4>Shop</h4>
- <ul>
- <li><a href="/products/ip-6-original">IP6 Original</a></li>
- <li><a href="/pages/faq#how-to-take">How to Take</a></li>
- <li><a href="{{ routes.account_url }}">My Account</a></li>
- </ul>
- </div>
- <div class="col">
- <h4>Story</h4>
- <ul>
- <li><a href="/pages/story">The Story</a></li>
- <li><a href="/pages/the-difference">The Difference</a></li>
- </ul>
- </div>
- <div class="col">
- <h4>Support</h4>
- <ul>
- <li><a href="/pages/faq">FAQ</a></li>
- <li><a href="/pages/contact">Contact</a></li>
- <li><a href="/pages/international-shipping">Shipping</a></li>
- <li><a href="/pages/refund-policy">Returns</a></li>
- </ul>
- </div>
- <div class="col">
- <h4>Legal</h4>
- <ul>
- <li><a href="/pages/privacy-policy">Privacy</a></li>
- <li><a href="/pages/terms-of-service">Terms</a></li>
- <li><a href="/pages/cookie-policy">Cookies</a></li>
- <li><a href="/pages/accessibility">Accessibility</a></li>
- </ul>
- </div>
- </div>
- <div class="disclaimer">
- <p>{{ section.settings.disclaimer }}</p>
- </div>
- <div class="bottom">
- <p>© 2026 IP6 Original. All rights reserved.</p>
- <p>Made in USA · Free US shipping over $75 · Ships to 27 international countries</p>
- </div>
- </div>
+<footer class="s f">
+  <div class="s-wrap">
+    <div class="f-top">
+      <div class="f-brand">
+        <a href="{{ routes.root_url }}" aria-label="IP6 Original, Home"><img src="{{ settings.ip6_cdn }}/brand/ip6-original-logo.png" alt="IP6 Original" width="324" height="216" loading="lazy"></a>
+        <p>One supplement, made to the specification his research describes.</p>
+      </div>
+      <nav class="f-col" aria-label="Shop"><h2>Shop</h2><ul>
+        <li><a href="{{ all_products['ip-6-original'].url }}">IP6 Original Supplement</a></li>
+        <li><a href="{{ all_products['ip6-original-pet-powder'].url }}">IP6 Original Pet Powder</a></li>
+        <li><a href="/pages/how-to-take">How to Take</a></li>
+        <li><a href="{{ routes.account_url }}">My Account</a></li>
+      </ul></nav>
+      <nav class="f-col" aria-label="About"><h2>About</h2><ul>
+        <li><a href="/pages/story">The Story</a></li>
+        <li><a href="/pages/the-difference">The Difference</a></li>
+      </ul></nav>
+      <nav class="f-col" aria-label="Help"><h2>Help</h2><ul>
+        <li><a href="/pages/faq">FAQ</a></li>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="/pages/shipping-policy">Shipping</a></li>
+        <li><a href="/pages/refund-policy">Returns</a></li>
+      </ul></nav>
+    </div>
+    <div class="f-mid">
+      <span>Lutherville, Maryland</span>
+      <a href="mailto:hello@ip6original.com">hello@ip6original.com</a>
+      <ul class="f-social">
+        <li><a href="https://www.facebook.com/ip6original" target="_blank" rel="noopener noreferrer" aria-label="IP6 Original on Facebook (opens in a new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a></li>
+        <li><a href="https://www.instagram.com/ip6original/" target="_blank" rel="noopener noreferrer" aria-label="IP6 Original on Instagram (opens in a new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg></a></li>
+        <li><a href="https://www.youtube.com/@ip6original" target="_blank" rel="noopener noreferrer" aria-label="IP6 Original on YouTube (opens in a new tab)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></a></li>
+      </ul>
+    </div>
+    <p class="s-dshea">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
+    <div class="f-legal">
+      <span>&copy; {{ 'now' | date: '%Y' }} IP6 Original. All rights reserved. Made in USA.</span>
+      <ul>
+        <li><a href="/pages/privacy-policy">Privacy</a></li>
+        <li><a href="/pages/terms-of-service">Terms</a></li>
+        <li><a href="/pages/cookie-policy">Cookies</a></li>
+        <li><a href="/pages/accessibility">Accessibility</a></li>
+        <li><a href="/pages/data-sharing-opt-out">Your privacy choices</a></li>
+      </ul>
+    </div>
+  </div>
 </footer>
 {% schema %}
-{
- "name": "IP6 Footer",
- "settings": [
- { "type": "textarea", "id": "disclaimer", "label": "FDA disclaimer", "default": "*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease. Consult your healthcare professional before use." }
- ]
-}
+{ "name": "IP6 Footer", "tag": "div", "settings": [] }
 {% endschema %}

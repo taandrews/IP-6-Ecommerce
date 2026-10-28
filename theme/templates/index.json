@@ -1,23 +1,11 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "hero":   { "type": "ip6-hero", "settings": { "product": "ip-6-original", "heading": "There is only <span class=\"accent\">one IP6 Original.</span>" } },
-    "trust":  { "type": "ip6-badges", "settings": {} },
-    "mol":    { "type": "ip6-science", "settings": {} },
-    "stakes": { "type": "ip6-clean", "settings": {} },
-    "proof":  { "type": "ip6-founder", "settings": {} },
-    "offer":  { "type": "ip6-reviews", "settings": { "product": "ip-6-original" } },
-    "petpromo": { "type": "ip6-pet-promo", "settings": { "product": "ip6-original-pet" } },
-    "action": { "type": "ip6-cta", "settings": { "product": "ip-6-original" } },
-    "disc":   { "type": "ip6-disclaimer", "settings": {} }
+    "home": {
+      "type": "ip6-home",
+      "settings": {}
+    }
   },
-  "order": ["hero", "trust", "mol", "stakes", "proof", "offer", "petpromo", "action", "disc"]
+  "order": [
+    "home"
+  ]
 }

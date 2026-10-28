@@ -1,21 +1,11 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "buy":       { "type": "ip6-product", "settings": {} },
-    "molecule":  { "type": "ip6-pdp-molecule", "settings": {} },
-    "compare":   { "type": "ip6-pdp-compare", "settings": {} },
-    "howto":     { "type": "ip6-pdp-howto", "settings": {} },
-    "proof":     { "type": "ip6-pdp-proof", "settings": {} },
-    "founder":   { "type": "ip6-pdp-founder", "settings": {} },
-    "faq":       { "type": "ip6-pdp-faq", "settings": {} }
+    "product": {
+      "type": "ip6-product",
+      "settings": {}
+    }
   },
-  "order": ["buy", "molecule", "compare", "howto", "proof", "founder", "faq"]
+  "order": [
+    "product"
+  ]
 }

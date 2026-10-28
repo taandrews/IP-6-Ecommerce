@@ -1,0 +1,89 @@
+{%- comment -%}
+  Shop hero from ip6original.com (components/store/ShopHero): the people
+  video plays once, then the pets video, then the show stops on the pets
+  slide. Words and buttons over the video, dots and pause. Styles:
+  ip6-shop-hero.css (PetHero styles under .ip6ph, ShopHero styles under .ip6sh).
+{%- endcomment -%}
+{%- assign cdn = settings.ip6_cdn -%}
+<link rel="stylesheet" href="{{ 'ip6-shop-hero.css' | asset_url }}">
+<style>
+  .ip6sh { font-family: var(--sans); }
+  .ip6sh h2, .ip6sh p { margin: 0; }
+  .ip6sh a { text-decoration: none; }
+  .ip6sh button { background: none; border: 0; cursor: pointer; color: inherit; }
+  .ip6sh .order svg { width: 16px; height: 16px; }
+  .ip6sh .pause svg { width: 22px; height: 22px; }
+  .ip6sh .hero[hidden] { display: none; }
+</style>
+<div class="ip6sh ip6ph">
+  <section class="carousel" data-audience="people" data-shop-hero aria-label="Shop product highlights" aria-roledescription="carousel">
+    <div id="shop-hero-slide" role="group" aria-roledescription="slide" aria-label="1 of 2: For people">
+      <section class="hero" data-hero-slide="0" aria-label="IP6 Original Supplement">
+        <video class="video" muted playsinline preload="auto" disablepictureinpicture poster="{{ cdn }}/shop/video/supplement-field-poster.jpg" width="2048" height="1080" aria-label="An adult and child walking through a sunlit field">
+          <source src="{{ cdn }}/shop/video/supplement-field.mp4" type="video/mp4">
+        </video>
+        <div class="shade" aria-hidden="true"></div>
+      </section>
+      <section class="hero" data-hero-slide="1" aria-label="IP6 Original for dogs and cats" hidden>
+        <video class="video" muted playsinline preload="none" disablepictureinpicture poster="{{ cdn }}/shop/video/pets-golden-poster.jpg" width="1920" height="1080" aria-label="Two dogs and a cat together against a golden background">
+          <source src="{{ cdn }}/shop/video/pets-golden.mp4" type="video/mp4">
+        </video>
+        <div class="shade" aria-hidden="true"></div>
+      </section>
+      <div class="copy" data-copy>
+        <p class="eyebrow" data-eyebrow>Capsules for people</p>
+        <h2>IP6 Original.<span data-for>For you.</span></h2>
+      </div>
+      <div class="actions">
+        <a href="#people" class="order" data-order-link>Pre Order Now<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <nav class="routes" aria-label="Shop by"><a href="#people">For people</a><a href="#pets">For pets</a></nav>
+      </div>
+      <div class="dots">
+        <button type="button" aria-label="Go to slide 1" aria-current="true" data-go="0"><span></span></button>
+        <button type="button" aria-label="Go to slide 2" aria-current="false" data-go="1"><span></span></button>
+      </div>
+      <button type="button" class="pause" data-pause aria-label="Pause slideshow"></button>
+    </div>
+  </section>
+</div>
+<script>
+  (function () {
+    var root = document.querySelector('[data-shop-hero]'); if (!root) return;
+    var PAUSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>';
+    var PLAY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3 20 12 6 21z"/></svg>';
+    var slides = root.querySelectorAll('[data-hero-slide]'), vids = [].map.call(slides, function (s) { return s.querySelector('video'); });
+    var slide = 0, step = 0, paused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var group = root.querySelector('#shop-hero-slide'), pauseBtn = root.querySelector('[data-pause]');
+    function render() {
+      root.setAttribute('data-audience', slide === 0 ? 'people' : 'pets');
+      group.setAttribute('aria-label', (slide + 1) + ' of 2: ' + (slide === 0 ? 'For people' : 'For pets'));
+      slides.forEach(function (s, i) { s.hidden = i !== slide; });
+      root.querySelector('[data-eyebrow]').textContent = slide === 0 ? 'Capsules for people' : 'Powder for dogs & cats';
+      root.querySelector('[data-for]').textContent = slide === 0 ? 'For you.' : 'For them.';
+      var c = root.querySelector('[data-copy]'); c.style.animation = 'none'; c.offsetHeight; c.style.animation = '';
+      root.querySelector('[data-order-link]').setAttribute('href', slide === 0 ? '#people' : '#pets');
+      root.querySelectorAll('[data-go]').forEach(function (d) { d.setAttribute('aria-current', +d.getAttribute('data-go') === slide ? 'true' : 'false'); });
+      var playing = !paused && step < 2;
+      pauseBtn.innerHTML = playing ? PAUSE : PLAY; pauseBtn.setAttribute('aria-label', playing ? 'Pause slideshow' : 'Play slideshow');
+      vids.forEach(function (v, i) { if (i === slide && playing) { v.preload = 'auto'; v.play().catch(function () {}); } else { v.pause(); } });
+    }
+    vids.forEach(function (v) { v.addEventListener('ended', function () { if (step >= 2) return; slide = step === 0 ? 1 : 0; step += 1; if (step < 2) vids[slide].currentTime = 0; render(); }); });
+    root.querySelectorAll('[data-go]').forEach(function (d) { d.addEventListener('click', function () { slide = +d.getAttribute('data-go'); step = 2; render(); }); });
+    pauseBtn.addEventListener('click', function () {
+      if (step >= 2) { step = 0; slide = 0; paused = false; vids.forEach(function (v) { v.currentTime = 0; }); } else { paused = !paused; }
+      render();
+    });
+    // The hero fills the screen between the header and the disclaimer bar.
+    function fit() {
+      var top = root.getBoundingClientRect().top + window.scrollY;
+      var disc = document.querySelector('[aria-label="FDA disclaimer"]');
+      var dh = disc && !disc.hidden ? disc.getBoundingClientRect().height : 0;
+      var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      root.querySelectorAll('.hero').forEach(function (h) { h.style.setProperty('--pet-visible-height', Math.max(0, vh - top - dh - 1) + 'px'); });
+    }
+    window.addEventListener('resize', fit); fit(); render();
+  })();
+</script>
+{% schema %}
+{ "name": "IP6 Shop hero", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Shop hero" }] }
+{% endschema %}

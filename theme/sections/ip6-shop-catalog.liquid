@@ -1,0 +1,201 @@
+{%- comment -%}
+  The shop from ip6original.com (components/store/ShopCatalog): heading,
+  category chips, search, result count, then one card per product (people
+  first, pets second) with photos, the buy box and four accordions. Product
+  URLs render this same page and scroll to their product, as on Amplify.
+  Styles: ip6-pages.css under .ip6sc (catalog) and .ip6pd (buy box).
+{%- endcomment -%}
+{%- liquid
+  assign cdn = settings.ip6_cdn
+  assign sup = all_products['ip-6-original']
+  assign pet = all_products['ip6-original-pet-powder']
+  assign pct = settings.ip6_preorder_pct | default: 15
+  assign focus = ''
+  if template.name == 'product'
+    if product.handle == 'ip6-original-pet-powder'
+      assign focus = 'pets'
+    else
+      assign focus = 'people'
+    endif
+  endif
+-%}
+{%- capture plus -%}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>{%- endcapture -%}
+{%- capture arrow -%}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>{%- endcapture -%}
+<style>
+  .ip6sc { font-family: var(--sans); }
+  .ip6sc h2, .ip6sc h3, .ip6sc p, .ip6sc ul, .ip6sc ol, .ip6sc dl, .ip6sc dd { margin: 0; }
+  .ip6sc .search svg.icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: #00184080; }
+  .ip6sc .clearSearch[hidden] { display: none; }
+  .ip6sc .group[hidden], .ip6sc .empty[hidden] { display: none; }
+  .ip6sc .accordions details > *:not(summary) { margin-bottom: 20px; }
+  .ip6sc .reviews { padding: 8px 0 24px; }
+  .ip6sc .reviews h4 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+  .ip6sc .reviews p { font-size: 14px; color: #00184099; }
+  .ip6sc .photo { aspect-ratio: 1374 / 1145; overflow: hidden; }
+  .ip6sc .photo img { width: 100%; height: 100%; object-fit: cover; }
+  .ip6sc .disclaimer { border-radius: 6px; border: 1px solid #E8E0CF; padding: 16px 20px; font-size: 14px; line-height: 1.65; }
+  .ip6sc .disclaimer strong { color: #001840; }
+  .ip6sc .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+<div class="ip6sc ip6">
+  <div class="catalog">
+    <header class="heading"><h2>Choose your formula</h2><p>Product details and ordering, all in one place.</p></header>
+    <div class="toolbar">
+      <nav aria-label="Product categories" class="categories">
+        <button type="button" aria-pressed="true" aria-controls="shop-products" data-cat="">All</button>
+        <button type="button" aria-pressed="false" aria-controls="shop-products" data-cat="supplement">For people</button>
+        <button type="button" aria-pressed="false" aria-controls="shop-products" data-cat="pet">For pets</button>
+      </nav>
+      <form role="search" class="search" data-search-form>
+        <label for="shop-search" class="srOnly">Search products</label>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="shop-search" type="search" placeholder="Search products" class="searchInput" autocomplete="off" data-search>
+        <button type="button" aria-label="Clear search" class="clearSearch" data-clear hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </form>
+      <p role="status" class="resultCount" data-count>2 products</p>
+    </div>
+
+    <div class="empty" data-empty hidden>
+      <h2>No products found</h2>
+      <p data-empty-text></p>
+      <button type="button" class="details" data-reset>Show all products {{ arrow }}</button>
+    </div>
+
+    <div id="shop-products" class="productGrid">
+      {%- for item in (1..2) -%}
+        {%- liquid
+          if item == 1
+            assign p = sup
+            assign gid = 'people'
+            assign cat = 'supplement'
+            assign eyebrow = 'For people'
+            assign desc = 'IP6 and Inositol in vegetable capsules.'
+            assign photos = 'products/lifestyle/supplement-main.png|products/lifestyle/supplement-detail.png|products/lifestyle/supplement-use.png' | split: '|'
+            assign alts = 'IP6 Original Supplement with capsules and water|Vegetable capsules beside the IP6 Original bottle|Four capsules in an open palm beside a glass of water' | split: '|'
+            assign hay = 'ip6 original supplement capsules capsule people person human adult wellness daily vegetable inositol high-purity formula third-party tested cgmp professor shamsuddin 240 count'
+          else
+            assign p = pet
+            assign gid = 'pets'
+            assign cat = 'pet'
+            assign eyebrow = 'For dogs & cats'
+            assign desc = 'Unflavored IP6 and Inositol powder for dogs and cats.'
+            assign photos = 'products/lifestyle/pet-feeding-v2.png|products/lifestyle/pet-detail.png|products/lifestyle/pet-use.png' | split: '|'
+            assign alts = 'IP6 Original Pet Powder beside a food bowl, with a dog and cat in a bright feeding area|IP6 Original powder with its measuring scoop|IP6 Original powder being added to pet food' | split: '|'
+            assign hay = 'ip6 original pet powder pet pets dog dogs cat cats animal animals powder scoop veterinarian vet unflavored inositol 120 g'
+          endif
+          if p == blank
+            continue
+          endif
+        -%}
+        <section id="{{ gid }}" aria-label="{{ eyebrow }}" class="group" data-group data-cat="{{ cat }}" data-hay="{{ hay | escape }}">
+          <article class="productRow" aria-labelledby="title-{{ p.handle }}">
+            <div class="cardTop"><p class="eyebrow">{{ eyebrow }}</p>{% if settings.ip6_preorder_active %}<span class="offer">{{ pct }}% launch offer</span>{% endif %}</div>
+            <header class="productCopy">
+              <h3 id="title-{{ p.handle }}">{{ p.title }}</h3>
+              <p class="description">{{ desc }}</p>
+            </header>
+            <div class="photo" data-photo>
+              <img src="{{ cdn }}/{{ photos[0] }}" alt="{{ alts[0] }}" width="1374" height="1145" {% if item == 1 %}fetchpriority="high"{% else %}loading="lazy"{% endif %}>
+            </div>
+            <div class="thumbnails" role="group" aria-label="{{ p.title }} photos">
+              {%- assign kinds = 'product|close-up|in-use' | split: '|' -%}
+              {%- for ph in photos -%}
+                <button type="button" aria-label="Show {{ kinds[forloop.index0] }} photo" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" data-thumb="{{ cdn }}/{{ ph }}" data-alt="{{ alts[forloop.index0] | escape }}"><img src="{{ cdn }}/{{ ph }}" alt="" width="72" height="60" loading="lazy"></button>
+              {%- endfor -%}
+            </div>
+            <div class="buy" id="{% if item == 1 %}people-purchase{% else %}pets-purchase{% endif %}">{% render 'ip6-buy-box', product: p %}</div>
+            <div class="accordions">
+              {%- if item == 1 -%}
+                <details><summary>Ingredients &amp; Supplement Facts{{ plus }}</summary>
+                  <ul><li>IP6 (Calcium Magnesium Inositol Hexaphosphate), 804 mg per 4-capsule serving</li><li>Inositol, 196 mg per serving</li><li>Other ingredients: hypromellose (vegetable capsule)</li></ul>
+                  <ul><li>High-Purity Formula, third-party tested</li><li>Formulated by Professor Shamsuddin, founder and formulator</li><li>Manufactured in a cGMP-certified facility</li><li>No magnesium stearate, no silicon dioxide, no unnecessary additives</li><li>Hypromellose (vegetable) capsule</li></ul>
+                  <a class="label" href="{{ cdn }}/products/supplement-240-label.jpg" target="_blank" rel="noopener noreferrer"><img src="{{ cdn }}/products/supplement-240-label.jpg" alt="IP6 Original 240-count label. Supplement Facts: serving size 4 capsules, 60 servings per container, 804 mg calcium magnesium inositol hexaphosphate (IP6) and 196 mg Inositol per serving." width="1600" height="622" loading="lazy"><span>Open full-size Supplement Facts label</span></a>
+                </details>
+                <details><summary>How to take{{ plus }}</summary>
+                  <ol><li>Take 4 capsules once or twice daily with water, or as directed by your healthcare professional.</li><li>Consult a healthcare professional before starting any supplement regimen.</li></ol>
+                  <a href="/pages/how-to-take" class="details">Full directions {{ arrow }}</a>
+                </details>
+                <details><summary>Frequently asked questions{{ plus }}</summary><dl class="faq">
+                  <div><dt>What is IP6?</dt><dd>IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. IP6 Original pairs it with Inositol in a high-purity formula, third-party tested for purity, potency, and quality.</dd></div>
+                  <div><dt>Is this product third-party tested?</dt><dd>Yes. IP6 Original is independently third-party tested for purity, potency, and quality.</dd></div>
+                  <div><dt>Can I take IP6 with other supplements?</dt><dd>IP6 is commonly taken alongside other wellness routines. We recommend consulting your healthcare professional to coordinate any supplement stack.</dd></div>
+                </dl></details>
+              {%- else -%}
+                <details><summary>Ingredients &amp; product details{{ plus }}</summary>
+                  <ul><li>IP6 (Inositol Hexaphosphate), 804 mg per 1 g level scoop</li><li>Inositol, 196 mg per scoop</li><li>Other ingredients: none</li></ul>
+                  <ul><li>804 mg IP6 and 196 mg Inositol per 1 g level scoop</li><li>Unflavored, easy to mix into food</li><li>No magnesium stearate, no silicon dioxide, no unnecessary additives</li><li>cGMP-certified, third-party tested, veterinarian formulated</li><li>Made in USA</li><li>Measuring scoop included</li></ul>
+                </details>
+                <details><summary>Feeding directions{{ plus }}</summary>
+                  <ol><li>Dogs up to 25 lb: 1 level scoop once daily.</li><li>Dogs 26 to 50 lb: 1 level scoop twice daily.</li><li>Dogs over 50 lb: 2 level scoops twice daily.</li><li>Cats: 1 level scoop once daily.</li><li>Use the enclosed measuring scoop and mix into your pet's food.</li></ol>
+                </details>
+                <details><summary>Frequently asked questions{{ plus }}</summary><dl class="faq">
+                  <div><dt>How much do I give my pet?</dt><dd>Dogs up to 25 lb: 1 level scoop once daily. Dogs 26 to 50 lb: 1 level scoop twice daily. Dogs over 50 lb: 2 level scoops twice daily. Cats: 1 level scoop once daily. Use the enclosed measuring scoop.</dd></div>
+                  <div><dt>What is in each scoop?</dt><dd>Each 1 g level scoop contains 804 mg IP6 and 196 mg Inositol. There are no other ingredients.</dd></div>
+                  <div><dt>Is it flavored?</dt><dd>No. It is unflavored and easy to mix into food.</dd></div>
+                  <div><dt>Is it third-party tested?</dt><dd>Yes. IP6 Original Pet Powder is made in a cGMP-certified facility and third-party tested.</dd></div>
+                </dl></details>
+              {%- endif -%}
+              <details><summary>Customer reviews{{ plus }}</summary><div class="reviews"><h4>Customer reviews</h4><p>No reviews yet. Be the first.</p></div></details>
+            </div>
+          </article>
+        </section>
+      {%- endfor -%}
+    </div>
+    <p class="collectionNote">Concept photography.</p>
+    <aside aria-label="Product disclaimer" class="disclaimer"><strong>Disclaimer:</strong> These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</aside>
+  </div>
+</div>
+<script src="{{ 'ip6-buy.js' | asset_url }}" defer></script>
+<script>
+  (function () {
+    var root = document.querySelector('.ip6sc'); if (!root) return;
+    var STOP = ['the', 'a', 'an', 'of', 'for', 'and', 'to', 'buy', 'order', 'pre', 'preorder', 'pre-order', 'shop'];
+    var groups = [].slice.call(root.querySelectorAll('[data-group]')), cat = '', q = '';
+    var input = root.querySelector('[data-search]'), clear = root.querySelector('[data-clear]'), count = root.querySelector('[data-count]');
+    var empty = root.querySelector('[data-empty]');
+    function apply() {
+      var tokens = q.toLowerCase().split(/[^a-z0-9]+/).filter(function (t) { return t && STOP.indexOf(t) < 0; });
+      var n = 0;
+      groups.forEach(function (g) {
+        var hay = g.getAttribute('data-hay');
+        var score = tokens.length ? tokens.reduce(function (s, t) { return s + (hay.indexOf(t) >= 0 ? 1 : 0); }, 0) : 1;
+        var show = (!cat || g.getAttribute('data-cat') === cat) && score > 0;
+        g.hidden = !show; if (show) n++;
+      });
+      count.textContent = n + (n === 1 ? ' product' : ' products');
+      empty.hidden = n > 0;
+      root.querySelector('[data-empty-text]').textContent = q ? 'Nothing matches “' + q + '”' + (cat ? ' in this category' : '') + '. Try another search or choose All.' : 'No products are available in this category.';
+      clear.hidden = !q;
+      root.querySelectorAll('[data-cat]').forEach(function (b) { if (b.tagName === 'BUTTON') b.setAttribute('aria-pressed', b.getAttribute('data-cat') === cat ? 'true' : 'false'); });
+    }
+    root.querySelectorAll('button[data-cat]').forEach(function (b) { b.addEventListener('click', function () { cat = b.getAttribute('data-cat'); apply(); }); });
+    input.addEventListener('input', function () { q = input.value; apply(); });
+    root.querySelector('[data-search-form]').addEventListener('submit', function (e) { e.preventDefault(); });
+    clear.addEventListener('click', function () { input.value = ''; q = ''; apply(); input.focus(); });
+    root.querySelector('[data-reset]').addEventListener('click', function () { input.value = ''; q = ''; cat = ''; apply(); input.focus(); });
+    // Thumbnails swap the main photo.
+    groups.forEach(function (g) {
+      var main = g.querySelector('[data-photo] img');
+      g.querySelectorAll('[data-thumb]').forEach(function (t) {
+        t.addEventListener('click', function () {
+          main.src = t.getAttribute('data-thumb'); main.alt = t.getAttribute('data-alt');
+          g.querySelectorAll('[data-thumb]').forEach(function (x) { x.setAttribute('aria-pressed', x === t ? 'true' : 'false'); });
+        });
+      });
+    });
+    // #people / #pets always reveal their product, also when a filter is active; ?search=1 focuses the box.
+    function reveal(id) {
+      if (id !== 'people' && id !== 'pets') return;
+      input.value = ''; q = ''; cat = ''; apply();
+      requestAnimationFrame(function () { var el = document.getElementById(id); if (el) el.scrollIntoView({ block: 'start' }); });
+    }
+    window.addEventListener('hashchange', function () { reveal(location.hash.slice(1)); });
+    var focus = '{{ focus }}';
+    if (focus) reveal(focus); else if (location.hash) reveal(location.hash.slice(1));
+    if (new URLSearchParams(location.search).get('search') === '1') input.focus();
+    apply();
+  })();
+</script>
+{% schema %}
+{ "name": "IP6 Shop catalog", "tag": "section", "settings": [], "presets": [{ "name": "IP6 Shop catalog" }] }
+{% endschema %}

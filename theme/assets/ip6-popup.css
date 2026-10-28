@@ -1,0 +1,92 @@
+/*
+  Pre-order pop-up in the store style: white, hairline rules, square corners,
+  serif headlines on Inter, navy kept to text and buttons, gold accents.
+  #ip6quiz carries the .root class itself, so both selectors are listed.
+*/
+#ip6quiz.root, #ip6quiz .root { position: fixed; inset: 0; z-index: 2147483000; }
+#ip6quiz .panel { position: absolute; inset: 0; background: #fff; color: #001840; display: flex; overflow: hidden; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+#ip6quiz *, #ip6quiz *::before, #ip6quiz *::after { box-sizing: border-box; }
+#ip6quiz :is(a, button, input):focus-visible { outline: 2px solid #B08830; outline-offset: 3px; }
+
+/* Photo column */
+#ip6quiz .media { flex: 0 0 40%; background: #F7F8FA center 26% / cover no-repeat; border-right: 1px solid #E3E7EC; }
+#ip6quiz .mtag { display: none; }
+
+/* Content column */
+#ip6quiz .side { flex: 1 1 auto; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; }
+#ip6quiz .bar { height: 2px; background: #E3E7EC; }
+#ip6quiz .bar i { display: block; height: 100%; background: #B08830; transition: width .35s ease-out; }
+#ip6quiz .top { display: flex; align-items: center; justify-content: space-between; padding: 20px clamp(20px, 4vw, 48px); border-bottom: 1px solid #E3E7EC; }
+#ip6quiz .brand { font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #7E5A14; }
+#ip6quiz .close { background: #fff; border: 1px solid #C9D1DB; color: #001840; border-radius: 0; height: 40px; padding: 0 16px; font: 600 12px/1 "Inter", sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+#ip6quiz .close:hover { border-color: #001840; }
+#ip6quiz .body { flex: 1 0 auto; display: flex; align-items: center; justify-content: center; padding: 40px clamp(20px, 5vw, 56px) 48px; }
+#ip6quiz .inner { width: 100%; max-width: 600px; text-align: left; animation: qf .35s ease-out; }
+@keyframes qf { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* Type */
+#ip6quiz .eyebrow { display: block; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #7E5A14; line-height: 1.6; }
+#ip6quiz .launch { margin: 20px 0 0; padding-bottom: 28px; border-bottom: 1px solid #C9D1DB; }
+#ip6quiz .kicker { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #4A5A72; }
+#ip6quiz .offer { font-family: "Source Serif 4", Georgia, serif; font-weight: 500; font-size: clamp(34px, 3.6vw, 52px); line-height: 1.06; letter-spacing: -.015em; color: #001840; margin-top: 12px; }
+#ip6quiz .offer b { font-weight: 500; font-style: italic; color: #7E5A14; white-space: nowrap; }
+#ip6quiz .h2 { font-family: "Source Serif 4", Georgia, serif; font-weight: 500; font-size: clamp(28px, 3vw, 40px); line-height: 1.1; letter-spacing: -.01em; margin: 12px 0 0; color: #001840; }
+#ip6quiz .sub { color: #4A5A72; font-size: 16px; line-height: 1.6; margin: 24px 0 0; max-width: 48ch; }
+
+/* Countdown: outlined cells on a hairline, no filled blocks */
+#ip6quiz .count { display: inline-grid; grid-template-columns: repeat(4, auto); margin-top: 20px; border: 1px solid #C9D1DB; }
+#ip6quiz .count[hidden] { display: none; }
+#ip6quiz .unit { min-width: 72px; padding: 12px 14px 10px; text-align: center; }
+#ip6quiz .unit + .unit { border-left: 1px solid #E3E7EC; }
+#ip6quiz .num { font-family: "Source Serif 4", Georgia, serif; font-size: 28px; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1; color: #001840; }
+#ip6quiz .lbl { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #6B7A90; margin-top: 6px; }
+
+/* Answers: a ruled list */
+#ip6quiz .opts { display: grid; margin: 20px 0 0; border-top: 1px solid #C9D1DB; }
+#ip6quiz .opt { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; background: #fff; border: 0; border-bottom: 1px solid #C9D1DB; border-radius: 0; padding: 18px 4px; font: 500 16px/1.4 "Inter", sans-serif; color: #001840; text-align: left; cursor: pointer; transition: padding .15s, color .15s; }
+#ip6quiz .opt span { color: #B08830; transition: transform .15s; }
+#ip6quiz .opt:hover { color: #7E5A14; padding-left: 10px; }
+#ip6quiz .opt:hover span { transform: translateX(4px); }
+
+/* Email form */
+#ip6quiz .form { margin: 28px 0 0; max-width: 460px; }
+#ip6quiz .input { width: 100%; height: 52px; padding: 0 16px; border: 1px solid #C9D1DB; border-radius: 0; font: 400 16px "Inter", sans-serif; color: #001840; background: #fff; }
+#ip6quiz .input:focus { outline: 2px solid #B08830; outline-offset: 0; border-color: #001840; }
+#ip6quiz .consent { display: flex; gap: 10px; align-items: flex-start; margin: 16px 0 0; font-size: 14px; color: #4A5A72; line-height: 1.5; }
+#ip6quiz .consent input { margin-top: 3px; accent-color: #001840; }
+#ip6quiz .btn { width: 100%; height: 52px; margin-top: 20px; background: #001840; color: #fff; border: 1px solid #001840; border-radius: 0; font: 600 14px/1 "Inter", sans-serif; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+#ip6quiz .btn:hover { background: #0C2C5E; }
+#ip6quiz .micro { font-size: 13px; line-height: 1.5; color: #6B7A90; margin-top: 12px; }
+#ip6quiz .err { color: #B42318; font-size: 13px; margin-top: 8px; }
+
+/* Result */
+#ip6quiz .step[data-step="reveal"].active { display: grid; grid-template-columns: 200px 1fr; gap: 0 40px; align-items: start; }
+#ip6quiz .resultImage { grid-row: 1 / span 9; display: block; width: 200px; height: 260px; object-fit: contain; border: 1px solid #E3E7EC; padding: 16px; margin: 0; }
+#ip6quiz .price { margin: 20px 0 0; padding: 16px 0; border-top: 1px solid #C9D1DB; border-bottom: 1px solid #C9D1DB; font-size: 14px; color: #4A5A72; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+#ip6quiz .price b { font-family: "Source Serif 4", Georgia, serif; font-size: 30px; font-weight: 500; color: #001840; }
+#ip6quiz .price s { color: #6B7A90; font-size: 16px; }
+#ip6quiz .cta { justify-self: start; display: inline-flex; align-items: center; justify-content: center; height: 52px; margin-top: 20px; padding: 0 28px; background: #001840; color: #fff; text-decoration: none; border-radius: 0; font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+#ip6quiz .cta:hover { background: #0C2C5E; }
+#ip6quiz .nudge { margin-top: 16px; font-size: 14px; line-height: 1.55; color: #4A5A72; }
+#ip6quiz .nudge b { color: #001840; }
+#ip6quiz .reassure { margin-top: 24px; display: flex; gap: 8px 20px; flex-wrap: wrap; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #4A5A72; }
+#ip6quiz .reassure span::before { content: "\2713\00a0"; color: #B08830; }
+#ip6quiz .disc { padding: 14px clamp(20px, 5vw, 56px) 18px; font-size: 11px; line-height: 1.5; color: #6B7A90; border-top: 1px solid #E3E7EC; }
+#ip6quiz .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 860px) {
+  #ip6quiz .panel { flex-direction: column; }
+  #ip6quiz .media { flex: 0 0 170px; border-right: 0; border-bottom: 1px solid #E3E7EC; background-position: center 6%; }
+  #ip6quiz .top { padding: 14px 20px; }
+  #ip6quiz .body { align-items: flex-start; padding: 28px 20px 36px; }
+}
+@media (max-width: 600px) {
+  #ip6quiz .offer { font-size: 34px; }
+  #ip6quiz .h2 { font-size: 28px; }
+  #ip6quiz .unit { min-width: 0; padding: 10px 12px 8px; }
+  #ip6quiz .num { font-size: 24px; }
+  #ip6quiz .step[data-step="reveal"].active { grid-template-columns: 1fr; }
+  #ip6quiz .resultImage { grid-row: auto; width: 140px; height: 180px; margin-bottom: 20px; }
+  #ip6quiz .cta { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { #ip6quiz .inner { animation: none; } #ip6quiz .opt, #ip6quiz .opt span { transition: none; } }

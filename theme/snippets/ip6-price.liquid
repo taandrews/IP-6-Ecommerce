@@ -1,0 +1,17 @@
+{%- comment -%}
+  The pre-order price for a product or variant: list price with the offer
+  applied, the way ip6original.com shows it. Usage:
+    {% render 'ip6-price', price: product.price %}  -> "<b>$42.49</b> <s>$49.99</s>"
+  The automatic "Pre-order · 15% off" discount in Shopify applies the same
+  percentage in the cart and at checkout.
+{%- endcomment -%}
+{%- liquid
+  assign pct = settings.ip6_preorder_pct | default: 15
+  if settings.ip6_preorder_active and pct > 0
+    assign keep = 100 | minus: pct
+    assign now = price | times: keep | divided_by: 100.0 | round
+    echo '<span class="ip6-price-now">' | append: now | money | append: '</span> <s class="ip6-price-was">' | append: price | money | append: '</s>'
+  else
+    echo '<span class="ip6-price-now">' | append: price | money | append: '</span>'
+  endif
+-%}

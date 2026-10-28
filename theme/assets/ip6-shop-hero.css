@@ -1,0 +1,91 @@
+.ip6ph .hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1920 / 1013;
+  max-height: var(--pet-visible-height, calc(100svh - 162px));
+  overflow: hidden;
+}
+.ip6ph .video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+}
+.ip6ph .shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(0, 15, 42, .82), rgba(0, 15, 42, .48) 28%, transparent 65%); }
+.ip6ph .copy { position: absolute; left: clamp(24px, 5vw, 80px); right: 24px; bottom: clamp(24px, 4vw, 64px); color: white; }
+.ip6ph .copy h2 { color: white; font-size: clamp(32px, 4vw, 58px); font-weight: 500; letter-spacing: -.035em; line-height: 1.1; }
+.ip6ph .copy p { max-width: 46ch; margin-top: 14px; font-size: 18px; line-height: 1.5; }
+.ip6ph .cta { display: inline-flex; justify-content: center; align-items: center; gap: 14px; margin-top: 22px; min-height: 48px; padding: 13px 24px; border-radius: 999px; background: #f4dfa0; color: #001840; font-size: 15px; font-weight: 600; }
+.ip6ph .cta:hover { background: #e8c870; }
+.ip6ph .cta:focus-visible { outline: 2px solid white; outline-offset: 4px; }
+@media (max-width: 900px) and (orientation: portrait) {
+  .ip6ph .hero { aspect-ratio: 16 / 9; max-height: var(--pet-visible-height, calc(100svh - 142px)); }
+}
+@media (max-width: 600px), (max-height: 500px) {
+  .ip6ph .shade { background: linear-gradient(0deg, rgba(0, 15, 42, .88), rgba(0, 15, 42, .52) 50%, transparent); }
+  .ip6ph .copy { left: 18px; right: 18px; bottom: 16px; }
+  .ip6ph .copy h2 { font-size: 26px; }
+  .ip6ph .copy p { font-size: 13px; line-height: 1.4; margin-top: 7px; max-width: 38ch; }
+  .ip6ph .cta { margin-top: 12px; min-height: 44px; padding: 10px 18px; font-size: 13px; }
+}
+@media (max-width: 360px) {
+  .ip6ph .copy { left: 16px; right: 16px; bottom: 12px; }
+  .ip6ph .copy h2 { font-size: 23px; }
+  .ip6ph .copy p { font-size: 12px; margin-top: 6px; }
+  .ip6ph .cta { margin-top: 9px; }
+}
+
+.ip6sh .carousel { position: relative; color: #fff; }
+
+.ip6sh .carousel[data-audience="people"] section { aspect-ratio: 2048 / 1080; max-height: var(--pet-visible-height, calc(100svh - 117px)); }
+.ip6sh .carousel[data-audience="people"] video { object-fit: cover; object-position: 50% 10%; }
+.ip6sh .carousel section > div[aria-hidden="true"] { background: linear-gradient(to top, rgba(6,18,42,.72), rgba(6,18,42,.5) 30%, rgba(6,18,42,.5) 72%, rgba(6,18,42,.3)); }
+.ip6sh .copy { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 6vw 180px; pointer-events: none; }
+.ip6sh .eyebrow { margin: 0 0 1.6rem; font-size: 13px; letter-spacing: .28em; text-transform: uppercase; font-weight: 600; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,.6); }
+.ip6sh .copy h2 { margin: 0; font-weight: 400; text-transform: uppercase; font-size: clamp(2.1rem, min(5.6vw, 9.5vh), 5.4rem); text-shadow: 0 2px 18px rgba(0,0,0,.6), 0 1px 3px rgba(0,0,0,.5); line-height: 1.08; letter-spacing: .02em; max-width: 15ch; text-wrap: balance; color: #fff; }
+.ip6sh .copy h2 span { display: block; color: #e8c870; }
+.ip6sh .actions { position: absolute; left: 0; right: 0; bottom: 36px; display: flex; flex-direction: column; align-items: center; z-index: 3; }
+.ip6sh .order { display: inline-flex; align-items: center; justify-content: center; gap: .6rem; min-height: 48px; background: #001840; color: #fff; padding: 1rem 1.75rem; border-radius: 999px; font-weight: 600; font-size: 15px; text-decoration: none; }
+.ip6sh .order:hover { background: #0c2c5e; }
+.ip6sh .routes { margin-top: 1.3rem; display: flex; gap: .6rem; }
+.ip6sh .routes a { display: inline-flex; align-items: center; min-height: 40px; color: #fff; border: 1px solid rgba(255,255,255,.6); border-radius: 999px; padding: .55rem 1rem; font-size: 13px; font-weight: 600; background: rgba(6,18,42,.35); backdrop-filter: blur(4px); }
+.ip6sh .routes a:hover { background: #001840; border-color: #001840; }
+.ip6sh .dots { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; z-index: 4; }
+.ip6sh .dots button { display: grid; place-items: center; width: 44px; height: 44px; }
+.ip6sh .dots span { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.55); }
+.ip6sh .dots button[aria-current="true"] span { background: #e8c870; transform: scale(1.25); }
+.ip6sh .pause { position: absolute; left: 18px; bottom: 14px; width: 44px; height: 44px; display: grid; place-items: center; color: white; z-index: 4; }
+.ip6sh .carousel :is(a, button):focus-visible { outline: 2px solid #e8c870; outline-offset: 3px; }
+@media (max-width: 900px) { .ip6sh .copy { padding-bottom: 160px; } .ip6sh .copy h2 { font-size: clamp(26px, 5vw, 48px); } .ip6sh .eyebrow { font-size: 11px; margin-bottom: 16px; } .ip6sh .actions { bottom: 20px; } .ip6sh .routes { margin-top: 10px; } }
+
+@media (max-width: 600px), (max-height: 500px) {
+  .ip6sh .copy { inset: 10px 40px auto; padding: 0; }
+  .ip6sh .eyebrow { font-size: 8px; letter-spacing: .18em; margin-bottom: 7px; }
+  .ip6sh .copy h2 { font-size: clamp(20px, 5.4vw, 28px); line-height: 1.05; max-width: none; }
+  .ip6sh .copy h2 span { display: inline; margin-left: .25em; }
+  .ip6sh .actions { bottom: 8px; }
+  .ip6sh .order { min-height: 44px; padding: 10px 18px; font-size: 12px; }
+  .ip6sh .routes { margin-top: 4px; gap: 8px; }
+  .ip6sh .routes a { min-height: 40px; padding: 6px 12px; font-size: 11px; }
+  .ip6sh .dots { left: 0; }
+  .ip6sh .dots button { width: 36px; height: 36px; }
+  .ip6sh .pause { left: auto; right: 0; bottom: 6px; }
+}
+@media (max-width: 360px) { .ip6sh .copy { inset: 8px 30px auto; } .ip6sh .eyebrow { font-size: 7px; margin-bottom: 4px; } .ip6sh .copy h2 { font-size: 19px; } .ip6sh .actions { bottom: 4px; } .ip6sh .routes { margin-top: 0; } }
+
+@media (max-width: 1000px) and (orientation: landscape) and (max-height: 500px) {
+  .ip6sh .copy { inset: 0; padding: 10px 6vw 64px; align-items: flex-start; justify-content: center; text-align: left; }
+  .ip6sh .eyebrow { font-size: 9px; letter-spacing: .18em; margin-bottom: 6px; }
+  .ip6sh .copy h2 { font-size: clamp(20px, 6.6vh, 28px); line-height: 1.1; max-width: none; }
+  .ip6sh .copy h2 span { display: block; margin-left: 0; }
+  .ip6sh .actions { left: 6vw; right: auto; bottom: 12px; flex-direction: row; align-items: center; gap: 8px; }
+  .ip6sh .order { min-height: 40px; padding: 8px 18px; font-size: 13px; }
+  .ip6sh .routes { margin: 0; gap: 6px; }
+  .ip6sh .routes a { min-height: 36px; padding: 6px 12px; font-size: 11px; }
+  .ip6sh .dots { left: auto; right: 52px; top: 8px; transform: none; flex-direction: row; }
+  .ip6sh .dots button { width: 32px; height: 32px; }
+  .ip6sh .pause { left: auto; right: 10px; top: 6px; bottom: auto; width: 36px; height: 36px; }
+}

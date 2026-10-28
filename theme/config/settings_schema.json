@@ -4,8 +4,8 @@
     "theme_name": "Horizon",
     "theme_version": "3.5.1",
     "theme_author": "Shopify",
-    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
-    "theme_support_url": "https://support.shopify.com/"
+    "theme_documentation_url": "https:\/\/help.shopify.com\/manual\/online-store\/themes",
+    "theme_support_url": "https:\/\/support.shopify.com\/"
   },
   {
     "name": "t:names.logo_and_favicon",
@@ -1766,7 +1766,7 @@
         "type": "url",
         "id": "empty_cart_button_link",
         "label": "t:settings.empty_cart_button_link",
-        "default": "/collections/all"
+        "default": "\/collections\/all"
       },
       {
         "type": "header",
@@ -2282,6 +2282,47 @@
           }
         ],
         "default": "equal-width-buttons"
+      }
+    ]
+  },
+  {
+    "name": "IP6 Pre-order",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "ip6_preorder_active",
+        "label": "Pre-order offer active",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "ip6_preorder_pct",
+        "label": "Pre-order discount (%)",
+        "default": 15
+      },
+      {
+        "type": "text",
+        "id": "ip6_preorder_label",
+        "label": "Offer label",
+        "default": "Pre-order"
+      },
+      {
+        "type": "text",
+        "id": "ip6_preorder_ship",
+        "label": "Ship note",
+        "default": "Starts shipping November 2026"
+      },
+      {
+        "type": "text",
+        "id": "ip6_cdn",
+        "label": "Media CDN base URL",
+        "default": "https:\/\/dcpioskz74ft.cloudfront.net"
+      },
+      {
+        "type": "text",
+        "id": "ip6_launch_iso",
+        "label": "Launch countdown (ISO date)",
+        "default": "2026-11-01T04:00:00Z"
       }
     ]
   }

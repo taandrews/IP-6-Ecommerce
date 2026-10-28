@@ -1,197 +1,57 @@
-{%- comment -%} IP-6 global design system: tokens, fonts, base components, motion {%- endcomment -%}
 {%- comment -%}
-  Caching note: Shopify does NOT let themes set HTTP cache headers, and a <meta> Cache-Control is
-  ignored by browsers for the document, so no-cache meta tags are ineffective and are intentionally
-  NOT used here. The storefront already serves fresh HTML every request (cf-cache-status: DYNAMIC).
-  "A normal refresh doesn't show my changes" is purely the BROWSER reusing its local copy, which no
-  theme edit can override. Fix it browser-side: DevTools → Network → ☑ Disable cache (keep open), or
-  view while logged into Shopify admin (admins are served uncached).
+  IP6 Original store: fonts, the design system stylesheet, and the header,
+  announcement and cart drawer styled to it.
 {%- endcomment -%}
 <script>
-  // Defensive ONE-TIME flush of any orphaned service worker / offline cache (left by a prior theme
-  // version, an installed app, or testing). The theme itself registers no SW, so this is safe to keep
-  // in production: it runs at most once per browser session and never re-clears caches on every nav.
   try {
     if (!window.sessionStorage || !sessionStorage.getItem('ip6_sw_flushed')) {
       if (window.sessionStorage) sessionStorage.setItem('ip6_sw_flushed', '1');
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); }).catch(function () {});
-      }
-      if (window.caches && caches.keys) {
-        caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }).catch(function () {});
-      }
+      if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); }).catch(function () {});
+      if (window.caches && caches.keys) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }).catch(function () {});
     }
   } catch (e) {}
-  // Restore from back/forward cache → force a fresh load so a stale snapshot isn't shown.
-  window.addEventListener('pageshow', function (e) { if (e.persisted) location.reload(); });
 </script>
-
-{%- comment -%} IBM Plex self-hosted from theme assets (latin subset). Fraunces/Inter come from Shopify's font CDN via theme settings. {%- endcomment -%}
-<link rel="preload" href="{{ 'ibm-plex-sans-400.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{{ 'ibm-plex-sans-500.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="{{ settings.ip6_cdn }}" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ 'ip6-store.css' | asset_url }}">
 <style>
-  @font-face { font-family: 'IBM Plex Sans'; font-style: italic; font-weight: 400; font-display: swap; src: url({{ 'ibm-plex-sans-400-italic.woff2' | asset_url }}) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-  @font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url({{ 'ibm-plex-sans-400.woff2' | asset_url }}) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-  @font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url({{ 'ibm-plex-sans-500.woff2' | asset_url }}) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-  @font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url({{ 'ibm-plex-sans-600.woff2' | asset_url }}) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-  @font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url({{ 'ibm-plex-sans-700.woff2' | asset_url }}) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-  @font-face { font-family: 'IBM Plex Serif'; font-style: italic; font-weight: 400; font-display: swap; src: url({{ 'ibm-plex-serif-400-italic.woff2' | asset_url }}) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
-  @font-face { font-family: 'IBM Plex Serif'; font-style: normal; font-weight: 400; font-display: swap; src: url({{ 'ibm-plex-serif-400.woff2' | asset_url }}) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  /* Legacy names some kept pieces still read */
+  :root { --ink: #001840; --ink-2: #001840; --paper: #fff; --bg: #fff; --surface: #F7F8FA; --line: #E3E7EC; --gold-deep: #7E5A14; --teal: #7E5A14; --cyan: #001840;
+    --ip6-navy: #001840; --ip6-navy-hover: #0C2C5E; --ip6-gold: #B08830; --ip6-gold-700: #7E5A14; --ip6-gold-600: #87641C; --ip6-gold-300: #E8C870; --ip6-gold-100: #F4DFA0; --ip6-cloud-300: #DBE1E9; --ip6-line: #E3E7EC;
+    --font-body--family: "Inter", sans-serif !important; --font-subheading--family: "Inter", sans-serif !important;
+    --font-heading--family: "Source Serif 4", Georgia, serif !important; --font-accent--family: "Source Serif 4", Georgia, serif !important; }
+  body { background: #fff; color: #001840; font-family: "Inter", sans-serif; }
+
+  /* Header: white, hairline, centered menu, square navy button */
+  #header-group .header { background: #fff; border-bottom: 1px solid #E3E7EC; }
+  #header-group .header-logo__image { height: {{ settings.logo_height }}px !important; width: auto !important; max-height: none !important; }
+  @media (max-width: 749px) { #header-group .header-logo__image { height: {{ settings.logo_height_mobile }}px !important; } }
+  #header-group .menu__link { font-family: "Inter", sans-serif; font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #001840; }
+  #header-group .menu__link:hover { color: #7E5A14; }
+  #header-group .header-actions, #header-group .header-actions a, #header-group .header-actions button { color: #001840; }
+  .ip6-header-cta { display: inline-flex; align-items: center; height: 40px; margin: 0 6px; padding: 0 16px; background: #001840; color: #fff !important; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; text-decoration: none; }
+  .ip6-header-cta:hover { background: #0C2C5E; }
+  @media (max-width: 749px) { .ip6-header-cta { display: none; } #header-group .announcement-bar, #header-group .announcement-bar * { font-size: 10px !important; letter-spacing: .06em !important; } }
+
+  /* Announcement: a thin ivory line with gold type */
+  #header-group .announcement-bar, #header-group .announcement-bar .section-background { background: #FBF7EC !important; border: 0 !important; }
+  #header-group .announcement-bar { padding: 9px 16px !important; border-bottom: 1px solid #EFE6CF !important; }
+  #header-group .announcement-bar, #header-group .announcement-bar * { color: #7E5A14 !important; font-family: "Inter", sans-serif !important; font-size: 12px !important; font-weight: 600 !important; letter-spacing: .1em !important; text-transform: uppercase !important; }
+  #header-group .announcement-bar a { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Sticky FDA line */
+  #ip6-disclaimer-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 40; background: #fff; border-top: 1px solid #E3E7EC; font-family: "Inter", sans-serif; color: #001840; }
+  #ip6-disclaimer-bar[hidden] { display: none; }
+  #ip6-disclaimer-bar .inner { width: min(1240px, calc(100% - 40px)); margin-inline: auto; display: flex; align-items: center; gap: 12px; padding: 8px 0 max(8px, env(safe-area-inset-bottom)); }
+  #ip6-disclaimer-bar button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+  #ip6-disclaimer-bar .text { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; text-align: left; }
+  #ip6-disclaimer-bar .tag { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: #7E5A14; flex-shrink: 0; }
+  #ip6-disclaimer-bar .copy { flex: 1; min-width: 0; font-size: 12px; color: #4A5A72; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #ip6-disclaimer-bar[data-expanded="true"] .copy { white-space: normal; }
+  #ip6-disclaimer-bar .chev { width: 14px; height: 14px; flex-shrink: 0; transition: transform .2s; }
+  #ip6-disclaimer-bar[data-expanded="true"] .chev { transform: rotate(180deg); }
+  #ip6-disclaimer-bar .close { padding: 6px; }
+  #ip6-disclaimer-bar .close svg { width: 14px; height: 14px; display: block; }
 </style>
-
-<style>
-  :root {
-    /* Color: bright/modern system */
-    --ink: #0B1F3A;        /* primary navy */
-    --ink-2: #1A2A40;      /* body text */
-    --blue: #0B1F3A;       /* navy (no blue accent) */
-    --cyan: #0B1F3A;       /* CTAs are navy, not blue */
-    --teal: #8A6A1F;       /* brand premium gold for text (eyebrows/accents), darkened to pass WCAG AA 4.5:1 on white */
-    --gold: #C5A253;       /* premium accent for rules/dots/borders (decorative only) */
-    --gold-deep: #8A6A1F;  /* text-bearing gold, 5.05:1 on white */
-    --paper: #FFFFFF;      /* bright page bg */
-    --bg: #FFFFFF;
-    --surface: #F4F7FA;    /* cool light bands/cards */
-    --line: #E6EAF0;       /* hairlines */
-    --muted: #5B6470;
-    --success: #2F8F66;
-
-    /* Type: IBM Plex (Amplify) */
-    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
-    --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-
-    /* Spacing scale (4px base) */
-    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px;
-    --s6: 32px; --s7: 48px; --s8: 64px; --s9: 96px; --s10: 128px;
-
-    /* Layout */
-    --maxw: 1200px;
-    --measure: 66ch;
-    --gutter: 24px;
-    --section-y: 96px;
-    --radius-card: 8px;
-    --radius-btn: 6px;
-  }
-  @media (max-width: 749px) { :root { --section-y: 56px; --gutter: 20px; } }
-
-  /* Header logo sizing (override Horizon's clamp) */
-  .header-logo, .header-logo__image-container { height: auto !important; }
-  .header-logo__image { height: 60px !important; width: auto !important; max-height: none !important; }
-  @media (max-width: 749px) { .header-logo__image { height: 44px !important; } }
-
-  /* Base layer for IP6 custom sections */
-  .ip6 { font-family: var(--sans); color: var(--ink-2); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-  .ip6 *, .ip6 *::before, .ip6 *::after { box-sizing: border-box; }
-  .ip6 ::selection { background: var(--gold); color: var(--surface); }
-
-  .ip6-wrap { max-width: var(--maxw); margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
-  .ip6-section { padding-top: var(--section-y); padding-bottom: var(--section-y); }
-
-  /* Typography */
-  .ip6 h1, .ip6 h2, .ip6 h3 { font-family: var(--sans); font-weight: 500; color: var(--ink); margin: 0; }
-  .ip6 .serif { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -0.01em; }
-  .ip6-display { font-size: clamp(42px, 6vw, 76px); line-height: 1.04; letter-spacing: -0.025em; font-weight: 400; }
-  .ip6-h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.02em; font-weight: 500; }
-  .ip6-h3 { font-size: clamp(20px, 2.4vw, 24px); line-height: 1.2; font-weight: 600; }
-  /* IP6: larger heading text on mobile */
-  @media (max-width: 749px) {
-    .ip6-display, .ip6 h1 { font-size: clamp(48px, 11vw, 60px) !important; }
-    .ip6-h2, .ip6 h2 { font-size: clamp(33px, 8vw, 42px) !important; }
-    .ip6-h3, .ip6 h3 { font-size: clamp(22px, 5.5vw, 27px) !important; }
-  }
-  .ip6 .accent { color: var(--teal); }
-  .ip6-body-lg { font-size: clamp(18px, 1.4vw, 20px); line-height: 1.6; color: var(--ink-2); }
-  .ip6-body { font-size: 16px; line-height: 1.6; color: var(--ink-2); }
-  .ip6-measure { max-width: var(--measure); }
-  .ip6-muted { color: var(--muted); }
-  .ip6-caption { font-size: 13px; line-height: 1.5; color: var(--muted); }
-
-  /* Eyebrow: signature editorial label */
-  .ip6-eyebrow {
-    font-family: var(--sans); font-size: 12.5px; font-weight: 600;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal);
-    display: inline-block; margin: 0;
-  }
-
-  /* Buttons */
-  .ip6-btn { font-family: var(--sans); font-weight: 600; font-size: 15px; line-height: 1; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 10px; text-decoration: none; border-radius: 100px;
-    padding: 16px 28px; transition: background .18s ease-out, color .18s ease-out, border-color .18s ease-out; border: 1px solid transparent; }
-  .ip6-btn--primary { background: var(--cyan); color: #fff; border-color: var(--cyan); }
-  .ip6-btn--primary:hover { background: #09182d; border-color: #09182d; }
-  .ip6-btn--secondary { background: transparent; color: var(--ink); border-color: #c9d2dd; }
-  .ip6-btn--secondary:hover { border-color: var(--ink); }
-  .ip6-textlink { font-family: var(--sans); font-weight: 600; font-size: 15px; color: var(--teal); text-decoration: none;
-    border-bottom: 1px solid currentColor; padding-bottom: 2px; transition: opacity .18s ease-out; }
-  .ip6-textlink:hover { opacity: .7; }
-
-  /* Card + hairline rule */
-  .ip6-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); }
-  .ip6-rule { height: 1px; background: var(--line); border: 0; margin: 0; }
-  .ip6-rule--gold { background: var(--gold); }
-
-  /* Image frame 4:5 */
-  .ip6-frame { aspect-ratio: 4/5; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden; display: grid; place-items: center; }
-  .ip6-frame img { width: 100%; height: 100%; object-fit: contain; }
-
-  /* Motion: opacity/transform only, ease-out */
-  @keyframes ip6-fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-  /* Content is visible by default; only hidden once JS confirms it can animate (.ip6-anim) */
-  .ip6-anim .ip6-rise { opacity: 0; }
-  .ip6-anim .ip6-in .ip6-rise { animation: ip6-fade .55s ease-out both; }
-  .ip6-in .ip6-rise.d1 { animation-delay: .06s; }
-  .ip6-in .ip6-rise.d2 { animation-delay: .12s; }
-  .ip6-in .ip6-rise.d3 { animation-delay: .18s; }
-  .ip6-in .ip6-rise.d4 { animation-delay: .24s; }
-  .ip6-in .ip6-rise.d5 { animation-delay: .30s; }
-  @media (prefers-reduced-motion: reduce) { .ip6-rise { opacity: 1 !important; animation: none !important; } }
-
-  :where(.ip6 a):focus-visible, :where(.ip6 button):focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
-
-  /* ---- Bright/modern PDP scope (graymatter-grade) ---- */
-  .ip6-bright {
-    --paper: #ffffff;
-    --surface: #f4f7fa;
-    --line: #e6eaf0;
-    --ink: #0b1f3a;
-    --ink-2: #1a2a40;
-    --blue: #0b1f3a;
-    --cyan: #0b1f3a;
-    --teal: #8a6a1f;
-    --gold: #c5a253;
-    --gold-deep: #8a6a1f;
-    --muted: #5b6470;
-    --success: #2f8f66;
-    --radius-card: 14px;
-    --radius-btn: 10px;
-    color: var(--ink-2);
-  }
-  .ip6-bright h1, .ip6-bright h2, .ip6-bright h3 { font-family: var(--sans); font-weight: 500; letter-spacing: -0.02em; color: var(--ink); }
-  .ip6-bright .serif { font-family: var(--serif); font-weight: 400; font-style: italic; letter-spacing: -0.01em; }
-  .ip6-bright .ip6-eyebrow { color: var(--teal); }
-  .ip6-bright .ip6-btn--primary { background: var(--cyan); color: #fff; border-color: var(--cyan); border-radius: 100px; padding: 16px 28px; font-size: 16px; font-weight: 600; }
-  .ip6-bright .ip6-btn--primary:hover { background: #09182d; border-color: #09182d; }
-  .ip6-bright .ip6-card { border-radius: var(--radius-card); border-color: var(--line); }
-</style>
-
-<script>
-  (function () {
-    function revealAll(){ document.querySelectorAll('.ip6-reveal').forEach(function(el){ el.classList.add('ip6-in'); }); }
-    function boot() {
-      // Guaranteed reveal first, so content can never get stuck hidden.
-      setTimeout(revealAll, 1500);
-      // Opt into the hidden-then-animate behaviour only now that JS is running.
-      document.documentElement.classList.add('ip6-anim');
-      var els = document.querySelectorAll('.ip6-reveal');
-      if (!('IntersectionObserver' in window)) { revealAll(); return; }
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('ip6-in'); io.unobserve(e.target); } });
-      }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
-      els.forEach(function (el) {
-        var r = el.getBoundingClientRect();
-        if (r.top < (window.innerHeight || 800)) el.classList.add('ip6-in'); else io.observe(el);
-      });
-    }
-    if (document.readyState !== 'loading') boot(); else document.addEventListener('DOMContentLoaded', boot);
-  })();
-</script>

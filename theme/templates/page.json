@@ -1,16 +1,11 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "ip6_page": { "type": "ip6-page", "settings": {} },
-    "disc": { "type": "ip6-disclaimer", "settings": {} }
+    "main": {
+      "type": "ip6-page",
+      "settings": {}
+    }
   },
-  "order": ["ip6_page", "disc"]
+  "order": [
+    "main"
+  ]
 }

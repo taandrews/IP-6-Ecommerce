@@ -1,190 +1,138 @@
+{%- comment -%}
+  Product page: gallery of the product's photos (packshot first), then price
+  and buy controls, the key facts, and the details as accordions. On phones a
+  bar with the price and Add to cart stays at the bottom once the buy box
+  scrolls away. Copy per product is the wording on ip6original.com.
+{%- endcomment -%}
 {%- liquid
- assign product = section.settings.product | default: product
- assign cv = product.selected_or_first_available_variant
- assign has_plans = false
- if product.selling_plan_groups.size > 0
- assign has_plans = true
- endif
- assign sub = cv.price | times: 0.85 | round
+  assign pet = false
+  if product.handle == 'ip6-original-pet-powder'
+    assign pet = true
+  endif
+  assign v = product.selected_or_first_available_variant
+  assign pct = settings.ip6_preorder_pct | default: 15
+  if settings.ip6_preorder_active and pct > 0
+    assign keep = 100 | minus: pct
+    assign now = v.price | times: keep | divided_by: 100.0 | round
+  else
+    assign now = v.price
+  endif
 -%}
 <style>
- #pdp-{{ section.id }} { background: var(--bg, #fff); }
- /* Sticky offer bar */
- #pdp-{{ section.id }} .offerbar { position: sticky; top: 0; z-index: 30; background: var(--ink); color: #fff; }
- #pdp-{{ section.id }} .offerbar .in { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 11px 24px; font-size: 13.5px; font-weight: 500; letter-spacing: .01em; flex-wrap: wrap; }
- #pdp-{{ section.id }} .offerbar b { font-weight: 700; }
- #pdp-{{ section.id }} .preprice { display: flex; align-items: baseline; gap: 10px; margin: 0 0 16px; }
- #pdp-{{ section.id }} .preprice .now { font-size: 28px; font-weight: 600; color: var(--ink); }
- #pdp-{{ section.id }} .preprice s { color: var(--muted); }
- #pdp-{{ section.id }} .preprice .note { font-size: 13px; color: var(--muted); }
- #pdp-{{ section.id }} .offerbar .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
- #pdp-{{ section.id }} .offerbar a { color: var(--gold); text-decoration: none; font-weight: 600; border-bottom: 1px solid transparent; }
- #pdp-{{ section.id }} .offerbar a:hover { border-color: var(--gold); }
-
- #pdp-{{ section.id }} .pdp-grid { display: flex; flex-direction: row; gap: clamp(28px,4vw,64px); align-items: flex-start; padding: clamp(28px,4vw,56px) 0 clamp(40px,5vw,72px); }
- #pdp-{{ section.id }} .gallery { flex: 1 1 0; min-width: 0; position: sticky; top: 64px; }
- #pdp-{{ section.id }} .buybox { flex: 0 0 clamp(360px, 44%, 540px); }
-
- #pdp-{{ section.id }} .stage { aspect-ratio: 4/5; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; display: grid; place-items: center; overflow: hidden; }
- #pdp-{{ section.id }} .stage img { width: 86%; height: 86%; object-fit: contain; }
- #pdp-{{ section.id }} .thumbs { display: flex; gap: 12px; margin-top: 14px; }
- #pdp-{{ section.id }} .thumbs button { width: 86px; aspect-ratio: 1; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px; cursor: pointer; transition: border-color .15s; }
- #pdp-{{ section.id }} .thumbs button[aria-pressed="true"] { border-color: var(--ink); }
- #pdp-{{ section.id }} .thumbs img { width: 100%; height: 100%; object-fit: contain; }
-
- #pdp-{{ section.id }} h1 { font-size: clamp(32px,3.4vw,46px); line-height: 1.06; margin: 12px 0 0; }
- #pdp-{{ section.id }} .vline { font-size: clamp(17px,1.5vw,20px); color: var(--ink-2); margin: 14px 0 0; max-width: 36ch; }
- #pdp-{{ section.id }} .rating { margin: 16px 0 22px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted); }
- #pdp-{{ section.id }} .rating .stars { color: var(--gold); letter-spacing: 2px; }
-
- #pdp-{{ section.id }} .opt-label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; }
- #pdp-{{ section.id }} .formats { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
- #pdp-{{ section.id }} .formats button { background: #fff; color: var(--ink); border: 1.5px solid var(--line); border-radius: 100px; padding: 10px 18px; font-family: var(--sans); font-size: 14px; font-weight: 600; cursor: pointer; transition: all .15s; }
- #pdp-{{ section.id }} .formats button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #fff; }
-
- #pdp-{{ section.id }} .plans { display: grid; gap: 12px; margin-bottom: 20px; }
- #pdp-{{ section.id }} .plan { position: relative; display: grid; grid-template-columns: 22px 1fr auto; gap: 14px; align-items: center; background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: border-color .15s, background .15s; }
- #pdp-{{ section.id }} .plan[data-active="true"] { border-color: var(--ink); background: #f7fafe; }
- #pdp-{{ section.id }} .plan .dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #c7cedb; display: grid; place-items: center; }
- #pdp-{{ section.id }} .plan[data-active="true"] .dot { border-color: var(--ink); }
- #pdp-{{ section.id }} .plan[data-active="true"] .dot::after { content:""; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); }
- #pdp-{{ section.id }} .plan .title { font-weight: 700; font-size: 16px; color: var(--ink); }
- #pdp-{{ section.id }} .plan .note { font-size: 13px; color: var(--muted); margin-top: 2px; }
- #pdp-{{ section.id }} .plan .price { text-align: right; }
- #pdp-{{ section.id }} .plan .price .now { font-weight: 800; font-size: 20px; color: var(--ink); }
- #pdp-{{ section.id }} .plan .price .was { font-size: 13px; color: var(--muted); text-decoration: line-through; }
- #pdp-{{ section.id }} .plan .save { position: absolute; top: -10px; right: 18px; background: var(--success); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .03em; padding: 4px 10px; border-radius: 100px; }
-
- #pdp-{{ section.id }} .atc { width: 100%; justify-content: center; }
- #pdp-{{ section.id }} .ship { margin-top: 14px; text-align: center; font-size: 13px; color: var(--muted); }
- #pdp-{{ section.id }} .ship b { color: var(--success); }
- #pdp-{{ section.id }} .micro { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: center; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
- #pdp-{{ section.id }} .micro span::before { content: "✓ "; color: var(--success); font-weight: 700; }
- #pdp-{{ section.id }} .note-sub { font-size: 12px; color: var(--muted); margin-top: 12px; text-align: center; }
-
- /* Trust row band */
- #trustband-{{ section.id }} { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
- #trustband-{{ section.id }} ul { list-style: none; margin: 0; padding: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; }
- #trustband-{{ section.id }} li { font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding: 4px 24px; position: relative; }
- #trustband-{{ section.id }} li + li::before { content:""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 1px; height: 13px; background: var(--line); }
- @media (max-width: 860px) {
- #pdp-{{ section.id }} .pdp-grid { flex-direction: column; }
- #pdp-{{ section.id }} .gallery { position: static; width: 100%; }
- #pdp-{{ section.id }} .buybox { flex: none; width: 100%; }
- #trustband-{{ section.id }} li + li::before { display: none; }
- }
+  .p-top { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 56px; padding: 32px 0 72px; align-items: start; }
+  .p-crumb { font-size: 13px; color: var(--faint); padding-top: 24px; }
+  .p-crumb a:hover { color: var(--navy); }
+  .p-main { aspect-ratio: 1 / 1; border: 1px solid var(--rule); background: #fff; }
+  .p-main img { width: 100%; height: 100%; object-fit: contain; }
+  .p-top > * { min-width: 0; }
+  .p-thumbs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
+  .p-thumbs button { aspect-ratio: 1 / 1; border: 1px solid var(--rule); background: #fff; overflow: hidden; }
+  .p-thumbs button[aria-pressed="true"] { border-color: var(--navy); }
+  .p-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+  .p-info { position: sticky; top: 96px; }
+  .p-info .s-kicker { display: block; margin-bottom: 12px; }
+  .p-info h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 3.4vw, 46px); line-height: 1.08; margin-bottom: 14px; }
+  .p-info .s-lead { margin-bottom: 24px; font-size: 17px; }
+  .p-info .s-buy { padding: 24px 0; border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong); margin-bottom: 24px; }
+  .p-keys { display: grid; gap: 10px; margin-bottom: 28px; }
+  .p-keys li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; font-size: 15px; line-height: 1.5; color: var(--muted); }
+  .p-keys svg { width: 18px; height: 18px; color: var(--gold); margin-top: 2px; }
+  .p-label { display: block; border: 1px solid var(--rule); padding: 8px; margin-top: 4px; }
+  .p-sticky { display: none; }
+  @media (max-width: 989px) {
+    .p-top { grid-template-columns: 1fr; gap: 28px; padding: 16px 0 56px; }
+    .p-info { position: static; }
+    .p-thumbs { gap: 6px; }
+    .p-sticky { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px max(10px, env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--rule-strong); transform: translateY(110%); transition: transform .2s; }
+    .p-sticky.show { transform: none; }
+    .p-sticky .t { font-size: 13px; font-weight: 600; }
+    .p-sticky .pr { font-family: var(--serif); font-size: 20px; }
+    .p-sticky .s-btn { min-height: 44px; padding: 0 18px; }
+  }
 </style>
-
-<section id="pdp-{{ section.id }}" class="ip6 ip6-bright" data-ip6-pdp data-onetime="{{ cv.price }}">
- <div class="offerbar">
- <div class="in">
- <span><b>Pre-order open</b>, 15% off at checkout, starts shipping November 2026</span>
- <span class="dot"></span>
- <a href="#buy-{{ section.id }}">Shop now →</a>
- </div>
- </div>
-
- <div class="ip6-wrap pdp-grid" id="buy-{{ section.id }}">
- <div class="gallery">
- <div class="stage">
- {%- if product.featured_image -%}
- <img id="pmain-{{ section.id }}" data-main-img src="{{ product.featured_image | image_url: width: 1000 }}" alt="{{ product.title }}" width="500" height="625">
- {%- else -%}
- <img id="pmain-{{ section.id }}" data-main-img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="IP6 Original" width="500" height="625">
- {%- endif -%}
- </div>
- <div class="thumbs">
- {%- if product.images.size > 0 -%}
- {%- for image in product.images limit: 4 -%}
- <button type="button" aria-label="View product image {{ forloop.index }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" data-src="{{ image | image_url: width: 1000 }}"><img src="{{ image | image_url: width: 200 }}" alt="" width="86" height="86"></button>
- {%- endfor -%}
- {%- else -%}
- <button type="button" aria-label="View front of bottle" aria-pressed="true" data-src="{{ 'ip6-bottle-front.png' | asset_url }}"><img src="{{ 'ip6-bottle-front.png' | asset_url }}" alt="" width="86" height="86"></button>
- <button type="button" aria-label="View back of bottle" aria-pressed="false" data-src="{{ 'ip6-bottle-back.png' | asset_url }}"><img src="{{ 'ip6-bottle-back.png' | asset_url }}" alt="" width="86" height="86"></button>
- {%- endif -%}
- </div>
- </div>
-
- <div class="buybox">
- <span class="ip6-eyebrow">From the lab of Professor AbulKalam M. Shamsuddin, MD, PhD</span>
- <h1>{{ product.title | default: 'IP6 Original' }}</h1>
- <p class="vline">The original IP6 formula, highest purity, research grade. <span data-spec-ip6>{{ cv.metafields.ip6.ip6_mg.value | default: 804 }}</span> mg IP6 + <span data-spec-inositol>{{ cv.metafields.ip6.inositol_mg.value | default: 196 }}</span> mg Inositol per serving.</p>
- <div class="rating"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--gold-deep)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg> Third-party tested · cGMP certified</div>
-
- {%- if product.variants.size > 1 -%}
- <p class="opt-label">Format</p>
- <div class="formats" id="fmt-{{ section.id }}">
- {%- for v in product.variants -%}
- <button type="button" data-vid="{{ v.id }}" data-price="{{ v.price }}" aria-pressed="{% if v.id == cv.id %}true{% else %}false{% endif %}">{{ v.title }}</button>
- {%- endfor -%}
- </div>
- {%- endif -%}
-
- {%- comment -%} Per-size supplement specs: update facts on variant change {%- endcomment -%}
- <script>
- window.IP6_SPECS = window.IP6_SPECS || {
- {%- for v in product.variants -%}
-   "{{ v.id }}":{ip6:"{{ v.metafields.ip6.ip6_mg.value | default: 804 }}",inositol:"{{ v.metafields.ip6.inositol_mg.value | default: 196 }}",servings:"{{ v.metafields.ip6.servings.value | default: 60 }}"}{% unless forloop.last %},{% endunless %}
- {%- endfor -%}
- };
- (function(){
-   function apply(vid){var s=window.IP6_SPECS[vid];if(!s)return;
-     document.querySelectorAll('[data-spec-ip6]').forEach(function(e){e.textContent=s.ip6;});
-     document.querySelectorAll('[data-spec-inositol]').forEach(function(e){e.textContent=s.inositol;});
-     document.querySelectorAll('[data-spec-servings]').forEach(function(e){e.textContent=s.servings;});}
-   document.addEventListener('click',function(ev){var b=ev.target.closest('#fmt-{{ section.id }} [data-vid]');if(b)apply(b.getAttribute('data-vid'));});
-   apply("{{ cv.id }}");
- })();
- </script>
-
- <form method="post" action="{{ routes.cart_add_url }}" id="form-{{ section.id }}">
- <input type="hidden" name="id" id="vid-{{ section.id }}" data-vid-input value="{{ cv.id }}">
- <input type="hidden" name="selling_plan" id="plan-{{ section.id }}" data-plan-input value="" disabled>
- <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
- {%- if has_plans -%}
- <p class="opt-label">Choose your plan</p>
- <div class="plans" role="radiogroup" aria-label="Purchase option">
- <label class="plan" data-plan="subscribe"{% if has_plans %} data-selling-plan="{{ product.selling_plan_groups.first.selling_plans.first.id }}"{% endif %} data-active="true" role="radio" aria-checked="true" tabindex="0">
- <span class="save">Save 15%</span>
- <span class="dot"></span>
- <span><span class="title">Subscribe &amp; Save</span><br><span class="note">Delivered monthly · skip or cancel anytime</span></span>
- <span class="price"><span class="now" data-sub-now>{{ sub | money }}</span><br><span class="was" data-sub-was>{{ cv.price | money }}</span></span>
- </label>
- <label class="plan" data-plan="onetime" data-active="false" role="radio" aria-checked="false" tabindex="0">
- <span class="dot"></span>
- <span><span class="title">One-Time Purchase</span><br><span class="note">No commitment</span></span>
- <span class="price"><span class="now" data-ot-now>{{ cv.price | money }}</span></span>
- </label>
- </div>
- <button type="submit" class="ip6-btn ip6-btn--primary atc">Pre-Order, <span data-atc>{{ sub | money }}</span></button>
- {%- else -%}
- <p class="opt-label">Pre-order price</p>
- <p class="preprice"><span class="now" data-pre-now>{{ cv.price | times: 0.85 | round | money }}</span> <s data-pre-was>{{ cv.price | money }}</s> <span class="note">15% off at checkout</span></p>
- <button type="submit" class="ip6-btn ip6-btn--primary atc">Pre-Order Now</button>
- {%- endif -%}
- <p class="ship"><b>Pre-order:</b> 15% off applied automatically at checkout · Starts shipping November 2026</p>
- <p class="ship">Free US shipping on orders over $75 · Made in USA</p>
- <div class="micro"><span>cGMP Certified</span><span>Third-Party Tested</span><span>High-Purity</span></div>
- </form>
- </div>
- </div>
-</section>
-
-<section id="trustband-{{ section.id }}" class="ip6 ip6-bright">
- <div class="ip6-wrap">
- <ul>
- <li>cGMP Certified</li><li>Third-Party Tested</li><li>High-Purity</li><li>Made in USA</li>
- </ul>
- </div>
-</section>
-
-<script src="{{ 'ip6-pdp.js' | asset_url }}" defer></script>
-
+{%- capture check -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>{%- endcapture -%}
+<div class="s">
+  <div class="s-wrap">
+    <nav class="p-crumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a> / <a href="{{ routes.collections_url }}/shop">Shop</a> / <span>{{ product.title }}</span></nav>
+    <div class="p-top">
+      <div data-gallery>
+        <div class="p-main">
+          {%- assign first = product.featured_image -%}
+          <img data-main src="{{ first | image_url: width: 1400 }}" alt="{{ first.alt | escape }}" width="{{ first.width }}" height="{{ first.height }}" fetchpriority="high">
+        </div>
+        {%- if product.images.size > 1 -%}
+          <div class="p-thumbs" role="group" aria-label="{{ product.title }} photos">
+            {%- for img in product.images -%}
+              <button type="button" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="Show photo {{ forloop.index }} of {{ product.images.size }}" data-src="{{ img | image_url: width: 1400 }}" data-alt="{{ img.alt | escape }}"><img src="{{ img | image_url: width: 160 }}" alt="" width="80" height="80" loading="lazy"></button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="p-info">
+        <span class="s-kicker">{% if pet %}For dogs &amp; cats{% else %}For people{% endif %}</span>
+        <h1>{{ product.title }}</h1>
+        <p class="s-lead">{% if pet %}Unflavored IP6 and Inositol powder for dogs and cats.{% else %}IP6 and Inositol in vegetable capsules.{% endif %}</p>
+        <div data-buybox>{% render 'ip6-buy', product: product %}</div>
+        <ul class="p-keys">
+          {%- if pet -%}
+            <li>{{ check }}804 mg IP6 and 196 mg Inositol per 1 g level scoop</li>
+            <li>{{ check }}Unflavored, easy to mix into food</li>
+            <li>{{ check }}cGMP-certified, third-party tested, veterinarian formulated</li>
+            <li>{{ check }}Measuring scoop included</li>
+          {%- else -%}
+            <li>{{ check }}804 mg IP6 and 196 mg Inositol per 4-capsule serving</li>
+            <li>{{ check }}High-Purity Formula, third-party tested</li>
+            <li>{{ check }}Formulated by Professor Shamsuddin, founder and formulator</li>
+            <li>{{ check }}No magnesium stearate, no silicon dioxide, no unnecessary additives</li>
+          {%- endif -%}
+        </ul>
+        <div class="s-acc">
+          {%- if pet -%}
+            <details open><summary>Ingredients</summary><div class="a"><ul><li>IP6 (Inositol Hexaphosphate), 804 mg per 1 g level scoop</li><li>Inositol, 196 mg per scoop</li><li>Other ingredients: none</li></ul></div></details>
+            <details><summary>Feeding directions</summary><div class="a"><ol><li>Dogs up to 25 lb: 1 level scoop once daily.</li><li>Dogs 26 to 50 lb: 1 level scoop twice daily.</li><li>Dogs over 50 lb: 2 level scoops twice daily.</li><li>Cats: 1 level scoop once daily.</li><li>Use the enclosed measuring scoop and mix into your pet's food.</li></ol></div></details>
+            <details><summary>Product details</summary><div class="a"><p>The original IP6 formula, for pets, in an easy-to-mix powder. IP6 and Inositol for dogs and cats, for single and multi-pet households.</p><ul><li>No magnesium stearate, no silicon dioxide, no unnecessary additives</li><li>Made in USA</li></ul></div></details>
+            <details><summary>Frequently asked questions</summary><div class="a">
+              <p><strong>How much do I give my pet?</strong><br>Dogs up to 25 lb: 1 level scoop once daily. Dogs 26 to 50 lb: 1 level scoop twice daily. Dogs over 50 lb: 2 level scoops twice daily. Cats: 1 level scoop once daily. Use the enclosed measuring scoop.</p>
+              <p><strong>What is in each scoop?</strong><br>Each 1 g level scoop contains 804 mg IP6 and 196 mg Inositol. There are no other ingredients.</p>
+              <p><strong>Is it flavored?</strong><br>No. It is unflavored and easy to mix into food.</p>
+              <p><strong>Is it third-party tested?</strong><br>Yes. IP6 Original Pet Powder is made in a cGMP-certified facility and third-party tested.</p>
+            </div></details>
+          {%- else -%}
+            <details open><summary>Ingredients &amp; Supplement Facts</summary><div class="a"><ul><li>IP6 (Calcium Magnesium Inositol Hexaphosphate), 804 mg per 4-capsule serving</li><li>Inositol, 196 mg per serving</li><li>Other ingredients: hypromellose (vegetable capsule)</li></ul>
+              <a class="p-label" href="{{ settings.ip6_cdn }}/products/supplement-240-label.jpg" target="_blank" rel="noopener noreferrer"><img src="{{ settings.ip6_cdn }}/products/supplement-240-label.jpg" alt="IP6 Original 240-count label with Supplement Facts" width="1600" height="622" loading="lazy"></a></div></details>
+            <details><summary>How to take</summary><div class="a"><ol><li>Take 4 capsules once or twice daily with water, or as directed by your healthcare professional.</li><li>Consult a healthcare professional before starting any supplement regimen.</li></ol><p><a class="s-link" href="/pages/how-to-take">Full directions</a></p></div></details>
+            <details><summary>Product details</summary><div class="a"><p>The original IP6 formula, a high-purity blend of IP6 and Inositol, formulated by the physician-scientist who pioneered the research behind it.</p><ul><li>Manufactured in a cGMP-certified facility</li><li>Hypromellose (vegetable) capsule</li><li>240 capsules, 60 servings</li></ul></div></details>
+            <details><summary>Frequently asked questions</summary><div class="a">
+              <p><strong>What is IP6?</strong><br>IP6 (inositol hexaphosphate) is a naturally occurring compound found in whole grains, legumes, and seeds. IP6 Original pairs it with Inositol in a high-purity formula, third-party tested for purity, potency, and quality.</p>
+              <p><strong>Is this product third-party tested?</strong><br>Yes. IP6 Original is independently third-party tested for purity, potency, and quality.</p>
+              <p><strong>Can I take IP6 with other supplements?</strong><br>IP6 is commonly taken alongside other wellness routines. We recommend consulting your healthcare professional to coordinate any supplement stack.</p>
+            </div></details>
+          {%- endif -%}
+          <details><summary>Shipping &amp; returns</summary><div class="a"><p>{{ settings.ip6_preorder_ship | default: 'Starts shipping November 2026' }}, in the order received, with a tracking email the day it ships. Free US shipping over $75. All sales are final once shipped.</p><p><a class="s-link" href="/pages/shipping-policy">Shipping policy</a></p></div></details>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% render 'ip6-reviews', product: product %}
+  <p class="s-wrap s-dshea">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
+  <div class="p-sticky s" data-sticky aria-hidden="true">
+    <div><div class="t">{{ product.title }}</div><div class="pr">{{ now | money }}</div></div>
+    <button type="button" class="s-btn" data-sticky-add>Add to cart</button>
+  </div>
+</div>
+{% render 'ip6-trust' %}
+<script src="{{ 'ip6-buy.js' | asset_url }}" defer></script>
+<script>
+  (function () {
+    var g = document.querySelector('[data-gallery]');
+    if (g) { var main = g.querySelector('[data-main]'); g.querySelectorAll('[data-src]').forEach(function (b) { b.addEventListener('click', function () { main.src = b.getAttribute('data-src'); main.alt = b.getAttribute('data-alt'); g.querySelectorAll('[data-src]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); }); }); }
+    var bar = document.querySelector('[data-sticky]'), box = document.querySelector('[data-buybox]');
+    if (bar && box && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { var show = !e[0].isIntersecting && e[0].boundingClientRect.top < 0; bar.classList.toggle('show', show); bar.setAttribute('aria-hidden', show ? 'false' : 'true'); }).observe(box);
+      bar.querySelector('[data-sticky-add]').addEventListener('click', function () { var a = box.querySelector('[data-add]'); if (a) a.click(); var b = this; b.textContent = 'Added'; setTimeout(function () { b.textContent = 'Add to cart'; }, 1800); });
+    }
+  })();
+</script>
 {% schema %}
-{
- "name": "IP6 Product",
- "tag": "section",
- "settings": [ { "type": "product", "id": "product", "label": "Product (defaults to current product)" } ],
- "presets": [{ "name": "IP6 Product" }]
-}
+{ "name": "IP6 Product", "tag": "section", "settings": [] }
 {% endschema %}

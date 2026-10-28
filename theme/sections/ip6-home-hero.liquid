@@ -1,0 +1,195 @@
+{%- comment -%}
+  Home hero, the slideshow from ip6original.com: the product slide first, then
+  five photo and video slides with a typed headline, the same buttons on every
+  slide, dots and a pause control. Markup, timing and styles follow
+  components/home/HeroSlideshow in the Amplify build; the stylesheet is that
+  component's CSS scoped under .ip6hs.
+{%- endcomment -%}
+{%- liquid
+  assign cdn = settings.ip6_cdn
+  assign people = routes.collections_url | append: '/shop#people'
+  assign pets = routes.collections_url | append: '/shop#pets'
+  assign pct = settings.ip6_preorder_pct | default: 15
+-%}
+<link rel="stylesheet" href="{{ 'ip6-home-hero.css' | asset_url }}">
+<style>
+  .ip6hs { font-family: var(--sans); }
+  .ip6hs .hero .ch, .ip6hs .hero .chIn { transition: opacity 0.18s ease; }
+  .ip6hs .hero .ch { opacity: 0; }
+  .ip6hs .hero .chIn { opacity: 1; }
+  .ip6hs .hero .cta svg, .ip6hs .hero .pause svg { width: 18px; height: 18px; }
+  .ip6hs .hero .pause svg { width: 22px; height: 22px; }
+  .ip6hs .hero a { color: inherit; text-decoration: none; }
+  .ip6hs .hero button { font-family: inherit; cursor: pointer; }
+  .ip6hs .hero p, .ip6hs .hero h1, .ip6hs .hero h2 { margin: 0; }
+  .ip6hs .hero .mobileProductLinks svg { width: 16px; height: 16px; }
+</style>
+<div class="ip6hs">
+<section class="hero productActive" data-ip6-hero aria-roledescription="carousel" aria-label="IP6 Original">
+  {%- comment -%} Slide 1: the product slide {%- endcomment -%}
+  <div class="slide productSlide on" data-slide="-1" role="group" aria-roledescription="slide" aria-label="1 of 6">
+    <div class="productCanvas">
+      <div class="productArtwork">
+        <picture class="productPicture">
+          <source media="(max-width: 900px) and (orientation: portrait)" srcset="{{ cdn }}/hero/ip6-approved-slide-mobile.webp">
+          <img src="{{ cdn }}/hero/ip6-corrected-slide-desktop.webp" alt="IP6 + Inositol. For people. For pets. {{ pct }}% off. Pre-order now. Ships November 2026. Capsules and powder appearance illustrative." fetchpriority="high" width="1812" height="868">
+        </picture>
+        <a href="{{ people }}" class="productImageLink productPeopleLink" aria-label="Shop for people"></a>
+        <a href="{{ pets }}" class="productImageLink productPetsLink" aria-label="Shop for pets"></a>
+      </div>
+      <div class="mobileProduct">
+        <div class="mobileProductHeading">
+          <p class="mobileProductEyebrow">Science driven. Purity first.</p>
+          <h2>IP6 + Inositol<span>For people. For pets.</span></h2>
+          <p>The original formula. In capsules for you.<br>A powder for them.</p>
+        </div>
+        <div class="mobileProductPhoto">
+          <img src="{{ cdn }}/hero/ip6-products-mobile-cutout-v1.png" width="1536" height="1024" alt="IP6 Original capsules and pet powder, with both containers, capsules and a scoop of powder fully visible" loading="eager">
+        </div>
+        <div class="mobileProductOffer">
+          <strong>{{ pct }}% off</strong>
+          <p>Pre-order now.</p>
+          <small>Ships November 2026.</small>
+          <div class="mobileProductLinks">
+            <a href="{{ people }}">Shop for people <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            <a href="{{ pets }}">Shop for pets <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
+          <span class="mobileProductNote">Concept preview: capsule and powder appearance illustrative.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Slides 2 to 6: pictures, one per slide, crossfaded {%- endcomment -%}
+  <div class="slide slideCentered" data-slide="0" role="group" aria-roledescription="slide" aria-label="2 of 6" aria-hidden="true">
+    <div class="ph"><video src="{{ cdn }}/hero/video/ip6-hero-stock-804268291.mp4" poster="{{ cdn }}/hero/video/ip6-hero-stock-804268291-poster.webp" muted loop playsinline preload="none" aria-label="Six children in a circle looking down at the camera and laughing" style="--pos: 50% 45%; --pos-m: 50% 50%"></video></div>
+    <div class="shadow"></div><div class="light"></div><div class="dim"></div>
+  </div>
+  <div class="slide yogaSlide" data-slide="1" role="group" aria-roledescription="slide" aria-label="3 of 6" aria-hidden="true">
+    <div class="ph"><picture><source media="(max-width: 900px) and (orientation: portrait)" srcset="{{ cdn }}/hero/yoga-full-scene-mobile.webp"><img src="{{ cdn }}/hero/yoga-full-scene-desktop.webp" alt="A woman meditating cross-legged on a yoga mat in a bright living room" style="--pos: 65% 50%; --pos-m: 65% 50%" loading="lazy"></picture></div>
+    <div class="shadow"></div><div class="light"></div><div class="dim"></div>
+  </div>
+  <div class="slide" data-slide="2" role="group" aria-roledescription="slide" aria-label="4 of 6" aria-hidden="true">
+    <div class="ph"><video src="{{ cdn }}/hero/video/ip6-hero-dog-cat.mp4" poster="{{ cdn }}/hero/video/ip6-hero-dog-cat-poster.webp" muted loop playsinline preload="none" aria-label="A brown dog resting its head on a sleeping tabby cat on a blanket" style="--pos: 50% 0%; --pos-m: 62% 20%"></video></div>
+    <div class="shadow"></div><div class="light"></div><div class="dim"></div>
+  </div>
+  <div class="slide" data-slide="3" role="group" aria-roledescription="slide" aria-label="5 of 6" aria-hidden="true">
+    <div class="ph"><picture><source media="(max-width: 900px) and (orientation: portrait)" srcset="{{ cdn }}/hero/ip6-hero-beach-couple-m.webp"><img src="{{ cdn }}/hero/ip6-hero-beach-couple.webp" alt="An older couple holding hands and playing at the water's edge on a sunny beach" style="--pos: 62% 0%; --pos-m: 50% 72%" loading="lazy"></picture></div>
+    <div class="shadow"></div><div class="light"></div><div class="dim"></div>
+  </div>
+  <div class="slide doctorSlide" data-slide="4" role="group" aria-roledescription="slide" aria-label="6 of 6" aria-hidden="true">
+    <div class="ph"><img src="{{ cdn }}/hero/doctor-cutout-v1.webp" alt="A doctor wearing glasses and a bow tie, holding a microphone" style="--pos: 50% 45%; --pos-m: 50% 50%" loading="lazy"></div>
+    <div class="shadow"></div><div class="light"></div><div class="dim"></div>
+  </div>
+
+  {%- comment -%} Words: every slide's text stacked in one cell; only the active one shows {%- endcomment -%}
+  {%- capture arrow -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>{%- endcapture -%}
+  <div class="copy">
+    <div class="textStack">
+      {%- assign eyebrows = "Pre-order, ships November 2026|Pre-order, ships November 2026|IP6 Original Pet Powder|From the lab of Professor Shamsuddin, MD, PhD|Professor AbulKalam M. Shamsuddin, MD, PhD" | split: "|" -%}
+      {%- assign line_a = "Pre-order now. |Pre-order now. |IP6 Original, |There is only one |His research. " | split: "|" -%}
+      {%- assign line_em = "15% off.|15% off.|for pets|IP6 Original|His formula." | split: "|" -%}
+      {%- assign line_b = "||.|.|" | split: "|" -%}
+      {%- assign subs = "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research.|IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research.|The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub.|IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility.|" | split: "|" -%}
+      {%- assign flags = "|headlineOnly textLow|headlineOnly|headlineOnly textLow|textSplit" | split: "|" -%}
+      {%- for i in (0..4) -%}
+        <div class="text{% if i == 0 %} textCentered{% endif %}{% if flags[i] != blank %} {{ flags[i] }}{% endif %}" data-text="{{ i }}" aria-hidden="true">
+          <p class="eyebrow">{{ eyebrows[i] }}</p>
+          {%- capture line -%}
+            <span>{% for ch in line_a[i] %}{% if ch == " " %} {% else %}<span data-ch class="chIn">{{ ch }}</span>{% endif %}{% endfor %}</span><em>{% assign emchars = line_em[i] | split: "" %}{% for ch in emchars %}{% if ch == " " %} {% else %}<span data-ch class="chIn">{{ ch }}</span>{% endif %}{% endfor %}</em><span>{% assign bchars = line_b[i] | split: "" %}{% for ch in bchars %}<span data-ch class="chIn">{{ ch }}</span>{% endfor %}</span>
+          {%- endcapture -%}
+          {%- assign achars = line_a[i] | split: "" -%}
+          {%- capture line -%}<span>{% for ch in achars %}{% if ch == " " %} {% else %}<span data-ch class="chIn">{{ ch }}</span>{% endif %}{% endfor %}</span><em>{% for ch in emchars %}{% if ch == " " %} {% else %}<span data-ch class="chIn">{{ ch }}</span>{% endif %}{% endfor %}</em><span>{% for ch in bchars %}<span data-ch class="chIn">{{ ch }}</span>{% endfor %}</span>{%- endcapture -%}
+          {%- if i == 0 -%}<h1 class="line">{{ line }}</h1>{%- else -%}<p class="line" role="heading" aria-level="1">{{ line }}</p>{%- endif -%}
+          {%- if subs[i] != blank -%}<p class="sub">{{ subs[i] }}</p>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- comment -%} Buttons: rendered once, so they stay put while the pictures change {%- endcomment -%}
+  <div class="actions" data-actions aria-hidden="true">
+    <a href="{{ people }}" class="cta">Pre Order Now {{ arrow }}</a>
+    <nav class="routes" aria-label="Shop by">
+      <a href="{{ people }}">For people</a>
+      <a href="{{ pets }}">For pets</a>
+    </nav>
+  </div>
+
+  <div class="dots">
+    <button type="button" class="dotOn" data-dot="-1" aria-label="Go to slide 1" aria-current="true"></button>
+    {%- for i in (0..4) -%}<button type="button" class="dot" data-dot="{{ i }}" aria-label="Go to slide {{ i | plus: 2 }}" aria-current="false"></button>{%- endfor -%}
+  </div>
+  <button type="button" class="pause" data-pause aria-label="Pause slideshow"></button>
+</section>
+</div>
+<script>
+  (function () {
+    var root = document.querySelector('[data-ip6-hero]'); if (!root) return;
+    var TYPE_MS = 42, TYPE_DELAY = 500, REVEAL_AFTER_TYPED = 350, REVEAL_MS = 1400, HOLD_AFTER_REVEAL = 2600;
+    var PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+    var PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
+    var slides = [].slice.call(root.querySelectorAll('[data-slide]'));
+    var texts = [].slice.call(root.querySelectorAll('[data-text]'));
+    var dots = [].slice.call(root.querySelectorAll('[data-dot]'));
+    var pauseBtn = root.querySelector('[data-pause]'), actions = root.querySelector('[data-actions]');
+    var N = texts.length, cur = -1, typed = 0, revealed = false, paused = false, timers = [];
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var chars = texts.map(function (t) { return [].slice.call(t.querySelectorAll('[data-ch]')); });
+    function clear() { timers.forEach(clearTimeout); timers = []; }
+    function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+    function render() {
+      root.classList.toggle('productActive', cur === -1);
+      root.classList.toggle('doctorActive', cur === 4);
+      root.classList.toggle('yogaActive', cur === 1);
+      root.classList.toggle('viewportVideoActive', cur === 0 || cur === 2);
+      root.classList.toggle('beachActive', cur === 3);
+      slides.forEach(function (s) {
+        var i = +s.getAttribute('data-slide'), on = i === cur;
+        s.classList.toggle('on', on); s.classList.toggle('reveal', on && revealed); s.setAttribute('aria-hidden', on ? 'false' : 'true');
+        var v = s.querySelector('video');
+        if (v) { if (on && !reduce) { v.preload = 'auto'; v.play().catch(function () {}); } else { setTimeout(function () { v.pause(); }, 1200); } }
+      });
+      texts.forEach(function (t, idx) {
+        var on = idx === cur;
+        t.classList.toggle('textOn', on); t.classList.toggle('textReveal', on && revealed); t.setAttribute('aria-hidden', on ? 'false' : 'true');
+        chars[idx].forEach(function (c, k) { var show = !on || k < typed; c.classList.toggle('chIn', show); c.classList.toggle('ch', !show); });
+      });
+      dots.forEach(function (d) { var i = +d.getAttribute('data-dot'); d.className = i === cur ? 'dotOn' : 'dot'; d.setAttribute('aria-current', i === cur ? 'true' : 'false'); });
+      actions.setAttribute('aria-hidden', cur === -1 ? 'true' : 'false');
+      pauseBtn.setAttribute('aria-label', paused ? 'Play slideshow' : 'Pause slideshow'); pauseBtn.innerHTML = paused ? PLAY : PAUSE;
+    }
+    function run() {
+      clear();
+      if (cur === -1) { render(); if (!reduce && !paused) later(function () { if (!paused) { cur = 0; run(); } }, 9000); return; }
+      var total = chars[cur].length;
+      if (reduce) { typed = total; revealed = true; render(); return; }
+      typed = 0; revealed = false; render();
+      for (var k = 1; k <= total; k++) (function (k) { later(function () { typed = k; render(); }, TYPE_DELAY + k * TYPE_MS); })(k);
+      var typedAt = TYPE_DELAY + total * TYPE_MS;
+      later(function () { revealed = true; render(); }, typedAt + REVEAL_AFTER_TYPED);
+      later(function () {
+        if (paused) return;
+        if (cur === N - 1) { paused = true; cur = -1; run(); } else { cur += 1; run(); }
+      }, typedAt + REVEAL_AFTER_TYPED + REVEAL_MS + HOLD_AFTER_REVEAL);
+    }
+    dots.forEach(function (d) { d.addEventListener('click', function () { paused = true; cur = +d.getAttribute('data-dot'); run(); }); });
+    pauseBtn.addEventListener('click', function () { paused = !paused; if (paused) render(); else run(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) clear(); else if (!paused) run(); });
+    // The part of the hero on screen between the header and the disclaimer bar.
+    function fit() {
+      var top = root.getBoundingClientRect().top + window.scrollY;
+      var disc = document.querySelector('[aria-label="FDA disclaimer"]');
+      var dh = disc && !disc.hidden ? disc.getBoundingClientRect().height : 0;
+      var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      root.style.setProperty('--product-visible-height', Math.max(0, vh - top - dh - 1) + 'px');
+    }
+    var ro = new ResizeObserver(fit); ro.observe(root);
+    ['#header-group', '[aria-label="FDA disclaimer"]'].forEach(function (sel) { var el = document.querySelector(sel); if (el) ro.observe(el); });
+    window.addEventListener('resize', fit); if (window.visualViewport) window.visualViewport.addEventListener('resize', fit);
+    fit(); run();
+  })();
+</script>
+{% schema %}
+{ "name": "IP6 Home hero", "tag": "section", "class": "ip6-section-hero", "settings": [], "presets": [{ "name": "IP6 Home hero" }] }
+{% endschema %}

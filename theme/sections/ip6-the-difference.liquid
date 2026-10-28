@@ -1,95 +1,98 @@
+{%- comment -%} The Difference: the formula, the standards, what IP6 is, and the label. Words from ip6original.com. {%- endcomment -%}
+{%- assign cdn = settings.ip6_cdn -%}
+{%- capture arrow -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>{%- endcapture -%}
 <style>
-  #diff-{{ section.id }} { background: var(--bg,#fff); }
-  #diff-{{ section.id }} .head { max-width: 760px; }
-  #diff-{{ section.id }} .head h1 { font-size: clamp(34px,4.4vw,56px); line-height: 1.04; letter-spacing: -0.025em; color: var(--ink); margin: 16px 0 0; }
-  #diff-{{ section.id }} .head .lead { font-size: 19px; line-height: 1.6; color: var(--ink-2); margin: 18px 0 0; max-width: 62ch; }
-
-  #diff-{{ section.id }} .seg { display: flex; align-items: center; gap: 18px; margin: clamp(44px,6vw,72px) 0 30px; }
-  #diff-{{ section.id }} .seg .l { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
-  #diff-{{ section.id }} .seg .rule { flex: 1; height: 1px; background: var(--line); }
-
-  /* Strengths */
-  #diff-{{ section.id }} .compare { max-width: 640px; }
-  #diff-{{ section.id }} .col { border-radius: 16px; padding: clamp(24px,3vw,36px); border: 1px solid var(--line); }
-  #diff-{{ section.id }} .col.original { background: #fdfaf3; border-color: var(--gold); }
-  #diff-{{ section.id }} .col .k { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-  #diff-{{ section.id }} .col.original .k { color: var(--gold-deep); }
-  #diff-{{ section.id }} .col h3 { font-size: 23px; margin: 8px 0 18px; }
-  #diff-{{ section.id }} .col.original h3 { color: var(--ink); }
-  #diff-{{ section.id }} .col ul { list-style: none; margin: 0; padding: 0; }
-  #diff-{{ section.id }} .col li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; padding: 12px 0; font-size: 15px; line-height: 1.5; }
-  #diff-{{ section.id }} .col.original li { color: var(--ink-2); border-top: 1px solid #ece4d4; }
-  #diff-{{ section.id }} .col li:first-child { border-top: 0; }
-  #diff-{{ section.id }} .col .ic { width: 20px; height: 20px; }
-  #diff-{{ section.id }} .col.original .ic { color: var(--gold-deep); }
-
-  /* Pillars */
-  #diff-{{ section.id }} .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-  #diff-{{ section.id }} .pillar { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px; }
-  #diff-{{ section.id }} .pillar .ic { width: 44px; height: 44px; border-radius: 11px; background: var(--surface); display: grid; place-items: center; color: var(--ink); margin-bottom: 18px; }
-  #diff-{{ section.id }} .pillar .ic svg { width: 22px; height: 22px; }
-  #diff-{{ section.id }} .pillar h3 { font-family: var(--sans); font-size: 17px; font-weight: 600; color: var(--ink); margin: 0; }
-  #diff-{{ section.id }} .pillar p { font-size: 14.5px; line-height: 1.55; color: var(--muted); margin: 8px 0 0; }
-
-  #diff-{{ section.id }} .cta-row { margin-top: clamp(40px,5vw,64px); display: flex; gap: 16px; flex-wrap: wrap; }
-
-  @media (max-width: 900px) { #diff-{{ section.id }} .pillars { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 520px) { #diff-{{ section.id }} .pillars { grid-template-columns: 1fr; } }
+  .d-open { padding: 56px 0 40px; text-align: center; }
+  .d-open .s-kicker { display: block; margin-bottom: 18px; }
+  .d-open .s-h1 em { font-style: italic; color: var(--gold-ink); }
+  .d-open .s-lead { margin: 18px auto 0; max-width: 52ch; }
+  .d-nav { display: flex; justify-content: center; border-top: 1px solid var(--rule-strong); border-bottom: 1px solid var(--rule-strong); margin-top: 36px; }
+  .d-nav a { padding: 16px 28px; font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+  .d-nav a + a { border-left: 1px solid var(--rule); }
+  .d-nav a:hover { color: var(--gold-ink); }
+  .d-formula { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
+  .d-formula figure img { width: 100%; border: 1px solid var(--rule); }
+  .d-formula figcaption { margin-top: 10px; font-size: 12px; color: var(--faint); }
+  .d-amounts { display: grid; grid-template-columns: 1fr 1fr; margin: 28px 0 8px; border-top: 1px solid var(--rule-strong); }
+  .d-amounts div { padding-top: 16px; }
+  .d-amounts div + div { padding-left: 24px; border-left: 1px solid var(--rule); }
+  .d-amounts dt { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+  .d-amounts dd { font-family: var(--serif); font-size: clamp(44px, 5vw, 64px); line-height: 1.05; }
+  .d-amounts dd span { font-size: 20px; color: var(--gold-ink); margin-left: 4px; }
+  .d-note { margin-top: 28px; padding: 18px 0 0; border-top: 1px solid var(--rule); }
+  .d-note h3 { font-family: var(--serif); font-weight: 500; font-size: 20px; margin-bottom: 6px; }
+  .d-std { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule-strong); }
+  .d-std > div { padding: 28px 28px 0 0; }
+  .d-std > div + div { padding-left: 28px; border-left: 1px solid var(--rule); }
+  .d-std svg { width: 28px; height: 28px; color: var(--gold); margin-bottom: 16px; }
+  .d-std .lbl { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+  .d-std h3 { font-family: var(--serif); font-weight: 500; font-size: 22px; margin-bottom: 8px; }
+  .d-primer { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 40px; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--rule); }
+  .d-primer h3 { font-family: var(--serif); font-weight: 500; font-size: 26px; }
+  .d-primer .s-body + .s-body { margin-top: 12px; }
+  .d-label a { display: block; border: 1px solid var(--rule); padding: 20px; background: #fff; }
+  .d-facts { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 24px; border-top: 1px solid var(--rule-strong); }
+  .d-facts div { padding-top: 16px; }
+  .d-facts div + div { padding-left: 24px; border-left: 1px solid var(--rule); }
+  .d-facts dt { font-family: var(--serif); font-size: 40px; line-height: 1.1; }
+  .d-facts dd { font-size: 14px; color: var(--muted); }
+  .d-close { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 40px 0 72px; border-top: 1px solid var(--rule); }
+  .d-close p { font-family: var(--serif); font-size: 28px; }
+  .d-close span { display: block; font-family: var(--sans); font-size: 15px; color: var(--muted); margin-top: 6px; }
+  @media (max-width: 989px) { .d-formula, .d-primer { grid-template-columns: 1fr; gap: 32px; } .d-std { grid-template-columns: 1fr; } .d-std > div, .d-std > div + div { padding: 24px 0; border-left: 0; border-bottom: 1px solid var(--rule); } .d-close { display: block; } .d-close .s-btn { margin-top: 20px; } }
+  @media (max-width: 560px) { .d-nav a { padding: 14px 12px; font-size: 11px; } }
 </style>
-
-<section id="diff-{{ section.id }}" class="ip6 ip6-bright ip6-section">
-  <div class="ip6-wrap">
-    <div class="head ip6-reveal">
-      <span class="ip6-eyebrow">The difference</span>
-      <h1>What goes into IP6 Original.</h1>
-      <p class="lead">IP6 Original is of the highest purity, research grade, and formulated by the scientist who pioneered the work.</p>
-    </div>
-
-    <div class="seg ip6-reveal"><span class="l">IP6 Original</span><span class="rule"></span></div>
-    <div class="compare ip6-reveal">
-      <div class="col original ip6-rise d1">
-        <div class="k">IP6 Original</div>
-        <h3>Built to the research</h3>
-        <ul>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>Highest purity, research grade</span></li>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>IP6 and Inositol, no unnecessary fillers</span></li>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>No magnesium stearate, no silicon dioxide</span></li>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>cGMP-certified and independently third-party tested</span></li>
-          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12l5 5L20 6"/></svg><span><span class="visually-hidden">Included: </span>Formulated by Prof. Shamsuddin</span></li>
-        </ul>
+<div class="s">
+  <header class="s-wrap d-open">
+    <span class="s-kicker">The difference</span>
+    <h1 class="s-h1">What goes into <em>IP6 Original.</em></h1>
+    <p class="s-lead">A closer look at the formula. From its ingredients to the standards behind every bottle.</p>
+    <nav class="d-nav" aria-label="Explore the difference"><a href="#formula">The formula</a><a href="#standards">The standards</a><a href="#label">The label</a></nav>
+  </header>
+  <section id="formula" class="s-band">
+    <div class="s-wrap d-formula">
+      <figure><img src="{{ cdn }}/products/lifestyle/supplement-detail.png" width="1254" height="1254" alt="IP6 Original Supplement bottle with vegetable capsules resting on a dish" loading="lazy"><figcaption>A closer look at the capsules. Concept photography.</figcaption></figure>
+      <div>
+        <span class="s-kicker">The formula</span>
+        <h2 class="s-h2" style="margin:12px 0 14px">IP6 + Inositol. The original pairing.</h2>
+        <p class="s-body">IP6 and Inositol, brought together in the formula developed by Professor Shamsuddin.</p>
+        <dl class="d-amounts"><div><dt>IP6</dt><dd>804<span>mg</span></dd></div><div><dt>Inositol</dt><dd>196<span>mg</span></dd></div></dl>
+        <p class="s-small">Per 4-capsule serving of IP6 Original Supplement.</p>
+        <div class="d-note"><h3>Inside a vegetable capsule.</h3><p class="s-body">Calcium-magnesium inositol hexaphosphate paired with Inositol, in a hypromellose capsule. No magnesium stearate, no silicon dioxide, no unnecessary additives.</p></div>
+        <a href="{{ all_products['ip-6-original'].url }}" class="s-link" style="margin-top:24px">Explore IP6 Original Supplement {{ arrow }}</a>
       </div>
     </div>
-
-    <div class="seg ip6-reveal"><span class="l">Why it matters</span><span class="rule"></span></div>
-    <div class="pillars ip6-reveal">
-      <div class="pillar ip6-rise d1">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="7" r="2"/><circle cx="19" cy="7" r="2"/><circle cx="12" cy="20" r="2"/><path d="M7 8l3 3M17 8l-3 3M12 15v3"/></svg></div>
-        <h3>The right molecule</h3>
-        <p>Standardized to the inositol hexaphosphate form the published research actually studied.</p>
+  </section>
+  <section id="standards" class="s-band s-band--wash">
+    <div class="s-wrap">
+      <div class="s-head"><div><span class="s-kicker">The standards</span><h2 class="s-h2">What matters in every bottle.</h2></div><p class="s-body" style="max-width:40ch">Purity, independent testing, and manufacturing. The details behind the formula.</p></div>
+      <div class="d-std">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/></svg><p class="lbl">Purity</p><h3>Highest purity, research grade.</h3><p class="s-body">The intact molecule the research describes, not broken-down fragments.</p></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg><p class="lbl">Verification</p><h3>Third-party tested.</h3><p class="s-body">Independently tested for purity, potency, and quality. Stated on the label.</p></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg><p class="lbl">Manufacturing</p><h3>Made in the USA.</h3><p class="s-body">Manufactured in a cGMP-certified facility to current Good Manufacturing Practice standards. Stated on the label.</p></div>
       </div>
-      <div class="pillar ip6-rise d2">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V7z"/></svg></div>
-        <h3>Clean formulation</h3>
-        <p>IP6 and Inositol only, no magnesium stearate, silicon dioxide, or unnecessary additives.</p>
-      </div>
-      <div class="pillar ip6-rise d3">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></div>
-        <h3>Founder-formulated</h3>
-        <p>Created by Prof. AbulKalam M. Shamsuddin, the physician-scientist who pioneered the IP6 research.</p>
-      </div>
-      <div class="pillar ip6-rise d4">
-        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 11l2 2 4-4"/><path d="M12 3l7 3v6c0 4-3 7-7 8-4-1-7-4-7-8V6z"/></svg></div>
-        <h3>Independently tested</h3>
-        <p>Manufactured under cGMP and verified by third-party labs for purity, potency, and quality.</p>
+      <div class="d-primer">
+        <h3>First, what is IP6?</h3>
+        <div>
+          <p class="s-body">IP6, or <strong>inositol hexaphosphate</strong>, is a naturally occurring molecule of inositol carrying six phosphate groups, found in the bran of seeds and grains. Inositol is the simpler compound at its core.</p>
+          <p class="s-body">IP6 Original pairs the two as Professor Shamsuddin&rsquo;s research describes them. Because IP6 is defined by those six phosphate groups, the purity of the compound is what determines its quality.</p>
+        </div>
       </div>
     </div>
-
-    <div class="cta-row ip6-reveal">
-      <a class="ip6-btn ip6-btn--primary" href="{{ collections['shop'].url | default: '/collections/shop' }}">Shop IP6 Original</a>
-      <a class="ip6-btn ip6-btn--ghost" href="/pages/faq#how-to-take">How to take it</a>
+  </section>
+  <section id="label" class="s-band">
+    <div class="s-wrap d-label">
+      <div class="s-head"><div><span class="s-kicker">The label</span><h2 class="s-h2">See it for yourself.</h2></div><p class="s-body" style="max-width:44ch">The ingredients, serving size, and Supplement Facts, straight from the IP6 Original Supplement label.</p></div>
+      <a href="{{ cdn }}/products/supplement-240-label.jpg" target="_blank" rel="noopener noreferrer" aria-label="Open the full IP6 Original Supplement label in a new tab"><img src="{{ cdn }}/products/supplement-240-label.jpg" width="1600" height="622" alt="IP6 Original 240-capsule label: 4 capsules per serving, 804 mg IP6 and 196 mg Inositol" loading="lazy"></a>
+      <dl class="d-facts"><div><dt>240</dt><dd>vegetable capsules</dd></div><div><dt>4</dt><dd>capsules per serving</dd></div><div><dt>60</dt><dd>servings per bottle</dd></div></dl>
     </div>
+  </section>
+  <div class="s-wrap d-close">
+    <p>Get to know the original.<span>One formula. From the scientist who pioneered the research.</span></p>
+    <a href="{{ routes.collections_url }}/shop" class="s-btn">Shop IP6 Original</a>
   </div>
-</section>
+  <p class="s-wrap s-dshea">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
+</div>
 {% schema %}
-{ "name": "IP6 The Difference", "tag": "section", "settings": [], "presets": [{ "name": "IP6 The Difference" }] }
+{ "name": "IP6 The difference", "tag": "section", "settings": [] }
 {% endschema %}

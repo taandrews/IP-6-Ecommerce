@@ -1,0 +1,167 @@
+{%- comment -%}
+  Customer reviews for one product, the same model as ip6original.com: every
+  review is checked by staff before it is published.
+  - Published reviews are "Product review" entries (metaobject ip6_review,
+    Shopify admin > Content > Metaobjects) set to Active.
+  - "Write a review" sends the review to the store inbox through Shopify's
+    contact form; staff add it as a Product review entry to publish it.
+  Params: product
+{%- endcomment -%}
+{%- liquid
+  assign count = 0
+  assign total = 0
+  for r in shop.metaobjects.ip6_review.values
+    if r.product.value.id == product.id
+      assign count = count | plus: 1
+      assign total = total | plus: r.rating.value
+    endif
+  endfor
+  if count > 0
+    assign avg = total | times: 1.0 | divided_by: count
+  endif
+-%}
+{%- capture star -%}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>{%- endcapture -%}
+<style>
+  .rv { padding: 72px 0; border-top: 1px solid var(--rule); }
+  .rv .s-head { align-items: flex-end; }
+  .rv-stars { display: inline-flex; gap: 2px; vertical-align: middle; }
+  .rv-stars svg { width: 18px; height: 18px; fill: var(--rule-strong); }
+  .rv-stars svg.on { fill: var(--gold); }
+  .rv-sum { display: flex; align-items: center; gap: 12px; margin-top: 10px; font-size: 14px; color: var(--muted); }
+  .rv-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 56px; }
+  .rv-item { padding: 24px 0; border-bottom: 1px solid var(--rule); }
+  .rv-item h3 { font-family: var(--serif); font-weight: 500; font-size: 20px; margin: 10px 0 6px; }
+  .rv-item p { font-size: 15px; line-height: 1.65; color: var(--muted); }
+  .rv-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 13px; color: var(--faint); }
+  .rv-meta .vb { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-ink); border: 1px solid var(--gold); padding: 3px 7px; }
+  .rv-empty { font-size: 15px; color: var(--muted); }
+  .rv-form { margin-top: 32px; border: 1px solid var(--rule-strong); padding: 32px; max-width: 760px; }
+  .rv-form[hidden] { display: none; }
+  .rv-form h3 { font-family: var(--serif); font-weight: 500; font-size: 24px; margin-bottom: 20px; }
+  .rv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rv-f { display: grid; gap: 6px; margin-bottom: 16px; }
+  .rv-f label, .rv-f legend { font-size: 13px; font-weight: 600; }
+  .rv-f input[type=text], .rv-f input[type=email], .rv-f textarea { width: 100%; border: 1px solid var(--rule-strong); border-radius: 0; padding: 12px 14px; font: inherit; font-size: 15px; color: var(--text); background: #fff; }
+  .rv-f textarea { min-height: 140px; resize: vertical; }
+  .rv-f input:focus, .rv-f textarea:focus { outline: 2px solid var(--gold); outline-offset: 0; border-color: var(--navy); }
+  .rv-f .hint { font-size: 12px; color: var(--faint); }
+  .rv-rate { border: 0; padding: 0; margin: 0 0 16px; display: grid; gap: 6px; }
+  .rv-rate .opts { display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; }
+  .rv-rate input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .rv-rate label { cursor: pointer; }
+  .rv-rate label svg { width: 28px; height: 28px; fill: var(--rule-strong); transition: fill .1s; }
+  .rv-rate input:checked ~ label svg, .rv-rate label:hover svg, .rv-rate label:hover ~ label svg { fill: var(--gold); }
+  .rv-rate input:focus-visible + label { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .rv-rate legend { padding: 0; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .s .rv-note { font-size: 12px; line-height: 1.6; color: var(--faint); margin: 4px 0 24px; }
+  .s .rv-sum { margin-top: 10px; }
+  .rv-actions { display: flex; gap: 12px; justify-content: flex-end; }
+  .rv-msg { margin-top: 20px; padding: 14px 16px; border: 1px solid var(--gold); font-size: 14px; color: var(--text); }
+  .rv-msg.err { border-color: #B42318; color: #B42318; }
+  @media (max-width: 749px) {
+    .rv { padding: 56px 0; }
+    .rv-list { grid-template-columns: 1fr; }
+    .rv-grid { grid-template-columns: 1fr; gap: 0; }
+    .rv-form { padding: 24px 20px; }
+    .rv-actions { flex-direction: column-reverse; }
+    .rv-actions .s-btn { width: 100%; }
+  }
+</style>
+<section class="rv s" id="reviews" aria-labelledby="rv-h">
+  <div class="s-wrap">
+    <div class="s-head">
+      <div>
+        <h2 class="s-h2" id="rv-h">Customer reviews</h2>
+        {%- if count > 0 -%}
+          {%- assign full = avg | round -%}
+          <div class="rv-sum">
+            <span class="rv-stars" aria-hidden="true">{%- for i in (1..5) -%}{%- if i <= full -%}{{ star | replace: '<svg ', '<svg class="on" ' }}{%- else -%}{{ star }}{%- endif -%}{%- endfor -%}</span>
+            <span>{{ avg | round: 1 }} out of 5 &middot; {{ count }} review{% if count != 1 %}s{% endif %}</span>
+          </div>
+        {%- else -%}
+          <p class="rv-sum">No reviews yet. Be the first.</p>
+        {%- endif -%}
+      </div>
+      <button type="button" class="s-btn s-btn--line" data-rv-open aria-controls="rv-form" aria-expanded="false">Write a review</button>
+    </div>
+
+    {%- form 'contact', id: 'rv-form', class: 'rv-form', data-rv-form: '' -%}
+      {%- assign posted = false -%}
+      {%- if form.posted_successfully? -%}{%- assign posted = true -%}{%- endif -%}
+      {%- if posted or form.errors -%}<span data-rv-posted hidden></span>{%- endif -%}
+      <h3>Share your experience</h3>
+      <input type="hidden" name="contact[Review for]" value="{{ product.title | escape }}">
+      <input type="hidden" name="contact[Product handle]" value="{{ product.handle }}">
+      <fieldset class="rv-rate">
+        <legend>Rating</legend>
+        <div class="opts">
+          {%- for i in (1..5) reversed -%}
+            <input type="radio" id="rv-r{{ i }}" name="contact[Rating]" value="{{ i }} out of 5" required>
+            <label for="rv-r{{ i }}" aria-label="{{ i }} star{% if i != 1 %}s{% endif %}">{{ star }}</label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+      <div class="rv-grid">
+        <div class="rv-f">
+          <label for="rv-name">Your name</label>
+          <input type="text" id="rv-name" name="contact[Name shown]" maxlength="60" required autocomplete="given-name">
+          <span class="hint">Shown publicly with your review. A first name or initials is enough.</span>
+        </div>
+        <div class="rv-f">
+          <label for="rv-email">Email</label>
+          <input type="email" id="rv-email" name="contact[email]" required autocomplete="email">
+          <span class="hint">Never shown. Used only if we need to ask about your review.</span>
+        </div>
+      </div>
+      <div class="rv-f">
+        <label for="rv-title">Title</label>
+        <input type="text" id="rv-title" name="contact[Review title]" maxlength="120" required>
+      </div>
+      <div class="rv-f">
+        <label for="rv-body">Review</label>
+        <textarea id="rv-body" name="contact[body]" maxlength="1000" minlength="10" required></textarea>
+      </div>
+      <p class="rv-note">Please describe your personal experience. Every review is checked by our team before it is published, and reviews that make health or disease claims are not published. By submitting you agree we may show your review and the name above on this site.</p>
+      <div class="rv-actions">
+        <button type="button" class="s-btn s-btn--line" data-rv-cancel>Cancel</button>
+        <button type="submit" class="s-btn">Submit review</button>
+      </div>
+    {%- endform -%}
+    {%- if posted -%}
+      <p class="rv-msg" role="status">Thank you. Your review will appear once our team has checked it.</p>
+    {%- elsif form.errors -%}
+      <p class="rv-msg err" role="status">We couldn't submit your review. Please check each field and try again.</p>
+    {%- endif -%}
+
+    {%- if count > 0 -%}
+      <ul class="rv-list">
+        {%- for r in shop.metaobjects.ip6_review.values -%}
+          {%- if r.product.value.id == product.id -%}
+            {%- assign n = r.rating.value | plus: 0 -%}
+            <li class="rv-item">
+              <div class="rv-meta">
+                <span class="rv-stars" role="img" aria-label="{{ n }} out of 5 stars">{%- for i in (1..5) -%}{%- if i <= n -%}{{ star | replace: '<svg ', '<svg class="on" ' }}{%- else -%}{{ star }}{%- endif -%}{%- endfor -%}</span>
+                <span>{{ r.author.value | escape }}</span>
+                {%- if r.date.value -%}<span>{{ r.date.value | date: '%B %-d, %Y' }}</span>{%- endif -%}
+                {%- if r.verified.value -%}<span class="vb">Verified buyer</span>{%- endif -%}
+              </div>
+              <h3>{{ r.title.value | escape }}</h3>
+              <p>{{ r.body.value | escape | newline_to_br }}</p>
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</section>
+<script>
+  (function () {
+    var form = document.getElementById('rv-form'), open = document.querySelector('[data-rv-open]');
+    if (!form || !open) return;
+    var errored = form.querySelector('[data-rv-posted]') && document.querySelector('.rv-msg.err');
+    function set(show) { form.hidden = !show; open.setAttribute('aria-expanded', show ? 'true' : 'false'); if (show) { var f = form.querySelector('input[type=radio]'); if (f) f.focus(); } }
+    set(!!errored);
+    open.addEventListener('click', function () { set(form.hidden); });
+    form.querySelector('[data-rv-cancel]').addEventListener('click', function () { set(false); open.focus(); });
+  })();
+</script>

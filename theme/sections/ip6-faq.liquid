@@ -1,0 +1,100 @@
+{%- comment -%} FAQs, from app/faq and content/faqs on ip6original.com: topic list on the left, one accordion per topic. {%- endcomment -%}
+{%- capture arrow -%}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>{%- endcapture -%}
+{%- capture chev -%}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>{%- endcapture -%}
+<style>
+  #faq-{{ section.id }} { font-family: var(--sans); color: var(--ip6-navy); }
+  #faq-{{ section.id }} .head { border-bottom: 1px solid var(--ip6-cloud-300); padding: 48px 0; }
+  #faq-{{ section.id }} .head h1 { margin-top: 16px; font-weight: 600; font-size: clamp(2.25rem, 4.5vw, 3.5rem); line-height: 1.05; letter-spacing: -.025em; text-wrap: balance; }
+  #faq-{{ section.id }} .head p.lead { margin-top: 20px; font-size: 18px; line-height: 1.65; color: #001840bf; max-width: 48rem; }
+  #faq-{{ section.id }} .body { padding: 40px 0; }
+  #faq-{{ section.id }} aside { margin-bottom: 32px; }
+  #faq-{{ section.id }} .topicsLabel { font-size: 11px; text-transform: uppercase; letter-spacing: .22em; color: #0018408c; font-weight: 600; margin-bottom: 12px; }
+  #faq-{{ section.id }} .topics { display: flex; flex-wrap: wrap; gap: 8px; }
+  #faq-{{ section.id }} .topics a { display: inline-block; font-size: 14px; font-weight: 500; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--ip6-cloud-300); transition: color .2s, border-color .2s; }
+  #faq-{{ section.id }} .topics a:hover { border-color: var(--ip6-gold); color: var(--ip6-gold-700); }
+  #faq-{{ section.id }} .still { display: none; margin-top: 32px; border-radius: 12px; border: 1px solid var(--ip6-cloud-300); padding: 20px; }
+  #faq-{{ section.id }} .still p { font-size: 14px; line-height: 1.6; color: #001840bf; }
+  #faq-{{ section.id }} .still a { margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; }
+  #faq-{{ section.id }} article { display: grid; gap: 48px; max-width: 48rem; }
+  #faq-{{ section.id }} article section { scroll-margin-top: 112px; }
+  #faq-{{ section.id }} h2 { font-weight: 600; font-size: clamp(1.25rem, 2vw, 1.5rem); margin-bottom: 8px; }
+  #faq-{{ section.id }} .intro { font-size: 14px; color: #00184099; margin-bottom: 16px; }
+  #faq-{{ section.id }} .acc { border-top: 1px solid #E6E1D6; border-bottom: 1px solid #E6E1D6; }
+  #faq-{{ section.id }} .acc > div + div { border-top: 1px solid #E6E1D6; }
+  #faq-{{ section.id }} .acc button { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; text-align: left; font-size: 16px; font-weight: 500; }
+  #faq-{{ section.id }} .acc button svg { flex-shrink: 0; transition: transform .2s; }
+  #faq-{{ section.id }} .acc button[aria-expanded="true"] svg { transform: rotate(180deg); }
+  #faq-{{ section.id }} .acc [data-panel] { padding-bottom: 24px; color: #001840cc; line-height: 1.65; }
+  #faq-{{ section.id }} .acc [data-panel][hidden] { display: none; }
+  #faq-{{ section.id }} .more { margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--ip6-gold); text-decoration-thickness: 2px; }
+  #faq-{{ section.id }} .more:hover { color: var(--ip6-gold-700); }
+  @media (min-width: 1024px) {
+    #faq-{{ section.id }} .head { padding: 64px 0; }
+    #faq-{{ section.id }} .body { padding: 56px 0; display: grid; grid-template-columns: 240px 1fr; gap: 56px; }
+    #faq-{{ section.id }} aside { margin-bottom: 0; }
+    #faq-{{ section.id }} aside nav { position: sticky; top: 112px; }
+    #faq-{{ section.id }} .topics { flex-direction: column; gap: 0; border-left: 1px solid var(--ip6-cloud-300); }
+    #faq-{{ section.id }} .topics a { border-radius: 0; border: 0; border-left: 2px solid transparent; margin-left: -1px; padding: 8px 16px; }
+    #faq-{{ section.id }} .topics a:hover { border-left-color: var(--ip6-gold); }
+    #faq-{{ section.id }} .still { display: block; }
+  }
+</style>
+{%- assign t_ids = "shipping|subscriptions|returns|taking-ip6|what-is-ip6|why-this-brand" | split: "|" -%}
+{%- assign t_labels = "Shipping and delivery|Subscriptions|Returns and refunds|Taking IP6 Original|What is IP6|Why this brand" | split: "|" -%}
+<div id="faq-{{ section.id }}" class="ip6">
+  <section class="head"><div class="ip6-wrap">
+    <p class="ip6-eyebrow">FAQs</p>
+    <h1>Frequent questions.</h1>
+    <p class="lead">Shipping, subscriptions and returns first, then how to take IP6 Original and what it is.</p>
+  </div></section>
+  <div class="ip6-wrap body">
+    <aside><nav aria-label="FAQ topics">
+      <p class="topicsLabel">Topics</p>
+      <ul class="topics">{%- for id in t_ids -%}<li><a href="#{{ id }}">{{ t_labels[forloop.index0] }}</a></li>{%- endfor -%}</ul>
+      <div class="still"><p>Still have a question?</p><a href="/pages/contact">Contact us {{ arrow }}</a></div>
+    </nav></aside>
+    <article>
+      {%- capture q_shipping -%}When will my order arrive?^^Pre-orders start shipping in November 2026, in the order they were received. You get a tracking email the day your order ships. From there, US standard delivery usually takes 3 to 6 business days (1 to 3 expedited) and international orders 7 to 14 business days, though busy periods and carrier delays can stretch that. If your package is past that window, contact us with your order number and we will check on it within one business day.^^||What if the pre-order shipping date changes?^^We email every pre-order customer the new date as soon as we know it. If you would rather not wait, reply to that email or use the contact form before your order ships and we cancel it for a full refund to your original payment method.^^||Do I pay duties or import taxes?^^Where possible, import duties and taxes are calculated at checkout. Otherwise, duties are the responsibility of the recipient and are collected by the carrier on delivery.^^/pages/shipping-policy~Read the shipping policy{%- endcapture -%}
+      {%- capture q_subscriptions -%}How do subscriptions work?^^Choose Subscribe &amp; save on the product page. You get 15% off and a delivery every month. Your first delivery is charged at checkout. Each later delivery is charged at the same subscription price plus shipping, to the same card, until you cancel.^^||Can I pause, skip, or cancel?^^Yes, at any time. Email support@ip6original.com or use the contact form with your order number, and we make the change before your next delivery is charged. Cancelling stops all future charges.^^/pages/contact~Open the contact form{%- endcapture -%}
+      {%- capture q_returns -%}What is the return policy?^^All sales are final once shipped. Dietary supplements cannot be restocked or resold after they leave our care.^^/pages/refund-policy~Read the refund policy||My order arrived damaged or incorrect. What do I do?^^Contact us right away through the contact form with your order number and photos of the item and the packaging. We reply within one business day and review each case individually to make it right. No need to send the item back.^^/pages/contact~Open the contact form{%- endcapture -%}
+      {%- capture q_taking -%}How do I take IP6 Original?^^The label directions: take 4 capsules once or twice daily with water, or as directed by your healthcare professional. The full directions, serving size, and cautions are on one page.^^/pages/how-to-take~Read the full directions||Is IP6 Original safe to take daily?^^The suggested use is 4 capsules once or twice daily with water, or as directed by a healthcare professional. Always consult your physician before beginning any supplement regimen, including IP6 Original.^^||Are there any side effects?^^Always consult your physician before beginning any supplement regimen. Stop taking IP6 Original and contact your physician if you experience any adverse reaction.^^||Can I take IP6 Original with other medications or supplements?^^Consult your healthcare professional to coordinate IP6 Original with any medications or other supplements you take.^^||Is IP6 Original safe during pregnancy or nursing?^^If you are pregnant, nursing, taking medication, or managing a health condition, consult your healthcare provider before use.^^{%- endcapture -%}
+      {%- capture q_what -%}What is IP6?^^IP6 is inositol hexaphosphate, a molecule made of inositol carrying six phosphate groups. It occurs naturally in seeds, grains, legumes, and bran, where it stores phosphorus and minerals for the plant. Professor AbulKalam M. Shamsuddin, MD, PhD, pioneered research on IP6 at the University of Maryland School of Medicine before retiring from the university in 2020. IP6 Original contains Calcium-Magnesium IP6.^^||What is Inositol, and how is it related to IP6?^^Inositol is the simple compound at the core of IP6: the same molecule, without the six phosphate groups attached. It is found naturally in the body and in many everyday foods. When IP6 is metabolized, it gives up phosphate groups and yields inositol and its lower phosphate forms, which is why the two are so closely linked.^^||Why are IP6 and Inositol taken together?^^Professor Shamsuddin&rsquo;s research centers on IP6 and Inositol as a pair rather than IP6 alone, and IP6 Original reflects that approach by combining both in one formula.^^{%- endcapture -%}
+      {%- capture q_why -%}What makes IP6 Original different from other IP6 supplements?^^IP6 Original is of the highest purity, research grade, third-party tested, formulated by the scientist who pioneered that research.^^/pages/the-difference~See what goes into it||Why does purity matter?^^If the molecule is not intact, it is not the molecule the research describes.^^||How is IP6 Original manufactured and tested?^^IP6 Original is manufactured in a cGMP-certified facility and independently third-party tested for purity, potency, and quality.^^||Is IP6 Original FDA approved?^^IP6 Original is a dietary supplement, not a drug. Under DSHEA, dietary supplements are regulated differently from pharmaceuticals.^^{%- endcapture -%}
+      {%- assign all_q = q_shipping | append: "@@" | append: q_subscriptions | append: "@@" | append: q_returns | append: "@@" | append: q_taking | append: "@@" | append: q_what | append: "@@" | append: q_why | split: "@@" -%}
+      {%- for id in t_ids -%}
+        {%- assign ti = forloop.index0 -%}
+        <section id="{{ id }}">
+          <h2>{{ t_labels[ti] }}</h2>
+          {%- if id == 'what-is-ip6' -%}<p class="intro">An introduction to the molecule at the center of everything we make: what IP6 and Inositol are, and why they are paired.</p>{%- endif -%}
+          <div class="acc" data-acc>
+            {%- assign items = all_q[ti] | split: "||" -%}
+            {%- for it in items -%}
+              {%- assign parts = it | split: "^^" -%}
+              <div>
+                <button type="button" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="panel-{{ id }}-{{ forloop.index0 }}"><span>{{ parts[0] }}</span>{{ chev }}</button>
+                <div id="panel-{{ id }}-{{ forloop.index0 }}" data-panel {% unless forloop.first %}hidden{% endunless %}>
+                  <p>{{ parts[1] }}</p>
+                  {%- if parts[2] != blank -%}{%- assign more = parts[2] | split: "~" -%}<a href="{{ more[0] }}" class="more">{{ more[1] }} {{ arrow }}</a>{%- endif -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </section>
+      {%- endfor -%}
+    </article>
+  </div>
+</div>
+<script>
+  document.querySelectorAll('#faq-{{ section.id }} [data-acc]').forEach(function (acc) {
+    acc.querySelectorAll('button[aria-controls]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('aria-expanded') === 'true';
+        acc.querySelectorAll('button[aria-controls]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); document.getElementById(b.getAttribute('aria-controls')).hidden = true; });
+        if (!open) { btn.setAttribute('aria-expanded', 'true'); document.getElementById(btn.getAttribute('aria-controls')).hidden = false; }
+      });
+    });
+  });
+</script>
+{% schema %}
+{ "name": "IP6 FAQ", "tag": "section", "settings": [], "presets": [{ "name": "IP6 FAQ" }] }
+{% endschema %}

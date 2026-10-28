@@ -1,0 +1,77 @@
+{%- comment -%}
+  Price and buy controls for one product: pre-order price with the list price
+  struck through, a one-time or Subscribe & save choice when the product has
+  subscription plans (Shopify Subscriptions app), quantity, Add to cart (stays
+  on the page) and Pre Order Now (straight to checkout).
+  Params: product, compact (true on cards)
+{%- endcomment -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign pct = settings.ip6_preorder_pct | default: 15
+  assign on = settings.ip6_preorder_active
+  if on and pct > 0
+    assign keep = 100 | minus: pct
+    assign now = v.price | times: keep | divided_by: 100.0 | round
+  else
+    assign now = v.price
+  endif
+  assign plans = false
+  unless compact
+    if product.selling_plan_groups.size > 0 and v.selling_plan_allocations.size > 0
+      assign plans = true
+    endif
+  endunless
+-%}
+<div class="s-buy" data-buy data-variant="{{ v.id }}">
+  <div class="s-price" data-price>
+    <span class="now">{{ now | money }}</span>
+    {%- if now != v.price -%}<span class="was">{{ v.price | money }}</span><span class="tag">{{ pct }}% pre-order</span>{%- endif -%}
+  </div>
+  {%- if plans -%}
+    <fieldset class="s-plan">
+      <legend class="s-sr">Purchase option</legend>
+      <label class="s-plan__opt">
+        <input type="radio" name="plan-{{ product.id }}" value="" checked data-plan-price="{{ now | money | escape }}" data-plan-was="{% if now != v.price %}{{ v.price | money | escape }}{% endif %}" data-plan-tag="{% if now != v.price %}{{ pct }}% pre-order{% endif %}">
+        <span class="s-plan__body">
+          <span class="s-plan__name">One-time purchase</span>
+          <span class="s-plan__price">{{ now | money }}</span>
+        </span>
+      </label>
+      {%- for a in v.selling_plan_allocations -%}
+        {%- liquid
+          assign sp = a.selling_plan
+          assign off = 0
+          if a.compare_at_price > a.price
+            assign off = a.compare_at_price | minus: a.price | times: 100.0 | divided_by: a.compare_at_price | round
+          endif
+          assign every = sp.options.first.value | default: sp.name
+        -%}
+        <label class="s-plan__opt">
+          <input type="radio" name="plan-{{ product.id }}" value="{{ sp.id }}" data-plan-price="{{ a.price | money | escape }}" data-plan-was="{% if off > 0 %}{{ a.compare_at_price | money | escape }}{% endif %}" data-plan-tag="{% if off > 0 %}Save {{ off }}%{% endif %}">
+          <span class="s-plan__body">
+            <span class="s-plan__name">Subscribe &amp; save{% if off > 0 %} {{ off }}%{% endif %}</span>
+            <span class="s-plan__price">{{ a.price | money }}</span>
+            <span class="s-plan__detail">{{ every }}. Charged today, then {{ a.price | money }} plus shipping each delivery until you cancel. To skip, pause or cancel, email <a href="mailto:support@ip6original.com">support@ip6original.com</a>.</span>
+          </span>
+        </label>
+      {%- endfor -%}
+    </fieldset>
+  {%- endif -%}
+  {%- unless compact -%}
+    <div class="s-buy__row">
+      <div class="s-qty" role="group" aria-label="Quantity">
+        <button type="button" data-qty="-1" aria-label="Decrease quantity" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <output data-qty-value aria-live="polite">1</output>
+        <button type="button" data-qty="1" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg></button>
+      </div>
+      <button type="button" class="s-btn" data-add {% unless v.available %}disabled{% endunless %}>Add to cart</button>
+    </div>
+    <button type="button" class="s-btn s-btn--line" data-order data-label-once="Pre Order Now" data-label-sub="Subscribe and check out" {% unless v.available %}disabled{% endunless %}>Pre Order Now</button>
+  {%- else -%}
+    <div class="s-buy__row" style="grid-template-columns: 1fr 1fr">
+      <button type="button" class="s-btn" data-add {% unless v.available %}disabled{% endunless %}>Add to cart</button>
+      <a class="s-btn s-btn--line" href="{{ product.url }}">Details</a>
+    </div>
+  {%- endunless -%}
+  {%- if on -%}<p class="s-buy__note">{{ settings.ip6_preorder_ship | default: 'Starts shipping November 2026' }}. Free US shipping over $75.</p>{%- endif -%}
+</div>

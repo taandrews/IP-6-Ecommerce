@@ -1,0 +1,39 @@
+{%- comment -%}
+  Persistent DSHEA disclaimer band fixed to the bottom of the screen. Opens
+  collapsed to one line, expands on tap, can be dismissed for the session, and
+  hides once the footer (which prints the full statement) is in view.
+{%- endcomment -%}
+<aside id="ip6-disclaimer-bar" aria-label="FDA disclaimer" data-expanded="false">
+  <div class="inner">
+    <button type="button" class="text" data-toggle aria-expanded="false">
+      <span class="tag">FDA Disclaimer</span>
+      <span class="copy">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>
+    </button>
+    <button type="button" class="close" data-dismiss aria-label="Dismiss disclaimer for this session">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+</aside>
+<script>
+  (function () {
+    var bar = document.getElementById('ip6-disclaimer-bar'); if (!bar) return;
+    var dismissed = false;
+    try { dismissed = sessionStorage.getItem('ip6_disclaimer_dismissed') === '1'; } catch (e) {}
+    function update() {
+      var near = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 200;
+      bar.hidden = dismissed || near;
+    }
+    bar.querySelector('[data-toggle]').addEventListener('click', function () {
+      var open = bar.getAttribute('data-expanded') !== 'true';
+      bar.setAttribute('data-expanded', open ? 'true' : 'false');
+      this.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    bar.querySelector('[data-dismiss]').addEventListener('click', function () {
+      dismissed = true; try { sessionStorage.setItem('ip6_disclaimer_dismissed', '1'); } catch (e) {} update();
+    });
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+</script>

@@ -1,16 +1,11 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "coll": { "type": "ip6-collection", "settings": {} },
-    "disc": { "type": "ip6-disclaimer", "settings": {} }
+    "collection": {
+      "type": "ip6-collection",
+      "settings": {}
+    }
   },
-  "order": ["coll", "disc"]
+  "order": [
+    "collection"
+  ]
 }

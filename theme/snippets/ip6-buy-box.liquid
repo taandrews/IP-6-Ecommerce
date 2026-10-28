@@ -1,0 +1,48 @@
+{%- comment -%}
+  The buy box from ip6original.com (PurchasePanel, catalog presentation):
+  size, pre-order price with the list price struck through, serving size,
+  quantity, "Add to cart" (adds and stays on the page) and "Pre Order Now"
+  (adds and goes straight to checkout). Styles: ip6-pages.css under .ip6pd.
+  Params: product
+{%- endcomment -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant
+  assign pct = settings.ip6_preorder_pct | default: 15
+  if product.handle == 'ip6-original-pet-powder'
+    assign pack = v.title
+    assign serving = '1 g level scoop'
+  else
+    assign pack = v.title | remove: ' count' | append: ' capsules'
+    assign serving = '4 capsules per serving'
+  endif
+-%}
+<div class="ip6pd">
+  <div class="purchase catalogPurchase" data-buy data-variant="{{ v.id }}">
+    <div class="packRow">
+      <strong>{{ pack }}</strong>
+      {%- if settings.ip6_preorder_active -%}<span class="offer">{{ pct }}% LAUNCH OFFER</span>{%- endif -%}
+    </div>
+    <div class="price" aria-live="polite">
+      {%- if settings.ip6_preorder_active and pct > 0 -%}
+        {%- assign keep = 100 | minus: pct -%}
+        {%- assign now = v.price | times: keep | divided_by: 100.0 | round -%}
+        <strong>{{ now | money }}</strong><del>{{ v.price | money }}</del>
+      {%- else -%}
+        <strong>{{ v.price | money }}</strong>
+      {%- endif -%}
+    </div>
+    <p class="serving">{{ serving }}</p>
+    <div class="actions">
+      <div class="quantity" role="group" aria-label="Quantity">
+        <button type="button" data-qty="-1" aria-label="Decrease quantity" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <output aria-live="polite" data-qty-value>1</output>
+        <button type="button" data-qty="1" aria-label="Increase quantity"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg></button>
+      </div>
+      <button type="button" class="addButton" data-add {% unless v.available %}disabled{% endunless %} aria-live="polite">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Add to cart
+      </button>
+      <button type="button" class="orderButton" data-order {% unless v.available %}disabled{% endunless %}>{% if v.available %}Pre Order Now{% else %}Out of stock{% endif %}</button>
+    </div>
+    {%- if settings.ip6_preorder_active -%}<p class="shipNote">{{ settings.ip6_preorder_ship | default: 'Starts shipping November 2026' }}</p>{%- endif -%}
+  </div>
+</div>
