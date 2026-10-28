@@ -18,15 +18,15 @@ export const faqCategories: FaqCategory[] = [
     items: [
       {
         q: "When will my order arrive?",
-        a: "Pre-orders start shipping in November 2026, in the order they were received. You get a tracking email the day your order ships. From there, US standard delivery usually takes 3 to 6 business days (1 to 3 expedited) and international orders 7 to 14 business days, though busy periods and carrier delays can stretch that. If your package is past that window, contact us with your order number and we will check on it within one business day.",
+        a: "Pre-orders start shipping in November 2026, in the order they were received. You get a tracking email the day your order ships. From there, standard delivery usually takes 3 to 6 business days (1 to 3 expedited), though busy periods and carrier delays can stretch that. If your package is past that window, contact us with your order number and we will check on it within one business day.",
       },
       {
         q: "What if the pre-order shipping date changes?",
         a: "We email every pre-order customer the new date as soon as we know it. If you would rather not wait, reply to that email or use the contact form before your order ships and we cancel it for a full refund to your original payment method.",
       },
       {
-        q: "Do I pay duties or import taxes?",
-        a: "Where possible, import duties and taxes are calculated at checkout. Otherwise, duties are the responsibility of the recipient and are collected by the carrier on delivery.",
+        q: "Where do you ship?",
+        a: "We currently ship to US addresses only: the 50 states and Washington, DC. We do not yet ship to US territories, to APO, FPO or DPO military addresses, or outside the United States.",
         more: { href: "/legal/shipping-policy", label: "Read the shipping policy" },
       },
     ],

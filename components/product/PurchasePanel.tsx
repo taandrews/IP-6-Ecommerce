@@ -288,7 +288,7 @@ export function PurchasePanel({
 
       {/* Delivery */}
       <p className="text-sm text-ink/70 leading-relaxed">
-        {PREORDER.active ? `${PREORDER.shipNote}, in the order received. ` : ""}You get a tracking email the day your order ships. After that, US standard delivery usually takes {TRANSIT_DAYS.domesticStandard[0]} to {TRANSIT_DAYS.domesticStandard[1]} business days ({TRANSIT_DAYS.domesticExpedited[0]} to {TRANSIT_DAYS.domesticExpedited[1]} expedited) and international orders {TRANSIT_DAYS.internationalStandard[0]} to {TRANSIT_DAYS.internationalStandard[1]}; carrier delays can stretch that.{PREORDER.active ? " If the shipping date changes, we email you the new date and you can cancel for a full refund." : ""}
+        {PREORDER.active ? `${PREORDER.shipNote}, in the order received. ` : ""}Ships to US addresses only. You get a tracking email the day your order ships. After that, standard delivery usually takes {TRANSIT_DAYS.domesticStandard[0]} to {TRANSIT_DAYS.domesticStandard[1]} business days ({TRANSIT_DAYS.domesticExpedited[0]} to {TRANSIT_DAYS.domesticExpedited[1]} expedited); carrier delays can stretch that.{PREORDER.active ? " If the shipping date changes, we email you the new date and you can cancel for a full refund." : ""}
       </p>
 
       {/* Directions, right beside the purchase controls */}
