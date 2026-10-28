@@ -35,3 +35,17 @@
   .pause { left: auto; right: 0; bottom: 6px; }
 }
 @media (max-width: 360px) { .copy { inset: 8px 30px auto; } .eyebrow { font-size: 7px; margin-bottom: 4px; } .copy h2 { font-size: 19px; } .actions { bottom: 4px; } .routes { margin-top: 0; } }
+/* Phones held sideways: words at the left, the buttons in a row beneath them, dots and pause top right. */
+@media (max-width: 1000px) and (orientation: landscape) and (max-height: 500px) {
+  .copy { inset: 0; padding: 10px 6vw 64px; align-items: flex-start; justify-content: center; text-align: left; }
+  .eyebrow { font-size: 9px; letter-spacing: .18em; margin-bottom: 6px; }
+  .copy h2 { font-size: clamp(20px, 6.6vh, 28px); line-height: 1.1; max-width: none; }
+  .copy h2 span { display: block; margin-left: 0; }
+  .actions { left: 6vw; right: auto; bottom: 12px; flex-direction: row; align-items: center; gap: 8px; }
+  .order { min-height: 40px; padding: 8px 18px; font-size: 13px; }
+  .routes { margin: 0; gap: 6px; }
+  .routes a { min-height: 36px; padding: 6px 12px; font-size: 11px; }
+  .dots { left: auto; right: 52px; top: 8px; transform: none; flex-direction: row; }
+  .dots button { width: 32px; height: 32px; }
+  .pause { left: auto; right: 10px; top: 6px; bottom: auto; width: 36px; height: 36px; }
+}

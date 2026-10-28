@@ -765,3 +765,156 @@
   .doctorActive .cta { min-height: 44px; }
   .doctorActive .routes a { min-height: 40px; display: inline-flex; align-items: center; }
 }
+
+/* Phones held sideways: a wide, short frame. The words sit at the left in one
+   column with the buttons in a row beneath them, the photo fills the frame
+   behind, and the bottom row clears the collapsed disclaimer bar. Every slide's
+   own placement rules are overridden here, so the selectors carry the slide
+   classes too. */
+@media (max-width: 1000px) and (orientation: landscape) and (max-height: 500px) {
+  .hero,
+  .hero.yogaActive,
+  .hero.viewportVideoActive,
+  .hero.beachActive,
+  .hero.productActive,
+  .hero.doctorActive {
+    /* The script measures what is on screen between the header and the disclaimer bar. */
+    aspect-ratio: auto;
+    height: var(--product-visible-height, calc(100svh - 64px - 3.5rem));
+    min-height: 240px;
+    max-height: none;
+  }
+  .hero .yogaSlide {
+    height: 100%;
+  }
+  .hero .productCanvas {
+    height: 100%;
+  }
+  .hero .copy,
+  .yogaActive .copy,
+  .doctorActive .copy,
+  .viewportVideoActive .copy,
+  .beachActive .copy {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0.75rem 6vw 4.5rem;
+  }
+  .hero .textStack,
+  .yogaActive .textStack,
+  .doctorActive .textStack {
+    display: grid;
+    grid-template-rows: auto;
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 0;
+    align-content: center;
+    justify-items: start;
+  }
+  .hero .text,
+  .hero .textCentered,
+  .hero .textSplit,
+  .hero .textLow,
+  .yogaActive .textOn,
+  .doctorActive .textOn {
+    grid-area: 1 / 1;
+    align-self: auto;
+    display: block;
+    max-width: 62%;
+    text-align: left;
+    transform: none;
+  }
+  .hero .textSplit .eyebrow,
+  .doctorActive .textSplit .eyebrow {
+    margin: 0 0 0.4rem;
+  }
+  .hero .eyebrow,
+  .yogaActive .eyebrow {
+    margin: 0 0 0.4rem;
+    max-width: none;
+    font-size: 10px;
+    line-height: 1.5;
+    letter-spacing: 0.16em;
+  }
+  .hero .headlineOnly .eyebrow {
+    display: none;
+  }
+  /* Uppercase letters run wider than the ch unit, so 26ch holds about 20 characters per line. */
+  .hero .line,
+  .yogaActive .line,
+  .doctorActive .textSplit .line {
+    font-size: clamp(1.25rem, 6.6vh, 1.8rem);
+    line-height: 1.1;
+    max-width: 26ch;
+  }
+  .hero .sub,
+  .yogaActive .sub,
+  .hero .textSplit .sub,
+  .hero .headlineOnly .sub {
+    display: none;
+  }
+  /* Sideways, the wide photos and their desktop framing are used, not the portrait crops. */
+  .hero .ph img,
+  .hero .ph video {
+    object-position: var(--pos, 50% 50%);
+  }
+  .hero .dim,
+  .hero .slideCentered .dim {
+    background: linear-gradient(to right, rgba(6, 18, 42, 0.8), rgba(6, 18, 42, 0.58) 42%, rgba(6, 18, 42, 0.16) 72%, rgba(6, 18, 42, 0.05));
+  }
+  .hero .actions,
+  .viewportVideoActive .actions,
+  .beachActive .actions,
+  .yogaActive .actions,
+  .doctorActive .actions {
+    top: auto;
+    bottom: 0.75rem;
+    left: 6vw;
+    right: auto;
+    transform: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero .routes,
+  .doctorActive .routes {
+    margin: 0;
+    gap: 0.4rem;
+  }
+  .hero .cta,
+  .doctorActive .cta {
+    min-height: 40px;
+    padding: 0.55rem 1.1rem;
+    font-size: 13px;
+  }
+  .hero .routes a {
+    min-height: 36px;
+    padding: 0.4rem 0.75rem;
+    font-size: 11px;
+  }
+  .hero .dots,
+  .yogaActive .dots,
+  .doctorActive .dots {
+    left: auto;
+    right: 3.6rem;
+    top: 0.85rem;
+    bottom: auto;
+    transform: none;
+    flex-direction: row;
+    gap: 8px;
+  }
+  .hero .pause,
+  .yogaActive .pause,
+  .doctorActive .pause {
+    left: auto;
+    right: 0.6rem;
+    top: 0.5rem;
+    bottom: auto;
+  }
+  .hero .scroll {
+    display: none;
+  }
+}

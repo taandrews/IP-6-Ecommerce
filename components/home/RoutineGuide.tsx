@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import scene from "@/assets/hero/ip6-capsules-powder-scene.webp";
+import { HERO } from "@/lib/cdn-images";
 import styles from "./HomeDetails.module.css";
 
 export interface RoutineOption {
@@ -21,7 +21,7 @@ export function RoutineGuide({ options }: { options: [RoutineOption, ...RoutineO
   return (
     <div className={styles.routineGrid}>
       <figure className={styles.routinePhoto}>
-        <Image src={scene} alt="IP6 Original capsules and pet powder with capsules and a measuring scoop on the counter" sizes="(max-width: 700px) 90vw, 50vw" />
+        <Image src={HERO.capsulesPowderScene.src} width={HERO.capsulesPowderScene.width} height={HERO.capsulesPowderScene.height} alt="IP6 Original capsules and pet powder with capsules and a measuring scoop on the counter" sizes="(max-width: 700px) 90vw, 50vw" />
         <figcaption>Capsule and powder appearance illustrative.</figcaption>
       </figure>
       <div className={styles.routineContent}>

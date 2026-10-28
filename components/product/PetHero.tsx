@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
+import { SHOP_VIDEO } from "@/lib/cdn-images";
 import styles from "./PetHero.module.css";
 
 export function PetHero({ ctaHref = "#pet-purchase", showCopy = true, playing = true, loop = true, onEnded }: { ctaHref?: string; showCopy?: boolean; playing?: boolean; loop?: boolean; onEnded?: () => void } = {}) {
@@ -35,8 +36,8 @@ export function PetHero({ ctaHref = "#pet-purchase", showCopy = true, playing = 
     };
   }, []);
   return <section ref={heroRef} className={styles.hero} aria-label="IP6 Original for dogs and cats">
-    <video ref={videoRef} className={styles.video} autoPlay={playing} muted loop={loop} onEnded={onEnded} playsInline controls={false} disablePictureInPicture preload="auto" poster="/media/products/pets-adobestock-1772530708-poster.jpg" width={1920} height={1080} aria-label="Two dogs and a cat together against a golden background">
-      <source src="/media/products/pets-adobestock-1772530708.mp4" type="video/mp4" />
+    <video ref={videoRef} className={styles.video} autoPlay={playing} muted loop={loop} onEnded={onEnded} playsInline controls={false} disablePictureInPicture preload="auto" poster={SHOP_VIDEO.pets.poster} width={1920} height={1080} aria-label="Two dogs and a cat together against a golden background">
+      <source src={SHOP_VIDEO.pets.video} type="video/mp4" />
     </video>
     <div className={styles.shade} aria-hidden="true" />
     {showCopy && <div className={styles.copy}>

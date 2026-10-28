@@ -5,8 +5,9 @@ import { ArrowDown, ArrowRight, FlaskConical, ShieldCheck, Factory } from "lucid
 import { Footer } from "@/components/layout/Footer";
 import { DsheaDisclaimer } from "@/components/product/Dshea";
 import { hreflangAlternates } from "@/lib/i18n";
-import capsulePhoto from "@/assets/products/lifestyle/supplement-detail.png";
-import labelPhoto from "@/assets/products/supplement-240-label.jpg";
+import { LABEL_240, LIFESTYLE } from "@/lib/cdn-images";
+const capsulePhoto = LIFESTYLE.supplementDetail;
+const labelPhoto = LABEL_240;
 import styles from "./Difference.module.css";
 
 export const metadata: Metadata = {
@@ -37,7 +38,7 @@ export default function TheDifferencePage() {
         </header>
         <section id="formula" aria-labelledby="formula-title" className={`${styles.wrap} ${styles.formula}`}>
           <figure className={styles.photograph}>
-            <Image src={capsulePhoto} alt="IP6 Original Supplement bottle with vegetable capsules resting on a dish" sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1250px) 46vw, 552px" priority />
+            <Image src={capsulePhoto.src} width={capsulePhoto.width} height={capsulePhoto.height} alt="IP6 Original Supplement bottle with vegetable capsules resting on a dish" sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1250px) 46vw, 552px" priority />
             <figcaption>A closer look at the capsules. Concept photography.</figcaption>
           </figure>
           <div className={styles.formulaCopy}>
@@ -87,7 +88,7 @@ export default function TheDifferencePage() {
             <p className={styles.body}>The ingredients, serving size, and Supplement Facts, straight from the IP6 Original Supplement label.</p>
           </div>
           <a href={labelPhoto.src} target="_blank" rel="noopener noreferrer" className={styles.labelImage} aria-label="Open the full IP6 Original Supplement label in a new tab">
-            <Image src={labelPhoto} alt="IP6 Original 240-capsule label: 4 capsules per serving, 804 mg IP6 and 196 mg Inositol" sizes="(max-width: 1250px) calc(100vw - 64px), 1200px" />
+            <Image src={labelPhoto.src} width={labelPhoto.width} height={labelPhoto.height} alt="IP6 Original 240-capsule label: 4 capsules per serving, 804 mg IP6 and 196 mg Inositol" sizes="(max-width: 1250px) calc(100vw - 64px), 1200px" />
             <span>Open full-size label <ArrowRight size={17} aria-hidden /></span>
           </a>
           <dl className={styles.labelFacts}><div><dt>240</dt><dd>vegetable capsules</dd></div><div><dt>4</dt><dd>capsules per serving</dd></div><div><dt>60</dt><dd>servings per bottle</dd></div></dl>

@@ -10,12 +10,8 @@ import type { PreorderSettings } from "@/types/records";
 import { PurchasePanel } from "@/components/product/PurchasePanel";
 import { Reviews } from "@/components/product/Reviews";
 import { DsheaDisclaimer } from "@/components/product/Dshea";
-import supplementPhoto from "@/assets/products/lifestyle/supplement-main.png";
-import petPhoto from "@/assets/products/lifestyle/pet-feeding-v2.png";
-import supplementDetail from "@/assets/products/lifestyle/supplement-detail.png";
-import supplementUse from "@/assets/products/lifestyle/supplement-use.png";
-import petDetail from "@/assets/products/lifestyle/pet-detail.png";
-import petUse from "@/assets/products/lifestyle/pet-use.png";
+import { LIFESTYLE } from "@/lib/cdn-images";
+const { supplementMain: supplementPhoto, petFeeding: petPhoto, supplementDetail, supplementUse, petDetail, petUse } = LIFESTYLE;
 import styles from "./ShopCatalog.module.css";
 
 /** Words a shopper might type that are not in the product copy. */
@@ -161,10 +157,10 @@ function ShopProductRow({ product, audience, currency, preorder, reviews }: { pr
       <p className={styles.description}>{description}</p>
     </header>
     <div className={styles.photo}>
-      <Image src={photos[photoIndex] ?? (pet ? petPhoto : supplementPhoto)} alt={alts[photoIndex] ?? product.name} sizes="(max-width: 700px) 100vw, 50vw" priority={photoIndex === 0} />
+      <Image src={(photos[photoIndex] ?? photos[0]!).src} width={(photos[photoIndex] ?? photos[0]!).width} height={(photos[photoIndex] ?? photos[0]!).height} alt={alts[photoIndex] ?? product.name} sizes="(max-width: 700px) 100vw, 50vw" priority={photoIndex === 0} />
     </div>
     <div className={styles.thumbnails} role="group" aria-label={`${product.name} photos`}>
-      {photos.map((photo, index) => <button key={photo.src} type="button" aria-label={`Show ${["product", "close-up", "in-use"][index]} photo`} aria-pressed={photoIndex === index} onClick={() => setPhotoIndex(index)}><Image src={photo} alt="" width={72} height={60} sizes="72px" /></button>)}
+      {photos.map((photo, index) => <button key={photo.src} type="button" aria-label={`Show ${["product", "close-up", "in-use"][index]} photo`} aria-pressed={photoIndex === index} onClick={() => setPhotoIndex(index)}><Image src={photo.src} alt="" width={72} height={60} sizes="72px" /></button>)}
     </div>
     <div className={styles.buy} id={pet ? "pets-purchase" : "people-purchase"}><PurchasePanel product={product} currency={currency} presentation="catalog" /></div>
     <div className={styles.accordions}>

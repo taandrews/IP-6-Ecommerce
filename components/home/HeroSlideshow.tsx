@@ -1,12 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import speakerPhoto from "@/assets/hero/doctor-cutout-v1.webp";
-import yogaPhoto from "@/assets/hero/yoga-full-scene-desktop.webp";
-import yogaMobilePhoto from "@/assets/hero/yoga-full-scene-mobile.webp";
-import approvedSlide from "@/assets/hero/ip6-corrected-slide-desktop.webp";
-import approvedMobileSlide from "@/assets/hero/ip6-approved-slide-mobile.webp";
-import productScene from "@/assets/hero/ip6-products-mobile-cutout-v1.png";
+import { HERO } from "@/lib/cdn-images";
+const { doctor: speakerPhoto, yoga: yogaPhoto, yogaMobile: yogaMobilePhoto, approvedSlide, approvedSlideMobile: approvedMobileSlide, productScene } = HERO;
 import { asset } from "@/lib/assets";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
@@ -250,7 +246,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
                 />
               ) : s.msrc ? (
                 <picture>
-                  <source media={i === 1 ? "(max-width: 900px) and (orientation: portrait)" : "(max-width: 900px)"} srcSet={s.msrc} />
+                  <source media="(max-width: 900px) and (orientation: portrait)" srcSet={s.msrc} />
                   <img src={s.src} alt={s.alt} style={{ ["--pos" as string]: s.pos, ["--pos-m" as string]: s.mpos ?? s.pos }} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
                 </picture>
               ) : (

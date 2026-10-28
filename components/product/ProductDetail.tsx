@@ -8,14 +8,8 @@ import type { Currency, Product } from "@/types";
 import { PurchasePanel } from "./PurchasePanel";
 import { PetHero } from "./PetHero";
 import { SupplementHero } from "./SupplementHero";
-import supplementMain from "@/assets/products/lifestyle/supplement-main.png";
-import supplementDetail from "@/assets/products/lifestyle/supplement-detail.png";
-import supplementUse from "@/assets/products/lifestyle/supplement-use.png";
-import supplementRoutine from "@/assets/products/lifestyle/supplement-routine.png";
-import petMain from "@/assets/products/lifestyle/pet-main.png";
-import petDetail from "@/assets/products/lifestyle/pet-detail.png";
-import petUse from "@/assets/products/lifestyle/pet-use.png";
-import petRoutine from "@/assets/products/lifestyle/pet-routine.png";
+import { LIFESTYLE } from "@/lib/cdn-images";
+const { supplementMain, supplementDetail, supplementUse, supplementRoutine, petMain, petDetail, petUse, petRoutine } = LIFESTYLE;
 import styles from "./ProductDetail.module.css";
 
 export function ProductDetail({ product, currency }: { product: Product; currency: Currency }) {
@@ -53,10 +47,10 @@ export function ProductDetail({ product, currency }: { product: Product; currenc
           <button className={styles.textLink} type="button" onClick={() => openDetails(facts)}>{pet ? "View product details" : "View Supplement Facts"}<ArrowRight size={18} aria-hidden="true" /></button>
         </header>
         <figure className={styles.gallery}>
-          <Image src={photos[0]} alt={alts[0]} priority sizes="(min-width: 900px) 55vw, 100vw" />
+          <Image src={photos[0].src} width={photos[0].width} height={photos[0].height} alt={alts[0]} priority sizes="(min-width: 900px) 55vw, 100vw" />
           <div className={styles.photoPair}>
-            <Image src={photos[1]} alt={alts[1]} sizes="(min-width: 900px) 28vw, 50vw" />
-            <Image src={photos[2]} alt={alts[2]} sizes="(min-width: 900px) 28vw, 50vw" />
+            <Image src={photos[1].src} width={photos[1].width} height={photos[1].height} alt={alts[1]} sizes="(min-width: 900px) 28vw, 50vw" />
+            <Image src={photos[2].src} width={photos[2].width} height={photos[2].height} alt={alts[2]} sizes="(min-width: 900px) 28vw, 50vw" />
           </div>
           <figcaption>Concept photography</figcaption>
         </figure>
@@ -78,7 +72,7 @@ export function ProductDetail({ product, currency }: { product: Product; currenc
     <section className={styles.routine} aria-labelledby="routine-heading"><div className={styles.container}>
       <h2 id="routine-heading">A closer look at {pet ? "their" : "your"} daily routine.</h2>
       <div className={styles.routineGrid}>
-        <Image src={photos[3]} alt={alts[3]} sizes="(min-width: 900px) 55vw, 100vw" />
+        <Image src={photos[3].src} width={photos[3].width} height={photos[3].height} alt={alts[3]} sizes="(min-width: 900px) 55vw, 100vw" />
         <div><h3>IP6 + Inositol</h3><p>804 mg IP6 and 196 mg Inositol<br />per {pet ? "1 g level scoop" : "4-capsule serving"}.</p>{pet && <p>Mix into food. Follow the feeding directions for your pet.</p>}<button className={styles.textLink} onClick={() => openDetails(directions)}>{pet ? "Feeding directions" : "How to take"}<ArrowRight size={18} /></button></div>
       </div>
     </div></section>

@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
+import { SHOP_VIDEO } from "@/lib/cdn-images";
 import styles from "./PetHero.module.css";
 
 export function SupplementHero({ ctaHref = "#supplement-purchase", showCopy = true, playing = true, loop = true, onEnded }: { ctaHref?: string; showCopy?: boolean; playing?: boolean; loop?: boolean; onEnded?: () => void } = {}) {
@@ -35,8 +36,8 @@ export function SupplementHero({ ctaHref = "#supplement-purchase", showCopy = tr
     };
   }, []);
   return <section ref={heroRef} className={styles.hero} aria-label="IP6 Original Supplement">
-    <video ref={videoRef} className={styles.video} autoPlay={playing} muted loop={loop} onEnded={onEnded} playsInline controls={false} disablePictureInPicture preload="auto" poster="/media/products/supplement-adobestock-244106506-poster.jpg" width={2048} height={1080} aria-label="An adult and child walking through a sunlit field">
-      <source src="/media/products/supplement-adobestock-244106506.mp4" type="video/mp4" />
+    <video ref={videoRef} className={styles.video} autoPlay={playing} muted loop={loop} onEnded={onEnded} playsInline controls={false} disablePictureInPicture preload="auto" poster={SHOP_VIDEO.supplement.poster} width={2048} height={1080} aria-label="An adult and child walking through a sunlit field">
+      <source src={SHOP_VIDEO.supplement.video} type="video/mp4" />
     </video>
     <div className={styles.shade} aria-hidden="true" />
     {showCopy && <div className={styles.copy}>
