@@ -10,7 +10,8 @@ interface CartState {
   drawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
-  add: (line: CartLine) => void;
+  /** Adds a line. The drawer opens unless openDrawer is false (add and keep shopping). */
+  add: (line: CartLine, opts?: { openDrawer?: boolean }) => void;
   remove: (variantId: string) => void;
   setQty: (variantId: string, qty: number) => void;
   clear: () => void;
@@ -27,7 +28,7 @@ export const useCart = create<CartState>()(
       subtotalCents: 0,
       openDrawer: () => set({ drawerOpen: true }),
       closeDrawer: () => set({ drawerOpen: false }),
-      add: (line) => {
+      add: (line, opts) => {
         const existing = get().lines.find(
           (l) => l.variantId === line.variantId && !!l.subscription === !!line.subscription,
         );
@@ -38,7 +39,7 @@ export const useCart = create<CartState>()(
           : [...get().lines, line];
         set({
           lines,
-          drawerOpen: true,
+          drawerOpen: opts?.openDrawer ?? true,
           ...derive(lines),
         });
       },

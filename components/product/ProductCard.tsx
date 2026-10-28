@@ -6,6 +6,7 @@ import type { Product, Currency } from "@/types";
 import type { PreorderSettings } from "@/types/records";
 import { formatPrice } from "@/lib/utils";
 import { DEFAULT_PREORDER, preorderUnitCents } from "@/lib/preorder";
+import { AddToCartButton } from "./AddToCartButton";
 
 export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: { product: Product; currency: Currency; preorder?: PreorderSettings }) {
   const image = product.images[0];
@@ -18,6 +19,7 @@ export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: 
 
   // First 3 highlights as benefit bullets.
   const bullets = product.highlights.slice(0, 3);
+  const first = product.variants.find((v) => v.inStock) ?? product.variants[0];
 
   return (
     <article className="group rounded-lg overflow-hidden border border-ivory-300 bg-surface hover:shadow-card transition-shadow duration-300 flex flex-col">
@@ -107,13 +109,31 @@ export function ProductCard({ product, currency, preorder = DEFAULT_PREORDER }: 
                 })}
                 {preorder.active ? <li className="text-[11px] text-ink/55">{preorder.label}, {preorder.discountPct}% off</li> : null}
               </ul>
-              <Link
-                href={productHref(product.slug)}
-                className="btn-primary text-sm px-4 py-2.5 group/btn"
-              >
-                Shop
-                <ArrowRight className="size-4 transition-transform group-hover/btn:translate-x-0.5" />
-              </Link>
+              <div className="flex flex-col items-end gap-2">
+                {first ? (
+                  <AddToCartButton
+                    disabled={!first.inStock}
+                    className="btn-secondary text-sm px-4 py-2.5 whitespace-nowrap"
+                    line={() => ({
+                      sku: first.sku,
+                      variantId: first.id,
+                      name: product.name,
+                      variantLabel: [first.name, first.size].filter(Boolean).join(" · "),
+                      image: first.image?.url ?? image?.url ?? "",
+                      qty: 1,
+                      unitPriceCents: first.priceCents[currency],
+                      currency,
+                    })}
+                  />
+                ) : null}
+                <Link
+                  href={productHref(product.slug)}
+                  className="btn-primary text-sm px-4 py-2.5 group/btn"
+                >
+                  Shop
+                  <ArrowRight className="size-4 transition-transform group-hover/btn:translate-x-0.5" />
+                </Link>
+              </div>
             </>
           )}
         </div>

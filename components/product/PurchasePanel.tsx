@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Minus, Plus, RefreshCw, ShoppingBag, Check } from "lucide-react";
 import type { Product, Currency } from "@/types";
 import { formatPrice, cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartStore";
 import { Badge } from "@/components/ui/Badge";
+import { AddToCartButton } from "./AddToCartButton";
 import { preorderUnitCents } from "@/lib/preorder";
 import { usePreorder } from "@/components/store/StoreSettings";
 import { TRANSIT_DAYS } from "@/lib/shipping";
@@ -42,6 +44,7 @@ export function PurchasePanel({
   );
   const { add } = useCart();
   const PREORDER = usePreorder();
+  const router = useRouter();
 
   if (!variant) return null;
 
@@ -52,8 +55,8 @@ export function PurchasePanel({
   const effective = mode === "subscribe" ? subUnit : preorderUnitCents(unit, PREORDER);
   const showPreorder = PREORDER.active && mode === "one-time";
 
-  function onAdd() {
-    add({
+  function cartLine() {
+    return {
       sku: variant!.sku,
       variantId: variant!.id,
       name: product.name,
@@ -66,7 +69,13 @@ export function PurchasePanel({
         mode === "subscribe"
           ? { cycleDays, discountPct: subDiscount }
           : undefined,
-    });
+    };
+  }
+
+  /** Pre Order Now: add the line and go straight to checkout. */
+  function onOrderNow() {
+    add(cartLine(), { openDrawer: false });
+    router.push("/checkout");
   }
 
   if (presentation === "editorial" || presentation === "catalog") return (
@@ -101,12 +110,15 @@ export function PurchasePanel({
           <p>{formatPrice(subUnit * qty, currency)} per delivery, plus standard shipping, every {cycleDays} days until canceled. Skip, pause or cancel from your account.</p>
         </div>}
       </>}
-      <div className={styles.quantity} role="group" aria-label="Quantity">
-        <button type="button" disabled={qty === 1} onClick={() => setQty(q => Math.max(1, q - 1))} aria-label="Decrease quantity"><Minus size={16} /></button>
-        <output aria-live="polite">{qty}</output>
-        <button type="button" disabled={qty === 20} onClick={() => setQty(q => Math.min(20, q + 1))} aria-label="Increase quantity"><Plus size={16} /></button>
+      <div className={styles.actions}>
+        <div className={styles.quantity} role="group" aria-label="Quantity">
+          <button type="button" disabled={qty === 1} onClick={() => setQty(q => Math.max(1, q - 1))} aria-label="Decrease quantity"><Minus size={16} /></button>
+          <output aria-live="polite">{qty}</output>
+          <button type="button" disabled={qty === 20} onClick={() => setQty(q => Math.min(20, q + 1))} aria-label="Increase quantity"><Plus size={16} /></button>
+        </div>
+        <AddToCartButton line={cartLine} disabled={!variant.inStock} className={styles.addButton} />
+        <button type="button" className={styles.orderButton} onClick={onOrderNow} disabled={!variant.inStock}>{!variant.inStock ? "Out of stock" : "Pre Order Now"}</button>
       </div>
-      <button type="button" className={styles.orderButton} onClick={onAdd} disabled={!variant.inStock}>{!variant.inStock ? "Out of stock" : "Pre Order Now"}</button>
       {PREORDER.active && <p className={styles.shipNote}>{PREORDER.shipNote}</p>}
     </div>
   );
@@ -267,7 +279,8 @@ export function PurchasePanel({
             <Plus className="size-4" />
           </button>
         </div>
-        <button onClick={onAdd} className="btn-primary flex-1" disabled={!variant.inStock}>
+        <AddToCartButton line={cartLine} disabled={!variant.inStock} className="btn-secondary flex-1" />
+        <button onClick={onOrderNow} className="btn-primary flex-1" disabled={!variant.inStock}>
           <ShoppingBag className="size-4" />
           {!variant.inStock ? "Out of stock" : "Pre Order Now"}
         </button>

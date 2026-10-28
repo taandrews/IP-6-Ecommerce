@@ -1,5 +1,5 @@
 .page { background: #fff; color: #001840; }
-.catalogPurchase { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 14px 18px; background: white; border: 0; border-radius: 0; padding: 24px; }
+.catalogPurchase { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; align-content: start; gap: 14px 18px; background: white; border: 0; border-radius: 0; padding: 24px; }
 .catalogPurchase .packRow, .catalogPurchase .selectLabel, .catalogPurchase .subscription, .catalogPurchase .shipNote { grid-column: 1 / -1; margin: 0; }
 .catalogPurchase .packRow > strong { font-size: 16px; font-weight: 600; }
 .catalogPurchase .packRow .offer { display: none; }
@@ -8,7 +8,9 @@
 .catalogPurchase .price del { font-size: 15px; color: #465975; }
 .catalogPurchase .serving { margin: 0; font-size: 14px; color: #344c6b; text-align: right; }
 .catalogPurchase .selectLabel { font-size: 14px; }
-.catalogPurchase .orderButton { margin: 0; min-height: 46px; font-size: 15px; padding-inline: 10px; white-space: nowrap; }
+.catalogPurchase .actions { grid-column: 1 / -1; display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: center; margin: 0; }
+.catalogPurchase .orderButton, .catalogPurchase .addButton { margin: 0; min-height: 46px; font-size: 15px; padding-inline: 10px; white-space: nowrap; }
+@media (max-width: 1050px) { .catalogPurchase .actions { grid-template-columns: auto minmax(0, 1fr); } .catalogPurchase .orderButton { grid-column: 1 / -1; } }
 .catalogPurchase .quantity { justify-content: center; }
 .catalogPurchase .shipNote { color: #344c6b; font-size: 14px; text-align: left; }
 @media (max-width: 380px) { .catalogPurchase { padding: 18px; gap: 12px; } .catalogPurchase .price strong { font-size: 30px; } .catalogPurchase .serving { font-size: 12px; } .catalogPurchase .orderButton { font-size: 13px; } }
@@ -46,6 +48,11 @@
 .orderButton { width: 100%; border-radius: 999px; background: #001840; color: white; font-weight: 600; font-size: 17px; min-height: 52px; margin-top: 18px; padding: 12px 18px; }
 .orderButton:hover { background: #183760; }
 .orderButton:disabled { opacity: .5; cursor: not-allowed; }
+.actions { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: center; margin-top: 18px; }
+.actions .orderButton { margin-top: 0; }
+.addButton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border-radius: 999px; border: 1.5px solid #001840; background: white; color: #001840; font-weight: 600; font-size: 17px; min-height: 52px; padding: 12px 18px; }
+.addButton:hover { background: #edf2f6; }
+.addButton:disabled { opacity: .5; cursor: not-allowed; }
 .shipNote { text-align: center; color: #64748b; font-size: 12px; line-height: 1.5; margin-top: 14px; }
 .accordions { border-top: 1px solid #b8c3d0; margin-top: 24px; }
 .accordions details { border-bottom: 1px solid #b8c3d0; scroll-margin-top: 160px; }
