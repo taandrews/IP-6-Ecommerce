@@ -31,7 +31,7 @@
     "type_size_h6": "12",
     "type_line_height_h6": "display-loose",
     "page_width": "wide",
-    "logo": "shopify:\/\/shop_images\/ip6-logo2.png",
+    "logo": "shopify://shop_images/ip6-logo2.png",
     "logo_height": 56,
     "logo_height_mobile": 44,
     "page_transition_enabled": false,
@@ -347,8 +347,9 @@
     "ip6_preorder_pct": 15,
     "ip6_preorder_label": "Pre-order",
     "ip6_preorder_ship": "Starts shipping November 2026",
-    "ip6_cdn": "https:\/\/dcpioskz74ft.cloudfront.net",
-    "ip6_launch_iso": "2026-11-01T04:00:00Z"
+    "ip6_cdn": "https://dcpioskz74ft.cloudfront.net",
+    "ip6_launch_iso": "2026-11-01T04:00:00Z",
+    "favicon": "shopify://shop_images/ip6-favicon.png"
   },
   "presets": {
     "Horizon": {
