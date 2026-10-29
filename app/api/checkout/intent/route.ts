@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
   try {
     const built = await buildQuote(input);
-    if (!built.quote) return NextResponse.json({ error: built.error, discountMessage: built.discountMessage }, { status: 422 });
+    if (!built.quote) return NextResponse.json({ error: built.error, discountMessage: built.discountMessage, blocked: built.blocked }, { status: 422 });
     const q = built.quote;
     const user = await getSessionUser();
     const preorder = await getPreorderSettingsFresh();

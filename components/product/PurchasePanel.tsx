@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/Badge";
 import { AddToCartButton } from "./AddToCartButton";
 import { preorderUnitCents } from "@/lib/preorder";
 import { usePreorder } from "@/components/store/StoreSettings";
+import { useGeo } from "@/components/store/Geo";
+import { WaitlistForm } from "@/components/store/WaitlistForm";
 import { TRANSIT_DAYS } from "@/lib/shipping";
 import styles from "./ProductDetail.module.css";
 
@@ -44,6 +46,7 @@ export function PurchasePanel({
   );
   const { add } = useCart();
   const PREORDER = usePreorder();
+  const { sellable } = useGeo();
   const router = useRouter();
 
   if (!variant) return null;
@@ -110,7 +113,7 @@ export function PurchasePanel({
           <p>{formatPrice(subUnit * qty, currency)} per delivery, plus standard shipping, every {cycleDays} days until canceled. Skip, pause or cancel from your account.</p>
         </div>}
       </>}
-      <div className={styles.actions}>
+      {!sellable ? <WaitlistForm source="product" product={variant.sku} className={styles.waitlist} /> : <div className={styles.actions}>
         <div className={styles.quantity} role="group" aria-label="Quantity">
           <button type="button" disabled={qty === 1} onClick={() => setQty(q => Math.max(1, q - 1))} aria-label="Decrease quantity"><Minus size={16} /></button>
           <output aria-live="polite">{qty}</output>
@@ -118,7 +121,7 @@ export function PurchasePanel({
         </div>
         <AddToCartButton line={cartLine} disabled={!variant.inStock} className={styles.addButton} />
         <button type="button" className={styles.orderButton} onClick={onOrderNow} disabled={!variant.inStock}>{!variant.inStock ? "Out of stock" : "Pre Order Now"}</button>
-      </div>
+      </div>}
       {PREORDER.active && <p className={styles.shipNote}>{PREORDER.shipNote}</p>}
     </div>
   );
@@ -256,8 +259,8 @@ export function PurchasePanel({
         </div>
       ) : null}
 
-      {/* Qty + CTA */}
-      <div className="flex items-center gap-3">
+      {/* Qty + CTA, or the launch waitlist outside the countries we sell to */}
+      {!sellable ? <WaitlistForm source="product" product={variant.sku} /> : <div className="flex items-center gap-3">
         <div
           role="group"
           aria-label="Quantity"
@@ -284,7 +287,7 @@ export function PurchasePanel({
           <ShoppingBag className="size-4" />
           {!variant.inStock ? "Out of stock" : "Pre Order Now"}
         </button>
-      </div>
+      </div>}
 
       {/* Delivery */}
       <p className="text-sm text-ink/70 leading-relaxed">

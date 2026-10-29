@@ -4,6 +4,7 @@ import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { getSessionUser } from "@/lib/auth/session";
 import { newsletterKey } from "@/lib/data/customers";
+import { deleteWaitlistEntry } from "@/lib/data/waitlist";
 import { createPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { EMAIL } from "@/lib/email-addresses";
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
   try {
     if (parsed.data.action === "unsubscribe") {
       await docClient.send(new DeleteCommand({ TableName: TABLES.Users, Key: { userId: newsletterKey(user.email) } }));
+      await deleteWaitlistEntry(user.email);
       return NextResponse.json({ ok: true });
     }
     // Signed in with a verified email, so the request counts as verified.

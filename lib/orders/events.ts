@@ -11,6 +11,7 @@ import { getSubscription, upsertFromStripe } from "@/lib/data/subscriptions";
 import { ensureStripeProduct } from "@/lib/stripe/products";
 import { findSubscriptionPrice } from "@/lib/stripe/sync";
 import { calculateRates } from "@/lib/shipping";
+import { addressBlock, isSellableCountry } from "@/lib/countries";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { formatPrice } from "@/lib/utils";
 import { getPreorderSettings } from "@/lib/data/settings";
@@ -33,6 +34,30 @@ export async function handlePaymentSucceeded(stripe: Stripe, pi: Stripe.PaymentI
   const order = await getOrder(orderId);
   if (!order) {
     console.error("[orders] paid intent has no order", orderId);
+    return;
+  }
+  // Last gate before fulfilment: the order's shipping address, and the one
+  // Stripe holds, must be in a country we sell to. Otherwise refund in full
+  // and cancel; nothing is decremented, recorded or emailed.
+  const stripeCountry = pi.shipping?.address?.country;
+  const block = addressBlock(order.shippingAddress) ?? (stripeCountry && !isSellableCountry(stripeCountry) ? "country" : null);
+  if (block) {
+    if (order.status !== "pending") return;
+    try {
+      await setOrderStatus(orderId, "cancelled", { cancelReason: `not_sellable_${block}` }, ["pending"]);
+    } catch (err) {
+      if ((err as Error).name === "ConditionalCheckFailedException") return;
+      throw err;
+    }
+    await stripe.refunds.create(
+      { payment_intent: pi.id, reason: "requested_by_customer", metadata: { by: SYSTEM, orderId, why: `not_sellable_${block}` } },
+      { idempotencyKey: `not-sellable-${orderId}` },
+    );
+    await appendOrderList(orderId, "notes", {
+      at: new Date().toISOString(),
+      by: SYSTEM,
+      text: `Shipping address is outside the countries we sell to (${block}). Payment refunded in full automatically. Do not ship.`,
+    });
     return;
   }
   const customerId = typeof pi.customer === "string" ? pi.customer : pi.customer?.id;
@@ -223,7 +248,12 @@ export async function handleRenewalPaid(stripe: Stripe, invoice: Stripe.Invoice)
     stripeCustomerId: typeof invoice.customer === "string" ? invoice.customer : undefined,
     refundedCents: 0,
     refunds: [],
-    notes: [{ at: now, by: SYSTEM, text: `Renewal of subscription ${record.subscriptionId}` + (record.orderId ? ` (first order ${record.orderId})` : "") }],
+    notes: [
+      { at: now, by: SYSTEM, text: `Renewal of subscription ${record.subscriptionId}` + (record.orderId ? ` (first order ${record.orderId})` : "") },
+      ...(addressBlock(address)
+        ? [{ at: now, by: SYSTEM, text: `Renewal address is outside the countries we sell to (${addressBlock(address)}). Do not ship: contact the customer, then refund or update the address.` }]
+        : []),
+    ],
   };
   try {
     await docClient.send(new PutCommand({ TableName: TABLES.Orders, Item: order, ConditionExpression: "attribute_not_exists(orderId)" }));

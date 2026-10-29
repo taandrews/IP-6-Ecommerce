@@ -10,6 +10,8 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { PreBookPopup } from "@/components/layout/PreBookPopup";
 import { isEuOrUk } from "@/lib/utils";
 import { StoreSettingsProvider } from "@/components/store/StoreSettings";
+import { GeoProvider } from "@/components/store/Geo";
+import { visitorGeo } from "@/lib/geo";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { getBannerSettings, getPreorderSettings, bannerIsLive } from "@/lib/data/settings";
 import { hreflangAlternates } from "@/lib/i18n";
@@ -61,6 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     );
   }
   const [preorder, banner] = await Promise.all([getPreorderSettings(), getBannerSettings()]);
+  const geo = visitorGeo();
   const country =
     hdrs.get("cloudfront-viewer-country") ??
     hdrs.get("x-vercel-ip-country") ??
@@ -86,6 +89,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           Skip to main content
         </a>
         <StoreSettingsProvider preorder={preorder}>
+        <GeoProvider country={geo.country} ipCountry={geo.ipCountry}>
           {bannerIsLive(banner) ? <AnnouncementBar banner={banner} /> : null}
           <Navigation />
           <main id="main">{children}</main>
@@ -93,6 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <CookieBanner isEuOrUk={isEuOrUk(country)} />
           <PreBookPopup />
           <Analytics />
+        </GeoProvider>
         </StoreSettingsProvider>
         <script
           type="application/ld+json"

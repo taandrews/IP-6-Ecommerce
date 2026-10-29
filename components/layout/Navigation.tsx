@@ -5,7 +5,7 @@ import { asset } from "@/lib/assets";
 import Link from "next/link";
 import { Menu, ShoppingBag, User, Search, X } from "lucide-react";
 import { useCart } from "@/components/cart/CartStore";
-import { CurrencySwitcher, CurrencyMenu } from "@/components/layout/CurrencySwitcher";
+import { CountrySwitcher, CountryMenu } from "@/components/layout/CountrySwitcher";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -53,7 +53,7 @@ export function Navigation() {
           >
             <Search className="size-5" />
           </Link>
-          <CurrencySwitcher />
+          <CountrySwitcher />
           <Link
             href="/shop#people"
             className="btn-primary text-sm px-4 py-2 ml-1 whitespace-nowrap max-[360px]:text-xs max-[360px]:px-2 max-[360px]:ml-0"
@@ -144,7 +144,7 @@ export function Navigation() {
               Account
             </Link>
             <div className="mt-6 pt-6 border-t border-ivory-300">
-              <CurrencyMenu />
+              <CountryMenu />
             </div>
           </nav>
         </div>

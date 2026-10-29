@@ -17,7 +17,7 @@ export default function PrivacyPage({ searchParams }: { searchParams: { request?
     <>
       <p className="eyebrow mb-4">Legal</p>
       <h1 className="font-display text-display-xl text-forest-800 mb-6">Privacy Policy</h1>
-      <p className="text-sm text-ink/60 mb-10">Last updated: October 25, 2026</p>
+      <p className="text-sm text-ink/60 mb-10">Last updated: October 28, 2026</p>
 
       {request === "confirmed" ? (
         <p className="mb-8 rounded-md border border-forest-200 bg-forest-50 p-4 text-sm text-forest-800" role="status">
@@ -59,6 +59,13 @@ export default function PrivacyPage({ searchParams }: { searchParams: { request?
             </li>
             <li>
               <strong>Emails you agreed to:</strong> your email address, the date you agreed and where on the site you signed up.
+            </li>
+            <li>
+              <strong>Launch waitlist:</strong> if you are outside the countries we ship to and ask to hear when we launch there, your email,
+              the country you choose, your first name if you give it, the country your connection appears to come from (we don&apos;t keep your
+              IP address), the product and page you signed up on, the date, and the wording you agreed to. We use it only to email you about
+              our launch in your country and product news, keep it apart from our customer records, and delete it when you unsubscribe or ask
+              us to.
             </li>
             <li>
               <strong>Reviews:</strong> your rating, review text and the display name you choose. If you are signed in, the review is linked to

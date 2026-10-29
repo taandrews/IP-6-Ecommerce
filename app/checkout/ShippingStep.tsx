@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input, Select } from "@/components/ui/Input";
 import type { Address } from "@/types";
-import { SHIP_COUNTRIES } from "@/lib/countries";
+import { ADDRESS_BLOCK_MESSAGES, addressBlock, countryOptions, isSellableCountry, type AddressBlock } from "@/lib/countries";
+import { WaitlistForm } from "@/components/store/WaitlistForm";
 
 
 export function ShippingStep({
@@ -30,16 +31,28 @@ export function ShippingStep({
     },
   );
 
+  const options = useMemo(() => countryOptions(), []);
+  // Set when the address is outside the countries we sell to: checkout stops here and offers the waitlist.
+  const [blocked, setBlocked] = useState<AddressBlock | null>(null);
+  const countryBlocked = !isSellableCountry(form.country);
+
   function set<K extends keyof Address>(k: K, v: Address[K]) {
     setForm((f) => ({ ...f, [k]: v }));
+    setBlocked(null);
   }
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    const block = addressBlock(form);
+    if (block) {
+      setBlocked(block);
+      return;
+    }
     onContinue(form);
   }
 
   return (
+    <>
     <form onSubmit={submit} className="card p-6 lg:p-8 space-y-5">
       <h2 className="font-display text-xl text-forest-800">Contact</h2>
       <Input
@@ -117,16 +130,33 @@ export function ShippingStep({
         value={form.country}
         onChange={(e) => set("country", e.target.value)}
       >
-        {SHIP_COUNTRIES.map(([code, name]) => (
+        {options.map(([code, name]) => (
           <option key={code} value={code}>
             {name}
           </option>
         ))}
       </Select>
 
-      <div className="pt-2 flex justify-end">
-        <button type="submit" className="btn-primary">Continue to shipping method</button>
-      </div>
+      {blocked && blocked !== "country" ? (
+        <p className="text-sm text-danger" role="alert">
+          {ADDRESS_BLOCK_MESSAGES[blocked]}
+        </p>
+      ) : null}
+      {countryBlocked || blocked ? null : (
+        <div className="pt-2 flex justify-end">
+          <button type="submit" className="btn-primary">Continue to shipping method</button>
+        </div>
+      )}
     </form>
+    {countryBlocked || blocked ? (
+      <WaitlistForm
+        key={form.country}
+        source="checkout"
+        defaultEmail={email}
+        defaultCountry={countryBlocked ? form.country : undefined}
+        className="mt-4"
+      />
+    ) : null}
+    </>
   );
 }

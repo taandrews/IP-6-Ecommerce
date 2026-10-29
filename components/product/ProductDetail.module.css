@@ -12,6 +12,8 @@
 .catalogPurchase .orderButton, .catalogPurchase .addButton { margin: 0; min-height: 46px; font-size: 15px; padding-inline: 10px; white-space: nowrap; }
 @media (max-width: 1050px) { .catalogPurchase .actions { grid-template-columns: auto minmax(0, 1fr); } .catalogPurchase .orderButton { grid-column: 1 / -1; } }
 .catalogPurchase .quantity { justify-content: center; }
+.catalogPurchase .waitlist { grid-column: 1 / -1; }
+.waitlist { margin-top: 18px; }
 .catalogPurchase .shipNote { color: #344c6b; font-size: 14px; text-align: left; }
 @media (max-width: 380px) { .catalogPurchase { padding: 18px; gap: 12px; } .catalogPurchase .price strong { font-size: 30px; } .catalogPurchase .serving { font-size: 12px; } .catalogPurchase .orderButton { font-size: 13px; } }
 .container { width: min(1320px, calc(100% - 96px)); margin-inline: auto; }

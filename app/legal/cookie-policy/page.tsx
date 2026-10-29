@@ -12,7 +12,7 @@ const ROWS: Array<{ name: string; purpose: string; lasts: string }> = [
   { name: "ip6_refresh", purpose: "Renews your sign-in so you stay signed in.", lasts: "30 days, or until you sign out" },
   { name: "ip6_challenge", purpose: "Holds a sign-in step (for example choosing a new password).", lasts: "5 minutes" },
   { name: "ip6_consent", purpose: "Remembers your cookie choices.", lasts: "1 year" },
-  { name: "ip6_currency", purpose: "Remembers the currency you picked.", lasts: "1 year" },
+  { name: "ip6_country", purpose: "Remembers the country you picked in the Ship to menu.", lasts: "1 year" },
   { name: "ip6quiz_seen_v1", purpose: "Stops the pre-order pop-up showing again (cookie and browser storage).", lasts: "30 days" },
   { name: "ip6-cart-v1 (browser storage)", purpose: "Keeps your cart between visits.", lasts: "Until you clear it" },
 ];
@@ -22,7 +22,7 @@ export default function CookiePolicyPage() {
     <>
       <p className="eyebrow mb-4">Legal</p>
       <h1 className="font-display text-display-xl text-forest-800 mb-6">Cookie Policy</h1>
-      <p className="text-sm text-ink/60 mb-10">Last updated: October 20, 2026</p>
+      <p className="text-sm text-ink/60 mb-10">Last updated: October 28, 2026</p>
 
       <div className="space-y-8 text-ink/85 leading-relaxed">
         <section>

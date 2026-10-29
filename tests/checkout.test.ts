@@ -80,6 +80,34 @@ describe("checkout with tax enabled", () => {
     expect(deps.tax).not.toHaveBeenCalled();
   });
 
+  it("refuses a non-US shipping address on quote and payment, before contacting Stripe", async () => {
+    const abroad = { ...input, address: { ...input.address, city: "London", region: "", postalCode: "SW1A 1AA", country: "GB" } };
+    const quote = await (await import("@/app/api/checkout/quote/route")).POST(request(abroad));
+    expect(quote.status).toBe(422);
+    expect(await quote.json()).toMatchObject({ blocked: "country", error: "We currently ship to US addresses only." });
+    const pay = await (await import("@/app/api/checkout/intent/route")).POST(request(abroad));
+    expect(pay.status).toBe(422);
+    expect(deps.tax).not.toHaveBeenCalled();
+    expect(deps.intent).not.toHaveBeenCalled();
+    expect(deps.order).not.toHaveBeenCalled();
+  });
+
+  it("refuses US territory and APO addresses at payment", async () => {
+    const { POST } = await import("@/app/api/checkout/intent/route");
+    const pr = await POST(request({ ...input, address: { ...input.address, city: "San Juan", region: "PR", postalCode: "00901" } }));
+    expect(await pr.json()).toMatchObject({ blocked: "territory" });
+    const apo = await POST(request({ ...input, address: { ...input.address, city: "APO", region: "AE", postalCode: "09012" } }));
+    expect(await apo.json()).toMatchObject({ blocked: "military" });
+    expect(deps.intent).not.toHaveBeenCalled();
+  });
+
+  it("refuses prices in another currency", async () => {
+    const { POST } = await import("@/app/api/checkout/quote/route");
+    const res = await POST(request({ ...input, currency: "EUR" }));
+    expect(res.status).toBe(422);
+    expect(deps.tax).not.toHaveBeenCalled();
+  });
+
   it("rejects malformed checkout input before contacting Stripe", async () => {
     const { POST } = await import("@/app/api/checkout/quote/route");
     expect((await POST(request({ ...input, items: [] }))).status).toBe(400);

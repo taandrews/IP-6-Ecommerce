@@ -82,4 +82,29 @@ describe("payment_intent.succeeded", () => {
     const note = ddb.commandCalls(UpdateCommand)[1]?.args[0].input;
     expect(JSON.stringify(note?.ExpressionAttributeValues)).toContain("did not match");
   });
+
+  it("refunds and cancels, without fulfilling, when the address is outside the countries we sell to", async () => {
+    ddb.on(UpdateCommand).resolves({});
+    ddb.on(GetCommand).resolves({ Item: { ...order, shippingAddress: { ...order.shippingAddress, country: "GB", region: "", postalCode: "SW1A 1AA" } } });
+    const refunds = { create: vi.fn().mockResolvedValue({ id: "re_1" }) };
+    await handlePaymentSucceeded({ ...stripe, refunds } as unknown as Stripe, pi);
+    expect(refunds.create).toHaveBeenCalledWith(
+      expect.objectContaining({ payment_intent: "pi_123", metadata: expect.objectContaining({ by: "system" }) }),
+      { idempotencyKey: `not-sellable-${order.orderId}` },
+    );
+    const updates = ddb.commandCalls(UpdateCommand).map((c) => c.args[0].input);
+    expect(updates[0]!.ExpressionAttributeValues![":s"]).toBe("cancelled");
+    expect(updates.some((u) => String(u.UpdateExpression).includes("stock = stock - :q"))).toBe(false);
+    expect(updates.some((u) => String(u.TableName).endsWith("AnalyticsDaily"))).toBe(false);
+    expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
+  });
+
+  it("also refuses a US order whose address is a territory or APO", async () => {
+    ddb.on(UpdateCommand).resolves({});
+    ddb.on(GetCommand).resolves({ Item: { ...order, shippingAddress: { ...order.shippingAddress, city: "APO", region: "AE", postalCode: "09012" } } });
+    const refunds = { create: vi.fn().mockResolvedValue({ id: "re_2" }) };
+    await handlePaymentSucceeded({ ...stripe, refunds } as unknown as Stripe, pi);
+    expect(refunds.create).toHaveBeenCalledTimes(1);
+    expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
+  });
 });

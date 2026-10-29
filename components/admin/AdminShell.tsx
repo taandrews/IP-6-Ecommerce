@@ -14,6 +14,7 @@ import {
   History,
   Newspaper,
   LogOut,
+  BellRing,
 } from "lucide-react";
 import { can, ROLE_LABELS, type Permission, type Role } from "@/lib/auth/roles";
 
@@ -23,6 +24,7 @@ const NAV: Array<{ href: string; label: string; icon: React.ComponentType<{ clas
   { href: "/admin/preorders", label: "Pre-orders", icon: Clock, perm: "orders:read" },
   { href: "/admin/products", label: "Products and stock", icon: Package, perm: "orders:read" },
   { href: "/admin/customers", label: "Customers", icon: Users, perm: "customers:read" },
+  { href: "/admin/waitlist", label: "Launch waitlist", icon: BellRing, perm: "customers:read" },
   { href: "/admin/privacy", label: "Privacy requests", icon: ShieldCheck, perm: "privacy:manage" },
   { href: "/admin/discounts", label: "Discounts", icon: Tag, perm: "orders:read" },
   { href: "/admin/subscriptions", label: "Subscriptions", icon: RefreshCw, perm: "orders:read" },

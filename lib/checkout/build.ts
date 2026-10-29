@@ -8,6 +8,7 @@ import { finishQuote, priceLines, QUOTE_MESSAGES, shippingOptions, type Quote } 
 import { getStripe, STRIPE_TAX_ENABLED } from "@/lib/stripe/server";
 import type { ShippingRate } from "@/lib/shipping";
 import type { CheckoutInput } from "./schema";
+import { ADDRESS_BLOCK_MESSAGES, addressBlock, type AddressBlock } from "@/lib/countries";
 
 export interface BuiltQuote {
   quote: Quote | null;
@@ -16,6 +17,8 @@ export interface BuiltQuote {
   discountMessage?: string;
   taxCalculationId?: string;
   error?: string;
+  /** Set when the shipping address is outside the countries we sell to. */
+  blocked?: AddressBlock;
 }
 
 /**
@@ -23,6 +26,12 @@ export interface BuiltQuote {
  * show totals) and the payment endpoint (to set the amount Stripe charges).
  */
 export async function buildQuote(input: CheckoutInput): Promise<BuiltQuote> {
+  // Sales gate: the shipping address decides, never the visitor's IP country.
+  const blocked = addressBlock(input.address);
+  if (blocked) return { quote: null, rates: [], discount: null, error: ADDRESS_BLOCK_MESSAGES[blocked], blocked };
+  if (input.currency !== "USD") {
+    return { quote: null, rates: [], discount: null, error: "Prices are in US dollars. Please remove the items from your cart and add them again." };
+  }
   const [catalog, preorder] = await Promise.all([getCatalogFresh(), getPreorderSettingsFresh()]);
   const priced = priceLines(
     catalog,

@@ -11,10 +11,9 @@ export function qualifiesForFreeShipping(subtotalCents: number, currency: Curren
   return currency === "USD" && FREE_SHIPPING_COUNTRIES.includes(country.toUpperCase()) && subtotalCents >= FREE_SHIPPING_THRESHOLD_CENTS;
 }
 
-// Defaults to every country on the shipping page; PERMITTED_SUPPLEMENT_COUNTRIES can narrow it.
-const SUPPLEMENT_COUNTRIES = process.env.PERMITTED_SUPPLEMENT_COUNTRIES
-  ? process.env.PERMITTED_SUPPLEMENT_COUNTRIES.split(",").map((c) => c.trim().toUpperCase())
-  : SHIP_COUNTRY_CODES;
+// The sellable countries (lib/countries). PERMITTED_SUPPLEMENT_COUNTRIES can only narrow that list, never widen it.
+const PERMITTED = process.env.PERMITTED_SUPPLEMENT_COUNTRIES?.split(",").map((c) => c.trim().toUpperCase()).filter(Boolean);
+const SUPPLEMENT_COUNTRIES = PERMITTED?.length ? SHIP_COUNTRY_CODES.filter((c) => PERMITTED.includes(c)) : [...SHIP_COUNTRY_CODES];
 
 export function canShipSupplement(countryCode: string) {
   return SUPPLEMENT_COUNTRIES.includes(countryCode.toUpperCase());

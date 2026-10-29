@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Please check your details and try again." }, { status: 400 });
   try {
     const built = await buildQuote(parsed.data);
-    if (!built.quote) return NextResponse.json({ error: built.error, rates: built.rates, discountMessage: built.discountMessage }, { status: 422 });
+    if (!built.quote) return NextResponse.json({ error: built.error, rates: built.rates, discountMessage: built.discountMessage, blocked: built.blocked }, { status: 422 });
     return NextResponse.json({ quote: built.quote, rates: built.rates, discountMessage: built.discountMessage });
   } catch (err) {
     console.error("[checkout] quote failed", (err as Error).name);

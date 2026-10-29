@@ -10,11 +10,14 @@ import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { isPreorderLine, lineTotalCents } from "@/lib/preorder";
 import { usePreorder } from "@/components/store/StoreSettings";
+import { useGeo } from "@/components/store/Geo";
+import { countryName } from "@/lib/countries";
 import { FREE_SHIPPING_THRESHOLD_CENTS, qualifiesForFreeShipping } from "@/lib/shipping";
 
 export function CartDrawer() {
   const { drawerOpen, closeDrawer, lines, remove, setQty } = useCart();
   const PREORDER = usePreorder();
+  const geo = useGeo();
   const subtotalCents = lines.reduce((s, l) => s + lineTotalCents(l, PREORDER), 0);
   const listCents = lines.reduce((s, l) => s + l.unitPriceCents * l.qty, 0);
   const savingsCents = listCents - subtotalCents;
@@ -148,6 +151,11 @@ export function CartDrawer() {
               ) : null}
               <p>Shipping & tax calculated at checkout</p>
             </div>
+            {!geo.sellable ? (
+              <p className="rounded-md border border-gold-300 px-3 py-2.5 text-xs text-navy-800">
+                We don&apos;t ship to {countryName(geo.country)} yet. Orders need a shipping address in the 50 US states or Washington, DC.
+              </p>
+            ) : null}
             <Link
               href="/checkout"
               onClick={closeDrawer}

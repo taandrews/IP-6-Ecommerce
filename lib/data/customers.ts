@@ -8,6 +8,7 @@ import type { OrderRecord, ReviewRecord, SubscriptionRecord } from "@/types/reco
 import { emailKey, listOrdersByEmail, listOrdersByUser, PAID_STATUSES } from "./orders";
 import { listSubscriptionsForCustomer } from "./subscriptions";
 import { anonymizeReviewsForUser, listReviewsByUser } from "./reviews";
+import { deleteWaitlistEntry, getWaitlistEntry, type WaitlistRecord } from "./waitlist";
 
 export function newsletterKey(email: string) {
   return `newsletter_${emailKey(email)}`;
@@ -20,18 +21,20 @@ export interface CustomerProfile {
   subscriptions: SubscriptionRecord[];
   reviews: ReviewRecord[];
   newsletter: { subscribed: boolean; consentedAt?: string; source?: string } | null;
+  waitlist: WaitlistRecord | null;
   totals: { orderCount: number; spent: Record<string, number> };
 }
 
 /** Everything held about one customer, keyed by email (and account id if any). */
 export async function getCustomerProfile(email: string): Promise<CustomerProfile> {
   const account = await findAccountByEmail(email).catch(() => null);
-  const [byEmail, byUser, subscriptions, reviews, newsletterRow] = await Promise.all([
+  const [byEmail, byUser, subscriptions, reviews, newsletterRow, waitlist] = await Promise.all([
     listOrdersByEmail(email, 500),
     account ? listOrdersByUser(account.sub, 500) : Promise.resolve([] as OrderRecord[]),
     listSubscriptionsForCustomer(account?.sub, email),
     account ? listReviewsByUser(account.sub) : Promise.resolve([] as ReviewRecord[]),
     docClient.send(new GetCommand({ TableName: TABLES.Users, Key: { userId: newsletterKey(email) } })).then((r) => r.Item ?? null),
+    getWaitlistEntry(email),
   ]);
   const orders = [...new Map([...byEmail, ...byUser].map((o) => [o.orderId, o])).values()].sort((a, b) =>
     b.createdAt.localeCompare(a.createdAt),
@@ -48,6 +51,7 @@ export async function getCustomerProfile(email: string): Promise<CustomerProfile
     newsletter: newsletterRow
       ? { subscribed: newsletterRow.newsletter === true, consentedAt: newsletterRow.consentedAt ?? newsletterRow.createdAt, source: newsletterRow.source }
       : null,
+    waitlist,
     totals: { orderCount: paid.length, spent },
   };
 }
@@ -65,6 +69,17 @@ export function buildExport(p: CustomerProfile) {
     email: p.email,
     account: p.account ? { name: p.account.name, email: p.account.email, createdAt: p.account.createdAt, status: p.account.status } : null,
     newsletter: p.newsletter,
+    launchWaitlist: p.waitlist
+      ? {
+          country: p.waitlist.country,
+          firstName: p.waitlist.firstName,
+          countryFromIp: p.waitlist.ipCountry,
+          products: p.waitlist.products,
+          signedUpOn: p.waitlist.page,
+          consentedAt: p.waitlist.consentedAt,
+          consentWordingVersion: p.waitlist.consentVersion,
+        }
+      : null,
     orders: p.orders.map((o) => ({
       orderId: o.orderId,
       status: o.status,
@@ -106,7 +121,7 @@ function erasedEmail(email: string) {
 export async function eraseCustomer(email: string) {
   const p = await getCustomerProfile(email);
   const stripe = await getStripe();
-  const summary = { orders: 0, subscriptions: 0, reviews: 0, stripeCustomers: 0, account: false, newsletter: false };
+  const summary = { orders: 0, subscriptions: 0, reviews: 0, stripeCustomers: 0, account: false, newsletter: false, waitlist: false };
   const now = new Date().toISOString();
   const anon = erasedEmail(email);
 
@@ -156,6 +171,10 @@ export async function eraseCustomer(email: string) {
   if (p.newsletter) {
     await docClient.send(new DeleteCommand({ TableName: TABLES.Users, Key: { userId: newsletterKey(email) } }));
     summary.newsletter = true;
+  }
+  if (p.waitlist) {
+    await deleteWaitlistEntry(email);
+    summary.waitlist = true;
   }
   return summary;
 }

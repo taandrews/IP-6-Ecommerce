@@ -65,7 +65,8 @@ export const useCart = create<CartState>()(
       onRehydrateStorage: () => (state) => {
         if (state) {
           // The retired 60-count option must not return from a saved cart.
-          state.lines = state.lines.filter((line) => line.variantId !== "sup-capsule-60");
+          // Prices are US dollars only now; lines saved in another currency can't be checked out.
+          state.lines = state.lines.filter((line) => line.variantId !== "sup-capsule-60" && line.currency === "USD");
           Object.assign(state, derive(state.lines));
         }
       },

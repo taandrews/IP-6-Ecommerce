@@ -10,7 +10,7 @@ const ADMIN_PATH = /^\/admin(?:\/|$)/;
 const ADMIN_API = /^\/api\/admin\//;
 const ACCOUNT_PATH = /^\/account(?!\/(login|register|forgot-password))(?:\/|$)/;
 const AUTH_API = /^\/api\/(auth|admin\/auth)\//;
-const RATE_LIMITED = /^\/api\/(shipping|reviews|newsletter|privacy|contact|checkout|auth|admin\/auth)/;
+const RATE_LIMITED = /^\/api\/(shipping|reviews|newsletter|waitlist|privacy|contact|checkout|auth|admin\/auth)/;
 /** Server-to-server callers that never carry a browser Origin. */
 const ORIGIN_EXEMPT = /^\/api\/stripe\/webhook$/;
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);

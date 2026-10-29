@@ -48,6 +48,9 @@ export default async function CustomerViewPage({ searchParams }: { searchParams:
         </Panel>
         <Panel title="Marketing emails">
           <p className="text-sm">{p.newsletter?.subscribed ? `Subscribed${p.newsletter.consentedAt ? ` (consent ${p.newsletter.consentedAt.slice(0, 10)}, ${p.newsletter.source ?? "site"})` : ""}` : "Not subscribed"}</p>
+          {p.waitlist ? (
+            <p className="text-sm mt-1">Launch waitlist: {p.waitlist.country} (consent {p.waitlist.consentedAt.slice(0, 10)}, wording {p.waitlist.consentVersion})</p>
+          ) : null}
         </Panel>
       </div>
 
