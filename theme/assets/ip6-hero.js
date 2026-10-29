@@ -1,6 +1,6 @@
 /*
   Home hero carousel, ported from ip6original.com (components/home/HeroSlideshow.tsx).
-  Slide 1 is the product slide. Slides 2 to 6 each type their headline letter by
+  Slide 1 is the product slide. Slides 2 to 4 each type their headline letter by
   letter, lift the tint to reveal the colour photo, hold, then move on. After the
   last slide the show returns to slide 1 and pauses. Dots jump to a slide and
   pause; the play/pause button toggles. Reduced motion shows text at once.
@@ -25,10 +25,10 @@
   }
   function count(line) { return line.reduce(function (n, s) { return n + s.text.replace(/ /g, "").length; }, 0); }
 
-  // Build slides 2 to 6: picture or video, then the tint layers.
+  // Build slides 2 to 4: picture or video, then the tint layers.
   var slideBox = hero.querySelector("[data-ih-slides]");
   SLIDES.forEach(function (s, i) {
-    var slide = el("div", "ih-slide" + (i === 0 ? " ih-slideCentered" : "") + (s.doctor ? " ih-doctorSlide" : "") + (i === 1 ? " ih-yogaSlide" : ""), { role: "group", "aria-roledescription": "slide", "aria-label": (i + 2) + " of " + (SLIDES.length + 1), "aria-hidden": "true" });
+    var slide = el("div", "ih-slide" + (i === 0 ? " ih-slideCentered" : "") + (s.doctor ? " ih-doctorSlide" : ""), { role: "group", "aria-roledescription": "slide", "aria-label": (i + 2) + " of " + (SLIDES.length + 1), "aria-hidden": "true" });
     var ph = el("div", "ih-ph");
     var style = "--pos:" + s.pos + ";--pos-m:" + (s.mpos || s.pos);
     if (s.video) {
@@ -90,7 +90,7 @@
 
   function render() {
     var s = SLIDES[cur];
-    hero.className = "ih-hero" + (cur === -1 ? " ih-productActive" : "") + (s && s.doctor ? " ih-doctorActive" : "") + (cur === 1 ? " ih-yogaActive" : "") + (cur === 0 || cur === 2 ? " ih-viewportVideoActive" : "") + (cur === 3 ? " ih-beachActive" : "");
+    hero.className = "ih-hero" + (cur === -1 ? " ih-productActive" : "") + (s && s.doctor ? " ih-doctorActive" : "") + (s && s.video ? " ih-viewportVideoActive" : "");
     product.classList.toggle("ih-on", cur === -1);
     product.setAttribute("aria-hidden", cur === -1 ? "false" : "true");
     product.querySelectorAll("a").forEach(function (a) { if (cur === -1) a.removeAttribute("tabindex"); else a.setAttribute("tabindex", "-1"); });

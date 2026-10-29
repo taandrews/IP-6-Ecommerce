@@ -10,15 +10,13 @@
 -%}
 {%- capture slides_json -%}[
   {"src":"{{ cdn }}/hero/video/ip6-hero-stock-804268291-poster.webp","video":"{{ cdn }}/hero/video/ip6-hero-stock-804268291.mp4","pos":"50% 45%","mpos":"50% 50%","alt":"Six children in a circle looking down at the camera and laughing","eyebrow":"Pre-order, ships November 2026","line":[{"text":"Pre-order now. "},{"text":"15% off.","em":true}],"sub":"IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research."},
-  {"src":"{{ cdn }}/hero/yoga-full-scene-desktop.webp","msrc":"{{ cdn }}/hero/yoga-full-scene-mobile.webp","pos":"65% 50%","alt":"A woman meditating cross-legged on a yoga mat in a bright living room","eyebrow":"Pre-order, ships November 2026","line":[{"text":"Pre-order now. "},{"text":"15% off.","em":true}],"sub":"IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research.","mobileHeadlineOnly":true,"mobileLow":true},
   {"src":"{{ cdn }}/hero/video/ip6-hero-dog-cat-poster.webp","video":"{{ cdn }}/hero/video/ip6-hero-dog-cat.mp4","pos":"50% 0%","mpos":"62% 20%","alt":"A brown dog resting its head on a sleeping tabby cat on a blanket","eyebrow":"IP6 Original Pet Powder","line":[{"text":"IP6 Original, "},{"text":"for pets","em":true},{"text":"."}],"sub":"The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub.","mobileHeadlineOnly":true},
-  {"src":"{{ cdn }}/hero/ip6-hero-beach-couple.webp","msrc":"{{ cdn }}/hero/ip6-hero-beach-couple-m.webp","pos":"62% 0%","mpos":"50% 72%","alt":"An older couple holding hands and playing at the water's edge on a sunny beach","eyebrow":"From the lab of Professor Shamsuddin, MD, PhD","line":[{"text":"There is only one "},{"text":"IP6 Original","em":true},{"text":"."}],"sub":"IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility.","mobileHeadlineOnly":true,"mobileLow":true},
   {"src":"{{ cdn }}/hero/doctor-cutout-v1.webp","doctor":true,"pos":"50% 45%","mpos":"50% 50%","alt":"Professor AbulKalam M. Shamsuddin, wearing glasses and a bow tie, holding a microphone","eyebrow":"Professor AbulKalam M. Shamsuddin, MD, PhD","line":[{"text":"His research. "},{"text":"His formula.","em":true}],"sub":"","mobileTopEyebrow":true}
 ]{%- endcapture -%}
 {%- assign slides = slides_json -%}
 <link rel="stylesheet" href="{{ 'ip6-hero.css' | asset_url }}">
 <section class="ih-hero ih-productActive" data-ih-hero aria-roledescription="carousel" aria-label="IP6 Original">
-  <div class="ih-slide ih-productSlide ih-on" role="group" aria-roledescription="slide" aria-label="1 of 6" data-ih-product>
+  <div class="ih-slide ih-productSlide ih-on" role="group" aria-roledescription="slide" aria-label="1 of 4" data-ih-product>
     <div class="ih-productCanvas">
       <div class="ih-productArtwork">
         <picture class="ih-productPicture">
@@ -51,7 +49,7 @@
     </div>
   </div>
 
-  {%- comment -%} Pictures and words for slides 2 to 6 are built by ip6-hero.js from this list. {%- endcomment -%}
+  {%- comment -%} Pictures and words for slides 2 to 4 are built by ip6-hero.js from this list. {%- endcomment -%}
   <div data-ih-slides></div>
   <div class="ih-copy"><div class="ih-textStack" data-ih-texts></div></div>
 
