@@ -557,8 +557,8 @@
 
 .ih-productCanvas { background: #f4f4f2 var(--ih-bg) center / cover no-repeat; overflow: hidden; }
 /* The room behind the artwork, at the artwork's own scale and position so it continues past the artwork's faded edges without a seam.
-   The image is ip6-slide-background.webp (1.024x the artwork scale, offset -3px,-2px) extended 885px left and right and 339px top and bottom. */
-.ih-productArtwork::before { content: ""; position: absolute; z-index: -1; left: -50.179%; top: -40.223%; width: 200.279%; height: 184.627%; background: var(--ih-bg-wide) center / 100% 100% no-repeat; pointer-events: none; }
+   The image is ip6-slide-background.webp (1.024x the artwork scale, offset -3px,-2px) extended 560px left and right and 320px top and bottom (outpainted with LaMa). */
+.ih-productArtwork::before { content: ""; position: absolute; z-index: -1; left: -31.812%; top: -37.982%; width: 163.434%; height: 179.79%; background: var(--ih-bg-wide) center / 100% 100% no-repeat; pointer-events: none; }
 .ih-mobileProduct { display: none; }
 
 @media (max-width: 900px) and (orientation: portrait) {
