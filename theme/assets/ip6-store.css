@@ -137,6 +137,7 @@ html[data-sellable="false"] [data-buy-only] { display: none !important; }
 html:not([data-sellable="false"]) [data-waitlist-only] { display: none !important; }
 .s-buy__ctl { display: grid; gap: 12px; }
 .s-wl { display: grid; gap: 14px; border: 1px solid var(--rule-strong); padding: 20px; background: #fff; }
+.s-wl [hidden] { display: none !important; }
 .s .s-wl__h { font-size: 16px; font-weight: 600; color: var(--text); }
 .s .s-wl__p { margin-top: 4px; font-size: 14px; line-height: 1.55; color: var(--muted); }
 .s-wl__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
