@@ -1,0 +1,70 @@
+{%- comment -%}
+  Home hero carousel, the same slides, words and timing as the hero on
+  ip6original.com (components/home/HeroSlideshow.tsx). Styles: ip6-hero.css,
+  behaviour: ip6-hero.js. Params: people_url, pets_url
+{%- endcomment -%}
+{%- liquid
+  assign cdn = settings.ip6_cdn
+  assign people = people_url | default: '/products/ip-6-original'
+  assign pets = pets_url | default: '/products/ip6-original-pet-powder'
+-%}
+{%- capture slides_json -%}[
+  {"src":"{{ cdn }}/hero/video/ip6-hero-stock-804268291-poster.webp","video":"{{ cdn }}/hero/video/ip6-hero-stock-804268291.mp4","pos":"50% 45%","mpos":"50% 50%","alt":"Six children in a circle looking down at the camera and laughing","eyebrow":"Pre-order, ships November 2026","line":[{"text":"Pre-order now. "},{"text":"15% off.","em":true}],"sub":"IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research."},
+  {"src":"{{ cdn }}/hero/yoga-full-scene-desktop.webp","msrc":"{{ cdn }}/hero/yoga-full-scene-mobile.webp","pos":"65% 50%","alt":"A woman meditating cross-legged on a yoga mat in a bright living room","eyebrow":"Pre-order, ships November 2026","line":[{"text":"Pre-order now. "},{"text":"15% off.","em":true}],"sub":"IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research.","mobileHeadlineOnly":true,"mobileLow":true},
+  {"src":"{{ cdn }}/hero/video/ip6-hero-dog-cat-poster.webp","video":"{{ cdn }}/hero/video/ip6-hero-dog-cat.mp4","pos":"50% 0%","mpos":"62% 20%","alt":"A brown dog resting its head on a sleeping tabby cat on a blanket","eyebrow":"IP6 Original Pet Powder","line":[{"text":"IP6 Original, "},{"text":"for pets","em":true},{"text":"."}],"sub":"The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub.","mobileHeadlineOnly":true},
+  {"src":"{{ cdn }}/hero/ip6-hero-beach-couple.webp","msrc":"{{ cdn }}/hero/ip6-hero-beach-couple-m.webp","pos":"62% 0%","mpos":"50% 72%","alt":"An older couple holding hands and playing at the water's edge on a sunny beach","eyebrow":"From the lab of Professor Shamsuddin, MD, PhD","line":[{"text":"There is only one "},{"text":"IP6 Original","em":true},{"text":"."}],"sub":"IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility.","mobileHeadlineOnly":true,"mobileLow":true},
+  {"src":"{{ cdn }}/hero/doctor-cutout-v1.webp","doctor":true,"pos":"50% 45%","mpos":"50% 50%","alt":"Professor AbulKalam M. Shamsuddin, wearing glasses and a bow tie, holding a microphone","eyebrow":"Professor AbulKalam M. Shamsuddin, MD, PhD","line":[{"text":"His research. "},{"text":"His formula.","em":true}],"sub":"","mobileTopEyebrow":true}
+]{%- endcapture -%}
+{%- assign slides = slides_json -%}
+<link rel="stylesheet" href="{{ 'ip6-hero.css' | asset_url }}">
+<section class="ih-hero ih-productActive" data-ih-hero aria-roledescription="carousel" aria-label="IP6 Original">
+  <div class="ih-slide ih-productSlide ih-on" role="group" aria-roledescription="slide" aria-label="1 of 6" data-ih-product>
+    <div class="ih-productCanvas">
+      <div class="ih-productArtwork">
+        <picture class="ih-productPicture">
+          <source media="(max-width: 900px) and (orientation: portrait)" srcset="{{ cdn }}/hero/ip6-approved-slide-mobile.webp">
+          <img src="{{ cdn }}/hero/ip6-corrected-slide-desktop.webp" alt="IP6 + Inositol. For people. For pets. 15% off. Pre-order now. Ships November 2026. Capsules and powder appearance illustrative." fetchpriority="high">
+        </picture>
+        <a href="{{ people }}" class="ih-productImageLink ih-productPeopleLink" aria-label="Shop for people"></a>
+        <a href="{{ pets }}" class="ih-productImageLink ih-productPetsLink" aria-label="Shop for pets"></a>
+      </div>
+      <div class="ih-mobileProduct">
+        <div class="ih-mobileProductHeading">
+          <p class="ih-mobileProductEyebrow">Science driven. Purity first.</p>
+          <h2>IP6 + Inositol<span>For people. For pets.</span></h2>
+          <p>The original formula. In capsules for you.<br>A powder for them.</p>
+        </div>
+        <div class="ih-mobileProductPhoto">
+          <img src="{{ cdn }}/hero/ip6-products-mobile-cutout-v1.png" width="1536" height="1024" alt="IP6 Original capsules and pet powder, with both containers, capsules and a scoop of powder fully visible">
+        </div>
+        <div class="ih-mobileProductOffer">
+          <strong>15% off</strong>
+          <p>Pre-order now.</p>
+          <small>Ships November 2026.</small>
+          <div class="ih-mobileProductLinks">
+            <a href="{{ people }}">Shop for people<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+            <a href="{{ pets }}">Shop for pets<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          </div>
+          <span class="ih-mobileProductNote">Concept preview: capsule and powder appearance illustrative.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Pictures and words for slides 2 to 6 are built by ip6-hero.js from this list. {%- endcomment -%}
+  <div data-ih-slides></div>
+  <div class="ih-copy"><div class="ih-textStack" data-ih-texts></div></div>
+
+  <div class="ih-actions" data-ih-actions aria-hidden="true">
+    <a href="{{ people }}" class="ih-cta">Pre Order Now<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    <nav class="ih-routes" aria-label="Shop by">
+      <a href="{{ people }}">For people</a>
+      <a href="{{ pets }}">For pets</a>
+    </nav>
+  </div>
+
+  <div class="ih-dots" data-ih-dots></div>
+  <button type="button" class="ih-pause" data-ih-pause aria-label="Pause slideshow"></button>
+  <script type="application/json" data-ih-data>{{ slides }}</script>
+</section>
+<script src="{{ 'ip6-hero.js' | asset_url }}" defer></script>
