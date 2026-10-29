@@ -38,7 +38,7 @@
 
   /* Ship to country: globe and code over a hidden native select */
   .ip6-shipto { position: relative; display: inline-flex; align-items: center; gap: 4px; height: 40px; padding: 0 8px; color: #001840; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .06em; cursor: pointer; }
-  .ip6-shipto svg { width: 18px; height: 18px; }
+  .ip6-shipto svg { width: 18px; min-width: 18px; height: 18px; flex-shrink: 0; }
   .ip6-shipto select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
   .ip6-shipto:focus-within { outline: 2px solid #B08830; outline-offset: 2px; }
   .ip6-shipto:hover { color: #7E5A14; }
