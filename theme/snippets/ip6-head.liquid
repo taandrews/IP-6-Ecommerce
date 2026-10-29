@@ -44,6 +44,23 @@
   .ip6-shipto:hover { color: #7E5A14; }
   @media (max-width: 749px) { .ip6-shipto { padding: 0 4px; } }
 
+  /* Cart page and cart drawer in the store style: square corners, navy button, serif title, hairlines */
+  .cart-page__title, .cart-drawer__heading, cart-drawer-component h2 { font-family: "Source Serif 4", Georgia, serif !important; font-weight: 500 !important; color: #001840 !important; letter-spacing: -.01em; }
+  .cart-page__title { font-size: clamp(30px, 3.2vw, 44px) !important; }
+  .cart__checkout-button.button { background: #001840 !important; color: #fff !important; border: 1px solid #001840 !important; border-radius: 0 !important; min-height: 52px; font-family: "Inter", sans-serif !important; font-size: 14px !important; font-weight: 600 !important; letter-spacing: .06em; text-transform: uppercase; box-shadow: none !important; }
+  .cart__checkout-button.button:hover { background: #0C2C5E !important; }
+  .cart__checkout-button.button::before, .cart__checkout-button.button::after { border-radius: 0 !important; }
+  .cart-page .quantity-selector, cart-drawer-component .quantity-selector, .cart-items .quantity-selector { border-radius: 0 !important; border-color: #C9D1DB !important; }
+  .cart-page__summary { border: 0; border-left: 1px solid #E3E7EC; background: #fff !important; }
+  @media (max-width: 749px) { .cart-page__summary { border-left: 0; border-top: 1px solid #E3E7EC; } }
+  .cart-page .cart-discount input, .cart-page cart-discount-component input, cart-drawer-component cart-discount-component input { border-radius: 0 !important; }
+  .cart-page .cart-discount button, cart-discount-component button.button { border-radius: 0 !important; }
+  .cart-items__media img, .cart-items .cart-items__media { border-radius: 0 !important; }
+  .cart-totals, .cart-page__summary .cart-totals__item { color: #001840; }
+  /* Theme sections in the page body sit on the store's white, not the theme's ivory */
+  main .section-background { background-color: #fff !important; }
+  cart-drawer-component dialog, cart-drawer-component .cart-drawer__dialog, cart-drawer-component .cart-drawer__inner { background: #fff !important; --color-background: 255 255 255; }
+
   /* Announcement: a thin ivory line with gold type */
   #header-group .announcement-bar, #header-group .announcement-bar .section-background { background: #FBF7EC !important; border: 0 !important; }
   #header-group .announcement-bar { padding: 9px 16px !important; border-bottom: 1px solid #EFE6CF !important; }

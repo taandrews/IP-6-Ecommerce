@@ -92,21 +92,48 @@
   .h-faq { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 64px; }
   .h-faq .s-link { margin-top: 20px; }
   @media (max-width: 989px) { .h-faq { grid-template-columns: 1fr; gap: 24px; } }
+  /* Hero: Professor Shamsuddin on black, the slide from ip6original.com */
+  .h-doc { background: #030303; color: #fff; overflow: hidden; }
+  .h-doc__in { position: relative; width: min(1440px, 100%); margin-inline: auto; min-height: min(740px, calc(100svh - 150px)); display: grid; grid-template-columns: 52% 48%; align-items: stretch; }
+  .h-doc__copy { display: flex; flex-direction: column; justify-content: center; padding: 56px 6vw 64px; }
+  .s .h-doc__eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: rgba(255,255,255,.88); margin-bottom: 22px; }
+  .s .h-doc__line { font-family: var(--sans); font-weight: 400; font-size: clamp(36px, 4.4vw, 64px); line-height: 1.08; letter-spacing: -.005em; text-transform: uppercase; color: #fff; max-width: 14ch; }
+  .h-doc__line em { display: block; font-style: normal; color: #E2C06B; }
+  .h-doc__actions { margin-top: clamp(40px, 9vh, 110px); display: grid; gap: 14px; justify-items: start; }
+  .h-doc__cta { display: inline-flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 28px; background: #001840; color: #fff; border: 1px solid rgba(255,255,255,.35); font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  .h-doc__cta:hover { background: #0C2C5E; }
+  .h-doc__cta svg { width: 16px; height: 16px; }
+  .h-doc__routes { display: flex; gap: 10px; }
+  .h-doc__routes a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid rgba(255,255,255,.6); color: #fff; font-size: 13px; font-weight: 600; letter-spacing: .04em; }
+  .h-doc__routes a:hover { background: #fff; color: #001840; }
+  .h-doc__ph { position: relative; display: flex; align-items: flex-end; justify-content: center; }
+  .h-doc__ph img { width: 100%; max-width: 680px; height: auto; max-height: 100%; object-fit: contain; object-position: center bottom; margin-bottom: -4%; }
+  @media (max-width: 749px) {
+    .h-doc__in { grid-template-columns: 1fr; min-height: 0; }
+    .h-doc__copy { display: contents; }
+    .s .h-doc__eyebrow { order: 1; padding: 28px 12% 0; margin-bottom: 12px; font-size: 9px; letter-spacing: .22em; line-height: 1.6; text-align: center; text-wrap: balance; }
+    .s .h-doc__line { order: 2; padding: 0 7%; font-size: clamp(24px, 7.4vw, 30px); max-width: none; text-align: center; }
+    .h-doc__ph { order: 3; padding: 12px 6% 0; }
+    .h-doc__ph img { max-width: 420px; margin-bottom: 0; }
+    .h-doc__actions { order: 4; margin: 0; padding: 18px 7% 28px; justify-items: center; }
+  }
+
 </style>
 <div class="s">
-  <section class="s-wrap h-hero" aria-labelledby="hero-title">
-    <div class="s-shot"><img src="{{ cdn }}/products/supplement-240.png" alt="IP6 Original Supplement, 240 vegetarian capsules" width="870" height="1160" fetchpriority="high"></div>
-    <div>
-      <span class="s-kicker">From the lab of Professor Shamsuddin, MD, PhD</span>
-      <h1 id="hero-title" class="s-h1">There is only one <em>IP6 Original.</em></h1>
-      <p class="s-lead">IP6 and Inositol in vegetable capsules. Third-party tested and made in a cGMP-certified facility.</p>
-      <dl class="facts">
-        <div><dt>IP6</dt><dd>804 mg</dd></div>
-        <div><dt>Inositol</dt><dd>196 mg</dd></div>
-        <div><dt>Servings</dt><dd>60</dd></div>
-      </dl>
-      {%- if sup -%}{% render 'ip6-buy', product: sup %}{%- endif -%}
-      <p class="pets">For dogs and cats: <a href="{{ pet.url }}">IP6 Original Pet Powder</a></p>
+  <section class="h-doc" aria-labelledby="hero-title">
+    <div class="h-doc__in">
+      <div class="h-doc__copy">
+        <p class="h-doc__eyebrow">Professor AbulKalam M. Shamsuddin, MD, PhD</p>
+        <h1 id="hero-title" class="h-doc__line">His research. <em>His formula.</em></h1>
+        <div class="h-doc__actions">
+          <a class="h-doc__cta" href="{{ sup.url | default: '/products/ip-6-original' }}">Pre Order Now <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <nav class="h-doc__routes" aria-label="Shop by">
+            <a href="{{ sup.url | default: '/products/ip-6-original' }}">For people</a>
+            <a href="{{ pet.url | default: '/products/ip6-original-pet-powder' }}">For pets</a>
+          </nav>
+        </div>
+      </div>
+      <div class="h-doc__ph"><img src="{{ cdn }}/hero/doctor-cutout-v1.webp" alt="Professor AbulKalam M. Shamsuddin, wearing glasses and a bow tie, holding a microphone" width="1254" height="1254" fetchpriority="high"></div>
     </div>
   </section>
 

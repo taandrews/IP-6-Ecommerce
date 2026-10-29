@@ -51,7 +51,7 @@
           <span class="s-plan__body">
             <span class="s-plan__name">Subscribe &amp; save{% if off > 0 %} {{ off }}%{% endif %}</span>
             <span class="s-plan__price">{{ a.price | money }}</span>
-            <span class="s-plan__detail">{{ every }}. Charged today, then {{ a.price | money }} plus shipping each delivery until you cancel. To skip, pause or cancel, email <a href="mailto:support@ip6original.com">support@ip6original.com</a>.</span>
+            <span class="s-plan__detail">{{ every }}. Charged today, then {{ a.price | money }} plus shipping each delivery until you cancel. Skip, pause or cancel any time from your <a href="{{ routes.account_url }}">account</a>.</span>
           </span>
         </label>
       {%- endfor -%}

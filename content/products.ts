@@ -135,7 +135,10 @@ export const products: Product[] = [
         servingLabel: "1 g level scoop",
       },
     ],
-    subscriptionCycles: [],
+    subscriptionCycles: [
+      { days: 30, discountPct: 15 },
+      { days: 90, discountPct: 20 },
+    ],
     images: [
       { url: asset("products/pet-powder-120g.png"), alt: "IP6 Original Pet Powder, 120 g tub with a dog and a cat on the label. Unflavored, easy to mix.", width: 870, height: 1160 },
     ],
