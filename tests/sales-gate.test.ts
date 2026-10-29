@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addressBlock, countryOptions, isSellableCountry, SELLABLE_COUNTRIES } from "@/lib/countries";
+import { addressBlock, countryInSentence, countryOptions, isSellableCountry, SELLABLE_COUNTRIES } from "@/lib/countries";
 
 const us = { country: "US", region: "MD", city: "Towson", postalCode: "21204" };
 
@@ -35,6 +35,17 @@ describe("sales gate: where we sell", () => {
     expect(addressBlock({ ...us, region: "AP", city: "FPO", postalCode: "96349" })).toBe("military");
     expect(addressBlock({ ...us, region: "AA", city: "DPO", postalCode: "34001" })).toBe("military");
     expect(addressBlock({ ...us, region: "MD", city: "apo", postalCode: "21204" })).toBe("military");
+  });
+
+  it("reads country names correctly in a sentence", () => {
+    expect(countryInSentence("GB")).toBe("the United Kingdom");
+    expect(countryInSentence("NL")).toBe("the Netherlands");
+    expect(countryInSentence("KY")).toBe("the Cayman Islands");
+    expect(countryInSentence("AE")).toBe("the United Arab Emirates");
+    expect(countryInSentence("IM")).toBe("the Isle of Man");
+    expect(countryInSentence("FR")).toBe("France");
+    expect(countryInSentence("DE")).toBe("Germany");
+    expect(countryInSentence("CA")).toBe("Canada");
   });
 
   it("lists every country for the pickers, sellable ones first", () => {

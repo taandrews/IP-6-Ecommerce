@@ -292,6 +292,15 @@ export function countryName(code: string) {
   return COUNTRY_NAMES[code.toUpperCase()] ?? code;
 }
 
+// Names read with "the" in a sentence: the United Kingdom, the Netherlands, the Cayman Islands.
+const TAKES_THE = /(Islands|Republic|Territories|Territory|Emirates|Kingdom|States|Netherlands|Philippines|Bahamas|Gambia|Maldives|Comoros)$|^(Congo|Isle of Man)/;
+
+/** The country's name as it reads mid-sentence ("ships to the United Kingdom", "ships to France"). */
+export function countryInSentence(code: string) {
+  const name = countryName(code);
+  return TAKES_THE.test(name) ? `the ${name}` : name;
+}
+
 /** Every country, sellable ones first, then the rest by name. */
 export function countryOptions(): Array<readonly [code: string, name: string]> {
   const rest = ALL_COUNTRY_CODES.filter((c) => !SELLABLE_COUNTRIES.includes(c))

@@ -3,7 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Check } from "lucide-react";
-import { countryName, countryOptions, isSellableCountry } from "@/lib/countries";
+import { countryInSentence, countryOptions, isSellableCountry } from "@/lib/countries";
 import { useGeo } from "@/components/store/Geo";
 import { cn } from "@/lib/utils";
 import { WAITLIST_CONSENT_TEXT } from "@/lib/waitlist-consent";
@@ -66,7 +66,7 @@ export function WaitlistForm({
     }
   }
 
-  const where = country ? countryName(country) : "your country";
+  const where = country ? countryInSentence(country) : "your country";
 
   if (state === "done") {
     return (
