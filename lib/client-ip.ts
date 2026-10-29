@@ -1,13 +1,17 @@
 /**
  * The visitor's real IP address, for rate limits and the admin audit log.
  *
- * CloudFront appends the address it saw on the TCP connection to the END of
- * X-Forwarded-For, after anything the client sent itself, so the leftmost
- * entries are whatever the visitor chose to write. Walking from the right and
- * skipping private hops (any proxy between CloudFront and the app) gives the
- * first address a client can't forge. No Node built-ins, so the middleware
- * can use it too.
+ * X-Forwarded-For grows left to right: whatever the visitor sent comes first,
+ * then each proxy appends the address it received the request from. On
+ * Amplify Hosting the chain ends "<visitor>, <CloudFront edge>" (verified on
+ * the live site: the last entry is a CloudFront origin-facing address), so
+ * after dropping private hops the visitor is the entry before the one trusted
+ * proxy. Anything further left was written by the visitor and is ignored.
+ * No Node built-ins, so the middleware can use it too.
  */
+
+/** Proxies in front of the app that append to X-Forwarded-For (CloudFront). */
+const TRUSTED_PROXY_HOPS = 1;
 
 const PRIVATE = [
   /^10\./,
@@ -28,8 +32,7 @@ export function clientIpFrom(headers: Headers, fallback?: string): string {
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-  for (let i = hops.length - 1; i >= 0; i--) {
-    if (!isPrivate(hops[i]!)) return hops[i]!;
-  }
+  while (hops.length && isPrivate(hops[hops.length - 1]!)) hops.pop();
+  if (hops.length > TRUSTED_PROXY_HOPS) return hops[hops.length - 1 - TRUSTED_PROXY_HOPS]!;
   return hops[0] ?? fallback ?? "unknown";
 }

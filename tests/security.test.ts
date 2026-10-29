@@ -32,9 +32,11 @@ const json = (url: string, body: unknown) =>
   new Request(`http://localhost${url}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
 
 describe("client IP for rate limits", () => {
-  it("uses the address CloudFront appended, not one the visitor wrote", () => {
-    expect(clientIpFrom(new Headers({ "x-forwarded-for": "1.2.3.4, 198.51.100.7" }))).toBe("198.51.100.7");
-    expect(clientIpFrom(new Headers({ "x-forwarded-for": "1.2.3.4, 198.51.100.7, 10.0.3.9" }))).toBe("198.51.100.7");
+  it("takes the visitor CloudFront saw, not anything the visitor wrote", () => {
+    // Live Amplify chain: <visitor>, <CloudFront edge>.
+    expect(clientIpFrom(new Headers({ "x-forwarded-for": "198.51.100.7, 64.252.74.146" }))).toBe("198.51.100.7");
+    expect(clientIpFrom(new Headers({ "x-forwarded-for": "10.9.1.1, 203.0.113.1, 198.51.100.7, 64.252.74.146" }))).toBe("198.51.100.7");
+    expect(clientIpFrom(new Headers({ "x-forwarded-for": "198.51.100.7, 64.252.74.146, 10.0.3.9" }))).toBe("198.51.100.7");
     expect(clientIpFrom(new Headers({ "x-forwarded-for": "203.0.113.5" }))).toBe("203.0.113.5");
     expect(clientIpFrom(new Headers(), "fallback")).toBe("fallback");
   });
