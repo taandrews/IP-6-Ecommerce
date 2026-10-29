@@ -24,14 +24,15 @@ import { hreflangAlternates } from "@/lib/i18n";
 import { SupplementSections } from "./_sections/SupplementSections";
 
 interface Params {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: Params): Metadata {
+export async function generateMetadata(props: Params): Promise<Metadata> {
+  const params = await props.params;
   const product = products.find((p) => p.slug === params.slug);
   if (!product) return { title: "Product not found" };
   return {
@@ -47,7 +48,8 @@ export function generateMetadata({ params }: Params): Metadata {
   };
 }
 
-export default async function ProductPage({ params }: Params) {
+export default async function ProductPage(props: Params) {
+  const params = await props.params;
   const destination = productHref(params.slug);
   if (destination.startsWith("/shop#")) permanentRedirect(destination);
   const catalog = await getCatalog();

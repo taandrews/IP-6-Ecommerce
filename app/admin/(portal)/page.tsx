@@ -20,7 +20,8 @@ async function safe<T>(p: Promise<T>, fallback: T): Promise<{ value: T; ok: bool
   }
 }
 
-export default async function AdminDashboard({ searchParams }: { searchParams: { denied?: string } }) {
+export default async function AdminDashboard(props: { searchParams: Promise<{ denied?: string }> }) {
+  const searchParams = await props.searchParams;
   const staff = await requireStaffPage("dashboard:read");
   const days = lastNDays(30);
   const [stats, paid, processing, stock, pendingReviews, privacy] = await Promise.all([

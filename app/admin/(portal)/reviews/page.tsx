@@ -14,7 +14,8 @@ const TABS: Array<{ s: ReviewStatus; label: string }> = [
   { s: "rejected", label: "Rejected" },
 ];
 
-export default async function ReviewsPage({ searchParams }: { searchParams: { status?: string } }) {
+export default async function ReviewsPage(props: { searchParams: Promise<{ status?: string }> }) {
+  const searchParams = await props.searchParams;
   await requireStaffPage("reviews:moderate");
   const status = TABS.find((t) => t.s === searchParams.status)?.s ?? "pending";
   let reviews: Awaited<ReturnType<typeof listReviewsByStatus>>["reviews"] = [];

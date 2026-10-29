@@ -7,7 +7,8 @@ import { applySubscriptionOp, SUBSCRIPTION_OPS, type SubscriptionOp } from "@/li
 export const runtime = "nodejs";
 
 /** Customer self-service. The subscription must belong to the signed-in customer. */
-export async function POST(_req: Request, { params }: { params: { id: string; op: string } }) {
+export async function POST(_req: Request, props: { params: Promise<{ id: string; op: string }> }) {
+  const params = await props.params;
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   if (!SUBSCRIPTION_OPS.includes(params.op as SubscriptionOp)) return NextResponse.json({ error: "unknown_op" }, { status: 400 });

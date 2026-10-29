@@ -52,7 +52,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const hdrs = headers();
+  const hdrs = await headers();
   // Set by middleware for /admin. The admin portal gets a bare document: no
   // storefront navigation, cart, pop-ups or analytics scripts.
   if (hdrs.get("x-ip6-area") === "admin") {

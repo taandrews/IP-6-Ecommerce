@@ -1,6 +1,6 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
+import { headers, type UnsafeUnwrappedHeaders } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAccessToken, getStaffUser, type SessionUser } from "@/lib/auth/session";
 import { accessTokenActive } from "@/lib/aws/cognito";
@@ -23,7 +23,7 @@ export class HttpError extends Error {
 }
 
 function clientIp() {
-  return clientIpFrom(headers(), "");
+  return clientIpFrom((headers() as unknown as UnsafeUnwrappedHeaders), "");
 }
 
 // Access tokens Cognito confirmed recently, so a page with many requests asks once.
@@ -79,12 +79,12 @@ type Handler<P> = (req: Request, ctx: StaffContext, params: P) => Promise<Respon
  * traces or internal messages reach the browser).
  */
 export function withAdmin<P = Record<string, string>>(permission: Permission, handler: Handler<P>) {
-  return async (req: Request, route: { params: P }) => {
+  return async (req: Request, route: { params: Promise<P> }) => {
     const staff = await getStaff();
     if (!staff) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
     if (!can(staff.role, permission)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
     try {
-      const res = await handler(req, staff, route?.params ?? ({} as P));
+      const res = await handler(req, staff, ((await route?.params) ?? {}) as P);
       res.headers.set("Cache-Control", "no-store");
       return res;
     } catch (err) {

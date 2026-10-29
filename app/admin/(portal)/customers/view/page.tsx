@@ -15,7 +15,8 @@ import type { Currency } from "@/types";
 
 export const metadata = { title: "Customer" };
 
-export default async function CustomerViewPage({ searchParams }: { searchParams: { k?: string; request?: string } }) {
+export default async function CustomerViewPage(props: { searchParams: Promise<{ k?: string; request?: string }> }) {
+  const searchParams = await props.searchParams;
   const staff = await requireStaffPage("customers:read");
   const email = unsealEmail(searchParams.k);
   if (!email) {

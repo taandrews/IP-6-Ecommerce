@@ -18,7 +18,10 @@ const TABS: Array<{ key: string; label: string; statuses: OrderStatus[] }> = [
   { key: "all", label: "All recent", statuses: ORDER_STATUSES.filter((s) => s !== "pending" && s !== "failed") },
 ];
 
-export default async function OrdersPage({ searchParams }: { searchParams: { tab?: string; status?: string; cursor?: string } }) {
+export default async function OrdersPage(
+  props: { searchParams: Promise<{ tab?: string; status?: string; cursor?: string }> }
+) {
+  const searchParams = await props.searchParams;
   const staff = await requireStaffPage("orders:read");
   const tab = TABS.find((t) => t.key === searchParams.tab) ?? TABS[0]!;
   const single = searchParams.status && ORDER_STATUSES.includes(searchParams.status as OrderStatus) ? (searchParams.status as OrderStatus) : null;

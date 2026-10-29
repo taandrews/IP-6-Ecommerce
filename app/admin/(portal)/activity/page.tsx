@@ -5,7 +5,8 @@ import { Empty, Notice, PageHeader, Table } from "@/components/admin/ui";
 
 export const metadata = { title: "Activity log" };
 
-export default async function ActivityPage({ searchParams }: { searchParams: { month?: string; cursor?: string } }) {
+export default async function ActivityPage(props: { searchParams: Promise<{ month?: string; cursor?: string }> }) {
+  const searchParams = await props.searchParams;
   await requireStaffPage("audit:read");
   const month = /^\d{4}-\d{2}$/.test(searchParams.month ?? "") ? searchParams.month! : new Date().toISOString().slice(0, 7);
   let entries: Awaited<ReturnType<typeof listAudit>>["entries"] = [];

@@ -12,7 +12,8 @@ import { OrderActions } from "./OrderActions";
 
 export const metadata = { title: "Order" };
 
-export default async function AdminOrderPage({ params }: { params: { id: string } }) {
+export default async function AdminOrderPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const staff = await requireStaffPage("orders:read");
   if (!/^IP6-[A-Z0-9]{6,20}$/.test(params.id)) notFound();
   const raw = await getOrder(params.id);

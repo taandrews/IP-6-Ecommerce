@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 
 const H2 = "font-display text-display-md text-forest-800 mb-3";
 
-export default function PrivacyPage({ searchParams }: { searchParams: { request?: string } }) {
+export default async function PrivacyPage(props: { searchParams: Promise<{ request?: string }> }) {
+  const searchParams = await props.searchParams;
   const request = searchParams.request;
   return (
     <>

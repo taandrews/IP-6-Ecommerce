@@ -1,5 +1,5 @@
 import "server-only";
-import { cookies, headers } from "next/headers";
+import { cookies, headers, type UnsafeUnwrappedCookies, type UnsafeUnwrappedHeaders } from "next/headers";
 import { isCountryCode, isSellableCountry } from "@/lib/countries";
 
 /** The visitor's own choice from the "Ship to" switcher. */
@@ -11,7 +11,7 @@ export const COUNTRY_COOKIE = "ip6_country";
  * chooses what a visitor sees, never what they can buy.
  */
 export function ipCountry(): string | undefined {
-  const h = headers();
+  const h = (headers() as unknown as UnsafeUnwrappedHeaders);
   const raw = h.get("cloudfront-viewer-country") ?? h.get("x-vercel-ip-country") ?? undefined;
   return isCountryCode(raw) ? raw.toUpperCase() : undefined;
 }
@@ -31,7 +31,7 @@ export interface VisitorGeo {
  * checkout's address check still decides every sale.
  */
 export function visitorGeo(): VisitorGeo {
-  const chosen = cookies().get(COUNTRY_COOKIE)?.value;
+  const chosen = (cookies() as unknown as UnsafeUnwrappedCookies).get(COUNTRY_COOKIE)?.value;
   const ip = ipCountry();
   const country = isCountryCode(chosen) ? chosen.toUpperCase() : ip ?? "US";
   return { country, sellable: isSellableCountry(country), ...(ip ? { ipCountry: ip } : {}) };

@@ -20,7 +20,7 @@ describe("withAdmin", () => {
 
   it("401 without a staff session", async () => {
     as(null);
-    const res = await withAdmin("orders:read", handler)(new Request("http://x"), { params: {} });
+    const res = await withAdmin("orders:read", handler)(new Request("http://x"), { params: Promise.resolve({}) });
     expect(res.status).toBe(401);
     expect(handler).not.toHaveBeenCalled();
   });
@@ -28,7 +28,7 @@ describe("withAdmin", () => {
   it("401 once Cognito has revoked the session, even though the ID token still verifies", async () => {
     as(["owner"]);
     cognito.active = false;
-    const res = await withAdmin("orders:read", handler)(new Request("http://x"), { params: {} });
+    const res = await withAdmin("orders:read", handler)(new Request("http://x"), { params: Promise.resolve({}) });
     cognito.active = true;
     expect(res.status).toBe(401);
     expect(handler).not.toHaveBeenCalled();
@@ -36,16 +36,16 @@ describe("withAdmin", () => {
 
   it("403 when the role lacks the permission", async () => {
     as(["viewer"]);
-    const res = await withAdmin("orders:refund", handler)(new Request("http://x"), { params: {} });
+    const res = await withAdmin("orders:refund", handler)(new Request("http://x"), { params: Promise.resolve({}) });
     expect(res.status).toBe(403);
     as(["staff"]);
-    expect((await withAdmin("customers:delete", handler)(new Request("http://x"), { params: {} })).status).toBe(403);
+    expect((await withAdmin("customers:delete", handler)(new Request("http://x"), { params: Promise.resolve({}) })).status).toBe(403);
     expect(handler).not.toHaveBeenCalled();
   });
 
   it("runs the handler for an allowed role and marks the response no-store", async () => {
     as(["owner"]);
-    const res = await withAdmin("orders:refund", handler)(new Request("http://x"), { params: {} });
+    const res = await withAdmin("orders:refund", handler)(new Request("http://x"), { params: Promise.resolve({}) });
     expect(res.status).toBe(200);
     expect(res.headers.get("cache-control")).toBe("no-store");
     expect(handler).toHaveBeenCalledOnce();
@@ -55,12 +55,12 @@ describe("withAdmin", () => {
     as(["owner"]);
     const boom = await withAdmin("orders:read", async () => {
       throw new Error("db password is hunter2");
-    })(new Request("http://x"), { params: {} });
+    })(new Request("http://x"), { params: Promise.resolve({}) });
     expect(boom.status).toBe(500);
     expect(await boom.text()).not.toContain("hunter2");
     const known = await withAdmin("orders:read", async () => {
       throw new HttpError(409, "wrong_status");
-    })(new Request("http://x"), { params: {} });
+    })(new Request("http://x"), { params: Promise.resolve({}) });
     expect(known.status).toBe(409);
     expect(await known.json()).toEqual({ error: "wrong_status" });
   });

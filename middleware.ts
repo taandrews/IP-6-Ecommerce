@@ -90,7 +90,7 @@ function opts(realm: Realm, maxAge: number) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isApi = pathname.startsWith("/api/");
-  const ip = clientIpFrom(req.headers, req.ip);
+  const ip = clientIpFrom(req.headers);
 
   if (RATE_LIMITED.test(pathname)) {
     const auth = AUTH_API.test(pathname);

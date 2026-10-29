@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function HeroPreviewPage({ searchParams }: { searchParams: { v?: string } }) {
+export default async function HeroPreviewPage(props: { searchParams: Promise<{ v?: string }> }) {
+  const searchParams = await props.searchParams;
   const cta = "/shop#people";
   return searchParams.v === "2" ? <HeroCinemagraph ctaHref={cta} /> : <HeroCinemagraphTyped ctaHref={cta} />;
 }

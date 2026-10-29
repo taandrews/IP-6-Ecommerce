@@ -9,7 +9,8 @@ import { CustomerSearch } from "./CustomerSearch";
 
 export const metadata = { title: "Customers" };
 
-export default async function CustomersPage({ searchParams }: { searchParams: { cursor?: string } }) {
+export default async function CustomersPage(props: { searchParams: Promise<{ cursor?: string }> }) {
+  const searchParams = await props.searchParams;
   const staff = await requireStaffPage("customers:read");
   const pii = can(staff.role, "customers:pii");
   let accounts: Awaited<ReturnType<typeof listAccounts>>["accounts"] = [];

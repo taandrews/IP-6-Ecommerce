@@ -1,5 +1,5 @@
 import "server-only";
-import { cookies } from "next/headers";
+import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
 import { AUTH_COOKIES, CHALLENGE_MAX_AGE, REFRESH_MAX_AGE, sameSiteFor, secureCookies, type Realm } from "./config";
 import { verifyIdToken, type VerifiedUser } from "./jwt";
 
@@ -26,7 +26,7 @@ export async function setAuthCookies(tokens: TokenSet, realm: Realm = "customer"
   const user = await verifyIdToken(tokens.IdToken, realm);
   if (!user) throw new Error("token verification failed");
   const names = AUTH_COOKIES[realm];
-  const c = cookies();
+  const c = await cookies();
   const ttl = Math.max(60, Math.min(tokens.ExpiresIn ?? 3600, 3600));
   c.set(names.id, tokens.IdToken, cookieOpts(realm, ttl));
   c.set(names.access, tokens.AccessToken, cookieOpts(realm, ttl));
@@ -36,7 +36,7 @@ export async function setAuthCookies(tokens: TokenSet, realm: Realm = "customer"
 }
 
 export function clearAuthCookies(realm: Realm = "customer") {
-  const c = cookies();
+  const c = (cookies() as unknown as UnsafeUnwrappedCookies);
   for (const name of Object.values(AUTH_COOKIES[realm])) c.delete(name);
   // Cookie from the previous, unverified admin check. Removed wherever it lingers.
   c.delete("ip6_admin");
@@ -51,11 +51,11 @@ export interface PendingChallenge {
 }
 
 export function setChallengeCookie(ch: PendingChallenge, realm: Realm = "customer") {
-  cookies().set(AUTH_COOKIES[realm].challenge, JSON.stringify(ch), cookieOpts(realm, CHALLENGE_MAX_AGE));
+  (cookies() as unknown as UnsafeUnwrappedCookies).set(AUTH_COOKIES[realm].challenge, JSON.stringify(ch), cookieOpts(realm, CHALLENGE_MAX_AGE));
 }
 
 export function readChallengeCookie(realm: Realm = "customer"): PendingChallenge | null {
-  const raw = cookies().get(AUTH_COOKIES[realm].challenge)?.value;
+  const raw = (cookies() as unknown as UnsafeUnwrappedCookies).get(AUTH_COOKIES[realm].challenge)?.value;
   if (!raw) return null;
   try {
     const v = JSON.parse(raw) as PendingChallenge;
@@ -67,20 +67,20 @@ export function readChallengeCookie(realm: Realm = "customer"): PendingChallenge
 
 /** The signed-in customer, or null. The token signature is always verified. */
 export async function getSessionUser(): Promise<SessionUser | null> {
-  const token = cookies().get(AUTH_COOKIES.customer.id)?.value;
+  const token = (await cookies()).get(AUTH_COOKIES.customer.id)?.value;
   if (!token) return null;
   return verifyIdToken(token, "customer");
 }
 
 /** The signed-in staff member's verified token claims, or null. */
 export async function getStaffUser(): Promise<SessionUser | null> {
-  const token = cookies().get(AUTH_COOKIES.staff.id)?.value;
+  const token = (await cookies()).get(AUTH_COOKIES.staff.id)?.value;
   if (!token) return null;
   return verifyIdToken(token, "staff");
 }
 
 export function getAccessToken(realm: Realm = "customer"): string | null {
-  return cookies().get(AUTH_COOKIES[realm].access)?.value ?? null;
+  return (cookies() as unknown as UnsafeUnwrappedCookies).get(AUTH_COOKIES[realm].access)?.value ?? null;
 }
 
 export { safeNextPath } from "./redirect";
