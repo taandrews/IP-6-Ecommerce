@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Input, Textarea } from "@/components/ui/Input";
+import { Honeypot } from "@/components/ui/Honeypot";
 
 export function DataDeletionForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -15,7 +16,7 @@ export function DataDeletionForm() {
       const res = await fetch("/api/privacy/deletion-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.get("email"), details: form.get("details") ?? "", type }),
+        body: JSON.stringify({ email: form.get("email"), details: form.get("details") ?? "", type, website: form.get("website") ?? "" }),
       });
       setStatus(res.ok ? "success" : "error");
     } catch {
@@ -32,7 +33,8 @@ export function DataDeletionForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="relative space-y-4">
+      <Honeypot />
       <fieldset className="space-y-2">
         <legend className="label">What would you like?</legend>
         <label className="flex items-center gap-2 text-sm">

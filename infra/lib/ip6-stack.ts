@@ -26,6 +26,9 @@ export interface Ip6StackProps extends StackProps {
   domainName: string;
   /** Account-wide alert topic (from Ip6AccountStack); bounces, complaints and CDN errors go here. */
   alertsTopicArn: string;
+  /** The Amplify Hosting app allowed to use this stack's app role (prod only). */
+  amplifyAppId?: string;
+  amplifyRegion?: string;
 }
 
 export class Ip6Stack extends Stack {
@@ -178,6 +181,8 @@ export class Ip6Stack extends Stack {
       partitionKey: { name: "code", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "customer", type: dynamodb.AttributeType.STRING },
       ...tableDefaults,
+      // Checkout holds on limited codes ("hold#<order>") lapse after 30 minutes; redemption counts never expire.
+      timeToLiveAttribute: "expiresAt",
     });
 
     const analytics = new dynamodb.Table(this, "AnalyticsDaily", {
@@ -216,7 +221,15 @@ export class Ip6Stack extends Stack {
       sortKey: { name: "createdAt", type: dynamodb.AttributeType.STRING },
     });
 
-    const appTables = [users, orders, orderItems, productsTable, inventory, subs, reviews, discounts, discountRedemptions, analytics, settings, auditLog, privacyRequests];
+    // Shared request counters for rate limits (sign-in, forms, checkout). Each window expires on its own.
+    const rateLimits = new dynamodb.Table(this, "RateLimits", {
+      tableName: `${props.tablePrefix}RateLimits`,
+      partitionKey: { name: "key", type: dynamodb.AttributeType.STRING },
+      ...tableDefaults,
+      timeToLiveAttribute: "expiresAt",
+    });
+
+    const appTables = [users, orders, orderItems, productsTable, inventory, subs, reviews, discounts, discountRedemptions, analytics, settings, auditLog, privacyRequests, rateLimits];
 
     // -----------------------
     // Cognito: two separate user pools
@@ -289,8 +302,8 @@ export class Ip6Stack extends Stack {
       authFlows: { userPassword: true },
       preventUserExistenceErrors: true,
       enableTokenRevocation: true,
-      accessTokenValidity: Duration.hours(1),
-      idTokenValidity: Duration.hours(1),
+      accessTokenValidity: Duration.minutes(15),
+      idTokenValidity: Duration.minutes(15),
       refreshTokenValidity: Duration.hours(12),
     });
 
@@ -464,7 +477,16 @@ export class Ip6Stack extends Stack {
     // and read access to the app's secrets.
     const appRole = new iam.Role(this, "AppComputeRole", {
       roleName: `ip6-${props.environment}-app`,
-      assumedBy: new iam.ServicePrincipal("amplify.amazonaws.com"),
+      // Only Amplify acting for this account (and, in prod, this one app) may
+      // take the role, so another Amplify app can't borrow its data access.
+      assumedBy: new iam.ServicePrincipal("amplify.amazonaws.com").withConditions({
+        StringEquals: { "aws:SourceAccount": this.account },
+        ArnLike: {
+          "aws:SourceArn": props.amplifyAppId
+            ? `arn:aws:amplify:${props.amplifyRegion ?? this.region}:${this.account}:apps/${props.amplifyAppId}/*`
+            : `arn:aws:amplify:*:${this.account}:apps/*`,
+        },
+      }),
       description: "Runtime permissions for the IP6 Original Next.js app on Amplify",
     });
     appTables.forEach((t) => t.grantReadWriteData(appRole));

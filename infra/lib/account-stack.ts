@@ -91,6 +91,19 @@ export class Ip6AccountStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    // CloudTrail may only write here for this account's own trail (confused-deputy guard).
+    const trailArn = `arn:aws:cloudtrail:${this.region}:${this.account}:trail/ip6-account-trail`;
+    trailBucket.addToResourcePolicy(
+      new iam.PolicyStatement({
+        sid: "OnlyThisTrail",
+        effect: iam.Effect.DENY,
+        principals: [new iam.ServicePrincipal("cloudtrail.amazonaws.com")],
+        actions: ["s3:PutObject", "s3:GetBucketAcl"],
+        resources: [trailBucket.bucketArn, trailBucket.arnForObjects("*")],
+        conditions: { StringNotEquals: { "aws:SourceArn": trailArn } },
+      }),
+    );
+
     new cloudtrail.Trail(this, "Trail", {
       trailName: "ip6-account-trail",
       bucket: trailBucket,

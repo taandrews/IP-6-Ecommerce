@@ -30,7 +30,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: { 
         title="Customers"
         intro="Customer accounts, plus guest checkouts found by email. Every view of a customer's details is recorded in the activity log."
       />
-      {!pii ? <Notice tone="info">Your role shows masked names and emails.</Notice> : null}
+      {!pii ? <Notice tone="info">Your role shows masked names and emails, so search needs the full email address.</Notice> : null}
       <CustomerSearch />
       {error ? (
         <Notice tone="bad">Accounts couldn't be loaded. Check the customer user pool settings.</Notice>

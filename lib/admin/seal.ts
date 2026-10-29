@@ -1,25 +1,35 @@
 import "server-only";
 import crypto from "node:crypto";
+import { getAdminLinkKey } from "@/lib/aws/secrets";
 
 /**
  * Seals a customer's email into an opaque, tamper-proof token for admin
  * links, so email addresses never appear in URLs, browser history or
- * server access logs. AES-256-GCM with a key from ADMIN_LINK_KEY (32 bytes,
- * base64). Tokens expire after 12 hours.
+ * server access logs. AES-256-GCM with a 32-byte key (base64) kept in Secrets
+ * Manager (adminLinkKey in ip6/{env}/app), never in build settings. Tokens
+ * expire after 12 hours. The admin guard calls loadLinkKey() on every staff
+ * request, before any page or route can seal or unseal.
  */
 const TTL_MS = 12 * 60 * 60 * 1000;
 
+const g = globalThis as typeof globalThis & { __ip6LinkKey?: Buffer; __ip6DevLinkKey?: Buffer };
+
+function decode(raw: string, from: string) {
+  const k = Buffer.from(raw, "base64");
+  if (k.length !== 32) throw new Error(`${from} must be 32 bytes, base64-encoded`);
+  return k;
+}
+
+export async function loadLinkKey() {
+  const raw = await getAdminLinkKey();
+  if (raw) g.__ip6LinkKey = decode(raw, "adminLinkKey");
+}
+
 function key(): Buffer {
-  const raw = process.env.ADMIN_LINK_KEY;
-  if (raw) {
-    const k = Buffer.from(raw, "base64");
-    if (k.length !== 32) throw new Error("ADMIN_LINK_KEY must be 32 bytes, base64-encoded");
-    return k;
-  }
-  if (process.env.NODE_ENV === "production") throw new Error("ADMIN_LINK_KEY is not configured");
+  if (g.__ip6LinkKey) return g.__ip6LinkKey;
+  if (process.env.NODE_ENV === "production") throw new Error("admin link key is not loaded");
   // Local development only: one random key per process, kept on globalThis so
   // every route bundle shares it (links stop working when the server restarts).
-  const g = globalThis as typeof globalThis & { __ip6DevLinkKey?: Buffer };
   g.__ip6DevLinkKey ??= crypto.randomBytes(32);
   return g.__ip6DevLinkKey;
 }

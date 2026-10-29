@@ -48,51 +48,62 @@ export async function saveWaitlist(input: {
   site?: "amplify" | "shopify";
 }) {
   const now = new Date().toISOString();
-  // Every attribute goes through a name placeholder: several (segment, source, page) are DynamoDB reserved words.
-  const fields: Record<string, unknown> = {
+  const Key = { userId: waitlistKey(input.email) };
+  // No confirmation email goes out yet, so anyone could type someone else's
+  // address. The first sign-up's details and consent are kept (if_not_exists);
+  // later ones only refresh where the visitor was browsing.
+  const keep: Record<string, unknown> = {
     email: emailKey(input.email),
     segment: "waitlist",
     country: input.country,
-    page: input.page,
-    source: input.source,
     site: input.site ?? "amplify",
     consentVersion: WAITLIST_CONSENT_VERSION,
     consentedAt: now,
-    updatedAt: now,
+    createdAt: now,
     ...(input.firstName ? { firstName: input.firstName } : {}),
     ...(input.ipCountry ? { ipCountry: input.ipCountry } : {}),
+  };
+  const latest: Record<string, unknown> = {
+    page: input.page,
+    source: input.source,
+    updatedAt: now,
     ...(input.product ? { lastProduct: input.product } : {}),
   };
+  // Every attribute goes through a name placeholder: several (segment, source, page) are DynamoDB reserved words.
   const names: Record<string, string> = {};
-  const values: Record<string, unknown> = { ":now": now };
+  const values: Record<string, unknown> = {};
   const sets: string[] = [];
-  Object.entries(fields).forEach(([k, v], i) => {
+  Object.entries({ ...keep, ...latest }).forEach(([k, v], i) => {
     names[`#f${i}`] = k;
     values[`:f${i}`] = v;
-    sets.push(`#f${i} = :f${i}`);
+    sets.push(k in keep ? `#f${i} = if_not_exists(#f${i}, :f${i})` : `#f${i} = :f${i}`);
   });
-  names["#created"] = "createdAt";
-  sets.push("#created = if_not_exists(#created, :now)");
-  if (input.product) {
-    names["#products"] = "products";
-    values[":empty"] = [];
-    values[":plist"] = [input.product];
-    sets.push("#products = list_append(if_not_exists(#products, :empty), :plist)");
-  }
-  let update = `SET ${sets.join(", ")}`;
-  if (!input.ipCountry) {
-    names["#ip"] = "ipCountry";
-    update += " REMOVE #ip";
-  }
   await docClient.send(
     new UpdateCommand({
       TableName: TABLES.Users,
-      Key: { userId: waitlistKey(input.email) },
-      UpdateExpression: update,
+      Key,
+      UpdateExpression: `SET ${sets.join(", ")}`,
       ExpressionAttributeNames: names,
       ExpressionAttributeValues: values,
     }),
   );
+  if (input.product) {
+    // Each SKU is listed once, so repeat sign-ups can't grow the row.
+    await docClient
+      .send(
+        new UpdateCommand({
+          TableName: TABLES.Users,
+          Key,
+          UpdateExpression: "SET #products = list_append(if_not_exists(#products, :empty), :plist)",
+          ConditionExpression: "attribute_not_exists(#products) OR NOT contains(#products, :p)",
+          ExpressionAttributeNames: { "#products": "products" },
+          ExpressionAttributeValues: { ":empty": [], ":plist": [input.product], ":p": input.product },
+        }),
+      )
+      .catch((err) => {
+        if ((err as Error).name !== "ConditionalCheckFailedException") throw err;
+      });
+  }
 }
 
 export async function getWaitlistEntry(email: string): Promise<WaitlistRecord | null> {

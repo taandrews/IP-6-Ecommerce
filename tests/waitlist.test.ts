@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
 import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
+vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
+
 const hdrs = vi.hoisted(() => ({ map: new Map<string, string>() }));
 vi.mock("next/headers", () => ({
   headers: () => ({ get: (k: string) => hdrs.map.get(k.toLowerCase()) ?? null }),
@@ -31,8 +33,13 @@ describe("launch waitlist", () => {
       Object.entries(input.ExpressionAttributeNames!).map(([ph, name]) => [name, input.ExpressionAttributeValues![ph.replace("#", ":")]]),
     );
     expect(saved).toMatchObject({ email: "ana@example.com", country: "GB", ipCountry: "GB", consentVersion: "2026-10-28", page: "/shop", lastProduct: "SUP-IP6-CAP240", source: "product" });
-    expect(input.UpdateExpression).toContain("list_append");
-    expect(JSON.stringify(input)).not.toContain("203.0.113.9");
+    // The first sign-up's details and consent are kept; a stranger re-using the address can't change them.
+    expect(input.UpdateExpression).toMatch(/#f\d+ = if_not_exists\(#f\d+, :f\d+\)/);
+    const products = ddb.commandCalls(UpdateCommand)[1]!.args[0].input;
+    expect(products.UpdateExpression).toContain("list_append");
+    // Each product is listed once, so repeat sign-ups can't grow the row.
+    expect(products.ConditionExpression).toContain("NOT contains(#products, :p)");
+    expect(JSON.stringify([input, products])).not.toContain("203.0.113.9");
   });
 
   it("answers the Shopify storefront with CORS and records the site", async () => {

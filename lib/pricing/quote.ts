@@ -20,6 +20,7 @@ export interface RequestedLine {
 export type QuoteError =
   | { code: "unknown_item"; variantId: string }
   | { code: "out_of_stock"; variantId: string }
+  | { code: "not_enough_stock"; variantId: string; available: number }
   | { code: "bad_quantity"; variantId: string }
   | { code: "bad_subscription"; variantId: string }
   | { code: "too_many_lines" }
@@ -42,14 +43,22 @@ export function priceLines(
 ): { ok: true; value: PricedLines } | { ok: false; error: QuoteError } {
   if (requested.length === 0) return { ok: false, error: { code: "empty_cart" } };
   if (requested.length > MAX_LINES) return { ok: false, error: { code: "too_many_lines" } };
+  // The cap and the stock check apply to each variant in total, so repeating
+  // a variant across several lines can't get past them.
+  const totals = new Map<string, number>();
+  for (const r of requested) totals.set(r.variantId, (totals.get(r.variantId) ?? 0) + (Number.isInteger(r.qty) ? r.qty : NaN));
   const lines: OrderLine[] = [];
   for (const r of requested) {
     const product = catalog.find((p) => p.variants.some((v) => v.id === r.variantId));
     const variant = product?.variants.find((v) => v.id === r.variantId);
     if (!product || !variant || product.comingSoon) return { ok: false, error: { code: "unknown_item", variantId: r.variantId } };
     if (!variant.inStock) return { ok: false, error: { code: "out_of_stock", variantId: r.variantId } };
-    if (!Number.isInteger(r.qty) || r.qty < 1 || r.qty > MAX_QTY_PER_LINE) {
+    const total = totals.get(r.variantId)!;
+    if (!Number.isInteger(r.qty) || r.qty < 1 || !(total <= MAX_QTY_PER_LINE)) {
       return { ok: false, error: { code: "bad_quantity", variantId: r.variantId } };
+    }
+    if (variant.available !== undefined && total > variant.available) {
+      return { ok: false, error: { code: "not_enough_stock", variantId: r.variantId, available: variant.available } };
     }
     let discountPct = 0;
     let preorderLine = false;
@@ -142,6 +151,7 @@ export function finishQuote(
 export const QUOTE_MESSAGES: Record<QuoteError["code"], string> = {
   unknown_item: "An item in your cart is no longer available. Please remove it and try again.",
   out_of_stock: "An item in your cart is out of stock.",
+  not_enough_stock: "We don't have that many of an item in your cart left. Please lower the quantity.",
   bad_quantity: `Each item is limited to ${MAX_QTY_PER_LINE} per order.`,
   bad_subscription: "That subscription option is not available.",
   too_many_lines: "Your cart has too many items.",

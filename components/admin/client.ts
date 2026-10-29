@@ -24,6 +24,7 @@ const MESSAGES: Record<string, string> = {
   bad_range: "Choose a valid date range of up to a year.",
   bad_origin: "Request blocked. Reload the page and try again.",
   rate_limited: "Too many requests. Wait a minute and try again.",
+  full_email_required: "Your role sees masked details, so type the customer's full email address.",
   server_error: "Something went wrong. Please try again.",
 };
 

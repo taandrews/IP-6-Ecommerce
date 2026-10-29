@@ -2,12 +2,15 @@ import { NextResponse } from "next/server";
 import { CheckoutInputSchema } from "@/lib/checkout/schema";
 import { buildQuote } from "@/lib/checkout/build";
 import { StripeConfigurationError } from "@/lib/stripe/server";
+import { limitByIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /** Returns server-calculated totals and shipping options. Creates nothing. */
 export async function POST(req: Request) {
+  const limited = (await limitByIp(req, "quote", 40)) ?? (await limitByIp(req, "quote-hour", 400, 3600));
+  if (limited) return limited;
   const parsed = CheckoutInputSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please check your details and try again." }, { status: 400 });
   try {

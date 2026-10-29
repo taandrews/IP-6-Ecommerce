@@ -3,6 +3,7 @@ import { z } from "zod";
 import { respondToChallenge } from "@/lib/aws/cognito";
 import { readChallengeCookie } from "@/lib/auth/session";
 import { authErrorMessage, completeAuth } from "@/lib/auth/signin";
+import { limitByIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -10,6 +11,8 @@ const Body = z.object({ type: z.literal("NEW_PASSWORD"), newPassword: z.string()
 
 /** Customer second sign-in step: choose a new password when Cognito requires one. */
 export async function POST(req: Request) {
+  const limited = await limitByIp(req, "challenge", 10);
+  if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please check what you entered." }, { status: 400 });
   const pending = readChallengeCookie("customer");

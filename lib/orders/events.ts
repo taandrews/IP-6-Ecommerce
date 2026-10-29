@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import type Stripe from "stripe";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
-import { appendOrderList, emailKey, getOrder, markPaid, setOrderStatus } from "@/lib/data/orders";
+import { appendOrderList, claimPaidSteps, emailKey, getOrder, markPaid, markStepDone, releasePaidSteps, setOrderStatus, type PaidStep } from "@/lib/data/orders";
 import { decrementStock } from "@/lib/data/catalog";
 import { recordRedemption } from "@/lib/data/discounts";
 import { recordRefund, recordSale } from "@/lib/data/analytics";
@@ -25,15 +25,23 @@ function firstName(name: string) {
 }
 
 /**
- * payment_intent.succeeded. Runs its side effects once per order even though
- * Stripe may deliver the event more than once.
+ * payment_intent.succeeded. Each side effect runs once per order even though
+ * Stripe may deliver the event more than once, and each is recorded as done,
+ * so if one fails (and Stripe retries) the retry finishes the rest instead of
+ * leaving a paid order without its subscription or email.
  */
 export async function handlePaymentSucceeded(stripe: Stripe, pi: Stripe.PaymentIntent) {
   const orderId = pi.metadata?.orderId;
   if (!orderId) return;
   const order = await getOrder(orderId);
   if (!order) {
-    console.error("[orders] paid intent has no order", orderId);
+    // The unpaid order expired (7 days) before the card was charged, e.g. a
+    // late bank check. Nothing can be shipped, so give the money back.
+    console.error("[orders] paid intent has no order; refunding", orderId);
+    await stripe.refunds.create(
+      { payment_intent: pi.id, reason: "requested_by_customer", metadata: { by: SYSTEM, orderId, why: "order_expired" } },
+      { idempotencyKey: `orphan-${pi.id}` },
+    );
     return;
   }
   // Last gate before fulfilment: the order's shipping address, and the one
@@ -61,58 +69,76 @@ export async function handlePaymentSucceeded(stripe: Stripe, pi: Stripe.PaymentI
     return;
   }
   const customerId = typeof pi.customer === "string" ? pi.customer : pi.customer?.id;
-  const firstTime = await markPaid(orderId, pi.id, pi.amount, customerId);
-  if (!firstTime) {
-    if (order.status === "pending") {
+  if (!(await markPaid(orderId, pi.id, pi.amount, customerId))) {
+    // Already paid by an earlier delivery, or the payment doesn't match.
+    // Read it again: a delivery arriving at the same moment may have just paid it.
+    const latest = await getOrder(orderId);
+    if (latest?.status === "pending") {
       // Amount or intent mismatch: never fulfil, flag for staff.
       await appendOrderList(orderId, "notes", { at: new Date().toISOString(), by: SYSTEM, text: "Payment did not match the order total. Check Stripe before shipping." });
+      return;
     }
-    return;
+    if (!latest || latest.stripePaymentIntentId !== pi.id || latest.doneSteps?.has("email")) return;
   }
 
-  const failedStock = await decrementStock(order.items.map((l) => ({ sku: l.sku, qty: l.qty })));
-  if (failedStock.length) {
-    await appendOrderList(orderId, "notes", { at: new Date().toISOString(), by: SYSTEM, text: `Not enough stock recorded for ${failedStock.join(", ")}.` });
-  }
-  if (order.discountCode) {
-    const within = await recordRedemption(order.discountCode, order.email, orderId);
-    if (!within) {
-      await appendOrderList(orderId, "notes", { at: new Date().toISOString(), by: SYSTEM, text: `Discount ${order.discountCode} was over its use limit when paid.` });
+  // One delivery at a time works through the steps; a concurrent duplicate stops here.
+  const holder = `${pi.id}:${process.pid}:${Date.now()}`;
+  if (!(await claimPaidSteps(orderId, holder))) return;
+  try {
+    const done = (await getOrder(orderId))?.doneSteps ?? new Set<string>();
+    const step = async (name: PaidStep, run: () => Promise<unknown>) => {
+      if (done.has(name)) return;
+      await run();
+      await markStepDone(orderId, name);
+    };
+
+    await step("stock", async () => {
+      const failedStock = await decrementStock(order.items.map((l) => ({ sku: l.sku, qty: l.qty })));
+      if (failedStock.length) {
+        await appendOrderList(orderId, "notes", { at: new Date().toISOString(), by: SYSTEM, text: `Not enough stock recorded for ${failedStock.join(", ")}.` });
+      }
+    });
+    if (order.discountCode) {
+      await step("discount", async () => {
+        const within = await recordRedemption(order.discountCode!, order.email, orderId);
+        if (!within) {
+          await appendOrderList(orderId, "notes", { at: new Date().toISOString(), by: SYSTEM, text: `Discount ${order.discountCode} was over its use limit when paid.` });
+        }
+      });
     }
+    await step("sale", () =>
+      recordSale(new Date().toISOString(), order.currency, order.totalCents, order.items.reduce((n, l) => n + l.qty, 0), order.preorder === "1"),
+    );
+    if (pi.metadata?.taxCalculationId) {
+      await step("tax", () =>
+        stripe.tax.transactions
+          .createFromCalculation({ calculation: pi.metadata.taxCalculationId!, reference: orderId }, { idempotencyKey: `tax-${orderId}` })
+          .catch((err) => console.error("[orders] tax transaction failed", (err as Error).name)),
+      );
+    }
+    await step("subscriptions", () => startSubscriptions(stripe, order, pi));
+    await step("email", async () => {
+      const preorder = await getPreorderSettings();
+      const money = (c: number) => formatPrice(c, order.currency);
+      await sendEmailSafe(
+        order.email,
+        emailTemplates.orderConfirmation({
+          name: firstName(order.customerName),
+          orderId,
+          lines: order.items.map((l) => ({ name: l.name, variantLabel: l.variantLabel, qty: l.qty, total: money(l.lineTotalCents) })),
+          subtotal: money(order.subtotalCents),
+          discount: order.discountCents ? money(order.discountCents) : undefined,
+          shipping: order.shippingCents === 0 ? "Free" : money(order.shippingCents),
+          tax: order.taxCents ? money(order.taxCents) : undefined,
+          total: money(order.totalCents),
+          preorderNote: order.preorder === "1" ? `Pre-order items: ${preorder.shipNote}.` : undefined,
+        }),
+        "order confirmation",
+      );
+    });
+  } finally {
+    await releasePaidSteps(orderId).catch(() => undefined);
   }
-  await recordSale(
-    new Date().toISOString(),
-    order.currency,
-    order.totalCents,
-    order.items.reduce((n, l) => n + l.qty, 0),
-    order.preorder === "1",
-  );
-
-  if (pi.metadata?.taxCalculationId) {
-    await stripe.tax.transactions
-      .createFromCalculation({ calculation: pi.metadata.taxCalculationId, reference: orderId }, { idempotencyKey: `tax-${orderId}` })
-      .catch((err) => console.error("[orders] tax transaction failed", (err as Error).name));
-  }
-
-  await startSubscriptions(stripe, order, pi);
-
-  const preorder = await getPreorderSettings();
-  const money = (c: number) => formatPrice(c, order.currency);
-  await sendEmailSafe(
-    order.email,
-    emailTemplates.orderConfirmation({
-      name: firstName(order.customerName),
-      orderId,
-      lines: order.items.map((l) => ({ name: l.name, variantLabel: l.variantLabel, qty: l.qty, total: money(l.lineTotalCents) })),
-      subtotal: money(order.subtotalCents),
-      discount: order.discountCents ? money(order.discountCents) : undefined,
-      shipping: order.shippingCents === 0 ? "Free" : money(order.shippingCents),
-      tax: order.taxCents ? money(order.taxCents) : undefined,
-      total: money(order.totalCents),
-      preorderNote: order.preorder === "1" ? `Pre-order items: ${preorder.shipNote}.` : undefined,
-    }),
-    "order confirmation",
-  );
 }
 
 /**
@@ -255,11 +281,29 @@ export async function handleRenewalPaid(stripe: Stripe, invoice: Stripe.Invoice)
         : []),
     ],
   };
+  const block = addressBlock(address);
+  if (block) {
+    // Renewals ship only inside the sales area. Refund this charge, pause the
+    // subscription and keep the order (cancelled) so staff can contact the customer.
+    order.status = "cancelled";
+    order.notes.push({ at: now, by: SYSTEM, text: "Renewal refunded in full and the subscription paused automatically." });
+  }
   try {
     await docClient.send(new PutCommand({ TableName: TABLES.Orders, Item: order, ConditionExpression: "attribute_not_exists(orderId)" }));
   } catch (err) {
     if ((err as Error).name === "ConditionalCheckFailedException") return;
     throw err;
+  }
+  if (block) {
+    if (order.stripePaymentIntentId) {
+      await stripe.refunds.create(
+        { payment_intent: order.stripePaymentIntentId, reason: "requested_by_customer", metadata: { by: SYSTEM, orderId: order.orderId, why: `not_sellable_${block}` } },
+        { idempotencyKey: `renewal-not-sellable-${order.orderId}` },
+      );
+    }
+    const paused = await stripe.subscriptions.update(sub.id, { pause_collection: { behavior: "void" } }, { idempotencyKey: `renewal-pause-${order.orderId}` });
+    await upsertFromStripe(paused);
+    return;
   }
   await decrementStock([{ sku: record.sku, qty }]);
   await recordSale(now, currency, invoice.amount_paid, qty, false);

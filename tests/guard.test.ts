@@ -2,7 +2,9 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 
 const session = { user: null as null | { sub: string; username: string; email: string; emailVerified: boolean; groups: string[]; exp: number } };
 
-vi.mock("@/lib/auth/session", () => ({ getStaffUser: async () => session.user }));
+const cognito = { active: true };
+vi.mock("@/lib/auth/session", () => ({ getStaffUser: async () => session.user, getAccessToken: () => (session.user ? `at-${session.user.groups.join()}` : null) }));
+vi.mock("@/lib/aws/cognito", () => ({ accessTokenActive: async () => cognito.active }));
 vi.mock("next/headers", () => ({ headers: () => new Headers({ "x-forwarded-for": "203.0.113.5" }) }));
 vi.mock("next/navigation", () => ({ redirect: (u: string) => { throw new Error(`redirect:${u}`); } }));
 
@@ -19,6 +21,15 @@ describe("withAdmin", () => {
   it("401 without a staff session", async () => {
     as(null);
     const res = await withAdmin("orders:read", handler)(new Request("http://x"), { params: {} });
+    expect(res.status).toBe(401);
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("401 once Cognito has revoked the session, even though the ID token still verifies", async () => {
+    as(["owner"]);
+    cognito.active = false;
+    const res = await withAdmin("orders:read", handler)(new Request("http://x"), { params: {} });
+    cognito.active = true;
     expect(res.status).toBe(401);
     expect(handler).not.toHaveBeenCalled();
   });

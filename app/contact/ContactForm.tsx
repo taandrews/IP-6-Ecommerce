@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Honeypot } from "@/components/ui/Honeypot";
 
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -42,7 +43,8 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 card p-8" aria-busy={status === "submitting"}>
+    <form onSubmit={onSubmit} className="relative space-y-4 card p-8" aria-busy={status === "submitting"}>
+      <Honeypot />
       <div className="grid sm:grid-cols-2 gap-4">
         <Input id="name" name="name" label="Name" required autoComplete="name" />
         <Input id="email" name="email" type="email" label="Email" required autoComplete="email" />

@@ -4,6 +4,7 @@ import QRCode from "qrcode";
 import { confirmTotpEnrolment, respondToChallenge, startTotpEnrolment } from "@/lib/aws/cognito";
 import { readChallengeCookie, setChallengeCookie } from "@/lib/auth/session";
 import { authErrorMessage, challengeKind, completeAuth } from "@/lib/auth/signin";
+import { limitByIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -21,6 +22,8 @@ const Body = z.discriminatedUnion("type", [
  * SameSite=Strict cookie that expires after 5 minutes.
  */
 export async function POST(req: Request) {
+  const limited = await limitByIp(req, "staff-challenge", 10);
+  if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please check what you entered." }, { status: 400 });
   const pending = readChallengeCookie("staff");

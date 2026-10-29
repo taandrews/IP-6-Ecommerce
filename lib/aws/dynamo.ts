@@ -29,6 +29,7 @@ export const TABLES = {
   Settings: `${prefix}Settings`,
   AuditLog: `${prefix}AuditLog`,
   PrivacyRequests: `${prefix}PrivacyRequests`,
+  RateLimits: `${prefix}RateLimits`,
 } as const;
 
 /** Index names, matching infra/lib/ip6-stack.ts. */

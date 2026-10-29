@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { confirmForgotPassword, forgotPassword } from "@/lib/aws/cognito";
 import { authErrorMessage } from "@/lib/auth/signin";
+import { limitByIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -17,6 +18,8 @@ const Body = z.discriminatedUnion("step", [
 
 /** Staff password reset. Always reports success on the first step so it can't reveal who is staff. */
 export async function POST(req: Request) {
+  const limited = (await limitByIp(req, "staff-forgot", 5)) ?? (await limitByIp(req, "staff-forgot-hour", 20, 3600));
+  if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please check what you entered." }, { status: 400 });
   const b = parsed.data;

@@ -100,6 +100,8 @@ export interface OrderRecord {
   expiresAt?: number;
   /** Set when the customer's personal data was erased on request. */
   anonymizedAt?: string;
+  /** After-payment steps already done (stock, email, ...), so webhook retries pick up where a failure stopped. */
+  doneSteps?: Set<string>;
 }
 
 export interface ProductOverride {

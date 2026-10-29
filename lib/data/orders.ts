@@ -57,6 +57,77 @@ export async function markPaid(orderId: string, paymentIntentId: string, amountC
   }
 }
 
+export type PaidStep = "stock" | "discount" | "sale" | "tax" | "subscriptions" | "email";
+
+/** Records that one after-payment step finished, so a webhook retry skips it. */
+export async function markStepDone(orderId: string, step: PaidStep) {
+  await docClient.send(
+    new UpdateCommand({
+      TableName: TABLES.Orders,
+      Key: { orderId },
+      UpdateExpression: "ADD doneSteps :s",
+      ExpressionAttributeValues: { ":s": new Set([step]) },
+    }),
+  );
+}
+
+/**
+ * Lets one webhook delivery at a time run an order's after-payment steps.
+ * The lease lapses after two minutes, so a delivery that crashed doesn't
+ * block Stripe's next retry.
+ */
+export async function claimPaidSteps(orderId: string, holder: string): Promise<boolean> {
+  const now = Date.now();
+  try {
+    await docClient.send(
+      new UpdateCommand({
+        TableName: TABLES.Orders,
+        Key: { orderId },
+        UpdateExpression: "SET stepLease = :lease",
+        ConditionExpression: "attribute_not_exists(stepLease) OR stepLease.#until < :now OR stepLease.holder = :h",
+        ExpressionAttributeNames: { "#until": "until" },
+        ExpressionAttributeValues: { ":lease": { holder, until: now + 120_000 }, ":now": now, ":h": holder },
+      }),
+    );
+    return true;
+  } catch (err) {
+    if ((err as Error).name === "ConditionalCheckFailedException") return false;
+    throw err;
+  }
+}
+
+export async function releasePaidSteps(orderId: string) {
+  await docClient.send(new UpdateCommand({ TableName: TABLES.Orders, Key: { orderId }, UpdateExpression: "REMOVE stepLease" }));
+}
+
+/**
+ * Adds a refund to an order. The running total is added to atomically, so
+ * two refunds at the same moment can't overwrite each other's amount.
+ */
+export async function addRefund(orderId: string, entry: unknown, amountCents: number, orderTotalCents: number) {
+  const out = await docClient.send(
+    new UpdateCommand({
+      TableName: TABLES.Orders,
+      Key: { orderId },
+      UpdateExpression: "SET #f = list_append(if_not_exists(#f, :empty), :e), updatedAt = :u ADD refundedCents :amt",
+      ConditionExpression: "attribute_exists(orderId)",
+      ExpressionAttributeNames: { "#f": "refunds" },
+      ExpressionAttributeValues: { ":e": [entry], ":empty": [], ":u": new Date().toISOString(), ":amt": amountCents },
+      ReturnValues: "UPDATED_NEW",
+    }),
+  );
+  const total = Number(out.Attributes?.refundedCents ?? amountCents);
+  if (total >= orderTotalCents) {
+    await setOrderStatus(orderId, "refunded");
+  } else {
+    // A full refund that finished first keeps its status.
+    await setOrderStatus(orderId, "partially_refunded", {}, ["paid", "processing", "shipped", "delivered", "partially_refunded"]).catch((err) => {
+      if ((err as Error).name !== "ConditionalCheckFailedException") throw err;
+    });
+  }
+  return total;
+}
+
 export async function setOrderStatus(orderId: string, status: OrderStatus, extra: Record<string, unknown> = {}, expectFrom?: OrderStatus[]) {
   const sets = ["#s = :s", "updatedAt = :u"];
   const values: Record<string, unknown> = { ":s": status, ":u": new Date().toISOString() };

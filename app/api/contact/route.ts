@@ -3,18 +3,27 @@ import { z } from "zod";
 import { sendEmail } from "@/lib/aws/ses";
 import { lintContent } from "@/lib/compliance/claim-linter";
 import { CONTACT_INBOX, CONTACT_TOPICS } from "@/lib/email-addresses";
+import { limitByIp } from "@/lib/rate-limit";
+import { isBot } from "@/lib/honeypot";
+
+export const runtime = "nodejs";
 
 const Body = z.object({
-  name: z.string().min(1).max(80),
-  email: z.string().email(),
+  name: z.string().trim().min(1).max(80),
+  email: z.string().trim().email().max(254),
   topic: z.enum(CONTACT_TOPICS),
   order: z.string().max(40).optional().or(z.literal("")),
   message: z.string().min(10).max(2000),
+  website: z.string().max(200).optional(),
 });
 
 export async function POST(req: Request) {
+  const limited = (await limitByIp(req, "contact", 3)) ?? (await limitByIp(req, "contact-hour", 10, 3600));
+  if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  // A bot filled in the hidden field: report success and send nothing.
+  if (isBot(parsed.data.website)) return NextResponse.json({ ok: true });
   const findings = lintContent(parsed.data.message);
   try {
     await sendEmail(

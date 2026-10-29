@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { products } from "@/content/products";
 
+vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
+
 const deps = vi.hoisted(() => ({ secrets: vi.fn(), tax: vi.fn(), intent: vi.fn(), order: vi.fn() }));
 vi.mock("@/lib/aws/secrets", () => ({ getStripeSecrets: deps.secrets }));
 vi.mock("stripe", () => ({

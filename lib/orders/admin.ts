@@ -1,6 +1,6 @@
 import "server-only";
 import type Stripe from "stripe";
-import { appendOrderList, getOrder, OPEN_STATUSES, setOrderStatus } from "@/lib/data/orders";
+import { addRefund, appendOrderList, getOrder, OPEN_STATUSES, setOrderStatus } from "@/lib/data/orders";
 import { restock } from "@/lib/data/catalog";
 import { recordRefund } from "@/lib/data/analytics";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
@@ -95,12 +95,11 @@ export async function refund(
     },
     { idempotencyKey: `refund-${orderId}-${opts.requestKey}` },
   );
-  const total = (o.refundedCents ?? 0) + amount;
-  await appendOrderList(
+  const total = await addRefund(
     orderId,
-    "refunds",
     { refundId: r.id, amountCents: amount, reason: opts.reason, createdAt: new Date().toISOString(), createdBy: actorEmail },
-    { refundedCents: total, status: total >= o.totalCents ? "refunded" : "partially_refunded" },
+    amount,
+    o.totalCents,
   );
   // The charge.refunded webhook sees no new amount for this refund, so count it here.
   await recordRefund(new Date().toISOString(), o.currency, amount);

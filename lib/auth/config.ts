@@ -10,8 +10,9 @@ import { awsRegion } from "@/lib/aws/region";
  * the staff pool enforces MFA and has no public sign-up.
  *
  * COGNITO_ISSUER / STAFF_COGNITO_ISSUER and COGNITO_ENDPOINT exist only so a
- * local Cognito emulator can stand in during testing; in production they are
- * derived from the region and pool ids.
+ * local Cognito emulator can stand in during testing. A production build
+ * ignores them and always uses the real pool for the region and pool id, so
+ * an env change alone can't point sign-in at someone else's server.
  */
 
 export type Realm = "customer" | "staff";
@@ -44,13 +45,18 @@ export function cognitoConfig(realm: Realm = "customer") {
   const userPoolId = (realm === "staff" ? process.env.STAFF_COGNITO_USER_POOL_ID : process.env.COGNITO_USER_POOL_ID) ?? "";
   const clientId = (realm === "staff" ? process.env.STAFF_COGNITO_CLIENT_ID : process.env.COGNITO_CLIENT_ID) ?? "";
   const clientSecret = (realm === "staff" ? process.env.STAFF_COGNITO_CLIENT_SECRET : process.env.COGNITO_CLIENT_SECRET) ?? "";
-  const issuerOverride = realm === "staff" ? process.env.STAFF_COGNITO_ISSUER : process.env.COGNITO_ISSUER;
+  const testing = process.env.NODE_ENV !== "production";
+  const issuerOverride = testing ? (realm === "staff" ? process.env.STAFF_COGNITO_ISSUER : process.env.COGNITO_ISSUER) : undefined;
   const issuer = issuerOverride?.replace(/\/$/, "") ?? `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`;
-  const endpoint = process.env.COGNITO_ENDPOINT?.replace(/\/$/, "") ?? `https://cognito-idp.${region}.amazonaws.com`;
-  // Test-only override for a local emulator's signing keys; ignored in production.
-  const jwksOverride =
-    process.env.NODE_ENV !== "production" ? (realm === "staff" ? process.env.STAFF_COGNITO_JWKS_URL : process.env.COGNITO_JWKS_URL) : undefined;
+  const endpoint = cognitoEndpoint() ?? `https://cognito-idp.${region}.amazonaws.com`;
+  const jwksOverride = testing ? (realm === "staff" ? process.env.STAFF_COGNITO_JWKS_URL : process.env.COGNITO_JWKS_URL) : undefined;
   return { realm, region, userPoolId, clientId, clientSecret, issuer, endpoint, jwksUrl: jwksOverride ?? `${issuer}/.well-known/jwks.json` };
+}
+
+/** A local Cognito emulator's address; never honoured in production. */
+export function cognitoEndpoint(): string | undefined {
+  if (process.env.NODE_ENV === "production") return undefined;
+  return process.env.COGNITO_ENDPOINT?.replace(/\/$/, "") || undefined;
 }
 
 export function isAuthConfigured(realm: Realm = "customer") {

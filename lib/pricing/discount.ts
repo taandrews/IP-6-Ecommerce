@@ -8,16 +8,31 @@ export type DiscountCheck =
   | { ok: true; code: string; amountCents: number; description: string }
   | { ok: false; reason: "invalid" | "inactive" | "not_started" | "expired" | "used_up" | "minimum" | "currency" | "customer_limit" };
 
+// One message for every reason a code can't be used (apart from the order
+// minimum), so guessing codes never confirms that one exists.
+const NOT_VALID = "That code isn't valid.";
 export const DISCOUNT_MESSAGES: Record<Exclude<DiscountCheck, { ok: true }>["reason"], string> = {
-  invalid: "That code isn't valid.",
-  inactive: "That code is no longer active.",
-  not_started: "That code isn't active yet.",
-  expired: "That code has expired.",
-  used_up: "That code has reached its limit.",
+  invalid: NOT_VALID,
+  inactive: NOT_VALID,
+  not_started: NOT_VALID,
+  expired: NOT_VALID,
+  used_up: NOT_VALID,
   minimum: "Your order doesn't meet this code's minimum.",
-  currency: "That code doesn't apply to this currency.",
-  customer_limit: "You've already used this code.",
+  currency: NOT_VALID,
+  customer_limit: NOT_VALID,
 };
+
+/**
+ * One address per person for "per customer" limits: case, "+tags" and, for
+ * Gmail, dots are ignored, since they all reach the same inbox.
+ */
+export function canonicalEmail(email: string) {
+  const [local = "", domain = ""] = email.trim().toLowerCase().split("@");
+  const gmail = domain === "gmail.com" || domain === "googlemail.com";
+  let name = local.split("+")[0]!;
+  if (gmail) name = name.replace(/\./g, "");
+  return `${name}@${gmail ? "gmail.com" : domain}`;
+}
 
 export function normalizeCode(code: string) {
   return code.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, "").slice(0, 32);

@@ -65,13 +65,42 @@ describe("payment_intent.succeeded", () => {
     expect(sent.ReplyToAddresses).toEqual(["support@ip6original.com"]);
   });
 
-  it("does nothing on a retried event (already paid)", async () => {
+  it("does nothing on a retried event once every step is done", async () => {
+    const err = Object.assign(new Error("conditional"), { name: "ConditionalCheckFailedException" });
+    const done = new Set(["stock", "sale", "subscriptions", "email"]);
+    ddb.on(GetCommand).resolves({ Item: { ...order, status: "paid", doneSteps: done } });
+    ddb.on(UpdateCommand).rejects(err);
+    await handlePaymentSucceeded(stripe, pi);
+    expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
+    expect(ddb.commandCalls(UpdateCommand)).toHaveLength(1);
+  });
+
+  it("finishes the steps a failed delivery left undone, without repeating the others", async () => {
+    const err = Object.assign(new Error("conditional"), { name: "ConditionalCheckFailedException" });
+    ddb.on(GetCommand).resolves({ Item: { ...order, status: "paid", doneSteps: new Set(["stock", "sale"]) } });
+    // markPaid fails (already paid); the step lease, step markers and lease release succeed.
+    ddb.on(UpdateCommand).rejectsOnce(err).resolves({});
+    await handlePaymentSucceeded(stripe, pi);
+    const updates = ddb.commandCalls(UpdateCommand).map((c) => String(c.args[0].input.UpdateExpression));
+    expect(updates.some((u) => u.includes("stock = stock - :q"))).toBe(false);
+    expect(ses.commandCalls(SendEmailCommand)).toHaveLength(1);
+    expect(updates.filter((u) => u.includes("ADD doneSteps"))).toHaveLength(2);
+  });
+
+  it("leaves the work to the delivery that already holds the lease", async () => {
     const err = Object.assign(new Error("conditional"), { name: "ConditionalCheckFailedException" });
     ddb.on(GetCommand).resolves({ Item: { ...order, status: "paid" } });
     ddb.on(UpdateCommand).rejects(err);
     await handlePaymentSucceeded(stripe, pi);
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
-    expect(ddb.commandCalls(UpdateCommand)).toHaveLength(1);
+  });
+
+  it("refunds a payment whose unpaid order already expired", async () => {
+    const refunds = vi.fn().mockResolvedValue({ id: "re_1" });
+    ddb.on(GetCommand).resolves({});
+    await handlePaymentSucceeded({ ...stripe, refunds: { create: refunds } } as unknown as Stripe, pi);
+    expect(refunds).toHaveBeenCalledWith(expect.objectContaining({ payment_intent: "pi_123" }), { idempotencyKey: "orphan-pi_123" });
+    expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
   });
 
   it("refuses to fulfil when the paid amount doesn't match the order", async () => {

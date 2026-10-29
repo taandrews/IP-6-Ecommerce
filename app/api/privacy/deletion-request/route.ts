@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
+import { emailKey } from "@/lib/data/orders";
+import { hit, limitByIp } from "@/lib/rate-limit";
+import { isBot } from "@/lib/honeypot";
 
 export const runtime = "nodejs";
 
@@ -9,17 +12,23 @@ const Body = z.object({
   email: z.string().trim().email().max(254),
   type: z.enum(["delete", "export"]).default("delete"),
   details: z.string().trim().max(2000).optional().or(z.literal("")),
+  website: z.string().max(200).optional(),
 });
 
 /**
  * Public privacy request (no account needed). Nothing happens until the
  * requester clicks the link sent to that email address, which proves they
  * control it. The reply is the same whatever the email, so the form can't be
- * used to find out who is a customer.
+ * used to find out who is a customer. Each address gets at most one email an
+ * hour, so the form can't be used to flood someone's inbox.
  */
 export async function POST(req: Request) {
+  const limited = (await limitByIp(req, "privacy", 3)) ?? (await limitByIp(req, "privacy-hour", 10, 3600));
+  if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
+  if (isBot(parsed.data.website)) return NextResponse.json({ ok: true });
+  if (!(await hit(`privacy-mail:${emailKey(parsed.data.email)}`, 1, 3600))) return NextResponse.json({ ok: true });
   try {
     const { record, token } = await createPrivacyRequest({
       type: parsed.data.type,

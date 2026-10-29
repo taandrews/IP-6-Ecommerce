@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { getSessionUser } from "@/lib/auth/session";
 import { newsletterKey } from "@/lib/data/customers";
+import { emailKey } from "@/lib/data/orders";
 import { deleteWaitlistEntry } from "@/lib/data/waitlist";
 import { createPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
@@ -22,14 +23,23 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+  // Only an address this person has proved they own.
+  if (!user.emailVerified) return NextResponse.json({ error: "Verify your email first, or use the form on our Privacy Policy page." }, { status: 403 });
   try {
     if (parsed.data.action === "unsubscribe") {
-      await docClient.send(new DeleteCommand({ TableName: TABLES.Users, Key: { userId: newsletterKey(user.email) } }));
+      // Keep a bare opt-out marker (no quiz or consent details) so nobody else
+      // can sign this address up again; the person can rejoin while signed in.
+      const now = new Date().toISOString();
+      await docClient.send(
+        new PutCommand({
+          TableName: TABLES.Users,
+          Item: { userId: newsletterKey(user.email), email: emailKey(user.email), newsletter: false, unsubscribedAt: now, updatedAt: now },
+        }),
+      );
       await deleteWaitlistEntry(user.email);
       return NextResponse.json({ ok: true });
     }
     // Signed in with a verified email, so the request counts as verified.
-    if (!user.emailVerified) return NextResponse.json({ error: "Verify your email first, or use the form on our Privacy Policy page." }, { status: 403 });
     await createPrivacyRequest({ type: "delete", email: user.email, userId: user.sub, details: parsed.data.details, verified: true });
     await sendEmailSafe(user.email, emailTemplates.privacyReceived("delete"), "privacy received");
     await sendEmailSafe(EMAIL.privacy, emailTemplates.staffPrivacyAlert("delete"), "privacy staff alert");

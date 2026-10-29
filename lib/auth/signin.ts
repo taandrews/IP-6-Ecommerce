@@ -1,6 +1,7 @@
 import "server-only";
 import type { InitiateAuthCommandOutput, RespondToAuthChallengeCommandOutput } from "@aws-sdk/client-cognito-identity-provider";
 import { setAuthCookies, setChallengeCookie } from "./session";
+import { verifyIdToken } from "./jwt";
 import { roleFromGroups } from "./roles";
 import type { Realm } from "./config";
 
@@ -28,11 +29,14 @@ export async function completeAuth(
   ctx: { username: string; email: string; next: string },
 ): Promise<SignInOutcome> {
   if (res.AuthenticationResult?.IdToken) {
-    const user = await setAuthCookies(res.AuthenticationResult, realm);
-    if (realm === "staff" && !roleFromGroups(user.groups)) {
-      // A staff login with no role assigned (or a removed role) gets nothing.
-      return { status: "error", error: "Your account has no admin role. Ask an owner to assign one.", httpStatus: 403 };
+    if (realm === "staff") {
+      // A staff login with no role assigned (or a removed role) gets nothing, not even a session cookie.
+      const claims = await verifyIdToken(res.AuthenticationResult.IdToken, realm);
+      if (!claims || !roleFromGroups(claims.groups)) {
+        return { status: "error", error: "Your account has no admin role. Ask an owner to assign one.", httpStatus: 403 };
+      }
     }
+    await setAuthCookies(res.AuthenticationResult, realm);
     return { status: "ok", next: ctx.next };
   }
   const kind = challengeKind(res.ChallengeName);

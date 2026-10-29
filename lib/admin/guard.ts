@@ -2,9 +2,12 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getStaffUser, type SessionUser } from "@/lib/auth/session";
+import { getAccessToken, getStaffUser, type SessionUser } from "@/lib/auth/session";
+import { accessTokenActive } from "@/lib/aws/cognito";
 import { can, roleFromGroups, type Permission, type Role } from "@/lib/auth/roles";
 import type { AuditActor } from "@/lib/data/audit";
+import { clientIpFrom } from "@/lib/client-ip";
+import { loadLinkKey } from "@/lib/admin/seal";
 
 export interface StaffContext {
   user: SessionUser;
@@ -20,21 +23,43 @@ export class HttpError extends Error {
 }
 
 function clientIp() {
-  const h = headers();
-  return h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? h.get("x-real-ip") ?? "";
+  return clientIpFrom(headers(), "");
+}
+
+// Access tokens Cognito confirmed recently, so a page with many requests asks once.
+const confirmed = new Map<string, number>();
+const CONFIRM_TTL_MS = 30_000;
+
+/** Asks Cognito whether the session was revoked (removed, disabled or re-roled staff). */
+async function sessionLive(): Promise<boolean> {
+  const token = getAccessToken("staff");
+  if (!token) return false;
+  const now = Date.now();
+  const at = confirmed.get(token);
+  if (at && now - at < CONFIRM_TTL_MS) return true;
+  if (!(await accessTokenActive(token))) {
+    confirmed.delete(token);
+    return false;
+  }
+  if (confirmed.size > 500) for (const [k, v] of confirmed) if (now - v >= CONFIRM_TTL_MS) confirmed.delete(k);
+  confirmed.set(token, now);
+  return true;
 }
 
 /**
  * The signed-in staff member. Only a token signed by the separate STAFF user
  * pool is accepted (signature, issuer, audience and expiry are verified), and
  * that pool requires MFA at every sign-in, so a valid token means the person
- * passed their authenticator code.
+ * passed their authenticator code. Cognito is also asked whether the session
+ * is still live, so removing or re-roling someone takes effect at once.
  */
 export async function getStaff(): Promise<StaffContext | null> {
   const user = await getStaffUser();
   if (!user) return null;
+  if (!(await sessionLive())) return null;
   const role = roleFromGroups(user.groups);
   if (!role) return null;
+  await loadLinkKey();
   return { user, role, actor: { sub: user.sub, email: user.email, role }, ip: clientIp() };
 }
 

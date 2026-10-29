@@ -5,6 +5,7 @@ import { ipCountry } from "@/lib/geo";
 import { saveWaitlist } from "@/lib/data/waitlist";
 import { products } from "@/content/products";
 import { isShopifyOrigin } from "@/lib/storefronts";
+import { limitByIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -55,6 +56,11 @@ export function OPTIONS(req: Request) {
 /** Launch waitlist sign-up for visitors in countries we don't ship to yet. */
 export async function POST(req: Request) {
   const headers = cors(req);
+  const limited = (await limitByIp(req, "waitlist", 10)) ?? (await limitByIp(req, "waitlist-hour", 40, 3600));
+  if (limited) {
+    for (const [k, v] of Object.entries(headers)) limited.headers.set(k, v);
+    return limited;
+  }
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     const consentMissing = parsed.error.issues.some((i) => i.path[0] === "consent");

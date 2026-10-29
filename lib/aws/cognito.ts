@@ -11,6 +11,7 @@ import {
   AssociateSoftwareTokenCommand,
   VerifySoftwareTokenCommand,
   GlobalSignOutCommand,
+  GetUserCommand,
   AdminCreateUserCommand,
   AdminAddUserToGroupCommand,
   AdminRemoveUserFromGroupCommand,
@@ -26,7 +27,7 @@ import {
   type UserType,
 } from "@aws-sdk/client-cognito-identity-provider";
 import crypto from "node:crypto";
-import { cognitoConfig, type Realm } from "@/lib/auth/config";
+import { cognitoConfig, cognitoEndpoint, type Realm } from "@/lib/auth/config";
 import { ROLE_GROUPS, type Role } from "@/lib/auth/roles";
 
 /**
@@ -35,7 +36,7 @@ import { ROLE_GROUPS, type Role } from "@/lib/auth/roles";
  */
 export const cognitoClient = new CognitoIdentityProviderClient({
   region: awsRegion(),
-  ...(process.env.COGNITO_ENDPOINT ? { endpoint: process.env.COGNITO_ENDPOINT } : {}),
+  ...(cognitoEndpoint() ? { endpoint: cognitoEndpoint() } : {}),
 });
 
 function secretHash(realm: Realm, username: string) {
@@ -94,6 +95,23 @@ export async function confirmTotpEnrolment(session: string, code: string) {
   );
   if (res.Status !== "SUCCESS" || !res.Session) return null;
   return res.Session;
+}
+
+/**
+ * True while Cognito still honours this access token. Signing a staff member
+ * out everywhere, disabling them or changing their role revokes it at once,
+ * even though the ID token itself would still verify until it expires.
+ */
+export async function accessTokenActive(accessToken: string): Promise<boolean> {
+  try {
+    await cognitoClient.send(new GetUserCommand({ AccessToken: accessToken }));
+    return true;
+  } catch (err) {
+    if ((err as Error).name !== "NotAuthorizedException" && (err as Error).name !== "UserNotFoundException") {
+      console.error("[auth] access token check failed", (err as Error).name);
+    }
+    return false;
+  }
 }
 
 /** Revokes every refresh token for the signed-in user (either pool). */
@@ -265,7 +283,7 @@ export async function deleteStaff(username: string) {
   await cognitoClient.send(new AdminDeleteUserCommand({ UserPoolId: staffPool(), Username: username }));
 }
 
-/** Revokes refresh tokens; an existing ID token stops working within the hour. */
+/** Revokes every token the person holds; the admin guard checks this on each request. */
 export async function signOutStaffEverywhere(username: string) {
   await cognitoClient.send(new AdminUserGlobalSignOutCommand({ UserPoolId: staffPool(), Username: username }));
 }

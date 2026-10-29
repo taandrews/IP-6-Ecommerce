@@ -18,6 +18,7 @@ export function mergeCatalog(base: Product[], overrides: ProductOverride[], stoc
           ...v,
           priceCents: prices ? { ...v.priceCents, ...stripUndefined(prices) } : v.priceCents,
           inStock: v.inStock && manual !== false && hasStock,
+          ...(inv && !inv.allowBackorder ? { available: Math.max(0, inv.stock) } : {}),
         };
       }),
     };

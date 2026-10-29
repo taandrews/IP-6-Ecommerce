@@ -14,7 +14,7 @@ import {
  *   ip6/{env}/stripe   → { secretKey, publishableKey, webhookSecret }
  *   ip6/{env}/sanity   → { projectId, dataset, apiToken }
  *   ip6/{env}/algolia  → { appId, searchKey, adminKey }
- *   ip6/{env}/app      → { rateLimitSecret }
+ *   ip6/{env}/app      → { rateLimitSecret, adminLinkKey }
  */
 
 const region = awsRegion();
@@ -101,6 +101,21 @@ export async function getAlgoliaSecrets(): Promise<AlgoliaSecrets> {
   }
   const s = await fetchSecret(secretName("algolia"));
   return s as unknown as AlgoliaSecrets;
+}
+
+/**
+ * The key that seals customer emails in admin links. Production always reads
+ * it from Secrets Manager; ADMIN_LINK_KEY is only for local testing. Returns
+ * null in development when neither is set (a per-process key is used then).
+ */
+export async function getAdminLinkKey(): Promise<string | null> {
+  if (process.env.NODE_ENV !== "production") {
+    if (process.env.ADMIN_LINK_KEY) return process.env.ADMIN_LINK_KEY;
+    if (!process.env.APP_ENV) return null;
+  }
+  const s = await fetchSecret(secretName("app"));
+  if (!s.adminLinkKey) throw new Error("adminLinkKey missing from ip6/*/app secret");
+  return s.adminLinkKey;
 }
 
 export async function getRateLimitSecret(): Promise<string> {

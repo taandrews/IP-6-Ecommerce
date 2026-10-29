@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Honeypot } from "@/components/ui/Honeypot";
 import type { Review } from "@/types";
 import { Stars } from "@/components/ui/Stars";
 import { formatDate } from "@/lib/utils";
@@ -24,6 +25,7 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
       title: String(form.get("title") ?? ""),
       body: String(form.get("body") ?? ""),
       authorName: String(form.get("authorName") ?? ""),
+      website: String(form.get("website") ?? ""),
     };
     try {
       const res = await fetch("/api/reviews", {
@@ -104,8 +106,9 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
           <form
             onClick={(e) => e.stopPropagation()}
             action={submit}
-            className="bg-surface max-w-lg w-full rounded-lg shadow-card p-6 space-y-4"
+            className="relative bg-surface max-w-lg w-full rounded-lg shadow-card p-6 space-y-4"
           >
+            <Honeypot />
             <h3 className="font-display text-xl text-forest-800">Share your experience</h3>
             <div>
               <label className="label">Rating</label>

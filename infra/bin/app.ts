@@ -50,4 +50,6 @@ new Ip6Stack(app, "Ip6ProdStack", {
   tablePrefix: "ip6_prod_",
   domainName: "ip6original.com",
   alertsTopicArn: accountStack.alertsTopic.topicArn,
+  amplifyAppId: AMPLIFY_APP_ID,
+  amplifyRegion: AMPLIFY_REGION,
 });

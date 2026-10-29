@@ -3,6 +3,7 @@ import { z } from "zod";
 import { signIn } from "@/lib/aws/cognito";
 import { authErrorMessage, completeAuth } from "@/lib/auth/signin";
 import { safeNextPath } from "@/lib/auth/redirect";
+import { limitByIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -13,6 +14,8 @@ const Body = z.object({
 });
 
 export async function POST(req: Request) {
+  const limited = (await limitByIp(req, "signin", 10)) ?? (await limitByIp(req, "signin-hour", 50, 3600));
+  if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Enter your email and password." }, { status: 400 });
   const { email, password } = parsed.data;

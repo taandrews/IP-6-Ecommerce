@@ -14,6 +14,8 @@ export interface ProductVariant {
   stripePriceId?: string;
   stripePriceIdSubscription?: Record<string, string>;
   inStock: boolean;
+  /** Units left to sell, when stock is tracked and backorders are off. Undefined means no limit. */
+  available?: number;
   /** Servings in this size, from the label (capsules per serving or scoops per container). */
   servings?: number;
   /** What one serving is called on the label, e.g. "4 capsules" or "1 g scoop". */

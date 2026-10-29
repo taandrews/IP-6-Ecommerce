@@ -5,6 +5,7 @@ import { verifyIdToken, unverifiedUsername, type VerifiedUser } from "@/lib/auth
 import { refreshTokens } from "@/lib/auth/refresh";
 import { roleFromGroups } from "@/lib/auth/roles";
 import { isShopifyOrigin } from "@/lib/storefronts";
+import { clientIpFrom } from "@/lib/client-ip";
 
 const ADMIN_PUBLIC = /^\/admin\/(login|forgot-password)(?:\/|$)/;
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
@@ -16,8 +17,8 @@ const RATE_LIMITED = /^\/api\/(shipping|reviews|newsletter|waitlist|privacy|cont
 const ORIGIN_EXEMPT = /^\/api\/stripe\/webhook$/;
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
-// Per-instance limiter. Cognito adds its own lockout on repeated failed
-// sign-ins; this only blunts bursts against the public endpoints.
+// Per-instance burst limiter. The routes behind it add a shared DynamoDB
+// limit (lib/rate-limit.ts), and Cognito adds its own lockout on sign-ins.
 const buckets = new Map<string, { count: number; ts: number }>();
 const WINDOW_MS = 60_000;
 
@@ -89,7 +90,7 @@ function opts(realm: Realm, maxAge: number) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isApi = pathname.startsWith("/api/");
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? req.ip ?? "unknown";
+  const ip = clientIpFrom(req.headers, req.ip);
 
   if (RATE_LIMITED.test(pathname)) {
     const auth = AUTH_API.test(pathname);
