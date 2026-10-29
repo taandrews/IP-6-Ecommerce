@@ -23,6 +23,14 @@ describe("middleware", () => {
     expect(res2.status).toBe(403);
   });
 
+  it("accepts the Shopify storefront only on the waitlist endpoint", async () => {
+    const shop = { method: "POST", headers: { origin: "https://ip6original.com" } };
+    expect((await middleware(req("/api/waitlist", shop))).status).toBe(200);
+    expect((await middleware(req("/api/checkout/intent", shop))).status).toBe(403);
+    expect((await middleware(req("/api/newsletter", shop))).status).toBe(403);
+    expect((await middleware(req("/api/waitlist", { method: "POST", headers: { origin: "https://evil.example" } }))).status).toBe(403);
+  });
+
   it("lets the Stripe webhook through without an Origin", async () => {
     const res = await middleware(req("/api/stripe/webhook", { method: "POST", headers: { origin: "https://evil.example" } }));
     expect(res.status).toBe(200);

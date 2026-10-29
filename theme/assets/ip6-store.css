@@ -131,3 +131,26 @@
 .s .s-plan__detail { grid-column: 1 / -1; font-size: 13px; line-height: 1.55; color: var(--muted); display: none; }
 .s .s-plan__opt:has(input:checked) .s-plan__detail { display: block; }
 .s .s-plan__detail a { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 2px; }
+
+/* Where we sell: buy controls or the launch waitlist (html[data-sellable] set by ip6-geo) */
+html[data-sellable="false"] [data-buy-only] { display: none !important; }
+html:not([data-sellable="false"]) [data-waitlist-only] { display: none !important; }
+.s-buy__ctl { display: grid; gap: 12px; }
+.s-wl { display: grid; gap: 14px; border: 1px solid var(--rule-strong); padding: 20px; background: #fff; }
+.s .s-wl__h { font-size: 16px; font-weight: 600; color: var(--text); }
+.s .s-wl__p { margin-top: 4px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+.s-wl__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.s-wl__wide { grid-column: 1 / -1; }
+.s-wl__f { display: grid; gap: 6px; min-width: 0; }
+.s-wl__f label { font-size: 13px; font-weight: 600; }
+.s-wl__f label span { font-weight: 400; color: var(--faint); }
+.s-wl__f input, .s-wl__f select { width: 100%; height: 48px; border: 1px solid var(--rule-strong); border-radius: 0; padding: 0 12px; font: inherit; font-size: 15px; color: var(--text); background: #fff; }
+.s-wl__f input:focus, .s-wl__f select:focus { outline: 2px solid var(--gold); outline-offset: 0; border-color: var(--navy); }
+.s-wl__consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; color: var(--muted); cursor: pointer; }
+.s-wl__consent input { margin-top: 3px; accent-color: var(--navy); }
+.s .s-wl__err { font-size: 13px; color: #B42318; }
+.s .s-wl__micro { font-size: 12px; color: var(--faint); }
+.s-wl__micro a { text-decoration: underline; }
+.s .s-wl .s-btn { width: 100%; }
+@media (max-width: 749px) { .s-wl__grid { grid-template-columns: 1fr; } }
+.ip6-cart-geo { margin: 0 0 12px; padding: 10px 12px; border: 1px solid #E8C870; font-size: 13px; line-height: 1.5; color: #001840; }

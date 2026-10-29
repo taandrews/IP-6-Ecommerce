@@ -27,6 +27,8 @@ export interface WaitlistRecord {
   lastProduct?: string;
   page: string;
   source: "product" | "checkout";
+  /** Which storefront the signup came from. */
+  site?: "amplify" | "shopify";
   consentVersion: string;
   consentedAt: string;
   /** Set once double opt-in email is in place and the visitor confirms. */
@@ -43,6 +45,7 @@ export async function saveWaitlist(input: {
   product?: string;
   page: string;
   source: WaitlistRecord["source"];
+  site?: "amplify" | "shopify";
 }) {
   const now = new Date().toISOString();
   // Every attribute goes through a name placeholder: several (segment, source, page) are DynamoDB reserved words.
@@ -52,6 +55,7 @@ export async function saveWaitlist(input: {
     country: input.country,
     page: input.page,
     source: input.source,
+    site: input.site ?? "amplify",
     consentVersion: WAITLIST_CONSENT_VERSION,
     consentedAt: now,
     updatedAt: now,

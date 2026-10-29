@@ -4,6 +4,7 @@ import { countryName, isCountryCode, isSellableCountry } from "@/lib/countries";
 import { ipCountry } from "@/lib/geo";
 import { saveWaitlist } from "@/lib/data/waitlist";
 import { products } from "@/content/products";
+import { isShopifyOrigin } from "@/lib/storefronts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,21 +37,35 @@ const Body = z.object({
     .regex(/^\/[^\s]*$/)
     .default("/"),
   source: z.enum(["product", "checkout"]),
+  site: z.enum(["amplify", "shopify"]).default("amplify"),
 });
+
+/** CORS for the Shopify storefront, which posts its waitlist form here. */
+function cors(req: Request): Record<string, string> {
+  const origin = req.headers.get("origin");
+  return isShopifyOrigin(origin)
+    ? { "Access-Control-Allow-Origin": origin!, "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Max-Age": "86400", Vary: "Origin" }
+    : {};
+}
+
+export function OPTIONS(req: Request) {
+  return new NextResponse(null, { status: 204, headers: cors(req) });
+}
 
 /** Launch waitlist sign-up for visitors in countries we don't ship to yet. */
 export async function POST(req: Request) {
+  const headers = cors(req);
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     const consentMissing = parsed.error.issues.some((i) => i.path[0] === "consent");
     return NextResponse.json(
       { error: consentMissing ? "Please tick the box so we can email you at launch." : "Please check your email and country." },
-      { status: 400 },
+      { status: 400, headers },
     );
   }
   const d = parsed.data;
   if (isSellableCountry(d.country)) {
-    return NextResponse.json({ error: `We already ship to ${countryName(d.country)}. You can order now.`, sellable: true }, { status: 400 });
+    return NextResponse.json({ error: `We already ship to ${countryName(d.country)}. You can order now.`, sellable: true }, { status: 400, headers });
   }
   try {
     await saveWaitlist({
@@ -61,10 +76,11 @@ export async function POST(req: Request) {
       product: d.product,
       page: d.page.split("?")[0]!,
       source: d.source,
+      site: d.site,
     });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true }, { headers });
   } catch (err) {
     console.error("[waitlist] save failed", (err as Error).name);
-    return NextResponse.json({ error: "We couldn't save that. Please try again." }, { status: 500 });
+    return NextResponse.json({ error: "We couldn't save that. Please try again." }, { status: 500, headers });
   }
 }

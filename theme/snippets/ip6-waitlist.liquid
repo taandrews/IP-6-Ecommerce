@@ -1,0 +1,46 @@
+{%- comment -%}
+  Launch waitlist, shown in place of the buy buttons when the visitor's
+  country isn't one we ship to. Posts to the shared waitlist on the Amplify
+  site (ip6-geo.js), kept apart from Shopify customers.
+  Params: product (optional), source ("product")
+{%- endcomment -%}
+{%- liquid
+  assign sku = ''
+  if product
+    case product.handle
+      when 'ip-6-original'
+        assign sku = 'SUP-IP6-CAP240'
+      when 'ip6-original-pet-powder'
+        assign sku = 'PET-IP6-PWD120'
+    endcase
+  endif
+  assign uid = product.id | default: 'wl' | append: '-' | append: source
+-%}
+<form class="s-wl" data-waitlist data-waitlist-only data-source="{{ source | default: 'product' }}" data-product="{{ sku }}" data-endpoint="https://main.d1ypn0wsqjh17o.amplifyapp.com/api/waitlist" novalidate>
+  <div data-wl-field>
+    <p class="s-wl__h">Not yet available in <span data-country-sentence>your country</span>.</p>
+    <p class="s-wl__p">Get notified at launch. We currently ship to the 50 US states and Washington, DC.</p>
+  </div>
+  <div class="s-wl__grid" data-wl-field>
+    <div class="s-wl__f">
+      <label for="wl-email-{{ uid }}">Email</label>
+      <input id="wl-email-{{ uid }}" name="email" type="email" autocomplete="email" required>
+    </div>
+    <div class="s-wl__f">
+      <label for="wl-country-{{ uid }}">Country</label>
+      <select id="wl-country-{{ uid }}" data-waitlist-country required><option value="" disabled selected>Choose your country</option></select>
+    </div>
+    <div class="s-wl__f s-wl__wide">
+      <label for="wl-first-{{ uid }}">First name <span>(optional)</span></label>
+      <input id="wl-first-{{ uid }}" name="first_name" type="text" autocomplete="given-name" maxlength="60">
+    </div>
+  </div>
+  <label class="s-wl__consent" data-wl-field><input type="checkbox" name="consent"> Email me when IP6 Original launches in my country, plus product news.</label>
+  <p class="s-wl__err" data-wl-error role="alert" hidden></p>
+  <button type="submit" class="s-btn" data-wl-submit data-wl-field>Notify me at launch</button>
+  <p class="s-wl__micro" data-wl-field>Unsubscribe any time. See our <a href="/pages/privacy-policy">privacy policy</a>.</p>
+  <div class="s-wl__done" data-wl-done role="status" hidden>
+    <p class="s-wl__h">You&rsquo;re on the list.</p>
+    <p class="s-wl__p">We&rsquo;ll email <span data-wl-email></span> when IP6 Original ships to <span data-wl-where></span>.</p>
+  </div>
+</form>

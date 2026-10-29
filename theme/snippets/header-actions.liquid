@@ -63,6 +63,7 @@
   {% endif %}
   {{- block.shopify_attributes -}}
 >
+  {% render 'ip6-ship-to' %}
   {% render 'ip6-header-cta' %}
   {% if shop.customer_accounts_enabled %}
     {% liquid

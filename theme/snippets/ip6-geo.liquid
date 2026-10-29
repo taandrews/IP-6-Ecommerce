@@ -1,0 +1,15 @@
+{%- comment -%}
+  Where we sell (display only). Sets html[data-sellable] before the page
+  paints from the visitor's saved choice or the country detected earlier in
+  this visit, so buy buttons and the launch waitlist don't flash; ip6-geo.js
+  does the rest. Checkout enforces shipping itself (US market only).
+{%- endcomment -%}
+<script>
+  (function () {
+    try {
+      var c = localStorage.getItem('ip6_country') || sessionStorage.getItem('ip6_ip_country');
+      if (c) document.documentElement.setAttribute('data-sellable', c.toUpperCase() === 'US' ? 'true' : 'false');
+    } catch (e) {}
+  })();
+</script>
+<script src="{{ 'ip6-geo.js' | asset_url }}" defer></script>

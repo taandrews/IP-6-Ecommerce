@@ -108,14 +108,14 @@
               <p><strong>Can I take IP6 with other supplements?</strong><br>IP6 is commonly taken alongside other wellness routines. We recommend consulting your healthcare professional to coordinate any supplement stack.</p>
             </div></details>
           {%- endif -%}
-          <details><summary>Shipping &amp; returns</summary><div class="a"><p>{{ settings.ip6_preorder_ship | default: 'Starts shipping November 2026' }}, in the order received, with a tracking email the day it ships. Free US shipping over $75. All sales are final once shipped.</p><p><a class="s-link" href="/pages/shipping-policy">Shipping policy</a></p></div></details>
+          <details><summary>Shipping &amp; returns</summary><div class="a"><p>{{ settings.ip6_preorder_ship | default: 'Starts shipping November 2026' }}, in the order received, with a tracking email the day it ships. Ships to US addresses only (the 50 states and Washington, DC). Free shipping over $75. All sales are final once shipped.</p><p><a class="s-link" href="/pages/shipping-policy">Shipping policy</a></p></div></details>
         </div>
       </div>
     </div>
   </div>
   {% render 'ip6-reviews', product: product %}
   <p class="s-wrap s-dshea">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
-  <div class="p-sticky s" data-sticky aria-hidden="true">
+  <div class="p-sticky s" data-sticky data-buy-only aria-hidden="true">
     <div><div class="t">{{ product.title }}</div><div class="pr">{{ now | money }}</div></div>
     <button type="button" class="s-btn" data-sticky-add>Add to cart</button>
   </div>

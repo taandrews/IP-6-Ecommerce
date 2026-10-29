@@ -4,6 +4,7 @@ import { AUTH_COOKIES, sameSiteFor, secureCookies, type Realm } from "@/lib/auth
 import { verifyIdToken, unverifiedUsername, type VerifiedUser } from "@/lib/auth/jwt";
 import { refreshTokens } from "@/lib/auth/refresh";
 import { roleFromGroups } from "@/lib/auth/roles";
+import { isShopifyOrigin } from "@/lib/storefronts";
 
 const ADMIN_PUBLIC = /^\/admin\/(login|forgot-password)(?:\/|$)/;
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
@@ -97,7 +98,9 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (isApi && MUTATING.has(req.method) && !ORIGIN_EXEMPT.test(pathname) && !sameOrigin(req)) {
+  // The Shopify storefront may post its launch-waitlist form here (no cookies or login involved).
+  const shopifyWaitlist = pathname === "/api/waitlist" && isShopifyOrigin(req.headers.get("origin"));
+  if (isApi && MUTATING.has(req.method) && !ORIGIN_EXEMPT.test(pathname) && !shopifyWaitlist && !sameOrigin(req)) {
     return json(403, { error: "bad_origin" });
   }
 

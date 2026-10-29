@@ -35,6 +35,18 @@ describe("launch waitlist", () => {
     expect(JSON.stringify(input)).not.toContain("203.0.113.9");
   });
 
+  it("answers the Shopify storefront with CORS and records the site", async () => {
+    const shopReq = (b: unknown) => new Request("http://localhost/api/waitlist", { method: "POST", headers: { "Content-Type": "application/json", Origin: "https://ip6original.com" }, body: JSON.stringify(b) });
+    const res = await POST(shopReq({ ...body, site: "shopify" }));
+    expect(res.status).toBe(200);
+    expect(res.headers.get("access-control-allow-origin")).toBe("https://ip6original.com");
+    const input = ddb.commandCalls(UpdateCommand)[0]!.args[0].input;
+    expect(Object.values(input.ExpressionAttributeValues!)).toContain("shopify");
+    const { OPTIONS } = await import("@/app/api/waitlist/route");
+    const pre = OPTIONS(new Request("http://localhost/api/waitlist", { method: "OPTIONS", headers: { Origin: "https://evil.example" } }));
+    expect(pre.headers.get("access-control-allow-origin")).toBeNull();
+  });
+
   it("requires the consent box", async () => {
     const res = await POST(req({ ...body, consent: false }));
     expect(res.status).toBe(400);

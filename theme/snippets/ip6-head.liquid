@@ -16,6 +16,7 @@
 <link rel="preconnect" href="{{ settings.ip6_cdn }}" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ 'ip6-store.css' | asset_url }}">
+{% render 'ip6-geo' %}
 <style>
   /* Legacy names some kept pieces still read */
   :root { --ink: #001840; --ink-2: #001840; --paper: #fff; --bg: #fff; --surface: #F7F8FA; --line: #E3E7EC; --gold-deep: #7E5A14; --teal: #7E5A14; --cyan: #001840;
@@ -34,6 +35,14 @@
   .ip6-header-cta { display: inline-flex; align-items: center; height: 40px; margin: 0 6px; padding: 0 16px; background: #001840; color: #fff !important; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; text-decoration: none; }
   .ip6-header-cta:hover { background: #0C2C5E; }
   @media (max-width: 749px) { .ip6-header-cta { display: none; } #header-group .announcement-bar, #header-group .announcement-bar * { font-size: 10px !important; letter-spacing: .06em !important; } }
+
+  /* Ship to country: globe and code over a hidden native select */
+  .ip6-shipto { position: relative; display: inline-flex; align-items: center; gap: 4px; height: 40px; padding: 0 8px; color: #001840; font-family: "Inter", sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .06em; cursor: pointer; }
+  .ip6-shipto svg { width: 18px; height: 18px; }
+  .ip6-shipto select { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+  .ip6-shipto:focus-within { outline: 2px solid #B08830; outline-offset: 2px; }
+  .ip6-shipto:hover { color: #7E5A14; }
+  @media (max-width: 749px) { .ip6-shipto { padding: 0 4px; } }
 
   /* Announcement: a thin ivory line with gold type */
   #header-group .announcement-bar, #header-group .announcement-bar .section-background { background: #FBF7EC !important; border: 0 !important; }

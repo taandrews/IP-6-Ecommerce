@@ -58,6 +58,7 @@
     </fieldset>
   {%- endif -%}
   {%- unless compact -%}
+    <div class="s-buy__ctl" data-buy-only>
     <div class="s-buy__row">
       <div class="s-qty" role="group" aria-label="Quantity">
         <button type="button" data-qty="-1" aria-label="Decrease quantity" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14"/></svg></button>
@@ -67,9 +68,12 @@
       <button type="button" class="s-btn" data-add {% unless v.available %}disabled{% endunless %}>Add to cart</button>
     </div>
     <button type="button" class="s-btn s-btn--line" data-order data-label-once="Pre Order Now" data-label-sub="Subscribe and check out" {% unless v.available %}disabled{% endunless %}>Pre Order Now</button>
+    </div>
+    {% render 'ip6-waitlist', product: product, source: 'product' %}
   {%- else -%}
     <div class="s-buy__row" style="grid-template-columns: 1fr 1fr">
-      <button type="button" class="s-btn" data-add {% unless v.available %}disabled{% endunless %}>Add to cart</button>
+      <button type="button" class="s-btn" data-add data-buy-only {% unless v.available %}disabled{% endunless %}>Add to cart</button>
+      <a class="s-btn" href="{{ product.url }}" data-waitlist-only>Notify me</a>
       <a class="s-btn s-btn--line" href="{{ product.url }}">Details</a>
     </div>
   {%- endunless -%}

@@ -78,7 +78,7 @@ export default async function WaitlistPage() {
       </div>
       <Panel title="Signups">
         {rows.length ? (
-          <Table head={["Email", "Name", "Country", "IP country", "Where", "Consent", "Updated"]} minWidth={900}>
+          <Table head={["Email", "Name", "Country", "IP country", "Site", "Where", "Consent", "Updated"]} minWidth={960}>
             {rows.slice(0, 500).map((r) => (
               <tr key={r.userId}>
                 <td className="px-4 py-2">
@@ -87,6 +87,7 @@ export default async function WaitlistPage() {
                 <td className="px-4 py-2">{r.firstName ? (pii ? r.firstName : maskName(r.firstName)) : ""}</td>
                 <td className="px-4 py-2">{countryName(r.country)}</td>
                 <td className="px-4 py-2">{r.ipCountry ?? ""}</td>
+                <td className="px-4 py-2 text-xs">{r.site === "shopify" ? "Shopify" : "Amplify"}</td>
                 <td className="px-4 py-2 text-xs">{r.source === "checkout" ? "Checkout" : r.lastProduct ? PRODUCT_NAMES.get(r.lastProduct) ?? r.lastProduct : r.page}</td>
                 <td className="px-4 py-2 text-xs">{r.consentedAt.slice(0, 10)} · v{r.consentVersion}{r.confirmedAt ? " · confirmed" : ""}</td>
                 <td className="px-4 py-2 text-xs tabular-nums">{r.updatedAt.slice(0, 10)}</td>

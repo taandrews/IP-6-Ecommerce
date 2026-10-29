@@ -32,7 +32,8 @@ describe("sealed customer links", () => {
     const t = sealEmail("Jane@Example.com");
     expect(t).not.toContain("example");
     expect(unsealEmail(t)).toBe("jane@example.com");
-    const flipped = t.slice(0, -2) + (t.endsWith("A") ? "B" : "A") + t.slice(-1);
+    // Change the second-to-last character to a different one (the old check looked at the last character, so ~1 in 64 runs changed nothing).
+    const flipped = t.slice(0, -2) + (t.at(-2) === "A" ? "B" : "A") + t.slice(-1);
     expect(unsealEmail(flipped)).toBeNull();
     expect(unsealEmail("garbage")).toBeNull();
     expect(unsealEmail(undefined)).toBeNull();
