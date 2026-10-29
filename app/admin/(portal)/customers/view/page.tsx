@@ -10,6 +10,7 @@ import { Notice, PageHeader, Panel, Pill } from "@/components/admin/ui";
 import { formatPrice } from "@/lib/utils";
 import { OrdersTable } from "../../orders/OrdersClient";
 import { CustomerPrivacyActions } from "./CustomerPrivacyActions";
+import { QUIZ_LABELS, quizAnswerLabel } from "@/lib/quiz";
 import type { Currency } from "@/types";
 
 export const metadata = { title: "Customer" };
@@ -53,6 +54,21 @@ export default async function CustomerViewPage({ searchParams }: { searchParams:
           ) : null}
         </Panel>
       </div>
+
+      {/* Health-related answers: only for roles that may see personal details. */}
+      {pii && p.newsletter?.quiz && Object.keys(p.newsletter.quiz).length ? (
+        <Panel title="Pre-order quiz answers">
+          <dl className="text-sm grid sm:grid-cols-2 gap-x-6 gap-y-3">
+            {QUIZ_LABELS.filter((q) => p.newsletter?.quiz?.[q.key]).map((q) => (
+              <div key={q.key}>
+                <dt className="text-ink/55">{q.title}</dt>
+                <dd>{quizAnswerLabel(q.key, p.newsletter!.quiz![q.key]!)}</dd>
+              </div>
+            ))}
+          </dl>
+          {p.newsletter.quizAt ? <p className="text-xs text-ink/55 mt-3">Saved {p.newsletter.quizAt.slice(0, 10)}</p> : null}
+        </Panel>
+      ) : null}
 
       {p.account ? (
         <Panel title="Account">

@@ -17,7 +17,7 @@ export default function PrivacyPage({ searchParams }: { searchParams: { request?
     <>
       <p className="eyebrow mb-4">Legal</p>
       <h1 className="font-display text-display-xl text-forest-800 mb-6">Privacy Policy</h1>
-      <p className="text-sm text-ink/60 mb-10">Last updated: October 28, 2026</p>
+      <p className="text-sm text-ink/60 mb-10">Last updated: October 29, 2026</p>
 
       {request === "confirmed" ? (
         <p className="mb-8 rounded-md border border-forest-200 bg-forest-50 p-4 text-sm text-forest-800" role="status">
@@ -83,8 +83,10 @@ export default function PrivacyPage({ searchParams }: { searchParams: { request?
             </li>
           </ul>
           <p className="mt-3">
-            The questions in our pre-order pop-up are answered in your browser only and are not sent to us. We don&apos;t ask for or store
-            health records.
+            <strong>Pre-order quiz:</strong> if you give your email in our pre-order pop-up and agree, we save your quiz answers with it: what
+            brings you to IP6 Original, whether you have taken IP6 before, what matters most to you in a supplement, your main goal, your
+            supplement routine and your age range. We use them only to tailor the emails you agreed to, never sell them, and delete them with
+            your email when you unsubscribe or ask us to. We don&apos;t ask for or store health records.
           </p>
         </section>
 

@@ -20,7 +20,7 @@ export interface CustomerProfile {
   orders: OrderRecord[];
   subscriptions: SubscriptionRecord[];
   reviews: ReviewRecord[];
-  newsletter: { subscribed: boolean; consentedAt?: string; source?: string } | null;
+  newsletter: { subscribed: boolean; consentedAt?: string; source?: string; consentVersion?: string; quiz?: Record<string, string>; quizAt?: string } | null;
   waitlist: WaitlistRecord | null;
   totals: { orderCount: number; spent: Record<string, number> };
 }
@@ -49,7 +49,14 @@ export async function getCustomerProfile(email: string): Promise<CustomerProfile
     subscriptions,
     reviews,
     newsletter: newsletterRow
-      ? { subscribed: newsletterRow.newsletter === true, consentedAt: newsletterRow.consentedAt ?? newsletterRow.createdAt, source: newsletterRow.source }
+      ? {
+          subscribed: newsletterRow.newsletter === true,
+          consentedAt: newsletterRow.consentedAt ?? newsletterRow.createdAt,
+          source: newsletterRow.source,
+          consentVersion: newsletterRow.consentVersion,
+          quiz: newsletterRow.quiz,
+          quizAt: newsletterRow.quizAt,
+        }
       : null,
     waitlist,
     totals: { orderCount: paid.length, spent },

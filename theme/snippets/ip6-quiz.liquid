@@ -3,7 +3,10 @@
   email step, five quick questions, then the match with the pre-order price.
   Opens once the visitor has scrolled past the first screen, after 45 seconds,
   or on exit intent; never again for 30 days. ?quiz=1 or #quiz forces it open.
-  The email is saved as a Shopify customer (newsletter form), tagged prebook_popup.
+  The email is saved as a Shopify customer (newsletter form), tagged prebook_popup,
+  with every answer as a quiz-<question>:<answer> tag. Shopify's form only creates
+  customers and never updates one, so it is sent once: when the quiz ends, or
+  when the visitor closes the pop-up or leaves the page after giving their email.
 {%- endcomment -%}
 {%- liquid
   assign cdn = settings.ip6_cdn
@@ -67,7 +70,7 @@
             <form class="form" data-email-form novalidate>
               <label for="pb-email" class="srOnly">Email address</label>
               <input id="pb-email" type="email" class="input" placeholder="Email address" required autocomplete="email">
-              <label class="consent"><input type="checkbox" data-consent required> Email me my pre-order offer and occasional research-backed updates.</label>
+              <label class="consent"><input type="checkbox" data-consent required> Email me my pre-order offer and occasional research-backed updates, and save my quiz answers to tailor them.</label>
               <div class="err" data-err hidden>Please enter your email and check the box to continue.</div>
               <button type="submit" class="btn">Continue</button>
               <p class="micro">Unsubscribe anytime. No spam.</p>
@@ -121,7 +124,14 @@
       research: 'The original formula, built by the physician-scientist who pioneered the research, formulated to his specification.',
       family: 'A clean, third-party-tested formula you can feel good about sharing.'
     };
-    var answers = {}, email = '', lastFocused = null, opened = false;
+    var answers = {}, email = '', lastFocused = null, opened = false, sent = false;
+    function signUp() {
+      if (!email || sent) return; sent = true;
+      var tags = ['newsletter', 'prebook_popup'];
+      Object.keys(answers).forEach(function (k) { tags.push('quiz-' + k + ':' + answers[k]); });
+      var fd = new FormData(); fd.append('form_type', 'customer'); fd.append('utf8', '✓'); fd.append('contact[email]', email); fd.append('contact[tags]', tags.join(','));
+      fetch('/contact', { method: 'POST', body: fd, credentials: 'same-origin', keepalive: true }).catch(function () {});
+    }
     function seen() { try { if (localStorage.getItem(KEY)) return true; } catch (e) {} return document.cookie.indexOf(KEY + '=1') >= 0; }
     function mark() { try { localStorage.setItem(KEY, '1'); } catch (e) {} document.cookie = KEY + '=1;path=/;max-age=2592000'; }
     function show() {
@@ -129,13 +139,14 @@
       root.classList.add('open'); document.body.style.overflow = 'hidden';
       var c = root.querySelector('[data-close]'); if (c) c.focus();
     }
-    function close() { root.classList.remove('open'); document.body.style.overflow = ''; mark(); if (lastFocused && lastFocused.focus) lastFocused.focus(); }
+    function close() { signUp(); root.classList.remove('open'); document.body.style.overflow = ''; mark(); if (lastFocused && lastFocused.focus) lastFocused.focus(); }
     function go(step) {
       root.querySelectorAll('[data-step]').forEach(function (el) { el.classList.toggle('active', el.getAttribute('data-step') === step); });
       var i = ORDER.indexOf(step), qs = ORDER.indexOf('email'), qe = ORDER.indexOf('reveal');
       var pct = i < qs ? 0 : Math.min(100, Math.round(((i - qs) / (qe - qs)) * 100));
       root.querySelector('[data-bar]').style.width = pct + '%';
       if (step === 'reveal') {
+        signUp();
         var r = RESULT[answers.intent] || RESULT.everyday;
         if (answers.experience === 'new') r += ' New to IP6? Take 4 capsules once or twice daily with water.';
         root.querySelector('[data-result]').textContent = r;
@@ -157,11 +168,10 @@
       var v = input.value.trim();
       if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || !consent.checked) { err.hidden = false; return; }
       err.hidden = true; email = v;
-      var fd = new FormData(); fd.append('form_type', 'customer'); fd.append('utf8', '✓'); fd.append('contact[email]', v); fd.append('contact[tags]', 'newsletter,prebook_popup,intent:' + (answers.intent || ''));
-      fetch('/contact', { method: 'POST', body: fd, credentials: 'same-origin' }).catch(function () {});
       go('q2');
     });
     root.querySelector('[data-close]').addEventListener('click', close);
+    window.addEventListener('pagehide', signUp);
     root.querySelector('[data-cta]').addEventListener('click', mark);
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && root.classList.contains('open')) close(); });
     // Countdown to launch

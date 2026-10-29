@@ -8,6 +8,7 @@ import { products } from "@/content/products";
 import { preorderUnitCents } from "@/lib/preorder";
 import { usePreorder } from "@/components/store/StoreSettings";
 import { formatPrice } from "@/lib/utils";
+import { INTENTS, QUESTIONS } from "@/lib/quiz";
 
 const KEY = "ip6quiz_seen_v1";
 const LAUNCH_MS = Date.parse("2026-11-01T04:00:00Z");
@@ -18,45 +19,6 @@ const QUIZ_IMAGE = QUIZ_VARIANT.image ?? QUIZ_PRODUCT.images[0]!;
 
 type Step = "intent" | "email" | "q2" | "q3" | "q4" | "q5" | "q6" | "reveal";
 const ORDER: Step[] = ["intent", "email", "q2", "q3", "q4", "q5", "q6", "reveal"];
-
-type Opt = { v: string; label: string };
-const QUESTIONS: Record<Exclude<Step, "intent" | "email" | "reveal">, { q: string; eyebrow: string; title: string; opts: Opt[] }> = {
-  q2: { q: "experience", eyebrow: "A quick question", title: "Have you taken IP6 before?", opts: [
-    { v: "regular", label: "I take it regularly" },
-    { v: "tried", label: "I've tried it" },
-    { v: "new", label: "No, I'm new to IP6" },
-  ] },
-  q3: { q: "values", eyebrow: "What matters most", title: "What matters most to you in a supplement?", opts: [
-    { v: "purity", label: "Purity & third-party testing" },
-    { v: "research", label: "Research-backed ingredients" },
-    { v: "founder", label: "Formulated by the scientist behind the research" },
-    { v: "clean", label: "Clean formulation, no fillers" },
-  ] },
-  q4: { q: "goal", eyebrow: "Your goal", title: "What's your main goal right now?", opts: [
-    { v: "cellular", label: "General cellular health & longevity" },
-    { v: "immune", label: "Immune & antioxidant support" },
-    { v: "aging", label: "Healthy aging" },
-    { v: "protocol", label: "Following a protocol / my doctor's guidance" },
-  ] },
-  q5: { q: "routine", eyebrow: "Your routine", title: "How would you describe your supplement routine?", opts: [
-    { v: "daily", label: "Daily, I'm consistent" },
-    { v: "onoff", label: "On and off" },
-    { v: "starting", label: "Just getting started" },
-  ] },
-  q6: { q: "age", eyebrow: "Almost done", title: "Your age range", opts: [
-    { v: "18-34", label: "18 to 34" },
-    { v: "35-49", label: "35 to 49" },
-    { v: "50-64", label: "50 to 64" },
-    { v: "65+", label: "65+" },
-  ] },
-};
-
-const INTENTS: Opt[] = [
-  { v: "everyday", label: "Everyday cellular health & longevity" },
-  { v: "immune", label: "Immune & antioxidant support" },
-  { v: "research", label: "I follow the research" },
-  { v: "family", label: "For a family member" },
-];
 
 const RESULT_COPY: Record<string, string> = {
   everyday: "A high-purity IP6 and Inositol formula for daily cellular health support, made to the standard the research describes.",
@@ -116,6 +78,9 @@ export function PreBookPopup() {
   const [error, setError] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<Element | null>(null);
+  // The email once it is signed up, and how many answers were last saved with it.
+  const signedUp = useRef<string | null>(null);
+  const savedCount = useRef(0);
   const PREORDER = usePreorder();
   const listUsd = products.find((p) => p.slug === "ip6-original-supplement")?.variants[0]?.priceCents.USD ?? 0;
 
@@ -128,11 +93,26 @@ export function PreBookPopup() {
     });
   }, []);
 
+  /** Saves the sign-up with the answers given so far (the email is kept even if the quiz is left early). */
+  const save = useCallback((addr: string, quiz: Record<string, string>) => {
+    savedCount.current = Object.keys(quiz).length;
+    fetch("/api/newsletter", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: addr, consent: true, source: "prebook_popup", quiz }),
+      keepalive: true,
+    }).catch(() => {});
+  }, []);
+  const answersRef = useRef(answers);
+  answersRef.current = answers;
+
   const close = useCallback(() => {
+    // Leaving partway: keep the answers given after the email.
+    if (signedUp.current && Object.keys(answersRef.current).length > savedCount.current) save(signedUp.current, answersRef.current);
     setOpen(false);
     markSeen();
     (lastFocused.current as HTMLElement | null)?.focus?.();
-  }, []);
+  }, [save]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -201,8 +181,11 @@ export function PreBookPopup() {
   const pct = idx < qStart ? 0 : Math.min(100, Math.round(((idx - qStart) / (qEnd - qStart)) * 100));
 
   const pick = (q: string, v: string) => {
-    setAnswers((a) => ({ ...a, [q]: v }));
-    setStep(step === "intent" ? "email" : ORDER[idx + 1] ?? "reveal");
+    const next = { ...answers, [q]: v };
+    setAnswers(next);
+    const to = step === "intent" ? "email" : ORDER[idx + 1] ?? "reveal";
+    if (to === "reveal" && signedUp.current) save(signedUp.current, next);
+    setStep(to);
   };
 
   const submitEmail = (e: React.FormEvent) => {
@@ -212,11 +195,8 @@ export function PreBookPopup() {
       return;
     }
     setError(false);
-    fetch("/api/newsletter", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.trim(), consent: true, source: "prebook_popup" }),
-    }).catch(() => {});
+    signedUp.current = email.trim();
+    save(signedUp.current, answers);
     setStep("q2");
   };
 
@@ -300,7 +280,7 @@ export function PreBookPopup() {
                     />
                     <label className={s.consent}>
                       <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required /> Email
-                      me my pre-order offer and occasional research-backed updates.
+                      me my pre-order offer and occasional research-backed updates, and save my quiz answers to tailor them.
                     </label>
                     {error && <div className={s.err}>Please enter your email and check the box to continue.</div>}
                     <button type="submit" className={s.btn}>
