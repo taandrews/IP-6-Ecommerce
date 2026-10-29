@@ -555,7 +555,7 @@
 .ih-productArtwork { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(100cqw, calc(100cqh * 1812 / 868)); height: auto; aspect-ratio: 1812 / 868; }
 .ih-productPicture { mask-image: linear-gradient(to right, transparent, #000 1.5%, #000 98.5%, transparent), linear-gradient(to bottom, transparent, #000 1.5%, #000 98.5%, transparent); mask-composite: intersect; }
 
-.ih-productCanvas { background: #f4f4f2 url("../../assets/hero/ip6-slide-background.webp") center / cover no-repeat; }
+.ih-productCanvas { background: #f4f4f2 var(--ih-bg) center / cover no-repeat; }
 .ih-mobileProduct { display: none; }
 
 @media (max-width: 900px) and (orientation: portrait) {
