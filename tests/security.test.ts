@@ -10,7 +10,7 @@ import { products } from "@/content/products";
 import { mergeCatalog } from "@/lib/data/catalog";
 import type { PreorderSettings } from "@/types/records";
 
-vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad", captchaKeys: async () => ["test-key"], newChallenge: async () => ({}) }));
+vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad" }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
 
 process.env.SES_FROM_EMAIL = "orders@ip6.test";
@@ -77,7 +77,7 @@ describe("quantities and stock", () => {
 describe("public forms", () => {
   it("drops a contact message whose hidden field a bot filled in", async () => {
     const { POST } = await import("@/app/api/contact/route");
-    const res = await POST(json("/api/contact", { name: "Bot", email: "b@example.com", topic: "support", message: "Buy cheap things now", website: "http://spam", altcha: "solved" }));
+    const res = await POST(json("/api/contact", { name: "Bot", email: "b@example.com", topic: "support", message: "Buy cheap things now", website: "http://spam", captcha: "solved" }));
     expect(res.status).toBe(200);
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
   });
@@ -104,7 +104,7 @@ describe("account enumeration", () => {
   it("answers sign-up the same way for an existing account", async () => {
     const { POST } = await import("@/app/api/auth/signup/route");
     cognito.on(SignUpCommand).rejects(Object.assign(new Error("An account with the given email already exists."), { name: "UsernameExistsException" }));
-    const res = await POST(json("/api/auth/signup", { email: "ana@example.com", password: "Passw0rd!x", name: "Ana", altcha: "solved" }));
+    const res = await POST(json("/api/auth/signup", { email: "ana@example.com", password: "Passw0rd!x", name: "Ana", captcha: "solved" }));
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
   });

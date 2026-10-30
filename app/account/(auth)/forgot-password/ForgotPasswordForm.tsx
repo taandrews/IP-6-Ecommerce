@@ -20,11 +20,11 @@ export function ForgotPasswordForm() {
     const form = new FormData(el);
     try {
       if (step === "email") {
-        const altcha = await captchaPayload(el);
+        const captcha = await captchaPayload(el);
         const res = await fetch("/api/auth/forgot-password", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: form.get("email"), altcha }),
+          body: JSON.stringify({ email: form.get("email"), captcha }),
         });
         if (!res.ok) throw new Error(res.status === 400 ? "Please complete the check and try again." : "Could not start reset");
         setEmail(String(form.get("email") ?? ""));

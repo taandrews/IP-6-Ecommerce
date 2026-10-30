@@ -78,22 +78,20 @@
     if (!country) return fail("Please choose your country.");
     if (!consent) return fail("Please tick the box so we can email you at launch.");
     btn.disabled = true; btn.textContent = "Saving\u2026";
-    // The solved CAPTCHA; if the visitor was quicker than the puzzle, finish it now.
-    var widget = form.querySelector("altcha-widget");
-    function altcha() { return new FormData(form).get("altcha") || ""; }
-    var ready = altcha() || !widget ? Promise.resolve() : new Promise(function (resolve) {
-      var timer = setTimeout(done, 20000);
-      function done() { clearTimeout(timer); widget.removeEventListener("statechange", onChange); resolve(); }
-      function onChange(ev) { var s = ev.detail && ev.detail.state; if (s === "verified" || s === "error" || s === "expired") done(); }
-      widget.addEventListener("statechange", onChange);
-      // Already solving (it starts when the form is focused): just wait for it.
-      if (!widget.getState || widget.getState() !== "verifying") Promise.resolve(widget.verify && widget.verify()).catch(done);
+    // The Turnstile token (single use); wait up to 20s if the check is still running.
+    var widget = form.querySelector(".cf-turnstile");
+    function token() { return new FormData(form).get("cf-turnstile-response") || ""; }
+    var ready = new Promise(function (resolve) {
+      var started = Date.now();
+      (function poll() { if (token() || Date.now() - started > 20000) resolve(token()); else setTimeout(poll, 250); })();
     });
-    ready.then(function () {
+    ready.then(function (captcha) {
+      // A fresh token is needed for any retry.
+      if (captcha && widget && window.turnstile) window.turnstile.reset(widget);
       return fetch(form.getAttribute("data-endpoint"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, country: country, firstName: first || undefined, consent: true, product: form.getAttribute("data-product") || undefined, page: location.pathname, source: form.getAttribute("data-source"), site: "shopify", altcha: altcha() || undefined })
+        body: JSON.stringify({ email: email, country: country, firstName: first || undefined, consent: true, product: form.getAttribute("data-product") || undefined, page: location.pathname, source: form.getAttribute("data-source"), site: "shopify", captcha: captcha || undefined })
       });
     }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
       .then(function (res) {

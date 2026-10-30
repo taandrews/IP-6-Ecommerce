@@ -21,9 +21,9 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
 
   async function submit(form: FormData) {
     setSubmitting(true);
-    const altcha = formRef.current ? await captchaPayload(formRef.current) : null;
+    const captcha = formRef.current ? await captchaPayload(formRef.current) : null;
     const payload = {
-      altcha,
+      captcha,
       sku,
       rating: Number(form.get("rating")),
       title: String(form.get("title") ?? ""),

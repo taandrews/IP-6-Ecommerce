@@ -7,8 +7,8 @@ import { newsletterKey } from "@/lib/data/customers";
 import { requestConfirmation } from "@/lib/data/confirmations";
 import { getSessionUser } from "@/lib/auth/session";
 import { limitByIp } from "@/lib/rate-limit";
-import { captchaKeys, verifyCaptcha } from "@/lib/captcha";
-import { checkFormToken, issueFormToken } from "@/lib/form-token";
+import { verifyCaptcha } from "@/lib/captcha";
+import { checkFormToken, formTokenKeys, issueFormToken } from "@/lib/form-token";
 import { QUIZ_ANSWERS } from "@/lib/quiz";
 
 export const runtime = "nodejs";
@@ -28,8 +28,8 @@ const Body = z.object({
   consent: z.literal(true),
   source: z.enum(["prebook_popup", "footer", "account"]).default("prebook_popup"),
   quiz: Quiz.optional(),
-  /** Solved CAPTCHA, for a new sign-up. */
-  altcha: z.string().max(2048).optional(),
+  /** Turnstile token, for a new sign-up. */
+  captcha: z.string().max(2048).optional(),
   /** From an earlier sign-up response, for saving more quiz answers. */
   token: z.string().max(200).optional(),
 });
@@ -52,10 +52,10 @@ export async function POST(req: Request) {
   if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please tick the box to agree to emails." }, { status: 400 });
-  const { email, source, quiz, altcha, token } = parsed.data;
-  const keys = await captchaKeys();
+  const { email, source, quiz, captcha, token } = parsed.data;
+  const keys = await formTokenKeys();
   const followUp = checkFormToken(keys, emailKey(email), token);
-  if (!followUp && !(await verifyCaptcha(altcha))) {
+  if (!followUp && !(await verifyCaptcha(captcha, req))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   const user = await getSessionUser().catch(() => null);

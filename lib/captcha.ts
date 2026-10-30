@@ -1,61 +1,52 @@
 import "server-only";
-import crypto from "node:crypto";
-import { createChallenge, verifySolution } from "altcha-lib";
-import type { Payload } from "altcha-lib/types";
-import { getCaptchaKey } from "@/lib/aws/secrets";
-import { claimOnce } from "@/lib/rate-limit";
+import { getTurnstileSecret } from "@/lib/aws/secrets";
+import { clientIpFrom } from "@/lib/client-ip";
 
 /**
- * ALTCHA proof-of-work CAPTCHA (open source, self-hosted: no third party sees
- * visitors, no cookies). The server hands out a signed puzzle; the browser
- * spends a moment of CPU solving it; the form sends the answer back. A bot
- * filling forms in bulk pays that cost on every submission. Each solved
- * puzzle is accepted once and expires after 10 minutes.
+ * Cloudflare Turnstile. The browser widget (components/ui/Captcha.tsx) gets a
+ * one-time token from Cloudflare; the server checks it with Cloudflare's
+ * siteverify API before acting on the form. Cloudflare accepts each token
+ * once and only for a few minutes, so a token can't be replayed. If
+ * Cloudflare can't be reached the form is refused (fails closed).
  */
 
-/** About half a second of work on a phone. */
-const MAX_NUMBER = 100_000;
-const EXPIRES_MS = 10 * 60 * 1000;
+const VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
-const g = globalThis as typeof globalThis & { __ip6DevCaptchaKey?: string };
+/** The hidden field the widget adds to its form. */
+export const CAPTCHA_FIELD = "cf-turnstile-response";
 
-/** The signing key and, after a rotation, the one before it (still accepted). */
-export async function captchaKeys(): Promise<string[]> {
-  const keys = await getCaptchaKey();
-  if (keys) return keys.previous ? [keys.current, keys.previous] : [keys.current];
-  if (process.env.NODE_ENV === "production") throw new Error("captcha key is not configured");
-  // Local development only: one random key per process.
-  g.__ip6DevCaptchaKey ??= crypto.randomBytes(32).toString("base64");
-  return [g.__ip6DevCaptchaKey];
-}
-
-export async function newChallenge() {
-  const [current] = await captchaKeys();
-  return createChallenge({ hmacKey: current!, maxnumber: MAX_NUMBER, expires: new Date(Date.now() + EXPIRES_MS) });
-}
-
-/** The field name the widget submits its answer under. */
-export const CAPTCHA_FIELD = "altcha";
-
-/**
- * True only for a correctly solved, unexpired puzzle signed by this server
- * that hasn't been used before.
- */
-export async function verifyCaptcha(raw: unknown): Promise<boolean> {
-  if (typeof raw !== "string" || raw.length === 0 || raw.length > 2048) return false;
-  let payload: Payload;
+/** Sites the widget may run on; a token issued anywhere else is refused. */
+function allowedHosts(): Set<string> {
+  const hosts = new Set(["ip6original.com", "www.ip6original.com", "localhost"]);
   try {
-    payload = JSON.parse(Buffer.from(raw, "base64").toString("utf8")) as Payload;
+    if (process.env.NEXT_PUBLIC_SITE_URL) hosts.add(new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname);
   } catch {
+    /* ignore a malformed setting */
+  }
+  return hosts;
+}
+
+interface SiteVerify {
+  success: boolean;
+  hostname?: string;
+  "error-codes"?: string[];
+}
+
+/** True only for a fresh, unused token Cloudflare issued for one of our sites. */
+export async function verifyCaptcha(token: unknown, req: Request): Promise<boolean> {
+  if (typeof token !== "string" || token.length === 0 || token.length > 2048) return false;
+  const body = new URLSearchParams({ secret: await getTurnstileSecret(), response: token });
+  const ip = clientIpFrom(req.headers, "");
+  if (ip && ip !== "unknown") body.set("remoteip", ip);
+  try {
+    const res = await fetch(VERIFY_URL, { method: "POST", body, signal: AbortSignal.timeout(5000), cache: "no-store" });
+    if (!res.ok) throw new Error(`siteverify ${res.status}`);
+    const out = (await res.json()) as SiteVerify;
+    if (!out.success) return false;
+    // Cloudflare's test keys report "example.com"; real keys report the page's host.
+    return process.env.NODE_ENV !== "production" || (out.hostname !== undefined && allowedHosts().has(out.hostname));
+  } catch (err) {
+    console.error("[captcha] siteverify failed", (err as Error).name);
     return false;
   }
-  if (typeof payload?.signature !== "string" || !/^[a-f0-9]{64}$/.test(payload.signature)) return false;
-  let ok = false;
-  for (const key of await captchaKeys()) {
-    ok = await verifySolution(payload, key, true).catch(() => false);
-    if (ok) break;
-  }
-  if (!ok) return false;
-  // Replay protection: a solved puzzle works for one submission only.
-  return claimOnce(`captcha:${payload.signature}`, Math.ceil(EXPIRES_MS / 1000) + 60);
 }

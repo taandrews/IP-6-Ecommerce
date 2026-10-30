@@ -14,7 +14,7 @@ import {
  *   ip6/{env}/stripe   → { secretKey, publishableKey, webhookSecret }
  *   ip6/{env}/sanity   → { projectId, dataset, apiToken }
  *   ip6/{env}/algolia  → { appId, searchKey, adminKey }
- *   ip6/{env}/app      → { adminLinkKey, captchaHmacKey, rateLimitSecret }, each with a
+ *   ip6/{env}/app      → { turnstileSecretKey, adminLinkKey, captchaHmacKey, rateLimitSecret }, the last three with a
  *                         `<key>Previous` after the 30-day rotation (infra/lambda/rotate-app-secret)
  */
 
@@ -129,8 +129,19 @@ async function appKey(name: "adminLinkKey" | "captchaHmacKey", envVar: string): 
 /** Seals customer emails in admin links. */
 export const getAdminLinkKey = () => appKey("adminLinkKey", "ADMIN_LINK_KEY");
 
-/** Signs CAPTCHA puzzles and sign-up form tokens. */
-export const getCaptchaKey = () => appKey("captchaHmacKey", "CAPTCHA_HMAC_KEY");
+/** Signs the sign-up form tokens (lib/form-token.ts). Stored as captchaHmacKey. */
+export const getFormTokenKey = () => appKey("captchaHmacKey", "FORM_TOKEN_KEY");
+
+/** Cloudflare's always-pass test secret, for local development only. */
+const TURNSTILE_TEST_SECRET = "1x0000000000000000000000000000000AA";
+
+/** Cloudflare Turnstile secret key (turnstileSecretKey in ip6/{env}/app). */
+export async function getTurnstileSecret(): Promise<string> {
+  if (process.env.NODE_ENV !== "production" && !process.env.APP_ENV) return process.env.TURNSTILE_SECRET_KEY ?? TURNSTILE_TEST_SECRET;
+  const s = await fetchSecret(secretName("app"));
+  if (!s.turnstileSecretKey) throw new Error("turnstileSecretKey missing from ip6/*/app secret");
+  return s.turnstileSecretKey;
+}
 
 export async function getRateLimitSecret(): Promise<string> {
   if (process.env.RATE_LIMIT_SECRET && process.env.RATE_LIMIT_SECRET !== "change-me-in-production") {

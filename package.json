@@ -30,8 +30,6 @@
     "@stripe/stripe-js": "^4.5.0",
     "@types/three": "^0.170.0",
     "algoliasearch": "^5.5.0",
-    "altcha": "2.3.0",
-    "altcha-lib": "1.4.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "instantsearch.js": "^4.75.0",

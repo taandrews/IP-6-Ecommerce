@@ -1,12 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
 import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { createChallenge, solveChallenge } from "altcha-lib";
 import { contentSecurityPolicy, createNonce } from "@/lib/csp";
 import { checkFormToken, issueFormToken } from "@/lib/form-token";
 
 const keys = vi.hoisted(() => ({ captcha: { current: "Y3VycmVudC1rZXktY3VycmVudC1rZXktY3VycmVudA==" } as { current: string; previous?: string }, link: null as null | { current: string; previous?: string } }));
-vi.mock("@/lib/aws/secrets", () => ({ getCaptchaKey: async () => keys.captcha, getAdminLinkKey: async () => keys.link }));
+vi.mock("@/lib/aws/secrets", () => ({ getFormTokenKey: async () => keys.captcha, getAdminLinkKey: async () => keys.link, getTurnstileSecret: async () => "test-secret" }));
 vi.mock("@/lib/aws/ses", () => ({ emailTemplates: { newsletterConfirm: () => ({}), waitlistConfirm: () => ({}) }, sendEmailSafe: vi.fn() }));
 
 const ddb = mockClient(DynamoDBDocumentClient);
@@ -36,43 +35,51 @@ describe("Content-Security-Policy", () => {
   });
 });
 
-describe("CAPTCHA", () => {
-  const solve = async (hmacKey: string) => {
-    const c = await createChallenge({ hmacKey, maxnumber: 2000, expires: new Date(Date.now() + 60_000) });
-    const s = await solveChallenge(c.challenge, c.salt, c.algorithm, c.maxnumber).promise;
-    return Buffer.from(JSON.stringify({ ...c, number: s!.number })).toString("base64");
-  };
+describe("CAPTCHA (Cloudflare Turnstile)", () => {
+  const req = new Request("https://main.example.amplifyapp.com/api/contact", { method: "POST", headers: { "x-forwarded-for": "198.51.100.7, 64.252.74.146" } });
+  const siteverify = (out: unknown, ok = true) =>
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(out), { status: ok ? 200 : 500 }));
 
-  it("accepts a solved puzzle once, then refuses the same answer", async () => {
+  it("asks Cloudflare with our secret, the token and the visitor's real IP", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
-    const payload = await solve(keys.captcha.current);
-    ddb.on(PutCommand).resolvesOnce({}).rejects(Object.assign(new Error("exists"), { name: "ConditionalCheckFailedException" }));
-    expect(await verifyCaptcha(payload)).toBe(true);
-    expect(await verifyCaptcha(payload)).toBe(false);
+    const spy = siteverify({ success: true, hostname: "localhost" });
+    expect(await verifyCaptcha("tok", req)).toBe(true);
+    const [url, init] = spy.mock.calls[0]!;
+    expect(String(url)).toBe("https://challenges.cloudflare.com/turnstile/v0/siteverify");
+    const body = new URLSearchParams(String((init as RequestInit).body));
+    expect(Object.fromEntries(body)).toEqual({ secret: "test-secret", response: "tok", remoteip: "198.51.100.7" });
+    spy.mockRestore();
   });
 
-  it("refuses a puzzle signed with someone else's key, and junk", async () => {
+  it("refuses what Cloudflare refuses (a used or expired token), and missing tokens without asking", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
-    ddb.on(PutCommand).resolves({});
-    expect(await verifyCaptcha(await solve("not-our-key"))).toBe(false);
-    expect(await verifyCaptcha("not base64 json")).toBe(false);
-    expect(await verifyCaptcha(undefined)).toBe(false);
+    const spy = siteverify({ success: false, "error-codes": ["timeout-or-duplicate"] });
+    expect(await verifyCaptcha("used", req)).toBe(false);
+    expect(await verifyCaptcha(undefined, req)).toBe(false);
+    expect(await verifyCaptcha("", req)).toBe(false);
+    expect(spy).toHaveBeenCalledTimes(1);
+    spy.mockRestore();
   });
 
-  it("still accepts a puzzle signed just before the key rotated", async () => {
+  it("fails closed when Cloudflare can't be reached", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
-    const old = keys.captcha.current;
-    const payload = await solve(old);
-    keys.captcha = { current: "bmV3LWtleS1uZXcta2V5LW5ldy1rZXktbmV3LWtleQ==", previous: old };
-    ddb.on(PutCommand).resolves({});
-    expect(await verifyCaptcha(payload)).toBe(true);
-    keys.captcha = { current: old };
+    const spy = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("network"));
+    expect(await verifyCaptcha("tok", req)).toBe(false);
+    spy.mockRestore();
+    const bad = siteverify({}, false);
+    expect(await verifyCaptcha("tok", req)).toBe(false);
+    bad.mockRestore();
   });
 
-  it("fails closed when it can't record that a puzzle was used", async () => {
+  it("in production, refuses a token issued for another site", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
-    ddb.on(PutCommand).rejects(new Error("throttled"));
-    expect(await verifyCaptcha(await solve(keys.captcha.current))).toBe(false);
+    vi.stubEnv("NODE_ENV", "production");
+    const spy = siteverify({ success: true, hostname: "evil.example" });
+    expect(await verifyCaptcha("tok", req)).toBe(false);
+    spy.mockResolvedValue(new Response(JSON.stringify({ success: true, hostname: "ip6original.com" })));
+    expect(await verifyCaptcha("tok", req)).toBe(true);
+    spy.mockRestore();
+    vi.unstubAllEnvs();
   });
 });
 

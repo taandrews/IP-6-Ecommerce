@@ -22,7 +22,7 @@ export function RegisterForm() {
     const form = new FormData(el);
     try {
       if (!awaitingCode) {
-        const altcha = await captchaPayload(el);
+        const captcha = await captchaPayload(el);
         const res = await fetch("/api/auth/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -30,7 +30,7 @@ export function RegisterForm() {
             email: form.get("email"),
             password: form.get("password"),
             name: form.get("name"),
-            altcha,
+            captcha,
           }),
         });
         const data = await res.json();

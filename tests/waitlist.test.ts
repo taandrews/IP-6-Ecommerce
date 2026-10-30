@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
-vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad", captchaKeys: async () => ["test-key"], newChallenge: async () => ({}) }));
+vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad" }));
 const confirm = vi.hoisted(() => ({ calls: [] as unknown[][] }));
 vi.mock("@/lib/data/confirmations", () => ({ requestConfirmation: async (...a: unknown[]) => { confirm.calls.push(a); } }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
@@ -65,7 +65,7 @@ describe("launch waitlist", () => {
   });
 
   it("refuses a sign-up without a solved CAPTCHA", async () => {
-    const res = await POST(req({ ...body, altcha: "bad" }));
+    const res = await POST(req({ ...body, captcha: "bad" }));
     expect(res.status).toBe(400);
     expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);
   });

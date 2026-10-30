@@ -15,11 +15,11 @@ export function DataDeletionForm() {
     const el = e.currentTarget;
     const form = new FormData(el);
     try {
-      const altcha = await captchaPayload(el);
+      const captcha = await captchaPayload(el);
       const res = await fetch("/api/privacy/deletion-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.get("email"), details: form.get("details") ?? "", type, website: form.get("website") ?? "", altcha }),
+        body: JSON.stringify({ email: form.get("email"), details: form.get("details") ?? "", type, website: form.get("website") ?? "", captcha }),
       });
       setStatus(res.ok ? "success" : "error");
     } catch {

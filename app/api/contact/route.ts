@@ -16,7 +16,7 @@ const Body = z.object({
   order: z.string().max(40).optional().or(z.literal("")),
   message: z.string().min(10).max(2000),
   website: z.string().max(200).optional(),
-  altcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).optional(),
 });
 
 export async function POST(req: Request) {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   // A bot filled in the hidden field: report success and send nothing.
   if (isBot(parsed.data.website)) return NextResponse.json({ ok: true });
-  if (!(await verifyCaptcha(parsed.data.altcha))) {
+  if (!(await verifyCaptcha(parsed.data.captcha, req))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   const findings = lintContent(parsed.data.message);

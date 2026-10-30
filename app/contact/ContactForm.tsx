@@ -14,8 +14,8 @@ export function ContactForm() {
     setStatus("submitting");
     setError(null);
     const el = e.currentTarget;
-    const altcha = await captchaPayload(el);
-    const data = { ...Object.fromEntries(new FormData(el)), altcha };
+    const captcha = await captchaPayload(el);
+    const data = { ...Object.fromEntries(new FormData(el)), captcha };
     try {
       const res = await fetch("/api/contact", {
         method: "POST",

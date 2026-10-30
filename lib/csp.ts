@@ -3,7 +3,7 @@
  *
  * Scripts run only with this request's nonce. 'strict-dynamic' lets a
  * trusted script load what it needs (Next.js chunks, Stripe.js, Google
- * Analytics, the Meta Pixel), and nothing else can run: no injected inline
+ * Analytics, the Meta Pixel, Cloudflare Turnstile), and nothing else can run: no injected inline
  * script, no script from another host. The host list after it is only read
  * by old browsers that don't understand 'strict-dynamic'.
  *
@@ -11,7 +11,7 @@
  * run code. No Node built-ins, so the Edge middleware can use it.
  */
 
-const SCRIPT_HOSTS = "https://js.stripe.com https://www.googletagmanager.com https://connect.facebook.net";
+const SCRIPT_HOSTS = "https://js.stripe.com https://challenges.cloudflare.com https://www.googletagmanager.com https://connect.facebook.net";
 
 export function createNonce(): string {
   const bytes = new Uint8Array(16);
@@ -28,7 +28,7 @@ export function contentSecurityPolicy(nonce: string, dev = process.env.NODE_ENV 
     "font-src 'self' data:",
     "media-src 'self' blob: https://*.cloudfront.net",
     "connect-src 'self' https://api.stripe.com https://m.stripe.network https://*.algolia.net https://*.algolianet.com https://*.api.sanity.io https://*.apicdn.sanity.io https://*.cloudfront.net https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.facebook.com https://connect.facebook.net",
-    "frame-src https://js.stripe.com https://hooks.stripe.com",
+    "frame-src https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
     "worker-src 'self' blob:",
     "object-src 'none'",
     "base-uri 'self'",

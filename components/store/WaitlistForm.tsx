@@ -50,11 +50,11 @@ export function WaitlistForm({
     }
     setState("saving");
     try {
-      const altcha = await captchaPayload(form);
+      const captcha = await captchaPayload(form);
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, country, firstName: firstName || undefined, consent: true, product, page: pathname, source, altcha }),
+        body: JSON.stringify({ email, country, firstName: firstName || undefined, consent: true, product, page: pathname, source, captcha }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {

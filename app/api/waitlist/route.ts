@@ -43,7 +43,7 @@ const Body = z.object({
     .default("/"),
   source: z.enum(["product", "checkout"]),
   site: z.enum(["amplify", "shopify"]).default("amplify"),
-  altcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).optional(),
 });
 
 /** CORS for the Shopify storefront, which posts its waitlist form here. */
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     );
   }
   const d = parsed.data;
-  if (!(await verifyCaptcha(d.altcha))) {
+  if (!(await verifyCaptcha(d.captcha, req))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400, headers });
   }
   if (isSellableCountry(d.country)) {

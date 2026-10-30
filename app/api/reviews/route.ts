@@ -19,7 +19,7 @@ const Body = z.object({
   body: z.string().trim().min(10).max(2000),
   authorName: z.string().trim().min(1).max(60),
   website: z.string().max(200).optional(),
-  altcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).optional(),
 });
 
 /**
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please complete every field." }, { status: 400 });
   if (isBot(parsed.data.website)) return NextResponse.json({ ok: true, status: "pending" });
-  if (!(await verifyCaptcha(parsed.data.altcha))) {
+  if (!(await verifyCaptcha(parsed.data.captcha, req))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   const product = products.find((p) => p.sku === parsed.data.sku);

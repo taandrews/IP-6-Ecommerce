@@ -77,8 +77,9 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
               <strong>Messages:</strong> what you send through the contact form, delivered to our email inbox.
             </li>
             <li>
-              <strong>Spam check:</strong> our forms ask your browser to solve a small puzzle (ALTCHA, which we run ourselves) to show you
-              aren&apos;t an automated program. It sets no cookies and sends nothing to anyone else.
+              <strong>Spam check:</strong> our forms use Cloudflare Turnstile to tell people from automated programs. Cloudflare receives your
+              IP address and technical details about your browser and device for that check only, and doesn&apos;t use them for advertising.
+              See Cloudflare&apos;s privacy policy at cloudflare.com/privacypolicy.
             </li>
             <li>
               <strong>Privacy requests:</strong> your email, the type of request and when it was verified and completed.
@@ -116,6 +117,7 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
           <ul className="list-disc pl-5 space-y-2">
             <li><strong>Amazon Web Services</strong> (USA): hosting, database, sign-in (Cognito) and email delivery.</li>
             <li><strong>Stripe</strong> (USA): payments, fraud screening, saved cards for subscriptions and, where enabled, sales tax calculation.</li>
+            <li><strong>Cloudflare</strong> (USA): the Turnstile spam check on our forms (your IP address and browser details).</li>
             <li><strong>Shipping carriers</strong> (for example USPS, UPS, FedEx, DHL): your name and address, to deliver your order.</li>
             <li><strong>Google Analytics</strong> and <strong>Meta (Facebook) Pixel</strong>: only as described in section 7.</li>
           </ul>

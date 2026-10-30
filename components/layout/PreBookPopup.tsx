@@ -98,12 +98,12 @@ export function PreBookPopup() {
   // Returned by the first save; lets later saves add quiz answers without another CAPTCHA.
   const saveToken = useRef<string | null>(null);
   /** Saves the sign-up with the answers given so far (the email is kept even if the quiz is left early). */
-  const save = useCallback((addr: string, quiz: Record<string, string>, altcha?: string) => {
+  const save = useCallback((addr: string, quiz: Record<string, string>, captcha?: string) => {
     savedCount.current = Object.keys(quiz).length;
     return fetch("/api/newsletter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: addr, consent: true, source: "prebook_popup", quiz, ...(altcha ? { altcha } : { token: saveToken.current }) }),
+      body: JSON.stringify({ email: addr, consent: true, source: "prebook_popup", quiz, ...(captcha ? { captcha } : { token: saveToken.current }) }),
       keepalive: true,
     })
       .then((r) => (r.ok ? (r.json() as Promise<{ token?: string }>) : null))
@@ -206,8 +206,8 @@ export function PreBookPopup() {
     }
     setError(false);
     setChecking(true);
-    const altcha = await captchaPayload(e.currentTarget);
-    const saved = altcha ? await save(email.trim(), answers, altcha) : false;
+    const captcha = await captchaPayload(e.currentTarget);
+    const saved = captcha ? await save(email.trim(), answers, captcha) : false;
     setChecking(false);
     if (!saved) {
       setError(true);
