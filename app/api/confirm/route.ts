@@ -9,9 +9,8 @@ const TOKEN = /^[A-Za-z0-9_-]{40,64}$/;
 
 /** Link from a newsletter or launch-alert confirmation email. Opening it changes nothing. */
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const token = url.searchParams.get("token") ?? "";
-  if (!TOKEN.test(token)) return redirectAfter(url, "/confirmed", { status: "invalid" });
+  const token = new URL(req.url).searchParams.get("token") ?? "";
+  if (!TOKEN.test(token)) return redirectAfter(req, "/confirmed", { status: "invalid" });
   return confirmPage({
     title: "Confirm your email",
     text: "Press the button to confirm you want emails from IP6 Original. Nothing happens until you do.",
@@ -23,17 +22,16 @@ export async function GET(req: Request) {
 
 /** The button on the page above. */
 export async function POST(req: Request) {
-  const url = new URL(req.url);
   const limited = await limitByIp(req, "confirm-signup", 10);
   if (limited) return limited;
   const form = await req.formData().catch(() => null);
   const token = String(form?.get("token") ?? "");
-  if (!TOKEN.test(token)) return redirectAfter(url, "/confirmed", { status: "invalid" });
+  if (!TOKEN.test(token)) return redirectAfter(req, "/confirmed", { status: "invalid" });
   try {
     const kind = await confirmSignup(token);
-    return redirectAfter(url, "/confirmed", kind ? { status: "ok", list: kind } : { status: "invalid" });
+    return redirectAfter(req, "/confirmed", kind ? { status: "ok", list: kind } : { status: "invalid" });
   } catch (err) {
     console.error("[confirm] failed", (err as Error).name);
-    return redirectAfter(url, "/confirmed", { status: "error" });
+    return redirectAfter(req, "/confirmed", { status: "error" });
   }
 }

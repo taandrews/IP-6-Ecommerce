@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe/server";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubscriptionsForCustomer } from "@/lib/data/subscriptions";
+import { siteUrl } from "@/lib/site-url";
 
 export const runtime = "nodejs";
 
@@ -41,20 +42,20 @@ async function cardOnlyConfiguration(stripe: Stripe) {
 
 export async function POST(req: Request) {
   const user = await getSessionUser();
-  if (!user) return NextResponse.redirect(new URL("/account/login", req.url), { status: 303 });
+  if (!user) return NextResponse.redirect(siteUrl("/account/login", req), { status: 303 });
   const subs = await listSubscriptionsForCustomer(user.sub, user.emailVerified ? user.email : undefined).catch(() => []);
   const customer = subs.find((s) => s.stripeCustomerId)?.stripeCustomerId;
-  if (!customer) return NextResponse.redirect(new URL("/account/payment-methods?portal=none", req.url), { status: 303 });
+  if (!customer) return NextResponse.redirect(siteUrl("/account/payment-methods?portal=none", req), { status: 303 });
   try {
     const stripe = await getStripe();
     const session = await stripe.billingPortal.sessions.create({
       customer,
       configuration: await cardOnlyConfiguration(stripe),
-      return_url: new URL("/account/subscriptions", req.url).toString(),
+      return_url: siteUrl("/account/subscriptions", req).toString(),
     });
     return NextResponse.redirect(session.url, { status: 303 });
   } catch (err) {
     console.error("[stripe] portal failed", (err as Error).name);
-    return NextResponse.redirect(new URL("/account/payment-methods?portal=unavailable", req.url), { status: 303 });
+    return NextResponse.redirect(siteUrl("/account/payment-methods?portal=unavailable", req), { status: 303 });
   }
 }

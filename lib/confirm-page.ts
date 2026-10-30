@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { siteUrl } from "@/lib/site-url";
 
 /**
  * A small self-contained page with one button that posts back to the link.
@@ -31,8 +32,8 @@ button:hover{background:#0C2C5E}
 }
 
 /** Sends the visitor back to a site page after the button, without leaking the token in Referer. */
-export function redirectAfter(url: URL, path: string, params: Record<string, string>) {
-  const to = new URL(path, url.origin);
+export function redirectAfter(req: Request, path: string, params: Record<string, string>) {
+  const to = siteUrl(path, req);
   for (const [k, v] of Object.entries(params)) to.searchParams.set(k, v);
   const res = NextResponse.redirect(to, { status: 303 });
   res.headers.set("Referrer-Policy", "no-referrer");

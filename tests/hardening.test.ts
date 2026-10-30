@@ -125,3 +125,14 @@ describe("double opt-in links", () => {
     expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);
   });
 });
+
+describe("redirects", () => {
+  it("use the public site address, not Amplify's internal request URL", async () => {
+    const { siteUrl } = await import("@/lib/site-url");
+    const internal = new Request("https://localhost:3000/api/auth/signout", { method: "POST" });
+    process.env.NEXT_PUBLIC_SITE_URL = "https://main.example.amplifyapp.com";
+    expect(siteUrl("/account/login", internal).toString()).toBe("https://main.example.amplifyapp.com/account/login");
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+    expect(siteUrl("/", internal).origin).toBe("https://localhost:3000");
+  });
+});
