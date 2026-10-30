@@ -12,7 +12,7 @@ import { getAdminLinkKey } from "@/lib/aws/secrets";
  */
 const TTL_MS = 12 * 60 * 60 * 1000;
 
-const g = globalThis as typeof globalThis & { __ip6LinkKey?: Buffer; __ip6DevLinkKey?: Buffer };
+const g = globalThis as typeof globalThis & { __ip6LinkKey?: Buffer; __ip6LinkKeyPrevious?: Buffer; __ip6DevLinkKey?: Buffer };
 
 function decode(raw: string, from: string) {
   const k = Buffer.from(raw, "base64");
@@ -21,8 +21,11 @@ function decode(raw: string, from: string) {
 }
 
 export async function loadLinkKey() {
-  const raw = await getAdminLinkKey();
-  if (raw) g.__ip6LinkKey = decode(raw, "adminLinkKey");
+  const keys = await getAdminLinkKey();
+  if (!keys) return;
+  g.__ip6LinkKey = decode(keys.current, "adminLinkKey");
+  // Links made just before the monthly rotation keep working until they expire.
+  g.__ip6LinkKeyPrevious = keys.previous ? decode(keys.previous, "adminLinkKeyPrevious") : undefined;
 }
 
 function key(): Buffer {
@@ -44,12 +47,21 @@ export function sealEmail(email: string): string {
 
 export function unsealEmail(token: string | null | undefined): string | null {
   if (!token || token.length > 1024) return null;
+  for (const k of [key(), g.__ip6LinkKeyPrevious]) {
+    if (!k) continue;
+    const email = unsealWith(k, token);
+    if (email) return email;
+  }
+  return null;
+}
+
+function unsealWith(k: Buffer, token: string): string | null {
   try {
     const buf = Buffer.from(token, "base64url");
     const iv = buf.subarray(0, 12);
     const tag = buf.subarray(12, 28);
     const body = buf.subarray(28);
-    const decipher = crypto.createDecipheriv("aes-256-gcm", key(), iv);
+    const decipher = crypto.createDecipheriv("aes-256-gcm", k, iv);
     decipher.setAuthTag(tag);
     const json = JSON.parse(Buffer.concat([decipher.update(body), decipher.final()]).toString("utf8")) as { e?: string; t?: number };
     if (typeof json.e !== "string" || typeof json.t !== "number") return null;

@@ -9,6 +9,7 @@ import { preorderUnitCents } from "@/lib/preorder";
 import { usePreorder } from "@/components/store/StoreSettings";
 import { formatPrice } from "@/lib/utils";
 import { INTENTS, QUESTIONS } from "@/lib/quiz";
+import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 
 const KEY = "ip6quiz_seen_v1";
 const LAUNCH_MS = Date.parse("2026-11-01T04:00:00Z");
@@ -75,6 +76,7 @@ export function PreBookPopup() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [error, setError] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const lastFocused = useRef<Element | null>(null);
@@ -93,15 +95,23 @@ export function PreBookPopup() {
     });
   }, []);
 
+  // Returned by the first save; lets later saves add quiz answers without another CAPTCHA.
+  const saveToken = useRef<string | null>(null);
   /** Saves the sign-up with the answers given so far (the email is kept even if the quiz is left early). */
-  const save = useCallback((addr: string, quiz: Record<string, string>) => {
+  const save = useCallback((addr: string, quiz: Record<string, string>, altcha?: string) => {
     savedCount.current = Object.keys(quiz).length;
-    fetch("/api/newsletter", {
+    return fetch("/api/newsletter", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: addr, consent: true, source: "prebook_popup", quiz }),
+      body: JSON.stringify({ email: addr, consent: true, source: "prebook_popup", quiz, ...(altcha ? { altcha } : { token: saveToken.current }) }),
       keepalive: true,
-    }).catch(() => {});
+    })
+      .then((r) => (r.ok ? (r.json() as Promise<{ token?: string }>) : null))
+      .then((d) => {
+        if (d?.token) saveToken.current = d.token;
+        return Boolean(d);
+      })
+      .catch(() => false);
   }, []);
   const answersRef = useRef(answers);
   answersRef.current = answers;
@@ -188,15 +198,22 @@ export function PreBookPopup() {
     setStep(to);
   };
 
-  const submitEmail = (e: React.FormEvent) => {
+  const submitEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim()) || !consent) {
       setError(true);
       return;
     }
     setError(false);
+    setChecking(true);
+    const altcha = await captchaPayload(e.currentTarget);
+    const saved = altcha ? await save(email.trim(), answers, altcha) : false;
+    setChecking(false);
+    if (!saved) {
+      setError(true);
+      return;
+    }
     signedUp.current = email.trim();
-    save(signedUp.current, answers);
     setStep("q2");
   };
 
@@ -282,9 +299,10 @@ export function PreBookPopup() {
                       <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required /> Email
                       me my pre-order offer and occasional research-backed updates, and save my quiz answers to tailor them.
                     </label>
-                    {error && <div className={s.err}>Please enter your email and check the box to continue.</div>}
-                    <button type="submit" className={s.btn}>
-                      Continue
+                    <Captcha />
+                    {error && <div className={s.err}>Please enter your email, check the box and complete the check to continue.</div>}
+                    <button type="submit" className={s.btn} disabled={checking}>
+                      {checking ? "Checking…" : "Continue"}
                     </button>
                     <p className={s.micro}>Unsubscribe anytime. No spam.</p>
                   </form>

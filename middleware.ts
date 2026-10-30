@@ -6,7 +6,9 @@ import { refreshTokens } from "@/lib/auth/refresh";
 import { roleFromGroups } from "@/lib/auth/roles";
 import { isShopifyOrigin } from "@/lib/storefronts";
 import { clientIpFrom } from "@/lib/client-ip";
+import { API_CSP, contentSecurityPolicy, createNonce } from "@/lib/csp";
 
+const AUTH_SCOPE = /^\/(admin|account|api)(?:\/|$)/;
 const ADMIN_PUBLIC = /^\/admin\/(login|forgot-password)(?:\/|$)/;
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
 const ADMIN_API = /^\/api\/admin\//;
@@ -87,7 +89,27 @@ function opts(realm: Realm, maxAge: number) {
   return { httpOnly: true, secure: secureCookies(), sameSite: sameSiteFor(realm), path: "/", maxAge };
 }
 
+/**
+ * Every page gets a fresh script nonce and the Content-Security-Policy that
+ * names it. Next.js reads the policy from the request and puts the nonce on
+ * its own scripts; the root layout passes it to ours.
+ */
 export async function middleware(req: NextRequest) {
+  const isApi = req.nextUrl.pathname.startsWith("/api/");
+  const nonce = createNonce();
+  const csp = isApi ? API_CSP : contentSecurityPolicy(nonce);
+  const headers = new Headers(req.headers);
+  // Any client-sent value is discarded.
+  headers.delete("x-ip6-area");
+  headers.set("x-nonce", nonce);
+  headers.set("content-security-policy", csp);
+  const res = AUTH_SCOPE.test(req.nextUrl.pathname) ? await guard(req, headers) : NextResponse.next({ request: { headers } });
+  res.headers.set("Content-Security-Policy", csp);
+  return res;
+}
+
+/** Rate limits, CSRF checks and sign-in for admin pages, account pages and the API. */
+async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
   const isApi = pathname.startsWith("/api/");
   const ip = clientIpFrom(req.headers);
@@ -131,9 +153,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Tell the root layout which area this is, so admin pages never load the
-  // storefront chrome or analytics. Any client-sent value is discarded.
-  const headers = new Headers(req.headers);
-  headers.delete("x-ip6-area");
+  // storefront chrome or analytics.
   if (ADMIN_PATH.test(pathname)) headers.set("x-ip6-area", "admin");
 
   // Forward renewed tokens to this request's handlers and to the browser.
@@ -161,5 +181,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/account/:path*", "/api/:path*"],
+  // Everything except build assets and files served as-is.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|robots.txt|sitemap.xml).*)"],
 };

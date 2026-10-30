@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/Input";
+import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 
 export function ForgotPasswordForm() {
   const router = useRouter();
@@ -15,15 +16,17 @@ export function ForgotPasswordForm() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const form = new FormData(e.currentTarget);
+    const el = e.currentTarget;
+    const form = new FormData(el);
     try {
       if (step === "email") {
+        const altcha = await captchaPayload(el);
         const res = await fetch("/api/auth/forgot-password", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: form.get("email") }),
+          body: JSON.stringify({ email: form.get("email"), altcha }),
         });
-        if (!res.ok) throw new Error("Could not start reset");
+        if (!res.ok) throw new Error(res.status === 400 ? "Please complete the check and try again." : "Could not start reset");
         setEmail(String(form.get("email") ?? ""));
         setStep("reset");
       } else {
@@ -73,6 +76,7 @@ export function ForgotPasswordForm() {
   return (
     <form onSubmit={onSubmit} className="card p-8 space-y-5">
       <Input id="fp-email" name="email" type="email" label="Email" required autoComplete="email" />
+      <Captcha />
       {error ? <p className="text-sm text-danger" role="alert">{error}</p> : null}
       <button type="submit" className="btn-primary w-full" disabled={loading}>
         {loading ? "Sending…" : "Send reset code"}

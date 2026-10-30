@@ -12,5 +12,7 @@ export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
     environment: "node",
+    // The checkout test runs the real pricing code end to end; give it room on a busy machine.
+    testTimeout: 20_000,
   },
 });

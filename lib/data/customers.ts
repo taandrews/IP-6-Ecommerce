@@ -20,7 +20,18 @@ export interface CustomerProfile {
   orders: OrderRecord[];
   subscriptions: SubscriptionRecord[];
   reviews: ReviewRecord[];
-  newsletter: { subscribed: boolean; consentedAt?: string; source?: string; consentVersion?: string; quiz?: Record<string, string>; quizAt?: string } | null;
+  newsletter: {
+    subscribed: boolean;
+    /** Signed up but hasn't clicked the confirmation link yet. */
+    pending: boolean;
+    requestedAt?: string;
+    consentedAt?: string;
+    confirmedAt?: string;
+    source?: string;
+    consentVersion?: string;
+    quiz?: Record<string, string>;
+    quizAt?: string;
+  } | null;
   waitlist: WaitlistRecord | null;
   totals: { orderCount: number; spent: Record<string, number> };
 }
@@ -51,7 +62,10 @@ export async function getCustomerProfile(email: string): Promise<CustomerProfile
     newsletter: newsletterRow
       ? {
           subscribed: newsletterRow.newsletter === true,
-          consentedAt: newsletterRow.consentedAt ?? newsletterRow.createdAt,
+          pending: newsletterRow.newsletter !== true && Boolean(newsletterRow.requestedAt) && !newsletterRow.unsubscribedAt,
+          requestedAt: newsletterRow.requestedAt,
+          consentedAt: newsletterRow.consentedAt ?? (newsletterRow.newsletter === true ? newsletterRow.createdAt : undefined),
+          confirmedAt: newsletterRow.confirmedAt,
           source: newsletterRow.source,
           consentVersion: newsletterRow.consentVersion,
           quiz: newsletterRow.quiz,

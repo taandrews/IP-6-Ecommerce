@@ -4,6 +4,7 @@ import { App } from "aws-cdk-lib";
 import { Ip6Stack } from "../lib/ip6-stack";
 import { Ip6AccountStack } from "../lib/account-stack";
 import { Ip6MonitoringStack } from "../lib/monitoring-stack";
+import { Ip6CiStack } from "../lib/ci-stack";
 
 // Everything except Amplify Hosting lives in us-east-1 (the CDK bootstrap,
 // IAM/CloudTrail global events, CloudFront metrics, and the CLOUDFRONT-scoped
@@ -21,6 +22,13 @@ const ALERT_EMAIL = "taandrews@init1s.com";
 const MONTHLY_BUDGET_USD = 50;
 
 const app = new App();
+
+// Keyless GitHub Actions deploys (replaces the ip6-deploy access key).
+new Ip6CiStack(app, "Ip6CiStack", {
+  env: { account, region: REGION },
+  githubRepo: "taandrews/IP-6-Ecommerce",
+  environment: "production",
+});
 
 const accountStack = new Ip6AccountStack(app, "Ip6AccountStack", {
   env: { account, region: REGION },

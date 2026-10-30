@@ -7,6 +7,7 @@ import { countryInSentence, countryOptions, isSellableCountry } from "@/lib/coun
 import { useGeo } from "@/components/store/Geo";
 import { cn } from "@/lib/utils";
 import { WAITLIST_CONSENT_TEXT } from "@/lib/waitlist-consent";
+import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 
 
 /**
@@ -39,8 +40,9 @@ export function WaitlistForm({
   const [state, setState] = useState<"idle" | "saving" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
     setError(null);
     if (!consent) {
       setError("Please tick the box so we can email you at launch.");
@@ -48,10 +50,11 @@ export function WaitlistForm({
     }
     setState("saving");
     try {
+      const altcha = await captchaPayload(form);
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, country, firstName: firstName || undefined, consent: true, product, page: pathname, source }),
+        body: JSON.stringify({ email, country, firstName: firstName || undefined, consent: true, product, page: pathname, source, altcha }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
@@ -72,9 +75,9 @@ export function WaitlistForm({
     return (
       <div className={cn("rounded-md border border-gold-300 bg-surface p-5", className)} role="status">
         <p className="flex items-center gap-2 font-semibold text-navy-800">
-          <Check className="size-4 text-gold-700" aria-hidden="true" /> You&apos;re on the list.
+          <Check className="size-4 text-gold-700" aria-hidden="true" /> Check your inbox.
         </p>
-        <p className="mt-1.5 text-sm text-ink/70">We&apos;ll email {email} when IP6 Original ships to {where}.</p>
+        <p className="mt-1.5 text-sm text-ink/70">We sent a link to {email}. Click it to confirm, and we&apos;ll email you when IP6 Original ships to {where}.</p>
       </div>
     );
   }
@@ -139,6 +142,7 @@ export function WaitlistForm({
         <input type="checkbox" className="mt-0.5 size-4 accent-navy-800" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
         <span>{WAITLIST_CONSENT_TEXT}</span>
       </label>
+      <Captcha />
       {error ? (
         <p className="text-sm text-danger" role="alert">
           {error}

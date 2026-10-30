@@ -186,6 +186,26 @@ export const emailTemplates = {
       <p>The link works for 48 hours. If you didn't make this request, ignore this email and nothing will happen.</p>
     `),
   }),
+  newsletterConfirm: (link: string) => ({
+    sender: "hello" as const,
+    subject: "Confirm your email · IP6 Original",
+    html: baseEmail(`
+      <h1 style="font-size:22px;">One click to finish</h1>
+      <p>Someone, hopefully you, asked to get IP6 Original news and launch offers at this address.</p>
+      <p><a href="${e(link)}" style="color:#0B1F3A;font-weight:600;">Yes, sign me up</a></p>
+      <p>The link works for 48 hours. If this wasn't you, ignore this email and you won't hear from us.</p>
+    `),
+  }),
+  waitlistConfirm: (link: string) => ({
+    sender: "hello" as const,
+    subject: "Confirm your launch alert · IP6 Original",
+    html: baseEmail(`
+      <h1 style="font-size:22px;">Confirm your launch alert</h1>
+      <p>Someone, hopefully you, asked us to email this address when IP6 Original ships to their country.</p>
+      <p><a href="${e(link)}" style="color:#0B1F3A;font-weight:600;">Yes, tell me at launch</a></p>
+      <p>The link works for 48 hours. If this wasn't you, ignore this email and you won't hear from us.</p>
+    `),
+  }),
   privacyReceived: (type: "export" | "delete") => ({
     sender: "privacy" as const,
     subject: "We received your privacy request · IP6 Original",

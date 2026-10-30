@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
+vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad", captchaKeys: async () => ["test-key"], newChallenge: async () => ({}) }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
 
 process.env.SES_FROM_EMAIL = "orders@ip6.test";
@@ -14,7 +15,7 @@ function post(topic: string) {
     new Request("http://localhost/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "Ann", email: "ann@example.com", topic, message: "A question about my order." }),
+      body: JSON.stringify({ name: "Ann", email: "ann@example.com", topic, message: "A question about my order.", altcha: "solved" }),
     }),
   );
 }

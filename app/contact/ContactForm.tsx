@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Honeypot } from "@/components/ui/Honeypot";
+import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 
 export function ContactForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -12,7 +13,9 @@ export function ContactForm() {
     e.preventDefault();
     setStatus("submitting");
     setError(null);
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const el = e.currentTarget;
+    const altcha = await captchaPayload(el);
+    const data = { ...Object.fromEntries(new FormData(el)), altcha };
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -24,7 +27,7 @@ export function ContactForm() {
         throw new Error(body?.error ?? "Your message could not be sent. Please try again.");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      el.reset();
     } catch (err) {
       setStatus("error");
       setError((err as Error).message);
@@ -58,6 +61,7 @@ export function ContactForm() {
       </Select>
       <Input id="order" name="order" label="Order number" hint="Optional. For order-specific questions." />
       <Textarea id="message" name="message" label="Message" required maxLength={2000} />
+      <Captcha />
       {error ? <p className="text-sm text-danger" role="alert">{error}</p> : null}
       <button type="submit" className="btn-primary" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending…" : "Send message"}

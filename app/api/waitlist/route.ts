@@ -6,6 +6,10 @@ import { saveWaitlist } from "@/lib/data/waitlist";
 import { products } from "@/content/products";
 import { isShopifyOrigin } from "@/lib/storefronts";
 import { limitByIp } from "@/lib/rate-limit";
+import { verifyCaptcha } from "@/lib/captcha";
+import { requestConfirmation } from "@/lib/data/confirmations";
+import { getWaitlistEntry } from "@/lib/data/waitlist";
+import { WAITLIST_CONSENT_VERSION } from "@/lib/waitlist-consent";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -39,6 +43,7 @@ const Body = z.object({
     .default("/"),
   source: z.enum(["product", "checkout"]),
   site: z.enum(["amplify", "shopify"]).default("amplify"),
+  altcha: z.string().max(2048).optional(),
 });
 
 /** CORS for the Shopify storefront, which posts its waitlist form here. */
@@ -53,7 +58,10 @@ export function OPTIONS(req: Request) {
   return new NextResponse(null, { status: 204, headers: cors(req) });
 }
 
-/** Launch waitlist sign-up for visitors in countries we don't ship to yet. */
+/**
+ * Launch waitlist sign-up for visitors in countries we don't ship to yet.
+ * Needs a solved CAPTCHA; saved as pending until the emailed link is clicked.
+ */
 export async function POST(req: Request) {
   const headers = cors(req);
   const limited = (await limitByIp(req, "waitlist", 10)) ?? (await limitByIp(req, "waitlist-hour", 40, 3600));
@@ -70,6 +78,9 @@ export async function POST(req: Request) {
     );
   }
   const d = parsed.data;
+  if (!(await verifyCaptcha(d.altcha))) {
+    return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400, headers });
+  }
   if (isSellableCountry(d.country)) {
     return NextResponse.json({ error: `We already ship to ${countryName(d.country)}. You can order now.`, sellable: true }, { status: 400, headers });
   }
@@ -84,6 +95,8 @@ export async function POST(req: Request) {
       source: d.source,
       site: d.site,
     });
+    // Double opt-in: only a click on the emailed link confirms the sign-up.
+    if (!(await getWaitlistEntry(d.email))?.confirmedAt) await requestConfirmation(req, "waitlist", d.email, WAITLIST_CONSENT_VERSION);
     return NextResponse.json({ ok: true }, { headers });
   } catch (err) {
     console.error("[waitlist] save failed", (err as Error).name);

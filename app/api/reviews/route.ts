@@ -8,6 +8,7 @@ import { listOrdersByUser, PAID_STATUSES } from "@/lib/data/orders";
 import { products } from "@/content/products";
 import { limitByIp } from "@/lib/rate-limit";
 import { isBot } from "@/lib/honeypot";
+import { verifyCaptcha } from "@/lib/captcha";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,7 @@ const Body = z.object({
   body: z.string().trim().min(10).max(2000),
   authorName: z.string().trim().min(1).max(60),
   website: z.string().max(200).optional(),
+  altcha: z.string().max(2048).optional(),
 });
 
 /**
@@ -31,6 +33,9 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please complete every field." }, { status: 400 });
   if (isBot(parsed.data.website)) return NextResponse.json({ ok: true, status: "pending" });
+  if (!(await verifyCaptcha(parsed.data.altcha))) {
+    return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
+  }
   const product = products.find((p) => p.sku === parsed.data.sku);
   if (!product) return NextResponse.json({ error: "Unknown product." }, { status: 400 });
 

@@ -5,6 +5,7 @@ import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { emailKey } from "@/lib/data/orders";
 import { hit, limitByIp } from "@/lib/rate-limit";
 import { isBot } from "@/lib/honeypot";
+import { verifyCaptcha } from "@/lib/captcha";
 
 export const runtime = "nodejs";
 
@@ -13,6 +14,7 @@ const Body = z.object({
   type: z.enum(["delete", "export"]).default("delete"),
   details: z.string().trim().max(2000).optional().or(z.literal("")),
   website: z.string().max(200).optional(),
+  altcha: z.string().max(2048).optional(),
 });
 
 /**
@@ -28,6 +30,9 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   if (isBot(parsed.data.website)) return NextResponse.json({ ok: true });
+  if (!(await verifyCaptcha(parsed.data.altcha))) {
+    return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
+  }
   if (!(await hit(`privacy-mail:${emailKey(parsed.data.email)}`, 1, 3600))) return NextResponse.json({ ok: true });
   try {
     const { record, token } = await createPrivacyRequest({

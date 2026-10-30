@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/Input";
+import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -17,9 +18,11 @@ export function RegisterForm() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const form = new FormData(e.currentTarget);
+    const el = e.currentTarget;
+    const form = new FormData(el);
     try {
       if (!awaitingCode) {
+        const altcha = await captchaPayload(el);
         const res = await fetch("/api/auth/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -27,6 +30,7 @@ export function RegisterForm() {
             email: form.get("email"),
             password: form.get("password"),
             name: form.get("name"),
+            altcha,
           }),
         });
         const data = await res.json();
@@ -92,6 +96,7 @@ export function RegisterForm() {
         By creating an account, you agree to our <a href="/legal/terms" className="underline">Terms</a> and{" "}
         <a href="/legal/privacy" className="underline">Privacy Policy</a>.
       </p>
+      <Captcha />
       <button type="submit" className="btn-primary w-full" disabled={loading}>
         {loading ? "Creating…" : "Create account"}
       </button>

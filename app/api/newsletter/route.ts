@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { emailKey } from "@/lib/data/orders";
 import { newsletterKey } from "@/lib/data/customers";
+import { requestConfirmation } from "@/lib/data/confirmations";
 import { getSessionUser } from "@/lib/auth/session";
 import { limitByIp } from "@/lib/rate-limit";
+import { captchaKeys, verifyCaptcha } from "@/lib/captcha";
+import { checkFormToken, issueFormToken } from "@/lib/form-token";
 import { QUIZ_ANSWERS } from "@/lib/quiz";
 
 export const runtime = "nodejs";
@@ -14,8 +17,6 @@ export const runtime = "nodejs";
 const CONSENT_VERSION = "2026-10-20";
 /** The pre-order pop-up's wording, which also covers saving the quiz answers. */
 const QUIZ_CONSENT_VERSION = "2026-10-29";
-/** The pop-up saves the email, then the answers when the quiz ends; answers are only accepted within this window. */
-const QUIZ_WINDOW_MS = 30 * 60 * 1000;
 
 /** Only the quiz's own questions and answers are accepted. */
 const Quiz = z
@@ -27,52 +28,75 @@ const Body = z.object({
   consent: z.literal(true),
   source: z.enum(["prebook_popup", "footer", "account"]).default("prebook_popup"),
   quiz: Quiz.optional(),
+  /** Solved CAPTCHA, for a new sign-up. */
+  altcha: z.string().max(2048).optional(),
+  /** From an earlier sign-up response, for saving more quiz answers. */
+  token: z.string().max(200).optional(),
 });
+
+/** Unconfirmed sign-ups are deleted after this long (DynamoDB TTL). */
+const PENDING_TTL_SECONDS = 60 * 60 * 24 * 30;
 
 const conditionFailed = (err: unknown) => (err as Error).name === "ConditionalCheckFailedException";
 
 /**
- * Anyone can type any email here and no confirmation email goes out yet, so a
- * stranger must not be able to change someone else's row: the first proof of
- * consent is kept, someone who unsubscribed is only signed up again by
- * themselves (signed in with that verified email), and quiz answers can only
- * be added in the minutes after the sign-up. The reply is the same either way.
+ * Newsletter sign-up with double opt-in. A new sign-up must pass the CAPTCHA;
+ * it is saved as pending and a confirmation link is emailed, and only the
+ * click puts the address on the list. Someone signed in with that verified
+ * email is confirmed at once. The reply carries a short-lived token so the
+ * pre-order quiz can add its answers without a second CAPTCHA. Answers never
+ * overwrite those already on a confirmed sign-up, unless it's the owner.
  */
 export async function POST(req: Request) {
   const limited = (await limitByIp(req, "newsletter", 10)) ?? (await limitByIp(req, "newsletter-hour", 40, 3600));
   if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please tick the box to agree to emails." }, { status: 400 });
-  const { email, source, quiz } = parsed.data;
+  const { email, source, quiz, altcha, token } = parsed.data;
+  const keys = await captchaKeys();
+  const followUp = checkFormToken(keys, emailKey(email), token);
+  if (!followUp && !(await verifyCaptcha(altcha))) {
+    return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
+  }
   const user = await getSessionUser().catch(() => null);
   const own = Boolean(user?.emailVerified && emailKey(user.email) === emailKey(email));
   const Key = { userId: newsletterKey(email) };
   const now = new Date().toISOString();
+  const consentVersion = source === "prebook_popup" ? QUIZ_CONSENT_VERSION : CONSENT_VERSION;
   try {
-    const names: Record<string, string> = { "#email": "email", "#nl": "newsletter", "#ca": "consentedAt", "#cv": "consentVersion", "#src": "source", "#cr": "createdAt", "#up": "updatedAt", "#un": "unsubscribedAt" };
-    const values: Record<string, unknown> = {
-      ":email": emailKey(email),
-      ":nl": true,
-      ":cv": source === "prebook_popup" ? QUIZ_CONSENT_VERSION : CONSENT_VERSION,
-      ":src": source,
-      ":now": now,
-    };
-    const consent = own ? "#ca = :now, #cv = :cv, #src = :src" : "#ca = if_not_exists(#ca, :now), #cv = if_not_exists(#cv, :cv), #src = if_not_exists(#src, :src)";
-    try {
-      await docClient.send(
-        new UpdateCommand({
-          TableName: TABLES.Users,
-          Key,
-          UpdateExpression: `SET #email = :email, #nl = :nl, ${consent}, #cr = if_not_exists(#cr, :now), #up = :now REMOVE #un`,
-          ...(own ? {} : { ConditionExpression: "attribute_not_exists(#nl) OR #nl = :nl" }),
-          ExpressionAttributeNames: names,
-          ExpressionAttributeValues: values,
-        }),
-      );
-    } catch (err) {
-      // They unsubscribed earlier and this request isn't from them.
-      if (conditionFailed(err)) return NextResponse.json({ ok: true });
-      throw err;
+    if (!followUp) {
+      const existing = (await docClient.send(new GetCommand({ TableName: TABLES.Users, Key, ConsistentRead: true }))).Item;
+      if (own) {
+        // Signed in with this verified email: that already proves ownership.
+        await docClient.send(
+          new UpdateCommand({
+            TableName: TABLES.Users,
+            Key,
+            UpdateExpression: "SET #email = :email, #nl = :t, #ca = :now, #cv = :cv, #cf = :now, #src = :src, #cr = if_not_exists(#cr, :now), #up = :now REMOVE #un, #exp",
+            ExpressionAttributeNames: { "#email": "email", "#nl": "newsletter", "#ca": "consentedAt", "#cv": "consentVersion", "#cf": "confirmedAt", "#src": "source", "#cr": "createdAt", "#up": "updatedAt", "#un": "unsubscribedAt", "#exp": "expiresAt" },
+            ExpressionAttributeValues: { ":email": emailKey(email), ":t": true, ":now": now, ":cv": consentVersion, ":src": source },
+          }),
+        );
+      } else if (existing?.newsletter !== true) {
+        // New or not yet confirmed: keep it pending and email the link.
+        await docClient.send(
+          new UpdateCommand({
+            TableName: TABLES.Users,
+            Key,
+            // An opt-out marker (someone who unsubscribed) is kept; anything else unconfirmed expires.
+            UpdateExpression: `SET #email = :email, #nl = if_not_exists(#nl, :f), #rq = :now, #src = if_not_exists(#src, :src), #cr = if_not_exists(#cr, :now), #up = :now${existing?.unsubscribedAt ? "" : ", #exp = :exp"}`,
+            ExpressionAttributeNames: { "#email": "email", "#nl": "newsletter", "#rq": "requestedAt", "#src": "source", "#cr": "createdAt", "#up": "updatedAt", ...(existing?.unsubscribedAt ? {} : { "#exp": "expiresAt" }) },
+            ExpressionAttributeValues: {
+              ":email": emailKey(email),
+              ":f": false,
+              ":now": now,
+              ":src": source,
+              ...(existing?.unsubscribedAt ? {} : { ":exp": Math.floor(Date.now() / 1000) + PENDING_TTL_SECONDS }),
+            },
+          }),
+        );
+        await requestConfirmation(req, "newsletter", email, consentVersion);
+      }
     }
     if (quiz && Object.keys(quiz).length) {
       await docClient
@@ -81,22 +105,18 @@ export async function POST(req: Request) {
             TableName: TABLES.Users,
             Key,
             UpdateExpression: "SET #quiz = :quiz, #qa = :now",
-            ConditionExpression: own ? "#nl = :nl" : "#nl = :nl AND (attribute_not_exists(#quiz) OR #cr > :recent)",
-            ExpressionAttributeNames: { "#quiz": "quiz", "#qa": "quizAt", "#nl": "newsletter", ...(own ? {} : { "#cr": "createdAt" }) },
-            ExpressionAttributeValues: {
-              ":quiz": quiz,
-              ":now": now,
-              ":nl": true,
-              ...(own ? {} : { ":recent": new Date(Date.now() - QUIZ_WINDOW_MS).toISOString() }),
-            },
+            // A confirmed sign-up's answers are only replaced by its owner.
+            ConditionExpression: own ? "attribute_exists(userId)" : "attribute_exists(userId) AND (#nl <> :t OR attribute_not_exists(#quiz))",
+            ExpressionAttributeNames: { "#quiz": "quiz", "#qa": "quizAt", ...(own ? {} : { "#nl": "newsletter" }) },
+            ExpressionAttributeValues: { ":quiz": quiz, ":now": now, ...(own ? {} : { ":t": true }) },
           }),
         )
         .catch((err) => {
-          // Answers already saved for an older sign-up are left as they are.
           if (!conditionFailed(err)) throw err;
         });
     }
-    return NextResponse.json({ ok: true });
+    // The same reply whether the address was new, pending or already confirmed.
+    return NextResponse.json({ ok: true, token: issueFormToken(keys[0]!, emailKey(email)) });
   } catch (err) {
     console.error("[newsletter] save failed", (err as Error).name);
     return NextResponse.json({ error: "We couldn't save that. Please try again." }, { status: 500 });

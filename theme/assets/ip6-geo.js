@@ -78,10 +78,16 @@
     if (!country) return fail("Please choose your country.");
     if (!consent) return fail("Please tick the box so we can email you at launch.");
     btn.disabled = true; btn.textContent = "Saving\u2026";
-    fetch(form.getAttribute("data-endpoint"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, country: country, firstName: first || undefined, consent: true, product: form.getAttribute("data-product") || undefined, page: location.pathname, source: form.getAttribute("data-source"), site: "shopify" })
+    // The solved CAPTCHA; if the visitor was quicker than the puzzle, finish it now.
+    var widget = form.querySelector("altcha-widget");
+    function altcha() { return new FormData(form).get("altcha") || ""; }
+    var ready = altcha() || !widget || !widget.verify ? Promise.resolve() : Promise.resolve(widget.verify()).catch(function () {});
+    ready.then(function () {
+      return fetch(form.getAttribute("data-endpoint"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, country: country, firstName: first || undefined, consent: true, product: form.getAttribute("data-product") || undefined, page: location.pathname, source: form.getAttribute("data-source"), site: "shopify", altcha: altcha() || undefined })
+      });
     }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
       .then(function (res) {
         if (!res.ok) { btn.disabled = false; btn.textContent = "Notify me at launch"; return fail(res.d.error || "We couldn't save that. Please try again."); }

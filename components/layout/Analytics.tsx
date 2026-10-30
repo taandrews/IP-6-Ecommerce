@@ -7,9 +7,10 @@ import { CONSENT_CHANGED_EVENT, effectiveConsent, parseConsent, readConsentCooki
 /**
  * Loads Google Analytics only with analytics consent and the Meta Pixel only
  * with marketing consent (and never while Global Privacy Control is on).
- * A withdrawn consent takes effect on the next page load.
+ * A withdrawn consent takes effect on the next page load. Each script
+ * carries the page's CSP nonce.
  */
-export function Analytics() {
+export function Analytics({ nonce }: { nonce?: string }) {
   const [consent, setConsent] = useState<Consent>({ analytics: false, marketing: false });
 
   useEffect(() => {
@@ -28,15 +29,15 @@ export function Analytics() {
     <>
       {consent.analytics && gaId ? (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
-          <Script id="ga4" strategy="afterInteractive">
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" nonce={nonce} />
+          <Script id="ga4" strategy="afterInteractive" nonce={nonce}>
             {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
               gtag('js',new Date());gtag('config','${gaId}',{anonymize_ip:true});`}
           </Script>
         </>
       ) : null}
       {consent.marketing && pixelId ? (
-        <Script id="meta-pixel" strategy="afterInteractive">
+        <Script id="meta-pixel" strategy="afterInteractive" nonce={nonce}>
           {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${pixelId}');fbq('track','PageView');`}
         </Script>
       ) : null}

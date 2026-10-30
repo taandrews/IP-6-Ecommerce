@@ -2,6 +2,7 @@ import { Stack, StackProps, RemovalPolicy, Duration, CfnOutput } from "aws-cdk-l
 import { Construct } from "constructs";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudtrail from "aws-cdk-lib/aws-cloudtrail";
+import { operatorStatements } from "./operator-policy";
 import * as logs from "aws-cdk-lib/aws-logs";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import * as cwactions from "aws-cdk-lib/aws-cloudwatch-actions";
@@ -305,6 +306,23 @@ export class Ip6AccountStack extends Stack {
       evaluationPeriods: 1,
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
     }).addAlarmAction(alarmAction);
+
+    // -----------------------
+    // Operators
+    // -----------------------
+    // The ip6-deploy CLI user gets read access plus a short list of scoped
+    // writes through this group, in place of AdministratorAccess.
+    const operators = new iam.Group(this, "Operators", {
+      groupName: "ip6-operators",
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("ReadOnlyAccess")],
+    });
+    new iam.ManagedPolicy(this, "OperatorPolicy", {
+      managedPolicyName: "ip6-operator",
+      description: "Scoped writes for IP6 maintenance; infrastructure changes go through CDK",
+      statements: operatorStatements(this, `arn:aws:amplify:${props.amplifyRegion}:${this.account}:apps/${props.amplifyAppId}`),
+      groups: [operators],
+    });
+    new iam.CfnUserToGroupAddition(this, "DeployUserIsOperator", { groupName: operators.groupName, users: ["ip6-deploy"] });
 
     new CfnOutput(this, "AlertsTopicArn", { value: this.alertsTopic.topicArn });
     new CfnOutput(this, "WebAclArn", { value: webAcl.attrArn });

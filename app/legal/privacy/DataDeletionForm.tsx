@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Honeypot } from "@/components/ui/Honeypot";
+import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 
 export function DataDeletionForm() {
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -11,12 +12,14 @@ export function DataDeletionForm() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("submitting");
-    const form = new FormData(e.currentTarget);
+    const el = e.currentTarget;
+    const form = new FormData(el);
     try {
+      const altcha = await captchaPayload(el);
       const res = await fetch("/api/privacy/deletion-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.get("email"), details: form.get("details") ?? "", type, website: form.get("website") ?? "" }),
+        body: JSON.stringify({ email: form.get("email"), details: form.get("details") ?? "", type, website: form.get("website") ?? "", altcha }),
       });
       setStatus(res.ok ? "success" : "error");
     } catch {
@@ -46,6 +49,7 @@ export function DataDeletionForm() {
       </fieldset>
       <Input id="del-email" name="email" type="email" label="Email you used with us" required autoComplete="email" />
       <Textarea id="del-details" name="details" label="Details (optional)" hint="Anything that helps us find your data or understand your request." />
+      <Captcha />
       <button type="submit" className="btn-primary" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending…" : "Send confirmation link"}
       </button>

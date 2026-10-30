@@ -14,7 +14,8 @@ import {
  *   ip6/{env}/stripe   → { secretKey, publishableKey, webhookSecret }
  *   ip6/{env}/sanity   → { projectId, dataset, apiToken }
  *   ip6/{env}/algolia  → { appId, searchKey, adminKey }
- *   ip6/{env}/app      → { rateLimitSecret, adminLinkKey }
+ *   ip6/{env}/app      → { adminLinkKey, captchaHmacKey, rateLimitSecret }, each with a
+ *                         `<key>Previous` after the 30-day rotation (infra/lambda/rotate-app-secret)
  */
 
 const region = awsRegion();
@@ -103,20 +104,33 @@ export async function getAlgoliaSecrets(): Promise<AlgoliaSecrets> {
   return s as unknown as AlgoliaSecrets;
 }
 
+/** A rotating key: sign with `current`, also accept `previous` until it lapses. */
+export interface KeyPair {
+  current: string;
+  previous?: string;
+}
+
 /**
- * The key that seals customer emails in admin links. Production always reads
- * it from Secrets Manager; ADMIN_LINK_KEY is only for local testing. Returns
- * null in development when neither is set (a per-process key is used then).
+ * One of the app's own keys from ip6/{env}/app. Production always reads
+ * Secrets Manager; the env var is only for local testing. Null in
+ * development when neither is set (callers then use a per-process key).
  */
-export async function getAdminLinkKey(): Promise<string | null> {
+async function appKey(name: "adminLinkKey" | "captchaHmacKey", envVar: string): Promise<KeyPair | null> {
   if (process.env.NODE_ENV !== "production") {
-    if (process.env.ADMIN_LINK_KEY) return process.env.ADMIN_LINK_KEY;
+    if (process.env[envVar]) return { current: process.env[envVar]! };
     if (!process.env.APP_ENV) return null;
   }
   const s = await fetchSecret(secretName("app"));
-  if (!s.adminLinkKey) throw new Error("adminLinkKey missing from ip6/*/app secret");
-  return s.adminLinkKey;
+  if (!s[name]) throw new Error(`${name} missing from ip6/*/app secret`);
+  const previous = s[`${name}Previous`];
+  return previous ? { current: s[name], previous } : { current: s[name] };
 }
+
+/** Seals customer emails in admin links. */
+export const getAdminLinkKey = () => appKey("adminLinkKey", "ADMIN_LINK_KEY");
+
+/** Signs CAPTCHA puzzles and sign-up form tokens. */
+export const getCaptchaKey = () => appKey("captchaHmacKey", "CAPTCHA_HMAC_KEY");
 
 export async function getRateLimitSecret(): Promise<string> {
   if (process.env.RATE_LIMIT_SECRET && process.env.RATE_LIMIT_SECRET !== "change-me-in-production") {

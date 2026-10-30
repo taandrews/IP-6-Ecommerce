@@ -78,6 +78,17 @@
     @apply w-full rounded-md border border-cloud-300 bg-surface px-3.5 py-3 text-ink placeholder:text-ink/40 transition-colors;
   }
 
+  /* The ALTCHA spam check (components/ui/Captcha.tsx), styled like the form fields. */
+  altcha-widget {
+    --altcha-max-width: 100%;
+    --altcha-border-radius: 0.375rem;
+    --altcha-color-border: theme("colors.cloud.300");
+    --altcha-color-border-focus: theme("colors.navy.800");
+    --altcha-color-base: theme("colors.surface");
+    --altcha-color-text: theme("colors.ink");
+    --altcha-color-active: theme("colors.navy.800");
+  }
+
   .label {
     @apply block text-sm font-medium text-ink mb-1.5;
   }

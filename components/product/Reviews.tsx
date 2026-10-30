@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Honeypot } from "@/components/ui/Honeypot";
+import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 import type { Review } from "@/types";
 import { Stars } from "@/components/ui/Stars";
 import { formatDate } from "@/lib/utils";
@@ -12,6 +13,7 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
   const [reviews] = useState<Review[]>(initial);
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const [notice, setNotice] = useState<{ ok: boolean; text: string } | null>(null);
 
   const avg =
@@ -19,7 +21,9 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
 
   async function submit(form: FormData) {
     setSubmitting(true);
+    const altcha = formRef.current ? await captchaPayload(formRef.current) : null;
     const payload = {
+      altcha,
       sku,
       rating: Number(form.get("rating")),
       title: String(form.get("title") ?? ""),
@@ -104,6 +108,7 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
           onClick={() => setOpen(false)}
         >
           <form
+            ref={formRef}
             onClick={(e) => e.stopPropagation()}
             action={submit}
             className="relative bg-surface max-w-lg w-full rounded-lg shadow-card p-6 space-y-4"

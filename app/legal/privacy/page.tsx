@@ -59,7 +59,8 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
               <strong>Subscriptions:</strong> the product, delivery frequency, price, next renewal date and the address renewals ship to.
             </li>
             <li>
-              <strong>Emails you agreed to:</strong> your email address, the date you agreed and where on the site you signed up.
+              <strong>Emails you agreed to:</strong> your email address, where on the site you signed up, and when you confirmed by clicking
+              the link we email you. Until you click it you are not on the list, and an unconfirmed sign-up is deleted after 30 days.
             </li>
             <li>
               <strong>Launch waitlist:</strong> if you are outside the countries we ship to and ask to hear when we launch there, your email,
@@ -74,6 +75,10 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
             </li>
             <li>
               <strong>Messages:</strong> what you send through the contact form, delivered to our email inbox.
+            </li>
+            <li>
+              <strong>Spam check:</strong> our forms ask your browser to solve a small puzzle (ALTCHA, which we run ourselves) to show you
+              aren&apos;t an automated program. It sets no cookies and sends nothing to anyone else.
             </li>
             <li>
               <strong>Privacy requests:</strong> your email, the type of request and when it was verified and completed.

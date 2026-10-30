@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # Keeps the pinned action hashes in .github/workflows current.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directory: /infra
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

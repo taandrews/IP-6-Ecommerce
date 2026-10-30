@@ -19,6 +19,11 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as sns from "aws-cdk-lib/aws-sns";
 import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import * as cwactions from "aws-cdk-lib/aws-cloudwatch-actions";
+import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as logs from "aws-cdk-lib/aws-logs";
+import * as events from "aws-cdk-lib/aws-events";
+import * as targets from "aws-cdk-lib/aws-events-targets";
+import * as path from "node:path";
 
 export interface Ip6StackProps extends StackProps {
   environment: "staging" | "prod";
@@ -64,6 +69,8 @@ export class Ip6Stack extends Stack {
       tableName: `${props.tablePrefix}Users`,
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
       ...tableDefaults,
+      // Newsletter and waitlist sign-ups nobody confirmed are removed after 30 days.
+      timeToLiveAttribute: "expiresAt",
     });
     users.addGlobalSecondaryIndex({
       indexName: "GSI1",
@@ -459,6 +466,7 @@ export class Ip6Stack extends Stack {
 
     const appSecret = new secrets.Secret(this, "AppSecret", {
       secretName: `ip6/${props.environment}/app`,
+      // Holds adminLinkKey, captchaHmacKey and rateLimitSecret; rotated every 30 days (see below).
       description: "Application-level secrets (rate limit, etc.)",
       generateSecretString: {
         secretStringTemplate: JSON.stringify({}),
@@ -518,6 +526,35 @@ export class Ip6Stack extends Stack {
       }),
     );
     [stripeSecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
+
+    // The app's own keys rotate every 30 days. The previous value is kept so
+    // anything signed just before a rotation still verifies (see the Lambda).
+    const rotateApp = new lambda.Function(this, "RotateAppSecret", {
+      functionName: `ip6-${props.environment}-rotate-app-secret`,
+      runtime: lambda.Runtime.NODEJS_22_X,
+      handler: "index.handler",
+      code: lambda.Code.fromAsset(path.join(__dirname, "..", "lambda", "rotate-app-secret")),
+      timeout: Duration.seconds(30),
+      memorySize: 128,
+      logGroup: new logs.LogGroup(this, "RotateAppSecretLogs", { retention: logs.RetentionDays.ONE_YEAR, removalPolicy: removal }),
+      description: "Rotates ip6 app keys (Secrets Manager rotation)",
+    });
+    appSecret.addRotationSchedule("AppSecretRotation", { rotationLambda: rotateApp, automaticallyAfter: Duration.days(30) });
+
+    // Stripe, Sanity and Algolia keys can only be rolled in each provider's
+    // dashboard, so a reminder goes to the alert topic every 90 days.
+    new events.Rule(this, "ProviderKeyRotationReminder", {
+      ruleName: `ip6-${props.environment}-provider-key-rotation`,
+      description: "Reminder to roll Stripe, Sanity and Algolia keys",
+      schedule: events.Schedule.rate(Duration.days(90)),
+      targets: [
+        new targets.SnsTopic(alertsTopic, {
+          message: events.RuleTargetInput.fromText(
+            `IP6 ${props.environment}: time to roll the Stripe, Sanity and Algolia API keys. Create new keys in each dashboard, update ip6/${props.environment}/stripe, sanity and algolia in Secrets Manager, then delete the old keys. Steps: infra/README.md, "Rotating provider keys".`,
+          ),
+        }),
+      ],
+    });
 
     // -----------------------
     // Outputs

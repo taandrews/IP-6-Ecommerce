@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
-import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
+vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad", captchaKeys: async () => ["test-key"], newChallenge: async () => ({}) }));
+const confirm = vi.hoisted(() => ({ calls: [] as unknown[][] }));
+vi.mock("@/lib/data/confirmations", () => ({ requestConfirmation: async (...a: unknown[]) => { confirm.calls.push(a); } }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
 
 const hdrs = vi.hoisted(() => ({ map: new Map<string, string>() }));
@@ -19,6 +22,7 @@ const req = (b: unknown) => new Request("http://localhost/api/waitlist", { metho
 beforeEach(() => {
   ddb.reset();
   ddb.on(UpdateCommand).resolves({});
+  ddb.on(GetCommand).resolves({});
   hdrs.map = new Map([["cloudfront-viewer-country", "GB"], ["x-forwarded-for", "203.0.113.9"]]);
   vi.spyOn(console, "error").mockImplementation(() => undefined);
 });
@@ -35,11 +39,17 @@ describe("launch waitlist", () => {
     expect(saved).toMatchObject({ email: "ana@example.com", country: "GB", ipCountry: "GB", consentVersion: "2026-10-28", page: "/shop", lastProduct: "SUP-IP6-CAP240", source: "product" });
     // The first sign-up's details and consent are kept; a stranger re-using the address can't change them.
     expect(input.UpdateExpression).toMatch(/#f\d+ = if_not_exists\(#f\d+, :f\d+\)/);
-    const products = ddb.commandCalls(UpdateCommand)[1]!.args[0].input;
+    // Unconfirmed sign-ups expire; a confirmed one never gets an expiry.
+    const expiry = ddb.commandCalls(UpdateCommand)[1]!.args[0].input;
+    expect(expiry.UpdateExpression).toBe("SET #exp = :exp");
+    expect(expiry.ConditionExpression).toBe("attribute_not_exists(#cf)");
+    const products = ddb.commandCalls(UpdateCommand)[2]!.args[0].input;
     expect(products.UpdateExpression).toContain("list_append");
     // Each product is listed once, so repeat sign-ups can't grow the row.
     expect(products.ConditionExpression).toContain("NOT contains(#products, :p)");
     expect(JSON.stringify([input, products])).not.toContain("203.0.113.9");
+    // Double opt-in: a confirmation link goes to the address.
+    expect(confirm.calls.at(-1)?.slice(1, 3)).toEqual(["waitlist", "Ana@Example.com"]);
   });
 
   it("answers the Shopify storefront with CORS and records the site", async () => {
@@ -52,6 +62,12 @@ describe("launch waitlist", () => {
     const { OPTIONS } = await import("@/app/api/waitlist/route");
     const pre = OPTIONS(new Request("http://localhost/api/waitlist", { method: "OPTIONS", headers: { Origin: "https://evil.example" } }));
     expect(pre.headers.get("access-control-allow-origin")).toBeNull();
+  });
+
+  it("refuses a sign-up without a solved CAPTCHA", async () => {
+    const res = await POST(req({ ...body, altcha: "bad" }));
+    expect(res.status).toBe(400);
+    expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);
   });
 
   it("requires the consent box", async () => {

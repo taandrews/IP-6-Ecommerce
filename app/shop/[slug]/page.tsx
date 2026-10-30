@@ -27,10 +27,6 @@ interface Params {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
-}
-
 export async function generateMetadata(props: Params): Promise<Metadata> {
   const params = await props.params;
   const product = products.find((p) => p.slug === params.slug);

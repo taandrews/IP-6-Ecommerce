@@ -1,0 +1,43 @@
+name: Deploy infrastructure
+
+on:
+  push:
+    branches: [main]
+    paths: ["infra/**"]
+  workflow_dispatch:
+
+# Nothing by default; the deploy job asks for exactly what it needs.
+permissions: {}
+
+concurrency:
+  group: deploy-infra
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Required reviewers are set on this environment in GitHub, and the AWS
+    # role only trusts tokens issued for it (infra/lib/ci-stack.ts).
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      # Actions are pinned to full commit hashes; Dependabot proposes updates.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: infra/package-lock.json
+      - uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
+        with:
+          role-to-assume: arn:aws:iam::462457677196:role/ip6-github-deploy
+          aws-region: us-east-1
+      - run: npm ci
+      - run: npx cdk deploy --all --concurrency 4 --require-approval never

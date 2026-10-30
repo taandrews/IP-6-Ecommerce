@@ -31,6 +31,10 @@ Or one stack at a time with `npm run diff:prod`, `npm run deploy:prod`, `npm run
 
 Deploys change IAM, so the `ip6-security-IamChanged` alarm fires during every deploy. That is expected.
 
+## Deploy from GitHub Actions (keyless)
+
+`Ip6CiStack` creates the GitHub OIDC provider and the `ip6-github-deploy` role. Only jobs in the `production` environment of `taandrews/IP-6-Ecommerce` can assume it (set required reviewers on that environment in GitHub, Settings, Environments), and the role can only hand off to the CDK bootstrap roles. `.github/workflows/deploy-infra.yml` runs `cdk deploy --all` on every push to `main` that touches `infra/`, or on demand from the Actions tab. No access keys are stored anywhere.
+
 ## Outputs
 
 Each environment stack prints every value the app needs (`UserPoolId`, `UserPoolClientId`, `StaffUserPoolId`, `StaffUserPoolClientId`, `AssetsBucketName`, `CloudfrontDomain`, `TablePrefix`, `SesConfigurationSet`, `AppComputeRoleArn`, the secret ARNs) plus the three `DkimCname*` records to create at the domain's DNS host so SES can verify the sending domain.

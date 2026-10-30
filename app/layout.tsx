@@ -62,6 +62,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </html>
     );
   }
+  // Per-request script nonce from the middleware (see lib/csp.ts).
+  const nonce = hdrs.get("x-nonce") ?? undefined;
   const [preorder, banner] = await Promise.all([getPreorderSettings(), getBannerSettings()]);
   const geo = visitorGeo();
   const country =
@@ -96,11 +98,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <CartDrawer />
           <CookieBanner isEuOrUk={isEuOrUk(country)} />
           <PreBookPopup />
-          <Analytics />
+          <Analytics nonce={nonce} />
         </GeoProvider>
         </StoreSettingsProvider>
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
         />
       </body>

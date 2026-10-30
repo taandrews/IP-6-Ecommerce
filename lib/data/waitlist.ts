@@ -10,6 +10,9 @@ import { WAITLIST_CONSENT_VERSION } from "@/lib/waitlist-consent";
  * US newsletter. Raw IP addresses are never stored; only the country
  * CloudFront derived from it.
  */
+/** Unconfirmed sign-ups are deleted after this long (DynamoDB TTL). */
+const PENDING_TTL_SECONDS = 60 * 60 * 24 * 30;
+
 export function waitlistKey(email: string) {
   return `waitlist_${emailKey(email)}`;
 }
@@ -31,8 +34,10 @@ export interface WaitlistRecord {
   site?: "amplify" | "shopify";
   consentVersion: string;
   consentedAt: string;
-  /** Set once double opt-in email is in place and the visitor confirms. */
+  /** When the visitor clicked the confirmation link (double opt-in). */
   confirmedAt?: string;
+  /** Epoch seconds; unconfirmed sign-ups are deleted then. */
+  expiresAt?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,9 +54,10 @@ export async function saveWaitlist(input: {
 }) {
   const now = new Date().toISOString();
   const Key = { userId: waitlistKey(input.email) };
-  // No confirmation email goes out yet, so anyone could type someone else's
-  // address. The first sign-up's details and consent are kept (if_not_exists);
-  // later ones only refresh where the visitor was browsing.
+  // Anyone can type someone else's address, so the first sign-up's details
+  // and consent are kept (if_not_exists); later ones only refresh where the
+  // visitor was browsing. The owner confirms through the emailed link
+  // (lib/data/confirmations.ts); until then the row expires after 30 days.
   const keep: Record<string, unknown> = {
     email: emailKey(input.email),
     segment: "waitlist",
@@ -87,6 +93,21 @@ export async function saveWaitlist(input: {
       ExpressionAttributeValues: values,
     }),
   );
+  // Unconfirmed sign-ups expire; a confirmed one never gets an expiry.
+  await docClient
+    .send(
+      new UpdateCommand({
+        TableName: TABLES.Users,
+        Key,
+        UpdateExpression: "SET #exp = :exp",
+        ConditionExpression: "attribute_not_exists(#cf)",
+        ExpressionAttributeNames: { "#exp": "expiresAt", "#cf": "confirmedAt" },
+        ExpressionAttributeValues: { ":exp": Math.floor(Date.now() / 1000) + PENDING_TTL_SECONDS },
+      }),
+    )
+    .catch((err) => {
+      if ((err as Error).name !== "ConditionalCheckFailedException") throw err;
+    });
   if (input.product) {
     // Each SKU is listed once, so repeat sign-ups can't grow the row.
     await docClient
