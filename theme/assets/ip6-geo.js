@@ -81,7 +81,14 @@
     // The solved CAPTCHA; if the visitor was quicker than the puzzle, finish it now.
     var widget = form.querySelector("altcha-widget");
     function altcha() { return new FormData(form).get("altcha") || ""; }
-    var ready = altcha() || !widget || !widget.verify ? Promise.resolve() : Promise.resolve(widget.verify()).catch(function () {});
+    var ready = altcha() || !widget ? Promise.resolve() : new Promise(function (resolve) {
+      var timer = setTimeout(done, 20000);
+      function done() { clearTimeout(timer); widget.removeEventListener("statechange", onChange); resolve(); }
+      function onChange(ev) { var s = ev.detail && ev.detail.state; if (s === "verified" || s === "error" || s === "expired") done(); }
+      widget.addEventListener("statechange", onChange);
+      // Already solving (it starts when the form is focused): just wait for it.
+      if (!widget.getState || widget.getState() !== "verifying") Promise.resolve(widget.verify && widget.verify()).catch(done);
+    });
     ready.then(function () {
       return fetch(form.getAttribute("data-endpoint"), {
         method: "POST",
