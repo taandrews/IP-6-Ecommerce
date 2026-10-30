@@ -4,6 +4,9 @@ import * as cloudwatch from "aws-cdk-lib/aws-cloudwatch";
 import * as cwactions from "aws-cdk-lib/aws-cloudwatch-actions";
 import * as sns from "aws-cdk-lib/aws-sns";
 import * as subs from "aws-cdk-lib/aws-sns-subscriptions";
+import * as guardduty from "aws-cdk-lib/aws-guardduty";
+import * as events from "aws-cdk-lib/aws-events";
+import * as targets from "aws-cdk-lib/aws-events-targets";
 
 export interface Ip6MonitoringStackProps extends StackProps {
   alertEmail: string;
@@ -63,6 +66,22 @@ export class Ip6MonitoringStack extends Stack {
       evaluationPeriods: 1,
       treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
     }).addAlarmAction(alarmAction);
+
+    // GuardDuty is regional. The account stack covers us-east-1; this covers
+    // us-east-2, where the Amplify app and its compute run.
+    new guardduty.CfnDetector(this, "GuardDuty", {
+      enable: true,
+      findingPublishingFrequency: "FIFTEEN_MINUTES",
+    });
+    new events.Rule(this, "GuardDutyFindings", {
+      description: "GuardDuty findings of medium severity or higher (us-east-2)",
+      eventPattern: {
+        source: ["aws.guardduty"],
+        detailType: ["GuardDuty Finding"],
+        detail: { severity: [{ numeric: [">=", 4] }] },
+      },
+      targets: [new targets.SnsTopic(topic)],
+    });
 
     new CfnOutput(this, "AlertsTopicArn", { value: topic.topicArn });
   }
