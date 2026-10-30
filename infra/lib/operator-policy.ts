@@ -44,6 +44,23 @@ export function operatorStatements(stack: Stack, amplifyAppArn: string): iam.Pol
       resources: [`arn:aws:cloudfront::${account}:distribution/*`],
     }),
     new iam.PolicyStatement({
+      // The ip6 tables are encrypted with customer-managed keys. The key may
+      // only be used by DynamoDB, from this account, for an ip6_ table.
+      sid: "AppDataKeys",
+      actions: ["kms:Decrypt", "kms:Encrypt", "kms:GenerateDataKey"],
+      resources: [`arn:aws:kms:us-east-1:${account}:key/*`],
+      conditions: {
+        StringEquals: { "kms:ViaService": "dynamodb.us-east-1.amazonaws.com", "kms:CallerAccount": account },
+        StringLike: { "kms:EncryptionContext:aws:dynamodb:tableName": "ip6_*" },
+      },
+    }),
+    new iam.PolicyStatement({
+      sid: "AppDataKeysDescribe",
+      actions: ["kms:DescribeKey"],
+      resources: [`arn:aws:kms:us-east-1:${account}:key/*`],
+      conditions: { StringEquals: { "kms:ViaService": "dynamodb.us-east-1.amazonaws.com", "kms:CallerAccount": account } },
+    }),
+    new iam.PolicyStatement({
       sid: "AppData",
       actions: ["dynamodb:PutItem", "dynamodb:UpdateItem", "dynamodb:DeleteItem", "dynamodb:BatchWriteItem"],
       resources: [arn("dynamodb", "us-east-1", "table/ip6_*")],
