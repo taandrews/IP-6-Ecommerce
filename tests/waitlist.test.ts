@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
-vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad" }));
+vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => typeof v === "string" && v !== "bad" }));
 const confirm = vi.hoisted(() => ({ calls: [] as unknown[][] }));
 vi.mock("@/lib/data/confirmations", () => ({ requestConfirmation: async (...a: unknown[]) => { confirm.calls.push(a); } }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
@@ -16,7 +16,7 @@ vi.mock("next/headers", () => ({
 const ddb = mockClient(DynamoDBDocumentClient);
 const { POST } = await import("@/app/api/waitlist/route");
 
-const body = { email: "Ana@Example.com", country: "gb", consent: true, product: "SUP-IP6-CAP240", page: "/shop?x=1", source: "product" };
+const body = { email: "Ana@Example.com", country: "gb", consent: true, product: "SUP-IP6-CAP240", page: "/shop?x=1", source: "product", captcha: "solved" };
 const req = (b: unknown) => new Request("http://localhost/api/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) });
 
 beforeEach(() => {

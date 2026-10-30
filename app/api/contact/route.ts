@@ -16,7 +16,7 @@ const Body = z.object({
   order: z.string().max(40).optional().or(z.literal("")),
   message: z.string().min(10).max(2000),
   website: z.string().max(200).optional(),
-  captcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).nullish(),
 });
 
 export async function POST(req: Request) {

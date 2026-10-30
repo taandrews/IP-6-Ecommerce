@@ -43,7 +43,7 @@ const Body = z.object({
     .default("/"),
   source: z.enum(["product", "checkout"]),
   site: z.enum(["amplify", "shopify"]).default("amplify"),
-  captcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).nullish(),
 });
 
 /** CORS for the Shopify storefront, which posts its waitlist form here. */

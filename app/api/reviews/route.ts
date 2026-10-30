@@ -19,7 +19,7 @@ const Body = z.object({
   body: z.string().trim().min(10).max(2000),
   authorName: z.string().trim().min(1).max(60),
   website: z.string().max(200).optional(),
-  captcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).nullish(),
 });
 
 /**

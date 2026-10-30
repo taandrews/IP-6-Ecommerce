@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad" }));
+vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => typeof v === "string" && v !== "bad" }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
 
 process.env.SES_FROM_EMAIL = "orders@ip6.test";

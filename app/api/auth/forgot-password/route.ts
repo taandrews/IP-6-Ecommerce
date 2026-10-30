@@ -6,7 +6,7 @@ import { verifyCaptcha } from "@/lib/captcha";
 
 export const runtime = "nodejs";
 
-const Body = z.object({ email: z.string().trim().email().max(254), captcha: z.string().max(2048).optional() });
+const Body = z.object({ email: z.string().trim().email().max(254), captcha: z.string().max(2048).nullish() });
 
 export async function POST(req: Request) {
   const limited = (await limitByIp(req, "forgot", 5)) ?? (await limitByIp(req, "forgot-hour", 20, 3600));

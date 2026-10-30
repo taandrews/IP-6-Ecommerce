@@ -14,7 +14,7 @@ const Body = z.object({
   type: z.enum(["delete", "export"]).default("delete"),
   details: z.string().trim().max(2000).optional().or(z.literal("")),
   website: z.string().max(200).optional(),
-  captcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).nullish(),
 });
 
 /**

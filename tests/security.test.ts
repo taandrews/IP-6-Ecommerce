@@ -10,7 +10,7 @@ import { products } from "@/content/products";
 import { mergeCatalog } from "@/lib/data/catalog";
 import type { PreorderSettings } from "@/types/records";
 
-vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => v !== "bad" }));
+vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => typeof v === "string" && v !== "bad" }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
 
 process.env.SES_FROM_EMAIL = "orders@ip6.test";
@@ -114,5 +114,14 @@ describe("account enumeration", () => {
     cognito.on(ConfirmSignUpCommand).rejects(Object.assign(new Error("User cannot be confirmed. Current status is CONFIRMED"), { name: "NotAuthorizedException" }));
     const res = await POST(json("/api/auth/confirm", { email: "ana@example.com", code: "123456" }));
     expect(JSON.stringify(await res.json())).not.toContain("CONFIRMED");
+  });
+});
+
+describe("missing CAPTCHA", () => {
+  it("gets the 'complete the check' message, not a generic error", async () => {
+    const { POST } = await import("@/app/api/contact/route");
+    const res = await POST(json("/api/contact", { name: "Ann", email: "ann@example.com", topic: "support", message: "A question about my order.", captcha: null }));
+    expect(res.status).toBe(400);
+    expect((await res.json()).captcha).toBe(true);
   });
 });

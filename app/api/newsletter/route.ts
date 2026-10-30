@@ -29,7 +29,7 @@ const Body = z.object({
   source: z.enum(["prebook_popup", "footer", "account"]).default("prebook_popup"),
   quiz: Quiz.optional(),
   /** Turnstile token, for a new sign-up. */
-  captcha: z.string().max(2048).optional(),
+  captcha: z.string().max(2048).nullish(),
   /** From an earlier sign-up response, for saving more quiz answers. */
   token: z.string().max(200).optional(),
 });
