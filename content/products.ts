@@ -128,7 +128,7 @@ export const products: Product[] = [
         name: "Powder",
         format: "Powder",
         size: "120 g",
-        priceCents: pricesFromUsd(2999),
+        priceCents: pricesFromUsd(4499),
         weightGrams: 160,
         inStock: true,
         servings: 120,
