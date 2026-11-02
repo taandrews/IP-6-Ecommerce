@@ -14,7 +14,7 @@ export const EMAIL = {
   press: "press@ip6original.com",
 } as const;
 
-export const CONTACT_TOPICS = ["support", "order", "wholesale", "press", "other"] as const;
+export const CONTACT_TOPICS = ["support", "order", "wholesale", "press", "privacy", "other"] as const;
 export type ContactTopic = (typeof CONTACT_TOPICS)[number];
 
 /** Which inbox each contact form topic is delivered to. */
@@ -23,5 +23,6 @@ export const CONTACT_INBOX: Record<ContactTopic, string> = {
   order: EMAIL.support,
   wholesale: EMAIL.wholesale,
   press: EMAIL.press,
+  privacy: EMAIL.privacy,
   other: EMAIL.hello,
 };

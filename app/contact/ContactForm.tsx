@@ -57,6 +57,7 @@ export function ContactForm() {
         <option value="order">Order question</option>
         <option value="wholesale">Wholesale inquiry</option>
         <option value="press">Press</option>
+        <option value="privacy">Privacy</option>
         <option value="other">Other</option>
       </Select>
       <Input id="order" name="order" label="Order number" hint="Optional. For order-specific questions." />
