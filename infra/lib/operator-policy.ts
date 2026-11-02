@@ -30,7 +30,7 @@ export function operatorStatements(stack: Stack, amplifyAppArn: string): iam.Pol
     }),
     new iam.PolicyStatement({
       sid: "AmplifyApp",
-      actions: ["amplify:StartJob", "amplify:StopJob", "amplify:UpdateApp", "amplify:UpdateBranch", "amplify:CreateDeployment", "amplify:StartDeployment"],
+      actions: ["amplify:StartJob", "amplify:StopJob", "amplify:UpdateApp", "amplify:UpdateBranch", "amplify:CreateDeployment", "amplify:StartDeployment", "amplify:GenerateAccessLogs"],
       resources: [amplifyAppArn, `${amplifyAppArn}/*`],
     }),
     new iam.PolicyStatement({
