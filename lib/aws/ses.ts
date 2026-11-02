@@ -1,9 +1,9 @@
 import "server-only";
-import { awsRegion } from "./region";
+import { sesRegion } from "./region";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { EMAIL } from "@/lib/email-addresses";
 
-const region = awsRegion();
+const region = sesRegion();
 
 export const sesClient = new SESClient({
   region,

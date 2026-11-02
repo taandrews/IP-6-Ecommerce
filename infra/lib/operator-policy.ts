@@ -81,7 +81,7 @@ export function operatorStatements(stack: Stack, amplifyAppArn: string): iam.Pol
     new iam.PolicyStatement({
       sid: "TestEmail",
       actions: ["ses:SendEmail", "ses:SendRawEmail"],
-      resources: [arn("ses", "us-east-1", "identity/ip6original.com"), arn("ses", "us-east-1", "configuration-set/*")],
+      resources: ["us-east-1", "us-east-2"].flatMap((r) => [arn("ses", r, "identity/ip6original.com"), arn("ses", r, "configuration-set/*")]),
     }),
     new iam.PolicyStatement({
       sid: "OwnAccessKeys",

@@ -516,13 +516,17 @@ export class Ip6Stack extends Stack {
         resources: [userPool.userPoolArn, staffPool.userPoolArn],
       }),
     );
+    // Production email goes out through SES in the Amplify region (us-east-2),
+    // where the account has production access; us-east-1 is still in the SES
+    // sandbox. The same identity and configuration set exist in both regions.
+    const sesRegions = [...new Set([this.region, ...(props.amplifyRegion ? [props.amplifyRegion] : [])])];
     appRole.addToPolicy(
       new iam.PolicyStatement({
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
-        resources: [
-          `arn:aws:ses:${this.region}:${this.account}:identity/${sesIdentity.emailIdentityName}`,
-          `arn:aws:ses:${this.region}:${this.account}:configuration-set/${sesConfigSet.configurationSetName}`,
-        ],
+        resources: sesRegions.flatMap((r) => [
+          `arn:aws:ses:${r}:${this.account}:identity/${sesIdentity.emailIdentityName}`,
+          `arn:aws:ses:${r}:${this.account}:configuration-set/${sesConfigSet.configurationSetName}`,
+        ]),
       }),
     );
     [stripeSecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));

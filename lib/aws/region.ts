@@ -9,3 +9,11 @@
 export function awsRegion(): string {
   return process.env.APP_AWS_REGION || process.env.AWS_REGION || "us-east-1";
 }
+
+/**
+ * Region SES sends from. Production uses us-east-2, where the account has SES
+ * production access, while the data stays in us-east-1.
+ */
+export function sesRegion(): string {
+  return process.env.SES_REGION || awsRegion();
+}
