@@ -92,11 +92,17 @@ export function operatorStatements(stack: Stack, amplifyAppArn: string): iam.Pol
       conditions: { StringEquals: { "sns:Protocol": "email", "sns:Endpoint": "alerts@ip6original.com" } },
     }),
     new iam.PolicyStatement({
-      // AWS User Notifications email contacts (budget alerts): resend the
-      // activation email and remove contacts that should not receive alerts.
-      sid: "AlertContacts",
-      actions: ["notifications-contacts:SendActivationCode", "notifications-contacts:DeleteEmailContact", "notifications-contacts:GetEmailContact", "notifications-contacts:ListEmailContacts"],
+      // AWS User Notifications email contacts (budget alerts): read them, and
+      // resend the activation email for the alerts@ contact only. Nothing here
+      // can delete or redirect a contact.
+      sid: "AlertContactsRead",
+      actions: ["notifications-contacts:GetEmailContact", "notifications-contacts:ListEmailContacts"],
       resources: [`arn:aws:notifications-contacts::${account}:emailcontact/*`],
+    }),
+    new iam.PolicyStatement({
+      sid: "AlertContactActivation",
+      actions: ["notifications-contacts:SendActivationCode"],
+      resources: [`arn:aws:notifications-contacts::${account}:emailcontact/a01m6fej59aex34m8s029h66k1c`],
     }),
     new iam.PolicyStatement({
       sid: "OwnAccessKeys",
