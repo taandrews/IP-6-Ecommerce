@@ -6,6 +6,7 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+    {% render 'ip6-headless-redirect' %}
     {%- if settings.favicon != blank -%}
       <link
         rel="icon"

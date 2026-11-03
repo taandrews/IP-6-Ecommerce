@@ -11,7 +11,7 @@ import {
  * works without an AWS round-trip.
  *
  * Secrets are structured per service:
- *   ip6/{env}/stripe   → { secretKey, publishableKey, webhookSecret }
+ *   ip6/{env}/shopify  → { adminToken }
  *   ip6/{env}/sanity   → { projectId, dataset, apiToken }
  *   ip6/{env}/algolia  → { appId, searchKey, adminKey }
  *   ip6/{env}/app      → { turnstileSecretKey, adminLinkKey, captchaHmacKey, rateLimitSecret }, the last three with a
@@ -38,7 +38,7 @@ async function fetchSecret(secretId: string): Promise<Record<string, string>> {
 }
 
 /** APP_ENV picks the secret set explicitly ("prod" or "staging"); production builds default to prod. */
-function secretName(service: "stripe" | "sanity" | "algolia" | "app") {
+function secretName(service: "shopify" | "sanity" | "algolia" | "app") {
   const explicit = process.env.APP_ENV;
   const env =
     explicit === "prod" || explicit === "staging"
@@ -49,23 +49,15 @@ function secretName(service: "stripe" | "sanity" | "algolia" | "app") {
   return `ip6/${env}/${service}`;
 }
 
-export interface StripeSecrets {
-  secretKey: string;
-  publishableKey: string;
-  webhookSecret: string;
-}
-
-export async function getStripeSecrets(): Promise<StripeSecrets> {
-  // Dev fallback: if env vars are set, use them and skip the Secrets Manager call.
-  if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET) {
-    return {
-      secretKey: process.env.STRIPE_SECRET_KEY,
-      publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? "",
-      webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-    };
-  }
-  const s = await fetchSecret(secretName("stripe"));
-  return s as unknown as StripeSecrets;
+/**
+ * Shopify Admin API token (ip6/{env}/shopify -> { adminToken }), used by the
+ * admin portal and privacy erasure. Locally SHOPIFY_ADMIN_TOKEN may stand in.
+ */
+export async function getShopifyAdminToken(): Promise<string> {
+  if (process.env.NODE_ENV !== "production" && process.env.SHOPIFY_ADMIN_TOKEN) return process.env.SHOPIFY_ADMIN_TOKEN;
+  const s = await fetchSecret(secretName("shopify"));
+  if (!s.adminToken) throw new Error("adminToken missing from ip6/*/shopify secret");
+  return s.adminToken;
 }
 
 export interface SanitySecrets {

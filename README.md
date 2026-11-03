@@ -26,7 +26,7 @@ npm run typecheck
 Before deploying, configure accounts for:
 
 - AWS (Amplify, DynamoDB, Cognito, SES, S3, CloudFront, Route 53)
-- Stripe (test mode by default; switch to live at launch — see `lib/stripe/server.ts`)
+- Shopify as the commerce back end: products, prices and stock from the Storefront API, Shopify-hosted checkout, Shopify Payments, orders, subscriptions and customer accounts (`lib/shopify/`, `docs/PLATFORM-PLAN.md`)
 - Sanity (blog + product CMS)
 - Algolia (product search)
 - GA4 / Meta Pixel (optional, consent-gated)
@@ -40,7 +40,7 @@ All keys live in `.env.example`. Nothing is hard-coded.
 | `app/` | Next.js App Router pages, layouts, API routes |
 | `components/` | UI primitives, layout, product, cart, checkout, admin |
 | `content/` | Product catalog, testimonials, blog fallback content |
-| `lib/` | AWS / Stripe / Sanity / Algolia clients, i18n, compliance linter |
+| `lib/` | AWS / Shopify / Sanity / Algolia clients, i18n, compliance linter |
 | `types/` | Shared TypeScript types |
 | `scripts/compliance-check.ts` | Static check for DSHEA + ip-6.net firewall |
 

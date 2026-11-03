@@ -5,6 +5,7 @@ import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 import { PrivacyChoicesButton } from "./PrivacyChoicesButton";
 import { SocialLinks } from "./SocialLinks";
 import { EMAIL } from "@/lib/email-addresses";
+import { SHOPIFY_ACCOUNT_URL } from "@/lib/shopify/links";
 
 const GROUPS = [
   {
@@ -13,7 +14,7 @@ const GROUPS = [
       { href: "/shop#people", label: "IP6 Original" },
       { href: "/shop#pets", label: "Pet Powder" },
       { href: "/how-to-take", label: "How to Take" },
-      { href: "/account", label: "My Account" },
+      { href: SHOPIFY_ACCOUNT_URL, label: "My Account" },
     ],
   },
   {

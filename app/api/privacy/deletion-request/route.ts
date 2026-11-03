@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
-import { emailKey } from "@/lib/data/orders";
+import { emailKey } from "@/lib/data/keys";
 import { hit, limitByIp } from "@/lib/rate-limit";
 import { isBot } from "@/lib/honeypot";
 import { verifyCaptcha } from "@/lib/captcha";

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { hreflangAlternates } from "@/lib/i18n";
+import { SHOPIFY_ACCOUNT_URL } from "@/lib/shopify/links";
 import { DSHEA_DISCLAIMER } from "@/lib/compliance/claim-linter";
 
 export const metadata: Metadata = {
@@ -62,7 +63,7 @@ export default function TermsPage() {
             <li>We email you a reminder before each renewal.</li>
             <li>
               You can skip a delivery, pause or cancel at any time from{" "}
-              <a href="/account/subscriptions" className="underline text-forest-700">your account</a>, or by contacting us. Changes made before a
+              <a href={SHOPIFY_ACCOUNT_URL} className="underline text-forest-700">your account</a>, or by contacting us. Changes made before a
               renewal is charged apply to that renewal; cancelling stops all future charges.
             </li>
             <li>If a renewal payment fails we&apos;ll email you; if it isn&apos;t fixed the subscription may be paused or ended.</li>

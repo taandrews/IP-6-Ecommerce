@@ -33,6 +33,10 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Customer accounts (orders, subscriptions, addresses) are Shopify's; checkout is Shopify's hosted page.
+      { source: "/account", destination: process.env.NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL || "https://shopify.com/81235083502/account", permanent: false },
+      { source: "/account/:path*", destination: process.env.NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL || "https://shopify.com/81235083502/account", permanent: false },
+      { source: "/checkout", destination: "/shop", permanent: false },
       { source: "/science", destination: "/story", permanent: false },
       { source: "/about", destination: "/story#founder", permanent: false },
       { source: "/founder", destination: "/story#founder", permanent: true },

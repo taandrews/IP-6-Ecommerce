@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { asset } from "@/lib/assets";
 import Link from "next/link";
+import { SHOPIFY_ACCOUNT_URL } from "@/lib/shopify/links";
 import { Menu, ShoppingBag, User, Search, X } from "lucide-react";
 import { useCart } from "@/components/cart/CartStore";
 import { CountrySwitcher, CountryMenu } from "@/components/layout/CountrySwitcher";
@@ -60,13 +61,13 @@ export function Navigation() {
           >
             Pre Order Now
           </Link>
-          <Link
-            href="/account"
+          <a
+            href={SHOPIFY_ACCOUNT_URL}
             aria-label="Account"
             className="p-2 rounded-md hover:bg-ivory-200"
           >
             <User className="size-5" />
-          </Link>
+          </a>
           <button
             onClick={openDrawer}
             aria-label={`Cart (${count} items)`}
@@ -136,13 +137,13 @@ export function Navigation() {
                   : null}
               </div>
             ))}
-            <Link
-              href="/account"
+            <a
+              href={SHOPIFY_ACCOUNT_URL}
               onClick={() => setMobileOpen(false)}
               className="py-3 mt-4 text-forest-700 font-medium"
             >
               Account
-            </Link>
+            </a>
             <div className="mt-6 pt-6 border-t border-ivory-300">
               <CountryMenu />
             </div>

@@ -1,0 +1,37 @@
+{%- comment -%}
+  The custom site is the only storefront; this Shopify theme stays hidden.
+  Shopify still serves checkout, customer accounts and order emails, but any
+  theme page a visitor reaches (old links, "Continue shopping" after checkout,
+  the cart) is sent to the matching page on the custom site. The theme editor
+  is left alone so staff can still preview it.
+  Set the custom site's address in Theme settings > Headless storefront.
+{%- endcomment -%}
+{%- unless request.design_mode -%}
+  {%- assign site = settings.ip6_storefront_url | default: 'https://main.d1ypn0wsqjh17o.amplifyapp.com' | remove_last: '/' -%}
+  {%- assign target = '/' -%}
+  {%- case request.page_type -%}
+    {%- when 'product' -%}
+      {%- if product.handle == 'ip6-original-pet-powder' -%}
+        {%- assign target = '/shop/ip6-original-pet-powder' -%}
+      {%- else -%}
+        {%- assign target = '/shop/ip6-original-supplement' -%}
+      {%- endif -%}
+    {%- when 'collection', 'list-collections', 'search', 'cart' -%}
+      {%- assign target = '/shop' -%}
+    {%- when 'page' -%}
+      {%- case page.handle -%}
+        {%- when 'contact' -%}{%- assign target = '/contact' -%}
+        {%- when 'faq' -%}{%- assign target = '/faq' -%}
+        {%- when 'story', 'founder' -%}{%- assign target = '/story' -%}
+        {%- when 'how-to-take' -%}{%- assign target = '/how-to-take' -%}
+        {%- when 'the-difference' -%}{%- assign target = '/the-difference' -%}
+      {%- endcase -%}
+    {%- when 'policy' -%}
+      {%- assign target = '/legal/privacy' -%}
+  {%- endcase -%}
+  {%- assign dest = site | append: target -%}
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="{{ dest }}">
+  <meta http-equiv="refresh" content="0; url={{ dest }}">
+  <script>window.location.replace({{ dest | json }});</script>
+{%- endunless -%}

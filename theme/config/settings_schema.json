@@ -4,8 +4,20 @@
     "theme_name": "Horizon",
     "theme_version": "3.5.1",
     "theme_author": "Shopify",
-    "theme_documentation_url": "https:\/\/help.shopify.com\/manual\/online-store\/themes",
-    "theme_support_url": "https:\/\/support.shopify.com\/"
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "Headless storefront",
+    "settings": [
+      {
+        "type": "text",
+        "id": "ip6_storefront_url",
+        "label": "Custom storefront address",
+        "default": "https://main.d1ypn0wsqjh17o.amplifyapp.com",
+        "info": "Every page of this theme sends visitors here. Change it to https://ip6original.com once that domain points at the custom site and Shopify uses shop.ip6original.com."
+      }
+    ]
   },
   {
     "name": "t:names.logo_and_favicon",
@@ -1766,7 +1778,7 @@
         "type": "url",
         "id": "empty_cart_button_link",
         "label": "t:settings.empty_cart_button_link",
-        "default": "\/collections\/all"
+        "default": "/collections/all"
       },
       {
         "type": "header",
@@ -2316,7 +2328,7 @@
         "type": "text",
         "id": "ip6_cdn",
         "label": "Media CDN base URL",
-        "default": "https:\/\/dcpioskz74ft.cloudfront.net"
+        "default": "https://dcpioskz74ft.cloudfront.net"
       },
       {
         "type": "text",

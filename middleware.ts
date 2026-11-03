@@ -12,11 +12,8 @@ const AUTH_SCOPE = /^\/(admin|account|api)(?:\/|$)/;
 const ADMIN_PUBLIC = /^\/admin\/(login|forgot-password)(?:\/|$)/;
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
 const ADMIN_API = /^\/api\/admin\//;
-const ACCOUNT_PATH = /^\/account(?!\/(login|register|forgot-password))(?:\/|$)/;
 const AUTH_API = /^\/api\/(auth|admin\/auth)\//;
 const RATE_LIMITED = /^\/api\/(shipping|reviews|newsletter|waitlist|privacy|contact|checkout|auth|admin\/auth)/;
-/** Server-to-server callers that never carry a browser Origin. */
-const ORIGIN_EXEMPT = /^\/api\/stripe\/webhook$/;
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 // Per-instance burst limiter. The routes behind it add a shared DynamoDB
@@ -108,7 +105,7 @@ export async function middleware(req: NextRequest) {
   return res;
 }
 
-/** Rate limits, CSRF checks and sign-in for admin pages, account pages and the API. */
+/** Rate limits, CSRF checks and staff sign-in for admin pages and the API. */
 async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
   const isApi = pathname.startsWith("/api/");
@@ -123,7 +120,7 @@ async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> 
 
   // The Shopify storefront may post its launch-waitlist form here (no cookies or login involved).
   const shopifyWaitlist = pathname === "/api/waitlist" && isShopifyOrigin(req.headers.get("origin"));
-  if (isApi && MUTATING.has(req.method) && !ORIGIN_EXEMPT.test(pathname) && !shopifyWaitlist && !sameOrigin(req)) {
+  if (isApi && MUTATING.has(req.method) && !shopifyWaitlist && !sameOrigin(req)) {
     return json(403, { error: "bad_origin" });
   }
 
@@ -140,15 +137,6 @@ async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> 
     const res = NextResponse.redirect(url);
     if (refreshFailed) res.cookies.delete(names.refresh);
     res.headers.set("Cache-Control", "no-store");
-    return res;
-  }
-  if (ACCOUNT_PATH.test(pathname) && !user) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/account/login";
-    url.search = "";
-    url.searchParams.set("next", pathname + req.nextUrl.search);
-    const res = NextResponse.redirect(url);
-    if (refreshFailed) res.cookies.delete(names.refresh);
     return res;
   }
 

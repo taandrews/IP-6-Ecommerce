@@ -10,7 +10,7 @@ interface Row {
   email: string;
   k: string;
   account: boolean;
-  createdAt?: string;
+  orders: number;
 }
 
 export function CustomerSearch() {
@@ -42,12 +42,12 @@ export function CustomerSearch() {
       {error ? <p className="text-sm text-danger">{error}</p> : null}
       {rows ? (
         rows.length ? (
-          <Table head={["Name", "Email", "Type", ""]} minWidth={560}>
+          <Table head={["Name", "Email", "Shopify", ""]} minWidth={560}>
             {rows.map((r) => (
               <tr key={r.k}>
                 <td className="px-4 py-3">{r.name}</td>
                 <td className="px-4 py-3">{r.email}</td>
-                <td className="px-4 py-3">{r.account ? "Account" : "Guest checkout"}</td>
+                <td className="px-4 py-3">{r.account ? `Customer · ${r.orders} order${r.orders === 1 ? "" : "s"}` : "Not a Shopify customer"}</td>
                 <td className="px-4 py-3 text-right">
                   <Link className="underline text-navy-800" href={`/admin/customers/view?k=${encodeURIComponent(r.k)}`}>View</Link>
                 </td>
@@ -55,7 +55,7 @@ export function CustomerSearch() {
             ))}
           </Table>
         ) : (
-          <p className="text-sm text-ink/60">No customer found. Guest checkouts need the full email address.</p>
+          <p className="text-sm text-ink/60">No customer found. Try the full email address.</p>
         )
       ) : null}
     </div>

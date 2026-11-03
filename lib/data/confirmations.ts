@@ -4,8 +4,8 @@ import { DeleteCommand, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/l
 import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { hit } from "@/lib/rate-limit";
-import { emailKey } from "./orders";
-import { newsletterKey } from "./customers";
+import { emailKey } from "./keys";
+import { newsletterKey } from "./keys";
 import { waitlistKey } from "./waitlist";
 
 /**

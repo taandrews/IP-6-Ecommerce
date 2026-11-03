@@ -1,10 +1,10 @@
 /**
- * Pre-order pricing. One-time purchases get the pre-order discount while the
- * window is open; subscription lines keep their own cycle discount and the
- * two never stack. The live values come from the admin portal (Settings
- * table); DEFAULT_PREORDER is the fallback when the table is unreachable.
- * Shared by the storefront, the cart, checkout and the PaymentIntent route
- * so every price the customer sees matches what Stripe charges.
+ * Pre-order pricing shown on the site. One-time purchases get the pre-order
+ * discount while the window is open; subscription lines keep their own plan
+ * discount and the two never stack. The discount Shopify charges is its
+ * "Pre-Order" automatic discount, whose state and percentage the site reads
+ * (lib/data/settings.ts), so the prices shown match Shopify's checkout.
+ * DEFAULT_PREORDER is the fallback when neither can be read.
  */
 import type { PreorderSettings } from "@/types/records";
 

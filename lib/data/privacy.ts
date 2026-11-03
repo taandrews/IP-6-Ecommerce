@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { GetCommand, PutCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, INDEXES, TABLES } from "@/lib/aws/dynamo";
 import type { PrivacyRequestRecord, PrivacyRequestStatus, PrivacyRequestType } from "@/types/records";
-import { emailKey } from "./orders";
+import { emailKey } from "./keys";
 
 /** Unverified requests are discarded after 48 hours. */
 const VERIFY_TTL_SECONDS = 60 * 60 * 48;

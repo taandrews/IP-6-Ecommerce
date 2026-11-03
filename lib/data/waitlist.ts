@@ -1,7 +1,7 @@
 import "server-only";
 import { DeleteCommand, GetCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
-import { emailKey } from "./orders";
+import { emailKey } from "./keys";
 import { WAITLIST_CONSENT_VERSION } from "@/lib/waitlist-consent";
 
 /**

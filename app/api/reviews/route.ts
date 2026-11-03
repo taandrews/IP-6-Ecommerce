@@ -3,8 +3,6 @@ import crypto from "node:crypto";
 import { z } from "zod";
 import { lintContent } from "@/lib/compliance/claim-linter";
 import { createReview } from "@/lib/data/reviews";
-import { getSessionUser } from "@/lib/auth/session";
-import { listOrdersByUser, PAID_STATUSES } from "@/lib/data/orders";
 import { products } from "@/content/products";
 import { limitByIp } from "@/lib/rate-limit";
 import { isBot } from "@/lib/honeypot";
@@ -45,13 +43,8 @@ export async function POST(req: Request) {
     message: `${f.rule}: ${f.match}`,
   }));
 
-  const user = await getSessionUser();
-  let verifiedPurchase = false;
-  if (user) {
-    const orders = await listOrdersByUser(user.sub, 100).catch(() => []);
-    const variantSkus = new Set(product.variants.map((v) => v.sku));
-    verifiedPurchase = orders.some((o) => PAID_STATUSES.includes(o.status) && o.items.some((l) => variantSkus.has(l.sku)));
-  }
+  // Orders and accounts are in Shopify; staff confirm a purchase there before approving.
+  const verifiedPurchase = false;
 
   try {
     await createReview({
@@ -62,7 +55,6 @@ export async function POST(req: Request) {
       title: parsed.data.title,
       body: parsed.data.body,
       authorName: parsed.data.authorName,
-      ...(user ? { userId: user.sub } : {}),
       verifiedPurchase,
       ...(findings.length ? { findings } : {}),
       createdAt: new Date().toISOString(),

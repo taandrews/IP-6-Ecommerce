@@ -5,13 +5,10 @@ import { unsealEmail } from "@/lib/admin/seal";
 import { getCustomerProfile } from "@/lib/data/customers";
 import { audit } from "@/lib/data/audit";
 import { maskEmail, maskName } from "@/lib/admin/pii";
-import { orderRow } from "@/lib/admin/views";
 import { Notice, PageHeader, Panel, Pill } from "@/components/admin/ui";
 import { formatPrice } from "@/lib/utils";
-import { OrdersTable } from "../../orders/OrdersClient";
 import { CustomerPrivacyActions } from "./CustomerPrivacyActions";
 import { QUIZ_LABELS, quizAnswerLabel } from "@/lib/quiz";
-import type { Currency } from "@/types";
 
 export const metadata = { title: "Customer" };
 
@@ -30,8 +27,8 @@ export default async function CustomerViewPage(props: { searchParams: Promise<{ 
   }
   const pii = can(staff.role, "customers:pii");
   const p = await getCustomerProfile(email);
-  await audit(staff.actor, "customer.view", p.account?.sub ?? "guest", { masked: !pii }, staff.ip);
-  const name = p.account?.name ?? p.orders[0]?.customerName ?? "";
+  await audit(staff.actor, "customer.view", p.shopify[0]?.id ?? "site-only", { masked: !pii }, staff.ip);
+  const name = p.shopify[0]?.name ?? "";
   const shownName = pii ? name : maskName(name);
   const shownEmail = pii ? p.email : maskEmail(p.email);
   const requestId = searchParams.request && /^pr_[A-Za-z0-9_-]{8,20}$/.test(searchParams.request) ? searchParams.request : undefined;
@@ -39,14 +36,12 @@ export default async function CustomerViewPage(props: { searchParams: Promise<{ 
   return (
     <div className="space-y-6">
       <Link href="/admin/customers" className="text-sm text-ink/65 hover:text-navy-800">← Customers</Link>
-      <PageHeader title={shownName || shownEmail} intro={shownEmail} actions={p.account ? <Pill tone="good">Account</Pill> : <Pill>Guest</Pill>} />
+      <PageHeader title={shownName || shownEmail} intro={shownEmail} actions={p.shopify.length ? <Pill tone="good">Shopify customer</Pill> : <Pill>Site sign-up only</Pill>} />
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Panel title="Paid orders"><p className="text-2xl font-semibold">{p.totals.orderCount}</p></Panel>
-        <Panel title="Net spend">
-          <p className="text-lg font-semibold">
-            {Object.entries(p.totals.spent).map(([c, v]) => formatPrice(v, c as Currency)).join(" · ") || formatPrice(0, "USD")}
-          </p>
+        <Panel title="Orders (Shopify)"><p className="text-2xl font-semibold">{p.shopify.reduce((n, c) => n + c.orders, 0)}</p></Panel>
+        <Panel title="Spent (Shopify)">
+          <p className="text-lg font-semibold">{formatPrice(p.shopify.reduce((n, c) => n + c.spentCents, 0), "USD")}</p>
         </Panel>
         <Panel title="Marketing emails">
           <p className="text-sm">{p.newsletter?.subscribed
@@ -75,45 +70,20 @@ export default async function CustomerViewPage(props: { searchParams: Promise<{ 
         </Panel>
       ) : null}
 
-      {p.account ? (
-        <Panel title="Account">
-          <dl className="text-sm grid sm:grid-cols-3 gap-2">
-            <div><dt className="text-ink/55">Joined</dt><dd>{p.account.createdAt?.slice(0, 10)}</dd></div>
-            <div><dt className="text-ink/55">Status</dt><dd>{p.account.status}</dd></div>
-            <div><dt className="text-ink/55">Enabled</dt><dd>{p.account.enabled ? "Yes" : "No"}</dd></div>
-          </dl>
-        </Panel>
-      ) : null}
-
-      <section className="space-y-2">
-        <h2 className="font-semibold text-navy-800">Orders</h2>
-        <OrdersTable rows={p.orders.filter((o) => o.status !== "pending").map((o) => orderRow(o, staff.role))} />
-      </section>
-
-      <Panel title="Subscriptions">
-        {p.subscriptions.length ? (
+      <Panel title="Shopify">
+        {p.shopify.length ? (
           <ul className="text-sm divide-y divide-cloud-300">
-            {p.subscriptions.map((s) => (
-              <li key={s.subscriptionId} className="py-2 flex flex-wrap justify-between gap-2">
-                <span>{s.productName} · every {s.cycleDays} days · {formatPrice(s.priceCents, s.currency)}</span>
-                <span className="text-ink/60">{s.status}{s.nextChargeDate ? ` · next ${s.nextChargeDate.slice(0, 10)}` : ""}</span>
+            {p.shopify.map((c) => (
+              <li key={c.id} className="py-2 flex flex-wrap justify-between gap-2">
+                <span>{pii ? c.name : maskName(c.name)} · {c.orders} order{c.orders === 1 ? "" : "s"}</span>
+                <a className="underline text-navy-800" href={c.url} target="_blank" rel="noopener noreferrer">
+                  Orders, subscriptions and addresses in Shopify
+                </a>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-ink/60">None.</p>
-        )}
-      </Panel>
-
-      <Panel title="Reviews">
-        {p.reviews.length ? (
-          <ul className="text-sm divide-y divide-cloud-300">
-            {p.reviews.map((r) => (
-              <li key={r.reviewId} className="py-2">{r.rating}/5 · {r.title} · {r.status}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-ink/60">None.</p>
+          <p className="text-sm text-ink/60">No Shopify customer with this email.</p>
         )}
       </Panel>
 

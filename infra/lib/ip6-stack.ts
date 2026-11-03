@@ -433,11 +433,25 @@ export class Ip6Stack extends Stack {
     // Populate real values in the AWS console after deploy.
     const stripeSecret = new secrets.Secret(this, "StripeSecret", {
       secretName: `ip6/${props.environment}/stripe`,
+      // No longer read by the app (Shopify Payments replaced Stripe). Kept, not granted, until it is deleted on purpose.
       description: "Stripe API keys (test mode for staging; rotate to live at launch)",
       secretObjectValue: {
         secretKey: SecretValue.unsafePlainText("sk_test_REPLACE_ME"),
         publishableKey: SecretValue.unsafePlainText("pk_test_REPLACE_ME"),
         webhookSecret: SecretValue.unsafePlainText("whsec_REPLACE_ME"),
+      },
+      removalPolicy: removal,
+    });
+
+    // Shopify runs checkout, payments, orders and customer accounts. The site
+    // reads products with the Headless channel's public Storefront token (an
+    // Amplify env var, not a secret); the Admin API token below is for the
+    // staff portal and privacy erasure only.
+    const shopifySecret = new secrets.Secret(this, "ShopifySecret", {
+      secretName: `ip6/${props.environment}/shopify`,
+      description: "Shopify Admin API token (staff portal, privacy erasure)",
+      secretObjectValue: {
+        adminToken: SecretValue.unsafePlainText("REPLACE_ME"),
       },
       removalPolicy: removal,
     });
@@ -529,7 +543,7 @@ export class Ip6Stack extends Stack {
         ]),
       }),
     );
-    [stripeSecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
+    [shopifySecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
 
     // The app's own keys rotate every 30 days. The previous value is kept so
     // anything signed just before a rotation still verifies (see the Lambda).
@@ -569,6 +583,7 @@ export class Ip6Stack extends Stack {
     new CfnOutput(this, "CloudfrontDomain", { value: distribution.distributionDomainName });
     new CfnOutput(this, "TablePrefix", { value: props.tablePrefix });
     new CfnOutput(this, "StripeSecretArn", { value: stripeSecret.secretArn });
+    new CfnOutput(this, "ShopifySecretArn", { value: shopifySecret.secretArn });
     new CfnOutput(this, "SanitySecretArn", { value: sanitySecret.secretArn });
     new CfnOutput(this, "AlgoliaSecretArn", { value: algoliaSecret.secretArn });
     new CfnOutput(this, "AppSecretArn", { value: appSecret.secretArn });

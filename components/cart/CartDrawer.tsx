@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Minus, Plus, Trash2, ArrowRight, RefreshCw } from "lucide-react";
 import { useCart } from "./CartStore";
+import { startCheckout } from "./startCheckout";
 import { Drawer } from "@/components/ui/Drawer";
 import { formatPrice } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
@@ -30,6 +31,20 @@ export function CartDrawer() {
   const hasPreorder = lines.some((l) => isPreorderLine(l, PREORDER));
   const freeShipping = qualifiesForFreeShipping(subtotalCents, currency);
   const toFreeShipping = FREE_SHIPPING_THRESHOLD_CENTS - subtotalCents;
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  // Hands the cart to Shopify's hosted checkout (payment, tax and shipping are taken there).
+  async function checkout() {
+    setCheckingOut(true);
+    setCheckoutError(null);
+    try {
+      await startCheckout(lines);
+    } catch (err) {
+      setCheckoutError((err as Error).message);
+      setCheckingOut(false);
+    }
+  }
 
   return (
     <Drawer open={drawerOpen} onClose={closeDrawer} title="Your cart">
@@ -124,7 +139,7 @@ export function CartDrawer() {
             ) : null}
             {hasSubscription ? (
               <div className="rounded-md bg-gold-50 border border-gold-200 px-3 py-2.5 text-xs text-forest-900">
-                Subscription items will renew on your chosen cycle. Manage anytime in your account.
+                Subscription items renew on your chosen cycle. Manage or cancel anytime from your account.
               </div>
             ) : null}
             {savingsCents > 0 ? (
@@ -156,13 +171,19 @@ export function CartDrawer() {
                 We don&apos;t ship to {countryInSentence(geo.country)} yet. Orders need a shipping address in the 50 US states or Washington, DC.
               </p>
             ) : null}
-            <Link
-              href="/checkout"
-              onClick={closeDrawer}
-              className="btn-primary w-full justify-center mt-2"
+            {checkoutError ? (
+              <p role="alert" className="rounded-md border border-red-300 bg-red-50 px-3 py-2.5 text-xs text-red-800">
+                {checkoutError}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              onClick={checkout}
+              disabled={checkingOut}
+              className="btn-primary w-full justify-center mt-2 disabled:opacity-60"
             >
-              Checkout <ArrowRight className="size-4" />
-            </Link>
+              {checkingOut ? "Opening secure checkout..." : "Checkout"} <ArrowRight className="size-4" />
+            </button>
           </div>
         </>
       )}

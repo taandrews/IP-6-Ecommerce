@@ -31,10 +31,6 @@ describe("middleware", () => {
     expect((await middleware(req("/api/waitlist", { method: "POST", headers: { origin: "https://evil.example" } }))).status).toBe(403);
   });
 
-  it("lets the Stripe webhook through without an Origin", async () => {
-    const res = await middleware(req("/api/stripe/webhook", { method: "POST", headers: { origin: "https://evil.example" } }));
-    expect(res.status).toBe(200);
-  });
 
   it("sends anyone without a verified staff token to the staff login", async () => {
     const res = await middleware(req("/admin/orders"));
@@ -60,8 +56,4 @@ describe("middleware", () => {
     expect(res.headers.get("cache-control")).toBe("no-store");
   });
 
-  it("requires a customer session for account pages", async () => {
-    const res = await middleware(req("/account/orders"));
-    expect(res.headers.get("location")).toContain("/account/login");
-  });
 });

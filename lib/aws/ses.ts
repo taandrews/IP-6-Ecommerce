@@ -12,11 +12,15 @@ export const sesClient = new SESClient({
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://ip6original.com").replace(/\/$/, "");
 
-/** Mailbox each message is sent from; the domain is the SES identity of this environment. */
-export type Sender = "orders" | "privacy" | "hello";
+/**
+ * Mailbox each message is sent from; the domain is the SES identity of this environment.
+ * SES sends the site's own email (contact form, privacy requests, newsletter and
+ * waitlist confirmations). Order, shipping, refund and subscription emails are
+ * sent by Shopify.
+ */
+export type Sender = "privacy" | "hello";
 
 const DEFAULT_REPLY_TO: Record<Sender, string> = {
-  orders: EMAIL.support,
   privacy: EMAIL.privacy,
   hello: EMAIL.hello,
 };
@@ -33,13 +37,13 @@ export interface SendOptions {
   sender?: Sender;
   /** Display name on the From line. */
   fromName?: string;
-  /** Defaults to the inbox that answers for the sender (support@ for orders@). */
+  /** Defaults to the inbox that answers for the sender. */
   replyTo?: string;
   text?: string;
 }
 
 export async function sendEmail(to: string, subject: string, html: string, opts: SendOptions = {}) {
-  const sender = opts.sender ?? "orders";
+  const sender = opts.sender ?? "hello";
   return sesClient.send(
     new SendEmailCommand({
       Source: fromAddress(sender, opts.fromName ?? "IP6 Original"),
@@ -80,102 +84,7 @@ export function escapeHtml(s: string) {
 
 const e = escapeHtml;
 
-interface EmailLine {
-  name: string;
-  variantLabel: string;
-  qty: number;
-  total: string;
-}
-
-function linesTable(lines: EmailLine[]) {
-  return `<table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;">${lines
-    .map(
-      (l) =>
-        `<tr><td style="padding:6px 0;border-bottom:1px solid #E8EDF3;">${e(l.name)}<br><span style="color:#666;">${e(
-          l.variantLabel,
-        )} · Qty ${l.qty}</span></td><td style="padding:6px 0;border-bottom:1px solid #E8EDF3;text-align:right;">${e(l.total)}</td></tr>`,
-    )
-    .join("")}</table>`;
-}
-
 export const emailTemplates = {
-  orderConfirmation: (o: {
-    name: string;
-    orderId: string;
-    lines: EmailLine[];
-    subtotal: string;
-    discount?: string;
-    shipping: string;
-    tax?: string;
-    total: string;
-    preorderNote?: string;
-  }) => ({
-    subject: `Order ${o.orderId} confirmed · IP6 Original`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">Thank you, ${e(o.name)}.</h1>
-      <p>Your order <strong>${e(o.orderId)}</strong> is confirmed.</p>
-      ${linesTable(o.lines)}
-      <p style="font-size:14px;">Subtotal: ${e(o.subtotal)}<br>${o.discount ? `Discount: -${e(o.discount)}<br>` : ""}Shipping: ${e(
-        o.shipping,
-      )}<br>${o.tax ? `Tax: ${e(o.tax)}<br>` : ""}<strong>Total: ${e(o.total)}</strong></p>
-      ${o.preorderNote ? `<p>${e(o.preorderNote)}</p>` : ""}
-      <p>We'll email tracking details when your package ships.</p>
-    `),
-  }),
-  shippingNotification: (name: string, orderId: string, carrier: string, tracking: string, trackingUrl?: string) => ({
-    subject: `Your IP6 Original order ${orderId} has shipped`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">On its way, ${e(name)}.</h1>
-      <p>Order <strong>${e(orderId)}</strong> has shipped with ${e(carrier)}.</p>
-      <p><strong>Tracking number:</strong> ${e(tracking)}</p>
-      ${trackingUrl ? `<p><a href="${e(trackingUrl)}" style="color:#0B1F3A;">Track your package</a></p>` : ""}
-    `),
-  }),
-  refundIssued: (name: string, orderId: string, amount: string) => ({
-    subject: `Refund issued for order ${orderId} · IP6 Original`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">Hi ${e(name)},</h1>
-      <p>We've issued a refund of <strong>${e(amount)}</strong> for order ${e(orderId)}.</p>
-      <p>It goes back to your original payment method. Banks usually take 5 to 10 business days to show it.</p>
-    `),
-  }),
-  orderCancelled: (name: string, orderId: string) => ({
-    subject: `Order ${orderId} cancelled · IP6 Original`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">Hi ${e(name)},</h1>
-      <p>Order <strong>${e(orderId)}</strong> has been cancelled. If you were charged, a refund email follows separately.</p>
-    `),
-  }),
-  subscriptionRenewalReminder: (name: string, product: string, chargeDate: string, amount: string) => ({
-    subject: `Your ${product} subscription renews on ${chargeDate}`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">Hi ${e(name)},</h1>
-      <p>Your ${e(product)} subscription renews on <strong>${e(chargeDate)}</strong> for <strong>${e(amount)}</strong>.</p>
-      <p>To skip, pause or cancel before then, visit <a href="${SITE}/account/subscriptions" style="color:#0B1F3A;">your subscriptions</a>.</p>
-    `),
-  }),
-  subscriptionChargeSuccess: (name: string, product: string, amount: string) => ({
-    subject: `Payment received · ${product}`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">Thank you, ${e(name)}.</h1>
-      <p>We charged ${e(amount)} for your ${e(product)} subscription. Your next shipment is being prepared.</p>
-    `),
-  }),
-  subscriptionChargeFailed: (name: string, product: string) => ({
-    subject: `Payment issue · ${product}`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">Hi ${e(name)},</h1>
-      <p>We couldn't charge your payment method for ${e(product)}.</p>
-      <p>Please update it from <a href="${SITE}/account/subscriptions" style="color:#0B1F3A;">your subscriptions</a> to keep your deliveries.</p>
-    `),
-  }),
-  subscriptionCancelled: (name: string, product: string) => ({
-    subject: `${product} subscription cancelled`,
-    html: baseEmail(`
-      <h1 style="font-size:22px;">Cancelled, ${e(name)}.</h1>
-      <p>Your ${e(product)} subscription is cancelled. There will be no further charges.</p>
-    `),
-  }),
   privacyVerify: (link: string, type: "export" | "delete") => ({
     sender: "privacy" as const,
     subject: `Confirm your ${type === "delete" ? "data deletion" : "data copy"} request · IP6 Original`,
@@ -227,7 +136,7 @@ export const emailTemplates = {
     subject: "Your data copy is ready · IP6 Original",
     html: baseEmail(`
       <h1 style="font-size:22px;">Your data copy</h1>
-      <p>Sign in at <a href="${SITE}/account/privacy" style="color:#0B1F3A;">${SITE.replace(/^https?:\/\//, "")}/account/privacy</a> to download it, or reply to this email if you no longer have an account and we'll send it securely.</p>
+      <p>We'll send it to you securely in a separate message. Reply to this email if it hasn't arrived within two business days.</p>
     `),
   }),
   staffPrivacyAlert: (type: "export" | "delete") => ({

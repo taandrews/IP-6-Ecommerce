@@ -1,6 +1,6 @@
 # Platform plan
 
-Agreed plan as of 2026-11-02. This is the target setup, not a description of what is built today: the Amplify site still runs its own Stripe checkout until the move to Shopify checkout is done.
+Agreed 2026-11-02 and built the same day. The Amplify site reads products, prices, stock and subscription plans from Shopify's Storefront API (Headless channel) and sends the cart to Shopify's hosted checkout. Stripe, the site's own checkout, customer sign-in and order records are removed. Code: `lib/shopify/`, `app/api/checkout/route.ts`, `theme/snippets/ip6-headless-redirect.liquid`.
 
 ## Who does what
 
@@ -14,3 +14,6 @@ Agreed plan as of 2026-11-02. This is the target setup, not a description of wha
 ## Open items
 
 - UPS setup: waiting on Willings.
+- Shopify checkout opens only after the store password is turned off (needs a paid plan and Shopify Payments).
+- Shopify email settings (sender orders@, store email support@, staff alerts to orders@, sender-domain DNS at GoDaddy).
+- Domain cut-over: Shopify to shop.ip6original.com, Amplify to ip6original.com, then point the theme's Headless storefront setting at https://ip6original.com.
