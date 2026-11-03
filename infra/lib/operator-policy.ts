@@ -84,6 +84,12 @@ export function operatorStatements(stack: Stack, amplifyAppArn: string): iam.Pol
       resources: ["us-east-1", "us-east-2"].flatMap((r) => [arn("ses", r, "identity/ip6original.com"), arn("ses", r, "configuration-set/*")]),
     }),
     new iam.PolicyStatement({
+      // Re-sends the email confirmation for the alerts@ subscription.
+      sid: "AlertSubscriptions",
+      actions: ["sns:Subscribe", "sns:ListSubscriptionsByTopic"],
+      resources: ["us-east-1", "us-east-2"].map((r) => arn("sns", r, "ip6-alerts")),
+    }),
+    new iam.PolicyStatement({
       sid: "OwnAccessKeys",
       actions: ["iam:ListAccessKeys", "iam:CreateAccessKey", "iam:UpdateAccessKey", "iam:DeleteAccessKey", "iam:GetAccessKeyLastUsed"],
       resources: [`arn:aws:iam::${account}:user/\${aws:username}`],
