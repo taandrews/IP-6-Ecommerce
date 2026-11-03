@@ -85,7 +85,7 @@ export function Footer({ showDshea = false }: { showDshea?: boolean }) {
           </div>
         </div>
 
-        <address className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-navy-800/10 py-3 not-italic text-sm text-navy-800/70">
+        <address className="flex flex-col items-start gap-3 border-t border-navy-800/10 py-4 not-italic text-sm text-navy-800/70 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-2 sm:py-3">
           <span>Lutherville, Maryland</span>
           <Link href="/contact" className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">Contact us</Link>
           <a href={`mailto:${EMAIL.hello}`} className="underline decoration-gold-500 underline-offset-4 hover:text-gold-700">{EMAIL.hello}</a>
