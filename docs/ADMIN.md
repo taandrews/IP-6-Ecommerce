@@ -19,7 +19,7 @@ The admin portal lives at `/admin` on the Amplify site. Shopify is the commerce 
   - CSV exports are protected against formula injection.
 - **At rest.** All tables are encrypted with a customer-managed KMS key; point-in-time recovery is on in prod, and the audit log always has it.
 - **Pricing.** The browser never sets a price. `/api/checkout` maps the cart to Shopify variant and selling-plan IDs on the server and Shopify prices the order (discounts, tax, shipping) on its hosted checkout.
-- **Shopify access.** The site reads products with the Headless channel's public Storefront token (Amplify env `SHOPIFY_STOREFRONT_TOKEN`). The Admin API token for the portal is in Secrets Manager at `ip6/<env>/shopify` (`adminToken`).
+- **Shopify access.** Both Shopify tokens are in Secrets Manager at `ip6/<env>/shopify`: `storefrontToken` (the Headless channel's private Storefront token, used server-side for the catalog and checkout) and `adminToken` (the staff portal and privacy erasure). Amplify env vars `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_PREORDER_DISCOUNT_ID` and `NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL` are required; the build fails or the feature reports an error when one is missing.
 
 ## Deploying
 

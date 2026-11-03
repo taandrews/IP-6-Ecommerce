@@ -1,6 +1,6 @@
 import { requireStaffPage } from "@/lib/admin/guard";
 import { can } from "@/lib/auth/roles";
-import { SHOPIFY_ADMIN_URL } from "@/lib/shopify/admin";
+import { shopifyAdminUrl } from "@/lib/shopify/admin";
 import { Notice, PageHeader } from "@/components/admin/ui";
 import { CustomerSearch } from "./CustomerSearch";
 
@@ -15,7 +15,7 @@ export default async function CustomersPage() {
         title="Customers"
         intro="Customer accounts, orders and subscriptions are in Shopify. Find someone by email to see their Shopify record alongside this site's newsletter and waitlist sign-ups, and to handle privacy requests. Every view is recorded in the activity log."
         actions={
-          <a className="btn-secondary text-sm" href={`${SHOPIFY_ADMIN_URL}/customers`} target="_blank" rel="noopener noreferrer">
+          <a className="btn-secondary text-sm" href={`${shopifyAdminUrl()}/customers`} target="_blank" rel="noopener noreferrer">
             All customers in Shopify
           </a>
         }

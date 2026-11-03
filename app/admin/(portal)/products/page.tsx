@@ -1,6 +1,6 @@
 import { requireStaffPage } from "@/lib/admin/guard";
 import { getCatalogFresh } from "@/lib/data/catalog";
-import { SHOPIFY_ADMIN_URL } from "@/lib/shopify/admin";
+import { shopifyAdminUrl } from "@/lib/shopify/admin";
 import { PageHeader, Pill, Table } from "@/components/admin/ui";
 import { formatPrice } from "@/lib/utils";
 
@@ -15,7 +15,7 @@ export default async function ProductsPage() {
         title="Products and stock"
         intro="Prices, stock and subscription plans are set in Shopify and show on this site within a minute. Product descriptions, photos and FAQs on this site are part of the site itself."
         actions={
-          <a className="btn-secondary text-sm" href={`${SHOPIFY_ADMIN_URL}/products`} target="_blank" rel="noopener noreferrer">
+          <a className="btn-secondary text-sm" href={`${shopifyAdminUrl()}/products`} target="_blank" rel="noopener noreferrer">
             Edit in Shopify
           </a>
         }

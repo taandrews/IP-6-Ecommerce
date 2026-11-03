@@ -83,15 +83,6 @@ describe("newsletter sign-up (double opt-in)", () => {
     expect(confirm.calls).toHaveLength(1);
   });
 
-  it("confirms at once for someone signed in with that verified email", async () => {
-    session.user = { email: "ana@example.com", emailVerified: true };
-    await POST(req({ email: "ana@example.com", consent: true, source: "footer", captcha: "solved" }));
-    const [signup] = updates();
-    expect(signup!.ExpressionAttributeValues![":t"]).toBe(true);
-    expect(signup!.UpdateExpression).toContain("REMOVE #un, #exp");
-    expect(confirm.calls).toHaveLength(0);
-  });
-
   it("rejects answers that aren't in the quiz", async () => {
     expect((await POST(req({ email: "a@example.com", consent: true, captcha: "solved", quiz: { goal: "cure-cancer" } }))).status).toBe(400);
     expect((await POST(req({ email: "a@example.com", consent: true, captcha: "solved", quiz: { shoeSize: "9" } }))).status).toBe(400);

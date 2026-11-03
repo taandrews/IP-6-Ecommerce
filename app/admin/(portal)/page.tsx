@@ -2,7 +2,7 @@ import { requireStaffPage } from "@/lib/admin/guard";
 import { can } from "@/lib/auth/roles";
 import { listReviewsByStatus } from "@/lib/data/reviews";
 import { listPrivacyRequests } from "@/lib/data/privacy";
-import { overview, recentOrders, SHOPIFY_ADMIN_URL } from "@/lib/shopify/admin";
+import { overview, recentOrders, shopifyAdminUrl } from "@/lib/shopify/admin";
 import { Notice, PageHeader, Panel, Stat } from "@/components/admin/ui";
 import { formatPrice } from "@/lib/utils";
 import { ShopifyOrdersTable } from "./orders/ShopifyOrdersTable";
@@ -38,7 +38,7 @@ export default async function AdminDashboard(props: { searchParams: Promise<{ de
         intro="Sales figures come from Shopify, where orders, refunds, subscriptions and discounts are managed. Test orders are left out of the totals."
         actions={
           canOrders ? (
-            <a className="btn-secondary text-sm" href={SHOPIFY_ADMIN_URL} target="_blank" rel="noopener noreferrer">
+            <a className="btn-secondary text-sm" href={shopifyAdminUrl()} target="_blank" rel="noopener noreferrer">
               Open Shopify admin
             </a>
           ) : null

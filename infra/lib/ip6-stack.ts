@@ -443,15 +443,15 @@ export class Ip6Stack extends Stack {
       removalPolicy: removal,
     });
 
-    // Shopify runs checkout, payments, orders and customer accounts. The site
-    // reads products with the Headless channel's public Storefront token (an
-    // Amplify env var, not a secret); the Admin API token below is for the
-    // staff portal and privacy erasure only.
+    // Shopify runs checkout, payments, orders and customer accounts. The
+    // Headless channel's private Storefront token reads the catalog and builds
+    // checkouts; the Admin API token serves the staff portal and privacy erasure.
     const shopifySecret = new secrets.Secret(this, "ShopifySecret", {
       secretName: `ip6/${props.environment}/shopify`,
-      description: "Shopify Admin API token (staff portal, privacy erasure)",
+      description: "Shopify Admin API token and Headless private Storefront token",
       secretObjectValue: {
         adminToken: SecretValue.unsafePlainText("REPLACE_ME"),
+        storefrontToken: SecretValue.unsafePlainText("REPLACE_ME"),
       },
       removalPolicy: removal,
     });

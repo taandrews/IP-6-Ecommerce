@@ -6,8 +6,8 @@
   is left alone so staff can still preview it.
   Set the custom site's address in Theme settings > Headless storefront.
 {%- endcomment -%}
-{%- unless request.design_mode -%}
-  {%- assign site = settings.ip6_storefront_url | default: 'https://main.d1ypn0wsqjh17o.amplifyapp.com' | remove_last: '/' -%}
+{%- if settings.ip6_storefront_url != blank and request.design_mode == false -%}
+  {%- assign site = settings.ip6_storefront_url | remove_last: '/' -%}
   {%- assign target = '/' -%}
   {%- case request.page_type -%}
     {%- when 'product' -%}
@@ -34,4 +34,4 @@
   <link rel="canonical" href="{{ dest }}">
   <meta http-equiv="refresh" content="0; url={{ dest }}">
   <script>window.location.replace({{ dest | json }});</script>
-{%- endunless -%}
+{%- endif -%}

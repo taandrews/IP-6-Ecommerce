@@ -8,7 +8,7 @@ import { isShopifyOrigin } from "@/lib/storefronts";
 import { clientIpFrom } from "@/lib/client-ip";
 import { API_CSP, contentSecurityPolicy, createNonce } from "@/lib/csp";
 
-const AUTH_SCOPE = /^\/(admin|account|api)(?:\/|$)/;
+const AUTH_SCOPE = /^\/(admin|api)(?:\/|$)/;
 const ADMIN_PUBLIC = /^\/admin\/(login|forgot-password)(?:\/|$)/;
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
 const ADMIN_API = /^\/api\/admin\//;
@@ -124,8 +124,10 @@ async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> 
     return json(403, { error: "bad_origin" });
   }
 
-  // Admin pages and admin APIs use the STAFF pool; everything else the customer pool.
-  const realm: Realm = ADMIN_PATH.test(pathname) || ADMIN_API.test(pathname) ? "staff" : "customer";
+  // Only staff sign in to this site (customers use Shopify accounts), so only
+  // admin pages and admin APIs carry a session to verify.
+  if (!ADMIN_PATH.test(pathname) && !ADMIN_API.test(pathname)) return NextResponse.next({ request: { headers } });
+  const realm: Realm = "staff";
   const { user, renewed, refreshFailed } = await resolve(req, realm, !AUTH_API.test(pathname));
   const names = AUTH_COOKIES[realm];
 
@@ -161,10 +163,8 @@ async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> 
     if (refreshFailed) res.cookies.delete(names.refresh);
   }
 
-  if (realm === "staff") {
-    res.headers.set("Cache-Control", "no-store");
-    res.headers.set("X-Robots-Tag", "noindex, nofollow");
-  }
+  res.headers.set("Cache-Control", "no-store");
+  res.headers.set("X-Robots-Tag", "noindex, nofollow");
   return res;
 }
 

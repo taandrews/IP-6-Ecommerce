@@ -11,7 +11,7 @@ import {
  * works without an AWS round-trip.
  *
  * Secrets are structured per service:
- *   ip6/{env}/shopify  → { adminToken }
+ *   ip6/{env}/shopify  → { adminToken, storefrontToken }
  *   ip6/{env}/sanity   → { projectId, dataset, apiToken }
  *   ip6/{env}/algolia  → { appId, searchKey, adminKey }
  *   ip6/{env}/app      → { turnstileSecretKey, adminLinkKey, captchaHmacKey, rateLimitSecret }, the last three with a
@@ -49,15 +49,25 @@ function secretName(service: "shopify" | "sanity" | "algolia" | "app") {
   return `ip6/${env}/${service}`;
 }
 
+export interface ShopifySecrets {
+  /** Admin API token: staff portal and privacy erasure. */
+  adminToken: string;
+  /** Headless channel private Storefront API token: catalog and checkout. */
+  storefrontToken: string;
+}
+
 /**
- * Shopify Admin API token (ip6/{env}/shopify -> { adminToken }), used by the
- * admin portal and privacy erasure. Locally SHOPIFY_ADMIN_TOKEN may stand in.
+ * Shopify tokens from ip6/{env}/shopify. Production always reads Secrets
+ * Manager; local development may use SHOPIFY_ADMIN_TOKEN and
+ * SHOPIFY_STOREFRONT_PRIVATE_TOKEN instead.
  */
-export async function getShopifyAdminToken(): Promise<string> {
-  if (process.env.NODE_ENV !== "production" && process.env.SHOPIFY_ADMIN_TOKEN) return process.env.SHOPIFY_ADMIN_TOKEN;
+export async function getShopifySecrets(): Promise<ShopifySecrets> {
+  if (process.env.NODE_ENV !== "production" && process.env.SHOPIFY_ADMIN_TOKEN && process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN) {
+    return { adminToken: process.env.SHOPIFY_ADMIN_TOKEN, storefrontToken: process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN };
+  }
   const s = await fetchSecret(secretName("shopify"));
-  if (!s.adminToken) throw new Error("adminToken missing from ip6/*/shopify secret");
-  return s.adminToken;
+  if (!s.adminToken || !s.storefrontToken) throw new Error("adminToken or storefrontToken missing from ip6/*/shopify secret");
+  return { adminToken: s.adminToken, storefrontToken: s.storefrontToken };
 }
 
 export interface SanitySecrets {

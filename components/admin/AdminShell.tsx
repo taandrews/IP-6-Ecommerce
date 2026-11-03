@@ -18,10 +18,9 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { can, ROLE_LABELS, type Permission, type Role } from "@/lib/auth/roles";
+import { shopifyAdminUrl } from "@/lib/shopify/config";
 
-const SHOPIFY_ADMIN = `https://admin.shopify.com/store/${(process.env.SHOPIFY_STORE_DOMAIN ?? "ip6-original.myshopify.com").replace(".myshopify.com", "")}`;
-
-const NAV: Array<{ href: string; label: string; icon: React.ComponentType<{ className?: string }>; perm: Permission; external?: boolean }> = [
+const nav = (shopifyAdmin: string): Array<{ href: string; label: string; icon: React.ComponentType<{ className?: string }>; perm: Permission; external?: boolean }> => [
   { href: "/admin", label: "Dashboard", icon: BarChart3, perm: "dashboard:read" },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart, perm: "orders:read" },
   { href: "/admin/preorders", label: "Pre-orders", icon: Clock, perm: "orders:read" },
@@ -34,8 +33,8 @@ const NAV: Array<{ href: string; label: string; icon: React.ComponentType<{ clas
   { href: "/admin/blog", label: "Blog editor", icon: Newspaper, perm: "banner:write" },
   { href: "/admin/staff", label: "Staff", icon: UserCog, perm: "staff:manage" },
   { href: "/admin/activity", label: "Activity log", icon: History, perm: "audit:read" },
-  { href: `${SHOPIFY_ADMIN}/discounts`, label: "Discounts (Shopify)", icon: Tag, perm: "orders:read", external: true },
-  { href: `${SHOPIFY_ADMIN}/apps/subscriptions-remix`, label: "Subscriptions (Shopify)", icon: RefreshCw, perm: "orders:read", external: true },
+  { href: `${shopifyAdmin}/discounts`, label: "Discounts (Shopify)", icon: Tag, perm: "orders:read", external: true },
+  { href: `${shopifyAdmin}/apps/subscriptions-remix`, label: "Subscriptions (Shopify)", icon: RefreshCw, perm: "orders:read", external: true },
 ];
 
 export function AdminShell({ role, name, email, children }: { role: Role; name?: string; email: string; children: React.ReactNode }) {
@@ -46,7 +45,7 @@ export function AdminShell({ role, name, email, children }: { role: Role; name?:
           <Link href="/admin" className="font-semibold tracking-wide">IP6 Original Admin</Link>
         </div>
         <nav aria-label="Admin" className="flex lg:flex-col gap-1 overflow-x-auto px-3 py-3">
-          {NAV.filter((n) => can(role, n.perm)).map((n) => {
+          {nav(shopifyAdminUrl()).filter((n) => can(role, n.perm)).map((n) => {
             const cls = "flex items-center gap-2 rounded-md px-3 py-2 text-sm text-surface/85 hover:bg-white/10 whitespace-nowrap";
             const body = (
               <>

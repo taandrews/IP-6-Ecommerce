@@ -4,6 +4,7 @@ import { unstable_cache, revalidateTag } from "next/cache";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { DEFAULT_PREORDER } from "@/lib/preorder";
 import { getAutomaticDiscount, updateAutomaticDiscount } from "@/lib/shopify/admin";
+import { preorderDiscountId } from "@/lib/shopify/config";
 import type { BannerSettings, PreorderSettings } from "@/types/records";
 
 export const SETTINGS_TAG = "store-settings";
@@ -42,12 +43,11 @@ async function write(key: string, value: unknown, actor: string) {
  * what checkout charges. Its on/off state and percentage are read from there;
  * the label and shipping note shown on the site are kept here.
  */
-const PREORDER_DISCOUNT_ID = () => process.env.SHOPIFY_PREORDER_DISCOUNT_ID || "gid://shopify/DiscountAutomaticNode/1656519196910";
 
 async function readPreorder(): Promise<PreorderSettings> {
   const local = await read<PreorderSettings>("preorder", { ...DEFAULT_PREORDER });
   try {
-    const d = await getAutomaticDiscount(PREORDER_DISCOUNT_ID());
+    const d = await getAutomaticDiscount(preorderDiscountId());
     if (!d) return { ...local, active: false };
     return { ...local, active: d.status === "ACTIVE", discountPct: d.percentage };
   } catch (err) {
@@ -66,7 +66,7 @@ export function getPreorderSettingsFresh() {
 
 /** Updates the Shopify discount first (that is what customers are charged), then the site's copy. */
 export async function savePreorderSettings(v: PreorderSettings, actor: string) {
-  await updateAutomaticDiscount(PREORDER_DISCOUNT_ID(), { active: v.active, discountPct: v.discountPct, title: `${v.label} ${v.discountPct}% Off` });
+  await updateAutomaticDiscount(preorderDiscountId(), { active: v.active, discountPct: v.discountPct, title: `${v.label} ${v.discountPct}% Off` });
   return write("preorder", v, actor);
 }
 

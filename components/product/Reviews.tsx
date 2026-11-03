@@ -29,6 +29,8 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
       title: String(form.get("title") ?? ""),
       body: String(form.get("body") ?? ""),
       authorName: String(form.get("authorName") ?? ""),
+      orderNumber: String(form.get("orderNumber") ?? ""),
+      orderEmail: String(form.get("orderEmail") ?? ""),
       website: String(form.get("website") ?? ""),
     };
     try {
@@ -138,6 +140,14 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
               <label htmlFor={`${headingId}-body`} className="label">Review</label>
               <textarea id={`${headingId}-body`} name="body" required className="input min-h-[120px]" maxLength={1000} />
             </div>
+            <fieldset>
+              <legend className="label">Bought from us? (optional)</legend>
+              <div className="grid grid-cols-1 sm:grid-cols-[9rem_1fr] gap-2">
+                <input name="orderNumber" aria-label="Order number" placeholder="Order number" className="input" maxLength={20} inputMode="numeric" autoComplete="off" />
+                <input name="orderEmail" type="email" aria-label="Email used for the order" placeholder="Email used for the order" className="input" maxLength={254} autoComplete="email" />
+              </div>
+              <p className="mt-1 text-xs text-ink/60">Used once to mark your review as a verified purchase, then discarded. Never shown.</p>
+            </fieldset>
             <p className="text-xs text-ink/60">
               Please describe your personal experience. Every review is checked by our team before it is published, and reviews that make health or disease claims are not published. By submitting you agree we may show your review and the name above on this site.
             </p>

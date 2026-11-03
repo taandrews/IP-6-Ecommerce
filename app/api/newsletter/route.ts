@@ -5,7 +5,6 @@ import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { emailKey } from "@/lib/data/keys";
 import { newsletterKey } from "@/lib/data/keys";
 import { requestConfirmation } from "@/lib/data/confirmations";
-import { getSessionUser } from "@/lib/auth/session";
 import { limitByIp } from "@/lib/rate-limit";
 import { verifyCaptcha } from "@/lib/captcha";
 import { checkFormToken, formTokenKeys, issueFormToken } from "@/lib/form-token";
@@ -58,26 +57,13 @@ export async function POST(req: Request) {
   if (!followUp && !(await verifyCaptcha(captcha, req))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
-  const user = await getSessionUser().catch(() => null);
-  const own = Boolean(user?.emailVerified && emailKey(user.email) === emailKey(email));
   const Key = { userId: newsletterKey(email) };
   const now = new Date().toISOString();
   const consentVersion = source === "prebook_popup" ? QUIZ_CONSENT_VERSION : CONSENT_VERSION;
   try {
     if (!followUp) {
       const existing = (await docClient.send(new GetCommand({ TableName: TABLES.Users, Key, ConsistentRead: true }))).Item;
-      if (own) {
-        // Signed in with this verified email: that already proves ownership.
-        await docClient.send(
-          new UpdateCommand({
-            TableName: TABLES.Users,
-            Key,
-            UpdateExpression: "SET #email = :email, #nl = :t, #ca = :now, #cv = :cv, #cf = :now, #src = :src, #cr = if_not_exists(#cr, :now), #up = :now REMOVE #un, #exp",
-            ExpressionAttributeNames: { "#email": "email", "#nl": "newsletter", "#ca": "consentedAt", "#cv": "consentVersion", "#cf": "confirmedAt", "#src": "source", "#cr": "createdAt", "#up": "updatedAt", "#un": "unsubscribedAt", "#exp": "expiresAt" },
-            ExpressionAttributeValues: { ":email": emailKey(email), ":t": true, ":now": now, ":cv": consentVersion, ":src": source },
-          }),
-        );
-      } else if (existing?.newsletter !== true) {
+      if (existing?.newsletter !== true) {
         // New or not yet confirmed: keep it pending and email the link.
         await docClient.send(
           new UpdateCommand({
@@ -105,10 +91,10 @@ export async function POST(req: Request) {
             TableName: TABLES.Users,
             Key,
             UpdateExpression: "SET #quiz = :quiz, #qa = :now",
-            // A confirmed sign-up's answers are only replaced by its owner.
-            ConditionExpression: own ? "attribute_exists(userId)" : "attribute_exists(userId) AND (#nl <> :t OR attribute_not_exists(#quiz))",
-            ExpressionAttributeNames: { "#quiz": "quiz", "#qa": "quizAt", ...(own ? {} : { "#nl": "newsletter" }) },
-            ExpressionAttributeValues: { ":quiz": quiz, ":now": now, ...(own ? {} : { ":t": true }) },
+            // A confirmed sign-up's existing answers are never overwritten from the public form.
+            ConditionExpression: "attribute_exists(userId) AND (#nl <> :t OR attribute_not_exists(#quiz))",
+            ExpressionAttributeNames: { "#quiz": "quiz", "#qa": "quizAt", "#nl": "newsletter" },
+            ExpressionAttributeValues: { ":quiz": quiz, ":now": now, ":t": true },
           }),
         )
         .catch((err) => {

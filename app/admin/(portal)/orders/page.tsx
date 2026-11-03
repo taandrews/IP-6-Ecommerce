@@ -1,5 +1,5 @@
 import { requireStaffPage } from "@/lib/admin/guard";
-import { recentOrders, SHOPIFY_ADMIN_URL } from "@/lib/shopify/admin";
+import { recentOrders, shopifyAdminUrl } from "@/lib/shopify/admin";
 import { Notice, PageHeader } from "@/components/admin/ui";
 import { ShopifyOrdersTable } from "./ShopifyOrdersTable";
 
@@ -35,7 +35,7 @@ export default async function OrdersPage(props: { searchParams: Promise<{ f?: st
         title="Orders"
         intro="Orders are placed through Shopify checkout. Open one to fulfill, refund, cancel or print a packing slip in Shopify."
         actions={
-          <a className="btn-secondary text-sm" href={`${SHOPIFY_ADMIN_URL}/orders`} target="_blank" rel="noopener noreferrer">
+          <a className="btn-secondary text-sm" href={`${shopifyAdminUrl()}/orders`} target="_blank" rel="noopener noreferrer">
             Orders in Shopify
           </a>
         }

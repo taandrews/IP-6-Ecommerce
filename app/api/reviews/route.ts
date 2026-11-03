@@ -4,6 +4,7 @@ import { z } from "zod";
 import { lintContent } from "@/lib/compliance/claim-linter";
 import { createReview } from "@/lib/data/reviews";
 import { products } from "@/content/products";
+import { isVerifiedPurchase } from "@/lib/shopify/admin";
 import { limitByIp } from "@/lib/rate-limit";
 import { isBot } from "@/lib/honeypot";
 import { verifyCaptcha } from "@/lib/captcha";
@@ -18,6 +19,9 @@ const Body = z.object({
   authorName: z.string().trim().min(1).max(60),
   website: z.string().max(200).optional(),
   captcha: z.string().max(2048).nullish(),
+  /** Optional: both together mark the review as a verified purchase. Neither is stored. */
+  orderNumber: z.string().trim().max(20).optional().or(z.literal("")),
+  orderEmail: z.string().trim().email().max(254).optional().or(z.literal("")),
 });
 
 /**
@@ -43,8 +47,13 @@ export async function POST(req: Request) {
     message: `${f.rule}: ${f.match}`,
   }));
 
-  // Orders and accounts are in Shopify; staff confirm a purchase there before approving.
-  const verifiedPurchase = false;
+  let verifiedPurchase = false;
+  if (parsed.data.orderNumber && parsed.data.orderEmail) {
+    verifiedPurchase = await isVerifiedPurchase(parsed.data.orderNumber, parsed.data.orderEmail, product.variants.map((v) => v.sku)).catch((err) => {
+      console.error("[reviews] purchase check failed", (err as Error).name);
+      return false;
+    });
+  }
 
   try {
     await createReview({

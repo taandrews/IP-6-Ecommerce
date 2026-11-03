@@ -1,5 +1,6 @@
 import "server-only";
-import { getShopifyAdminToken } from "@/lib/aws/secrets";
+import { getShopifySecrets } from "@/lib/aws/secrets";
+import { shopifyAdminUrl, shopifyStoreDomain } from "./config";
 
 /**
  * Shopify Admin API, for the staff portal: order and customer overview,
@@ -8,14 +9,13 @@ import { getShopifyAdminToken } from "@/lib/aws/secrets";
  */
 const API_VERSION = "2025-07";
 
-export const SHOPIFY_ADMIN_URL = `https://admin.shopify.com/store/${(process.env.SHOPIFY_STORE_DOMAIN ?? "ip6-original.myshopify.com").replace(".myshopify.com", "")}`;
+
+export { shopifyAdminUrl };
 
 export async function admin<T>(query: string, variables: Record<string, unknown> = {}): Promise<T> {
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  if (!domain) throw new Error("SHOPIFY_STORE_DOMAIN is not configured");
-  const res = await fetch(`https://${domain}/admin/api/${API_VERSION}/graphql.json`, {
+  const res = await fetch(`https://${shopifyStoreDomain()}/admin/api/${API_VERSION}/graphql.json`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": await getShopifyAdminToken() },
+    headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": (await getShopifySecrets()).adminToken },
     body: JSON.stringify({ query, variables }),
     cache: "no-store",
   });
@@ -26,8 +26,8 @@ export async function admin<T>(query: string, variables: Record<string, unknown>
 }
 
 const legacyId = (gid: string) => gid.split("/").pop()!;
-export const orderAdminUrl = (gid: string) => `${SHOPIFY_ADMIN_URL}/orders/${legacyId(gid)}`;
-export const customerAdminUrl = (gid: string) => `${SHOPIFY_ADMIN_URL}/customers/${legacyId(gid)}`;
+export const orderAdminUrl = (gid: string) => `${shopifyAdminUrl()}/orders/${legacyId(gid)}`;
+export const customerAdminUrl = (gid: string) => `${shopifyAdminUrl()}/customers/${legacyId(gid)}`;
 
 // ---------------------------------------------------------------------------
 // Orders overview
@@ -214,4 +214,31 @@ export async function updateAutomaticDiscount(id: string, v: { active: boolean; 
   );
   const errs = res.discountAutomaticBasicUpdate.userErrors;
   if (errs.length) throw new Error(errs.map((e) => e.message).join("; "));
+}
+
+// ---------------------------------------------------------------------------
+// Verified purchase (reviews)
+// ---------------------------------------------------------------------------
+
+/**
+ * True when a paid Shopify order with this number and email contains one of
+ * the SKUs. The caller never tells the visitor the result, so the check can't
+ * be used to learn whether someone ordered.
+ */
+export async function isVerifiedPurchase(orderNumber: string, email: string, skus: string[]): Promise<boolean> {
+  const num = orderNumber.replace(/[^0-9]/g, "");
+  if (!num) return false;
+  const data = await admin<{
+    orders: { nodes: { email: string | null; displayFinancialStatus: string | null; lineItems: { nodes: { sku: string | null }[] } }[] };
+  }>(
+    `query($q:String!){ orders(first:5, query:$q){ nodes{ email displayFinancialStatus lineItems(first:50){ nodes{ sku } } } } }`,
+    { q: `name:#${num}` },
+  );
+  const wanted = new Set(skus);
+  return data.orders.nodes.some(
+    (o) =>
+      o.email?.toLowerCase() === email.trim().toLowerCase() &&
+      ["PAID", "PARTIALLY_REFUNDED"].includes(o.displayFinancialStatus ?? "") &&
+      o.lineItems.nodes.some((l) => l.sku && wanted.has(l.sku)),
+  );
 }

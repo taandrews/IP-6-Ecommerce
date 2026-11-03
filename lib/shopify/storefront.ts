@@ -1,20 +1,20 @@
 import "server-only";
+import { shopifyStoreDomain } from "./config";
+import { getShopifySecrets } from "@/lib/aws/secrets";
 
 /**
  * Shopify Storefront API (Headless channel). Shopify owns products, prices,
  * stock, subscriptions (selling plans) and checkout; this site reads the
  * catalog and hands the cart to Shopify's hosted checkout.
  *
- * The token is the Headless channel's public Storefront token: Shopify issues
- * it for use in browsers, so it is not a secret. It is still only used on the
- * server so every request goes through one place.
+ * Calls are made only from the server, with the Headless channel's private
+ * Storefront token (Secrets Manager ip6/<env>/shopify, storefrontToken) and the
+ * shopper's IP, as Shopify recommends for server-side storefronts.
  */
 const API_VERSION = "2025-07";
 
 function endpoint() {
-  const domain = process.env.SHOPIFY_STORE_DOMAIN;
-  if (!domain) throw new Error("SHOPIFY_STORE_DOMAIN is not configured");
-  return `https://${domain}/api/${API_VERSION}/graphql.json`;
+  return `https://${shopifyStoreDomain()}/api/${API_VERSION}/graphql.json`;
 }
 
 export class ShopifyError extends Error {
@@ -25,13 +25,12 @@ export class ShopifyError extends Error {
 }
 
 export async function storefront<T>(query: string, variables: Record<string, unknown> = {}, opts: { buyerIp?: string } = {}): Promise<T> {
-  const token = process.env.SHOPIFY_STOREFRONT_TOKEN;
-  if (!token) throw new Error("SHOPIFY_STOREFRONT_TOKEN is not configured");
+  const { storefrontToken } = await getShopifySecrets();
   const res = await fetch(endpoint(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Shopify-Storefront-Access-Token": token,
+      "Shopify-Storefront-Private-Token": storefrontToken,
       ...(opts.buyerIp ? { "Shopify-Storefront-Buyer-IP": opts.buyerIp } : {}),
     },
     body: JSON.stringify({ query, variables }),
