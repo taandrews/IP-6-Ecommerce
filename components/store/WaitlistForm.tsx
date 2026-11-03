@@ -10,41 +10,17 @@ import { WAITLIST_CONSENT_TEXT } from "@/lib/waitlist-consent";
 import { Captcha, captchaPayload } from "@/components/ui/Captcha";
 
 
-/**
- * Launch waitlist for countries we don't ship to yet. Shown in place of the
- * buy buttons (source "product") and when a checkout address is outside the
- * countries we sell to (source "checkout").
- */
-export function WaitlistForm({
-  source,
-  product,
-  defaultEmail = "",
-  defaultCountry,
-  className,
-}: {
-  source: "product" | "checkout";
-  product?: string;
-  defaultEmail?: string;
-  defaultCountry?: string;
-  className?: string;
-}) {
-  const id = useId();
-  const geo = useGeo();
+export type WaitlistSource = "product" | "checkout" | "arrival";
+
+/** Saves a launch-list sign-up through /api/waitlist (CAPTCHA, consent, double opt-in). */
+export function useWaitlistSubmit({ source, product, onDone }: { source: WaitlistSource; product?: string; onDone?: () => void }) {
   const pathname = usePathname();
-  const options = useMemo(() => countryOptions().filter(([c]) => !isSellableCountry(c)), []);
-  const start = defaultCountry ?? geo.country;
-  const [email, setEmail] = useState(defaultEmail);
-  const [country, setCountry] = useState(isSellableCountry(start) ? "" : start);
-  const [firstName, setFirstName] = useState("");
-  const [consent, setConsent] = useState(false);
   const [state, setState] = useState<"idle" | "saving" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
+  async function submit(form: HTMLFormElement, v: { email: string; country: string; firstName?: string; consent: boolean }) {
     setError(null);
-    if (!consent) {
+    if (!v.consent) {
       setError("Please tick the box so we can email you at launch.");
       return;
     }
@@ -54,7 +30,7 @@ export function WaitlistForm({
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, country, firstName: firstName || undefined, consent: true, product, page: pathname, source, captcha }),
+        body: JSON.stringify({ email: v.email, country: v.country, firstName: v.firstName || undefined, consent: true, product, page: pathname, source, captcha }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
@@ -63,10 +39,55 @@ export function WaitlistForm({
         return;
       }
       setState("done");
+      onDone?.();
     } catch {
       setError("We couldn't save that. Please try again.");
       setState("idle");
     }
+  }
+
+  return { state, error, submit };
+}
+
+/** Countries the launch list is for (every country we don't sell to yet). */
+export function useWaitlistCountries() {
+  return useMemo(() => countryOptions().filter(([c]) => !isSellableCountry(c)), []);
+}
+
+/**
+ * Launch waitlist for countries we don't ship to yet. Shown in place of the
+ * buy buttons (source "product"), when a checkout address is outside the
+ * countries we sell to (source "checkout"), and in the card that greets
+ * visitors from those countries (source "arrival").
+ */
+export function WaitlistForm({
+  source,
+  product,
+  defaultEmail = "",
+  defaultCountry,
+  className,
+  onDone,
+}: {
+  source: WaitlistSource;
+  product?: string;
+  defaultEmail?: string;
+  defaultCountry?: string;
+  className?: string;
+  onDone?: () => void;
+}) {
+  const id = useId();
+  const geo = useGeo();
+  const options = useWaitlistCountries();
+  const start = defaultCountry ?? geo.country;
+  const [email, setEmail] = useState(defaultEmail);
+  const [country, setCountry] = useState(isSellableCountry(start) ? "" : start);
+  const [firstName, setFirstName] = useState("");
+  const [consent, setConsent] = useState(false);
+  const { state, error, submit: send } = useWaitlistSubmit({ source, product, onDone });
+
+  function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    void send(e.currentTarget, { email, country, firstName, consent });
   }
 
   const where = country ? countryInSentence(country) : "your country";
@@ -86,12 +107,14 @@ export function WaitlistForm({
     <form onSubmit={submit} className={cn("rounded-md border border-cloud-300 bg-surface p-5 space-y-4", className)} noValidate>
       <div>
         <p className="font-semibold text-navy-800">
-          {source === "checkout" ? `We don't ship to ${where} yet.` : `Not yet available in ${where}.`}
+          {source === "checkout" ? `We don't ship to ${where} yet.` : source === "arrival" ? `Be first when we launch in ${where}.` : `Not yet available in ${where}.`}
         </p>
         <p className="mt-1 text-sm text-ink/70">
           {source === "checkout"
             ? "We currently ship to the 50 US states and Washington, DC. Leave your email and we'll tell you when we launch in your country."
-            : "Get notified at launch. We currently ship to the 50 US states and Washington, DC."}
+            : source === "arrival"
+              ? "We ship to the 50 US states and Washington, DC today. Leave your email and we'll tell you the day IP6 Original reaches you."
+              : "Get notified at launch. We currently ship to the 50 US states and Washington, DC."}
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">

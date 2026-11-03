@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { asset } from "@/lib/assets";
 import { IBM_Plex_Sans } from "next/font/google";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import "./globals.css";
 import { Navigation } from "@/components/layout/Navigation";
 import { CookieBanner } from "@/components/layout/CookieBanner";
@@ -11,10 +11,13 @@ import { PreBookPopup } from "@/components/layout/PreBookPopup";
 import { isEuOrUk } from "@/lib/utils";
 import { StoreSettingsProvider } from "@/components/store/StoreSettings";
 import { GeoProvider } from "@/components/store/Geo";
+import { ArrivalWaitlist } from "@/components/store/ArrivalWaitlist";
+import { WAITLIST_PROMPT_COOKIE, type WaitlistPrompt } from "@/lib/waitlist-consent";
 import { visitorGeo } from "@/lib/geo";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { getBannerSettings, getPreorderSettings, bannerIsLive } from "@/lib/data/settings";
 import { hreflangAlternates } from "@/lib/i18n";
+import { offerFor } from "@/lib/preorder";
 
 const sans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -66,6 +69,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const nonce = hdrs.get("x-nonce") ?? undefined;
   const [preorder, banner] = await Promise.all([getPreorderSettings(), getBannerSettings()]);
   const geo = visitorGeo();
+  const promptCookie = (await cookies()).get(WAITLIST_PROMPT_COOKIE)?.value;
+  const waitlistPrompt: WaitlistPrompt | null = promptCookie === "closed" || promptCookie === "joined" ? promptCookie : null;
   const country =
     hdrs.get("cloudfront-viewer-country") ??
     hdrs.get("x-vercel-ip-country") ??
@@ -90,14 +95,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           Skip to main content
         </a>
-        <StoreSettingsProvider preorder={preorder}>
+        <StoreSettingsProvider preorder={offerFor(preorder, geo.sellable)}>
         <GeoProvider country={geo.country} ipCountry={geo.ipCountry}>
-          {bannerIsLive(banner) ? <AnnouncementBar banner={banner} /> : null}
+          {/* The site banner carries the pre-order offer, which only applies where we sell. */}
+          {geo.sellable && bannerIsLive(banner) ? <AnnouncementBar banner={banner} /> : null}
           <Navigation />
+          <ArrivalWaitlist initial={waitlistPrompt} />
           <main id="main">{children}</main>
           <CartDrawer />
           <CookieBanner isEuOrUk={isEuOrUk(country)} />
-          <PreBookPopup />
+          {/* The pre-order quiz sells to US visitors; elsewhere the launch list takes its place. */}
+          {geo.sellable ? <PreBookPopup /> : null}
           <Analytics nonce={nonce} />
         </GeoProvider>
         </StoreSettingsProvider>

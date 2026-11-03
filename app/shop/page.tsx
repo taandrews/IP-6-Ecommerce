@@ -9,6 +9,8 @@ import { getPublishedReviews } from "@/lib/data/reviews";
 import type { Review } from "@/types";
 import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
+import { offerFor } from "@/lib/preorder";
+import { visitorGeo } from "@/lib/geo";
 import { resolveCurrency } from "@/lib/currency";
 import { hreflangAlternates } from "@/lib/i18n";
 
@@ -21,7 +23,8 @@ export const metadata: Metadata = {
 
 export default async function ShopPage() {
   const currency = resolveCurrency();
-  const [products, preorder] = await Promise.all([getCatalog(), getPreorderSettings()]);
+  const [products, settings] = await Promise.all([getCatalog(), getPreorderSettings()]);
+  const preorder = offerFor(settings, visitorGeo().sellable);
   const reviewsBySku: Record<string, Review[]> = Object.fromEntries(await Promise.all(products.map(async (product) => [product.sku, (await getPublishedReviews(product.sku)).map(review => ({ ...review, rating: review.rating as Review["rating"] }))])));
   return (
     <>

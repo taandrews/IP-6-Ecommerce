@@ -9,6 +9,7 @@ import { Accordion } from "@/components/ui/Accordion";
 import { MoleculeOrbit } from "./MoleculeOrbit";
 import { RoutineGuide, type RoutineOption } from "./RoutineGuide";
 import styles from "./HomeDetails.module.css";
+import { OrderLabel } from "@/components/store/OrderLabel";
 
 export function HomeDetails({ supplement, pet, preorder }: { supplement: Product; pet?: Product; preorder: PreorderSettings }) {
   const options: [RoutineOption, ...RoutineOption[]] = [{ id: "people", label: "For people", title: "Four capsules. With water.", directions: supplement.howToUse, href: "/how-to-take" }];
@@ -70,7 +71,7 @@ export function HomeDetails({ supplement, pet, preorder }: { supplement: Product
         </div>
         <div className={styles.closing}>
           <p>For people. For pets.{preorder.active ? <small>{preorder.discountPct}% off for launch. {preorder.shipNote}.</small> : null}</p>
-          <Link href="#products" className={styles.order}>Pre Order Now <ArrowRight size={16} aria-hidden /></Link>
+          <Link href="#products" className={styles.order}><OrderLabel /> <ArrowRight size={16} aria-hidden /></Link>
         </div>
       </div>
     </section>

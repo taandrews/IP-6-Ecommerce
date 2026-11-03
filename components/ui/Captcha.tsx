@@ -41,7 +41,8 @@ function loadTurnstile(): Promise<void> {
   return loading;
 }
 
-export function Captcha() {
+/** "interaction-only" keeps the widget hidden unless Cloudflare needs a click. */
+export function Captcha({ appearance = "always" }: { appearance?: "always" | "interaction-only" } = {}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let id: string | undefined;
@@ -55,6 +56,7 @@ export function Captcha() {
           size: "flexible",
           "response-field-name": FIELD,
           "refresh-expired": "auto",
+          appearance,
         });
         ref.current.dataset.widgetId = id;
       })
@@ -63,8 +65,8 @@ export function Captcha() {
       cancelled = true;
       if (id) window.turnstile?.remove(id);
     };
-  }, []);
-  return <div ref={ref} data-captcha className="min-h-[65px] w-full" />;
+  }, [appearance]);
+  return <div ref={ref} data-captcha className={appearance === "always" ? "min-h-[65px] w-full" : "w-full"} />;
 }
 
 /**

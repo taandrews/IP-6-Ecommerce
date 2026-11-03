@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { HERO } from "@/lib/cdn-images";
-const { doctor: speakerPhoto, yoga: yogaPhoto, yogaMobile: yogaMobilePhoto, approvedSlide, approvedSlideMobile: approvedMobileSlide, productScene } = HERO;
+const { doctor: speakerPhoto, yoga: yogaPhoto, yogaMobile: yogaMobilePhoto, approvedSlide, approvedSlideIntl, approvedSlideMobile: approvedMobileSlide, productScene } = HERO;
 import { asset } from "@/lib/assets";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import styles from "./HeroSlideshow.module.css";
+import { useGeo } from "@/components/store/Geo";
+import { OrderLabel } from "@/components/store/OrderLabel";
 
 /* Full-bleed photo slideshow. Each slide opens under a navy-to-cyan duotone while the
    headline types in letter by letter, then the tint lifts to reveal the colour photo.
@@ -18,7 +20,7 @@ type Segment = { text: string; em?: boolean };
 // `sub` is the one plain sentence that says what the product is.
 type Slide = { src: string; msrc?: string; video?: string; pos: string; mpos?: string; alt: string; eyebrow: string; line: Segment[]; sub: string; mobileHeadlineOnly?: boolean; mobileLow?: boolean; mobileTopEyebrow?: boolean };
 
-const SLIDES: Slide[] = [
+const ALL_SLIDES: Slide[] = [
   { src: asset("hero/video/ip6-hero-stock-804268291-poster.webp"), video: asset("hero/video/ip6-hero-stock-804268291.mp4"), pos: "50% 45%", mpos: "50% 50%", alt: "Six children in a circle looking down at the camera and laughing", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." },
   { src: yogaPhoto.src, msrc: yogaMobilePhoto.src, pos: "65% 50%", alt: "A woman meditating cross-legged on a yoga mat in a bright living room", eyebrow: "Pre-order, ships November 2026", line: [{ text: "Pre-order now. " }, { text: "15% off.", em: true }], sub: "IP6 Original is a dietary supplement of IP6 and Inositol in vegetable capsules, formulated by the scientist who pioneered the research." , mobileHeadlineOnly: true, mobileLow: true},
   { src: asset("hero/video/ip6-hero-dog-cat-poster.webp"), video: asset("hero/video/ip6-hero-dog-cat.mp4"), pos: "50% 0%", mpos: "62% 20%", alt: "A brown dog resting its head on a sleeping tabby cat on a blanket", eyebrow: "IP6 Original Pet Powder", line: [{ text: "IP6 Original, " }, { text: "for pets", em: true }, { text: "." }], sub: "The same IP6 and Inositol as an unflavored powder for dogs and cats, with a measuring scoop in the tub." , mobileHeadlineOnly: true},
@@ -31,7 +33,11 @@ const TYPE_DELAY = 500;
 const REVEAL_AFTER_TYPED = 350;
 const REVEAL_MS = 1400;
 const HOLD_AFTER_REVEAL = 2600;
-const SLIDE_COUNT = SLIDES.length + 1;
+const SLIDE_COUNT = ALL_SLIDES.length + 1;
+
+/** Where we don't sell yet, the pre-order slides drop the offer and lead with the product. */
+const NO_OFFER = { eyebrow: "Science driven. Purity first.", line: [{ text: "The original " }, { text: "IP6 + Inositol", em: true }, { text: "." }] };
+const SLIDES_NO_OFFER: Slide[] = ALL_SLIDES.map((s) => (s.eyebrow.startsWith("Pre-order") ? { ...s, ...NO_OFFER } : s));
 
 const charCount = (line: Segment[]) => line.reduce((n, s) => n + s.text.replace(/ /g, "").length, 0);
 
@@ -44,6 +50,8 @@ function PauseIcon({ paused }: { paused: boolean }) {
 }
 
 export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?: string }) {
+  const { sellable } = useGeo();
+  const SLIDES = sellable ? ALL_SLIDES : SLIDES_NO_OFFER;
   const [cur, setCur] = useState(-1);
   const [typed, setTyped] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -126,7 +134,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
       }
     }, typedAt + REVEAL_AFTER_TYPED + REVEAL_MS + HOLD_AFTER_REVEAL);
     return clear;
-  }, [cur, reduce, runKey, clear]);
+  }, [cur, reduce, runKey, clear, SLIDES]);
 
   // The active slide's video plays. When the show moves on, the video keeps
   // looping through the whole crossfade so it never freezes mid-fade; it is
@@ -187,7 +195,15 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
             <picture className={styles.productPicture}>
               <source media="(max-width: 900px) and (orientation: portrait)" srcSet={approvedMobileSlide.src} />
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={approvedSlide.src} alt="IP6 + Inositol. For people. For pets. 15% off. Pre-order now. Ships November 2026. Capsules and powder appearance illustrative." fetchPriority="high" />
+              <img
+                src={sellable ? approvedSlide.src : approvedSlideIntl.src}
+                alt={
+                  sellable
+                    ? "IP6 + Inositol. For people. For pets. 15% off. Pre-order now. Ships November 2026. Capsules and powder appearance illustrative."
+                    : "IP6 + Inositol. For people. For pets. The original formula. In capsules for you. A powder for them. Capsules and powder appearance illustrative."
+                }
+                fetchPriority="high"
+              />
             </picture>
             <Link href={ctaHref} className={[styles.productImageLink, styles.productPeopleLink].join(" ")} aria-label="Shop for people" tabIndex={cur === -1 ? undefined : -1} />
             {petHref ? <Link href={petHref} className={[styles.productImageLink, styles.productPetsLink].join(" ")} aria-label="Shop for pets" tabIndex={cur === -1 ? undefined : -1} /> : null}
@@ -203,9 +219,13 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
               <img src={productScene.src} width={productScene.width} height={productScene.height} alt="IP6 Original capsules and pet powder, with both containers, capsules and a scoop of powder fully visible" />
             </div>
             <div className={styles.mobileProductOffer}>
-              <strong>15% off</strong>
-              <p>Pre-order now.</p>
-              <small>Ships November 2026.</small>
+              {sellable ? (
+                <>
+                  <strong>15% off</strong>
+                  <p>Pre-order now.</p>
+                  <small>Ships November 2026.</small>
+                </>
+              ) : null}
               <div className={styles.mobileProductLinks}>
                 <Link href={ctaHref} tabIndex={cur === -1 ? undefined : -1}>Shop for people<ArrowRight size={16} aria-hidden /></Link>
                 {petHref && <Link href={petHref} tabIndex={cur === -1 ? undefined : -1}>Shop for pets<ArrowRight size={16} aria-hidden /></Link>}
@@ -285,7 +305,7 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
       {/* Buttons: rendered once, so they stay put while the pictures change. */}
       <div className={styles.actions} aria-hidden={cur === -1}>
         <Link href={ctaHref} className={styles.cta}>
-          Pre Order Now
+          <OrderLabel />
           <ArrowRight aria-hidden />
         </Link>
         <nav className={styles.routes} aria-label="Shop by">

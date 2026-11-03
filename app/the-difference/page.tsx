@@ -9,6 +9,7 @@ import { LABEL_240, LIFESTYLE } from "@/lib/cdn-images";
 const capsulePhoto = LIFESTYLE.supplementDetail;
 const labelPhoto = LABEL_240;
 import styles from "./Difference.module.css";
+import { OrderLabel } from "@/components/store/OrderLabel";
 
 export const metadata: Metadata = {
   title: "What goes into IP6 Original",
@@ -97,7 +98,7 @@ export default function TheDifferencePage() {
           <div><p className={styles.eyebrow}>The scientist behind the formula</p><h2 id="founder-title">One formula. From the scientist<br />who pioneered the research.</h2></div>
           <div className={styles.founderCopy}><p>Professor AbulKalam M. Shamsuddin, MD, PhD</p><p className={styles.body}>Physician-scientist. Founder and formulator of IP6 Original.</p><Link href="/story#founder" className={styles.textLink}>Meet Professor Shamsuddin <ArrowRight size={17} aria-hidden /></Link></div>
         </section>
-        <div className={`${styles.wrap} ${styles.closing}`}><div><p>Get to know the original.</p><span>Explore capsules for people and powder for pets.</span></div><Link href="/shop" className={styles.order}>Pre Order Now <ArrowRight size={18} aria-hidden /></Link></div>
+        <div className={`${styles.wrap} ${styles.closing}`}><div><p>Get to know the original.</p><span>Explore capsules for people and powder for pets.</span></div><Link href="/shop" className={styles.order}><OrderLabel /> <ArrowRight size={18} aria-hidden /></Link></div>
         <div className={`${styles.wrap} ${styles.disclaimer}`}><DsheaDisclaimer /></div>
       </article>
       <Footer showDshea />

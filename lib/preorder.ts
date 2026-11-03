@@ -36,3 +36,11 @@ export function lineTotalCents(line: Discountable, p: PreorderSettings = DEFAULT
 export function preorderUnitCents(unitPriceCents: number, p: PreorderSettings = DEFAULT_PREORDER) {
   return p.active ? Math.round(unitPriceCents * (1 - p.discountPct / 100)) : unitPriceCents;
 }
+
+/**
+ * The pre-order offer as a visitor sees it: switched off where we don't sell
+ * yet, so nobody is shown a discount they can't use.
+ */
+export function offerFor(p: PreorderSettings, sellable: boolean): PreorderSettings {
+  return sellable ? p : { ...p, active: false };
+}

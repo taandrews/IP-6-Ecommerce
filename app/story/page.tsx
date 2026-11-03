@@ -7,6 +7,7 @@ import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { hreflangAlternates } from "@/lib/i18n";
 import { asset } from "@/lib/assets";
 import styles from "./Story.module.css";
+import { OrderLabel } from "@/components/store/OrderLabel";
 
 export const metadata: Metadata = {
   title: "The molecule a scientist spent his career on",
@@ -92,7 +93,7 @@ export default function StoryPage() {
               <p className={styles.body}>IP6 and Inositol. The original formula, developed by Professor Shamsuddin.</p>
               <p className={styles.productDetail}>240 capsules · 4 capsules per serving</p>
             </div>
-            <Link href="/shop#people" className={styles.order}>Pre Order Now <ArrowRight size={16} aria-hidden="true" /></Link>
+            <Link href="/shop#people" className={styles.order}><OrderLabel /> <ArrowRight size={16} aria-hidden="true" /></Link>
           </div>
         </section>
       </article>

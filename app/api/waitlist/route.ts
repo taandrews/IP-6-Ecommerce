@@ -41,7 +41,7 @@ const Body = z.object({
     .max(200)
     .regex(/^\/[^\s]*$/)
     .default("/"),
-  source: z.enum(["product", "checkout"]),
+  source: z.enum(["product", "checkout", "arrival"]),
   site: z.enum(["amplify", "shopify"]).default("amplify"),
   captcha: z.string().max(2048).nullish(),
 });

@@ -29,7 +29,7 @@ export interface WaitlistRecord {
   products?: string[];
   lastProduct?: string;
   page: string;
-  source: "product" | "checkout";
+  source: "product" | "checkout" | "arrival";
   /** Which storefront the signup came from. */
   site?: "amplify" | "shopify";
   consentVersion: string;

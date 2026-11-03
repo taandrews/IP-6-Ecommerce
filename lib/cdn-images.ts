@@ -18,6 +18,8 @@ export const HERO = {
   yoga: img("hero/yoga-full-scene-desktop.webp", 1983, 793),
   yogaMobile: img("hero/yoga-full-scene-mobile.webp", 887, 1774),
   approvedSlide: img("hero/ip6-corrected-slide-desktop.webp", 1812, 868),
+  /** The same artwork without the pre-order offer, for visitors where we don't sell yet. */
+  approvedSlideIntl: img("hero/ip6-corrected-slide-desktop-intl.webp", 1812, 868),
   approvedSlideMobile: img("hero/ip6-approved-slide-mobile.webp", 887, 1774),
   productScene: img("hero/ip6-products-mobile-cutout-v1.png", 1536, 1024),
   capsulesPowderScene: img("hero/ip6-capsules-powder-scene.webp", 1536, 1024),

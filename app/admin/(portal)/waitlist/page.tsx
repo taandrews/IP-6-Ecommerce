@@ -88,7 +88,7 @@ export default async function WaitlistPage() {
                 <td className="px-4 py-2">{countryName(r.country)}</td>
                 <td className="px-4 py-2">{r.ipCountry ?? ""}</td>
                 <td className="px-4 py-2 text-xs">{r.site === "shopify" ? "Shopify" : "Amplify"}</td>
-                <td className="px-4 py-2 text-xs">{r.source === "checkout" ? "Checkout" : r.lastProduct ? PRODUCT_NAMES.get(r.lastProduct) ?? r.lastProduct : r.page}</td>
+                <td className="px-4 py-2 text-xs">{r.source === "checkout" ? "Checkout" : r.source === "arrival" ? `On arrival · ${r.page}` : r.lastProduct ? PRODUCT_NAMES.get(r.lastProduct) ?? r.lastProduct : r.page}</td>
                 <td className="px-4 py-2 text-xs">{r.consentedAt.slice(0, 10)} · v{r.consentVersion}{r.confirmedAt ? " · confirmed" : ""}</td>
                 <td className="px-4 py-2 text-xs tabular-nums">{r.updatedAt.slice(0, 10)}</td>
               </tr>

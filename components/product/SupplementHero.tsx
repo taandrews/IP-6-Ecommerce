@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { SHOP_VIDEO } from "@/lib/cdn-images";
 import styles from "./PetHero.module.css";
+import { OrderLabel } from "@/components/store/OrderLabel";
 
 export function SupplementHero({ ctaHref = "#supplement-purchase", showCopy = true, playing = true, loop = true, onEnded }: { ctaHref?: string; showCopy?: boolean; playing?: boolean; loop?: boolean; onEnded?: () => void } = {}) {
   const heroRef = useRef<HTMLElement>(null);
@@ -43,7 +44,7 @@ export function SupplementHero({ ctaHref = "#supplement-purchase", showCopy = tr
     {showCopy && <div className={styles.copy}>
       <h2>IP6 Original for you.</h2>
       <p>IP6 and Inositol in vegetable capsules.</p>
-      <a className={styles.cta} href={ctaHref}>Pre Order Now<ArrowRight size={18} aria-hidden="true" /></a>
+      <a className={styles.cta} href={ctaHref}><OrderLabel /><ArrowRight size={18} aria-hidden="true" /></a>
     </div>}
   </section>;
 }

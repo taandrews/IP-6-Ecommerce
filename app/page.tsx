@@ -12,8 +12,10 @@ import { getCatalog } from "@/lib/data/catalog";
 import { getPreorderSettings } from "@/lib/data/settings";
 import { resolveCurrency } from "@/lib/currency";
 import { formatPrice } from "@/lib/utils";
-import { preorderUnitCents } from "@/lib/preorder";
+import { offerFor, preorderUnitCents } from "@/lib/preorder";
+import { visitorGeo } from "@/lib/geo";
 import type { Product } from "@/types";
+import { OrderLabel } from "@/components/store/OrderLabel";
 
 const SERIF = { fontFamily: "var(--font-display), Georgia, serif", fontWeight: 400 } as const;
 const H2 = { ...SERIF, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", lineHeight: 1.08, letterSpacing: "-0.02em" } as const;
@@ -28,7 +30,8 @@ const CTA = "inline-flex items-center gap-2 bg-button hover:bg-button-hover text
 */
 export default async function HomePage() {
   const currency = resolveCurrency();
-  const [catalog, preorder] = await Promise.all([getCatalog(), getPreorderSettings()]);
+  const [catalog, settings] = await Promise.all([getCatalog(), getPreorderSettings()]);
+  const preorder = offerFor(settings, visitorGeo().sellable);
   const supplement = catalog.find((p) => p.slug === "ip6-original-supplement")!;
   const pet = catalog.find((p) => p.slug === "ip6-original-pet-powder");
 
@@ -99,7 +102,7 @@ export default async function HomePage() {
                         <span className="text-sm text-ink/65 ml-auto">{price.size}</span>
                       </div>
                       <Link href={productHref(product.slug)} className={`${CTA} w-full justify-center mt-5`}>
-                        Pre Order Now
+                        <OrderLabel />
                         <ArrowRight className="size-4" aria-hidden />
                       </Link>
                     </div>

@@ -6,6 +6,7 @@ import { ArrowRight, Pause, Play } from "lucide-react";
 import { PetHero } from "@/components/product/PetHero";
 import { SupplementHero } from "@/components/product/SupplementHero";
 import styles from "./ShopHero.module.css";
+import { OrderLabel } from "@/components/store/OrderLabel";
 
 export function ShopHero() {
   const [slide, setSlide] = useState(0);
@@ -32,7 +33,7 @@ export function ShopHero() {
         <h2>IP6 Original.<span>{slide === 0 ? "For you." : "For them."}</span></h2>
       </div>
       <div className={styles.actions}>
-        <Link href={href} className={styles.order}>Pre Order Now<ArrowRight size={16} aria-hidden="true" /></Link>
+        <Link href={href} className={styles.order}><OrderLabel /><ArrowRight size={16} aria-hidden="true" /></Link>
         <nav className={styles.routes} aria-label="Shop by"><Link href="#people">For people</Link><Link href="#pets">For pets</Link></nav>
       </div>
       <div className={styles.dots}>

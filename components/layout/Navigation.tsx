@@ -9,6 +9,7 @@ import { useCart } from "@/components/cart/CartStore";
 import { CountrySwitcher, CountryMenu } from "@/components/layout/CountrySwitcher";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useGeo } from "@/components/store/Geo";
 
 const SHOP_LINKS = [
   { href: "/shop#people", label: "Supplement for people" },
@@ -25,6 +26,8 @@ const LINKS = [
 export function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openDrawer, count } = useCart();
+  // Visitors outside the countries we sell to get the launch list instead of the pre-order offer.
+  const { sellable } = useGeo();
 
   return (
     <>
@@ -55,12 +58,14 @@ export function Navigation() {
             <Search className="size-5" />
           </Link>
           <CountrySwitcher />
-          <Link
-            href="/shop#people"
-            className="btn-primary text-sm px-4 py-2 ml-1 whitespace-nowrap max-[360px]:text-xs max-[360px]:px-2 max-[360px]:ml-0"
-          >
-            Pre Order Now
-          </Link>
+          {sellable ? (
+            <Link
+              href="/shop#people"
+              className="btn-primary text-sm px-4 py-2 ml-1 whitespace-nowrap max-[360px]:text-xs max-[360px]:px-2 max-[360px]:ml-0"
+            >
+              Pre Order Now
+            </Link>
+          ) : null}
           <a
             href={SHOPIFY_ACCOUNT_URL}
             aria-label="Account"
