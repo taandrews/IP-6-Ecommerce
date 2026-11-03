@@ -84,14 +84,6 @@ export function operatorStatements(stack: Stack, amplifyAppArn: string): iam.Pol
       resources: ["us-east-1", "us-east-2"].flatMap((r) => [arn("ses", r, "identity/ip6original.com"), arn("ses", r, "configuration-set/*")]),
     }),
     new iam.PolicyStatement({
-      // Re-sends the email confirmation for the aws@ (alerts group) subscription, and only
-      // that: no other address or protocol can be subscribed to the alerts.
-      sid: "AlertSubscriptions",
-      actions: ["sns:Subscribe"],
-      resources: ["us-east-1", "us-east-2"].map((r) => arn("sns", r, "ip6-alerts")),
-      conditions: { StringEquals: { "sns:Protocol": "email", "sns:Endpoint": "aws@ip6original.com" } },
-    }),
-    new iam.PolicyStatement({
       sid: "OwnAccessKeys",
       actions: ["iam:ListAccessKeys", "iam:CreateAccessKey", "iam:UpdateAccessKey", "iam:DeleteAccessKey", "iam:GetAccessKeyLastUsed"],
       resources: [`arn:aws:iam::${account}:user/\${aws:username}`],

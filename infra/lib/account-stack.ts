@@ -208,9 +208,8 @@ export class Ip6AccountStack extends Stack {
     const subscriber = { subscriptionType: "EMAIL", address: props.alertEmail };
     new budgets.CfnBudget(this, "MonthlyBudget", {
       budget: {
-        // CloudFormation replaces a budget to change its subscribers, and a replacement
-        // cannot reuse the old name: rename it whenever ALERT_EMAIL changes.
-        budgetName: "ip6-monthly-aws-alerts",
+        // No fixed name: CloudFormation replaces a budget to change its subscribers,
+        // and a generated name lets the replacement be created before the old one is removed.
         budgetType: "COST",
         timeUnit: "MONTHLY",
         budgetLimit: { amount: props.monthlyBudgetUsd, unit: "USD" },
