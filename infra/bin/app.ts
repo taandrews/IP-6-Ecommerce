@@ -18,7 +18,7 @@ const AMPLIFY_APP_ID = "d1ypn0wsqjh17o";
 const AMPLIFY_REGION = "us-east-2";
 
 // Every alert (security, availability, cost, email reputation) goes here.
-const ALERT_EMAIL = "taandrews@init1s.com";
+const ALERT_EMAIL = "alerts@ip6original.com";
 const MONTHLY_BUDGET_USD = 50;
 
 const app = new App();
