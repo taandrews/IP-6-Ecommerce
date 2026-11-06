@@ -143,11 +143,12 @@ export function Reviews({ sku, initial = [], compact = false }: { sku: string; i
             <fieldset>
               <legend className="label">Bought from us? (optional)</legend>
               <div className="grid grid-cols-1 sm:grid-cols-[9rem_1fr] gap-2">
-                <input name="orderNumber" aria-label="Order number" placeholder="Order number" className="input" maxLength={20} inputMode="numeric" autoComplete="off" />
+                <input name="orderNumber" aria-label="Order number" placeholder="Order number" className="input" maxLength={20} autoComplete="off" autoCapitalize="characters" />
                 <input name="orderEmail" type="email" aria-label="Email used for the order" placeholder="Email used for the order" className="input" maxLength={254} autoComplete="email" />
               </div>
               <p className="mt-1 text-xs text-ink/60">Used once to mark your review as a verified purchase, then discarded. Never shown.</p>
             </fieldset>
+            <Captcha action="review" />
             <p className="text-xs text-ink/60">
               Please describe your personal experience. Every review is checked by our team before it is published, and reviews that make health or disease claims are not published. By submitting you agree we may show your review and the name above on this site.
             </p>

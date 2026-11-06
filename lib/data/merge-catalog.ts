@@ -1,29 +1,30 @@
-import type { Product } from "@/types";
-import { pricesFromUsd } from "@/content/products";
-import type { ShopifyProduct } from "@/lib/shopify/storefront";
+import type { Currency, Product } from "@/types";
+import type { InventoryItem, ProductOverride } from "@/types/records";
 
-/**
- * Applies Shopify's live price, stock and subscription plans to the static
- * catalog, matching variants by SKU. A variant Shopify doesn't return is shown
- * but can't be bought. Pure, so tests can use it.
- */
-export function mergeCatalog(base: Product[], shopify: ShopifyProduct[]): Product[] {
-  const bySku = new Map(shopify.flatMap((p) => p.variants.map((v) => [v.sku, { product: p, variant: v }] as const)));
+/** Applies admin price and availability overrides and live stock to the static catalog. Pure, so scripts and tests can use it. */
+export function mergeCatalog(base: Product[], overrides: ProductOverride[], stock: InventoryItem[]): Product[] {
+  const bySku = new Map(overrides.map((o) => [o.sku, o]));
+  const stockBySku = new Map(stock.map((s) => [s.sku, s]));
   return base.map((p) => {
-    const plans = p.variants.map((v) => bySku.get(v.sku)?.product.sellingPlans).find((sp) => sp?.length) ?? [];
+    const o = bySku.get(p.sku);
     return {
       ...p,
-      subscriptionCycles: plans.map((sp) => ({ days: sp.days, discountPct: sp.discountPct, sellingPlanId: sp.id })),
       variants: p.variants.map((v) => {
-        const hit = bySku.get(v.sku);
-        if (!hit) return { ...v, inStock: false, shopifyVariantId: undefined };
+        const prices = o?.prices?.[v.id];
+        const manual = o?.available?.[v.id];
+        const inv = stockBySku.get(v.sku);
+        const hasStock = !inv || inv.stock > 0 || inv.allowBackorder;
         return {
           ...v,
-          priceCents: pricesFromUsd(hit.variant.priceCents),
-          inStock: hit.variant.availableForSale,
-          shopifyVariantId: hit.variant.id,
+          priceCents: prices ? { ...v.priceCents, ...stripUndefined(prices) } : v.priceCents,
+          inStock: v.inStock && manual !== false && hasStock,
+          ...(inv && !inv.allowBackorder ? { available: Math.max(0, inv.stock) } : {}),
         };
       }),
     };
   });
+}
+
+function stripUndefined(p: Partial<Record<Currency, number>>): Partial<Record<Currency, number>> {
+  return Object.fromEntries(Object.entries(p).filter(([, n]) => typeof n === "number" && Number.isFinite(n)));
 }

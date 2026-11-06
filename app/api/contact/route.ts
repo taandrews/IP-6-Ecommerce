@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   // A bot filled in the hidden field: report success and send nothing.
   if (isBot(parsed.data.website)) return NextResponse.json({ ok: true });
-  if (!(await verifyCaptcha(parsed.data.captcha, req))) {
+  if (!(await verifyCaptcha(parsed.data.captcha, req, "contact"))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   const findings = lintContent(parsed.data.message);

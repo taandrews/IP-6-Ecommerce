@@ -6,7 +6,7 @@ import { eraseCustomer } from "@/lib/data/customers";
 import { unsealEmail } from "@/lib/admin/seal";
 import { closePrivacyRequest, getPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
-import { emailKey } from "@/lib/data/keys";
+import { emailKey } from "@/lib/data/orders";
 
 export const runtime = "nodejs";
 
@@ -18,7 +18,7 @@ const Body = z.object({
   notify: z.boolean().default(true),
 });
 
-/** Owner-only right-to-erasure: this site's data, plus Shopify's own erasure request. Irreversible; see eraseCustomer. */
+/** Owner-only right-to-erasure. Irreversible; see eraseCustomer for what is kept. */
 export const POST = withAdmin("customers:delete", async (req, staff) => {
   const b = await parseBody(req, Body);
   const email = unsealEmail(b.k);

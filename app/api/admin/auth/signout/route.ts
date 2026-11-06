@@ -10,9 +10,9 @@ export const runtime = "nodejs";
 /** Ends the staff session here and revokes it on every device. */
 export async function POST(req: Request) {
   const user = await getStaffUser();
-  const access = getAccessToken("staff");
+  const access = await getAccessToken("staff");
   if (access) await globalSignOut(access).catch(() => undefined);
   if (user) await audit({ sub: user.sub, email: user.email, role: roleFromGroups(user.groups) ?? "none" }, "staff.signout");
-  clearAuthCookies("staff");
+  await clearAuthCookies("staff");
   return NextResponse.redirect(siteUrl("/admin/login", req), { status: 303 });
 }

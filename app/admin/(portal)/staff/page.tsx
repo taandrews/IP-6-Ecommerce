@@ -2,7 +2,7 @@ import { requireStaffPage } from "@/lib/admin/guard";
 import { listStaff } from "@/lib/aws/cognito";
 import { ROLE_LABELS, PERMISSIONS, type Role } from "@/lib/auth/roles";
 import { Notice, PageHeader, Panel, Pill, Table } from "@/components/admin/ui";
-import { InviteStaff, StaffRowActions } from "./StaffClient";
+import { InviteStaff, StaffName, StaffRowActions } from "./StaffClient";
 
 export const metadata = { title: "Staff" };
 
@@ -34,14 +34,14 @@ export default async function StaffPage() {
       <Table head={["Name", "Email", "Role", "Status", ""]} minWidth={720}>
         {staff.map((s) => (
           <tr key={s.username}>
-            <td className="px-4 py-3">{s.name}</td>
+            <td className="px-4 py-3"><StaffName username={s.username} name={s.name} /></td>
             <td className="px-4 py-3">{s.email}</td>
             <td className="px-4 py-3">{s.role ? ROLE_LABELS[s.role] : <Pill tone="warn">No role</Pill>}</td>
             <td className="px-4 py-3">
               {!s.enabled ? <Pill tone="bad">Disabled</Pill> : s.status === "FORCE_CHANGE_PASSWORD" ? <Pill tone="warn">Invite pending</Pill> : <Pill tone="good">Active</Pill>}
             </td>
             <td className="px-4 py-3 text-right">
-              {s.username === me.user.username ? <span className="text-xs text-ink/55">You</span> : <StaffRowActions username={s.username} role={s.role} enabled={s.enabled} />}
+              {s.username === me.user.username ? <span className="text-xs text-ink/55">You</span> : <StaffRowActions username={s.username} role={s.role} enabled={s.enabled} pending={s.status === "FORCE_CHANGE_PASSWORD"} />}
             </td>
           </tr>
         ))}

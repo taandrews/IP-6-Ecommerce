@@ -10,9 +10,8 @@ export default async function BannerPage() {
   const banner = await getBannerSettings();
   return (
     <div className="space-y-6">
-      <PageHeader title="Site banner" intro="A one-line announcement across the top of every storefront page on the Amplify site." />
+      <PageHeader title="Site banner" intro="A one-line announcement across the top of every storefront page." />
       <Notice tone={bannerIsLive(banner) ? "good" : "neutral"}>{bannerIsLive(banner) ? "The banner is showing now." : "The banner is not showing."}</Notice>
-      <Notice tone="info">The Shopify store's announcement bar is edited in Shopify's theme editor.</Notice>
       <Panel title="Banner">
         <BannerForm initial={banner} />
       </Panel>

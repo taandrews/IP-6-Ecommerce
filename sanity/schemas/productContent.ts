@@ -1,6 +1,6 @@
 import type { Rule } from "@sanity/types";
 
-export default {
+const productContentSchema = {
   name: "productContent",
   title: "Product content",
   type: "document",
@@ -27,3 +27,5 @@ export default {
     },
   ],
 };
+
+export default productContentSchema;

@@ -3,7 +3,7 @@ import type { PreorderSettings } from "@/types/records";
 import { lineTotalCents } from "@/lib/preorder";
 import { SHIP_COUNTRY_CODES } from "@/lib/countries";
 
-/** Free standard shipping for US addresses once the discounted merchandise subtotal reaches this amount. Mirrors the Shopify rate. */
+/** Free standard shipping for US addresses once the discounted merchandise subtotal reaches this amount. */
 export const FREE_SHIPPING_THRESHOLD_CENTS = 7500;
 export const FREE_SHIPPING_COUNTRIES = ["US"];
 

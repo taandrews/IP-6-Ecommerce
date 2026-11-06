@@ -62,7 +62,7 @@ export function ContactForm() {
       </Select>
       <Input id="order" name="order" label="Order number" hint="Optional. For order-specific questions." />
       <Textarea id="message" name="message" label="Message" required maxLength={2000} />
-      <Captcha />
+      <Captcha action="contact" />
       {error ? <p className="text-sm text-danger" role="alert">{error}</p> : null}
       <button type="submit" className="btn-primary" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending…" : "Send message"}

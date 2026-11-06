@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect, useState } from "react";
 import { CONSENT_CHANGED_EVENT, effectiveConsent, parseConsent, readConsentCookie, type Consent } from "@/lib/consent";
+import { rememberCampaign } from "@/lib/campaign";
 
 /**
  * Loads Google Analytics only with analytics consent and the Meta Pixel only
@@ -14,7 +15,10 @@ export function Analytics({ nonce }: { nonce?: string }) {
   const [consent, setConsent] = useState<Consent>({ analytics: false, marketing: false });
 
   useEffect(() => {
-    const read = () => setConsent(effectiveConsent(parseConsent(readConsentCookie())));
+    const read = () => {
+      setConsent(effectiveConsent(parseConsent(readConsentCookie())));
+      rememberCampaign();
+    };
     read();
     window.addEventListener(CONSENT_CHANGED_EVENT, read);
     return () => window.removeEventListener(CONSENT_CHANGED_EVENT, read);

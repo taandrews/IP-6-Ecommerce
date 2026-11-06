@@ -6,6 +6,7 @@ import { StickyDisclaimer } from "@/components/layout/StickyDisclaimer";
 import { Accordion } from "@/components/ui/Accordion";
 import { faqCategories } from "@/content/faqs";
 import { hreflangAlternates } from "@/lib/i18n";
+import { jsonLd } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "FAQs",
@@ -99,7 +100,7 @@ export default function FaqPage() {
         </article>
       </div>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
       <StickyDisclaimer />
       <Footer showDshea />
     </>

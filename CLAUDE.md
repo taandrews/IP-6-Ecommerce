@@ -22,10 +22,10 @@ npm run deploy:staging    # Ip6StagingStack, no approval prompt
 npm run deploy:prod       # Ip6ProdStack, approval on broadening
 ```
 
-## Hard constraint (regulatory separation, stated in "IP6 Shopify/CLAUDE.md")
+## Hard constraint (regulatory separation)
 
 - `ip-6.net` is research/information ONLY: no commercial content, no product links.
-- ABSOLUTE: ip6original.com (this site and the Shopify store) must never link to, mention, or name `ip-6.net` anywhere: copy, FAQs, footers, "read the research" links, metadata. `npm run compliance:check` fails on any reference and runs in the Amplify build. The redirect line below is about DNS direction only, not permission to link.
+- ABSOLUTE: ip6original.com must never link to, mention, or name `ip-6.net` anywhere: copy, FAQs, footers, "read the research" links, metadata. `npm run compliance:check` fails on any reference and runs in the Amplify build. The redirect line below is about DNS direction only, not permission to link.
 - Redirects flow `ip6original.com` -> `ip-6.net`, never the reverse.
 
 <!-- BEGIN:universal-rules v1 (2026-07-06). Shared block, identical across all Projects repos. If you change it here, change it everywhere. -->

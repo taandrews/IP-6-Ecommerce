@@ -48,12 +48,12 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
               method and tracking details.
             </li>
             <li>
-              <strong>Payments:</strong> checkout and card payments are handled by Shopify (Shopify Payments). We never see or store your full
-              card number. If you subscribe, Shopify keeps your card on file so renewals can be charged.
+              <strong>Payments:</strong> card payments are handled by Stripe. We never see or store your full card number. If you subscribe,
+              Stripe keeps your card on file so renewals can be charged.
             </li>
             <li>
-              <strong>Account:</strong> if you sign in to your customer account, it is run by Shopify, which holds your name, email, addresses and
-              order history.
+              <strong>Account:</strong> if you create one, your name, email and a password. Passwords are stored by Amazon Cognito in hashed form;
+              we can&apos;t see them.
             </li>
             <li>
               <strong>Subscriptions:</strong> the product, delivery frequency, price, next renewal date and the address renewals ship to.
@@ -115,8 +115,8 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
           <h2 className={H2}>4. Who we share it with</h2>
           <p className="mb-3">We use these service providers, who process data on our behalf and under their data protection terms:</p>
           <ul className="list-disc pl-5 space-y-2">
-            <li><strong>Amazon Web Services</strong> (USA): website hosting, our database and the emails this website sends.</li>
-            <li><strong>Shopify</strong> (Canada and USA): checkout, payments, fraud screening, sales tax, order and shipping emails, customer accounts and subscriptions.</li>
+            <li><strong>Amazon Web Services</strong> (USA): hosting, database, sign-in (Cognito) and email delivery.</li>
+            <li><strong>Stripe</strong> (USA): payments, fraud screening, saved cards for subscriptions and, where enabled, sales tax calculation.</li>
             <li><strong>Cloudflare</strong> (USA): the Turnstile spam check on our forms (your IP address and browser details).</li>
             <li><strong>Shipping carriers</strong> (for example USPS, UPS, FedEx, DHL): your name and address, to deliver your order.</li>
             <li><strong>Google Analytics</strong> and <strong>Meta (Facebook) Pixel</strong>: only as described in section 7.</li>
@@ -132,7 +132,9 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
         <section>
           <h2 className={H2}>5. How long we keep it</h2>
           <ul className="list-disc pl-5 space-y-2">
-            <li>Orders and customer accounts (held by Shopify): orders are kept as long as tax and accounting law requires. If you ask us to delete your data, we ask Shopify to erase your customer record.</li>
+            <li>Checkouts that are never paid: deleted automatically after 7 days.</li>
+            <li>Paid orders: kept as long as tax and accounting law requires. If you ask us to delete your data, we remove your name, email, phone and address from them.</li>
+            <li>Accounts: until you delete your account.</li>
             <li>Email sign-ups: until you unsubscribe.</li>
             <li>Reviews: while published, or until you ask us to remove them.</li>
             <li>Unconfirmed privacy requests: 48 hours. Completed requests: 2 years, as a record that we handled them.</li>
@@ -145,7 +147,7 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
           <p>
             Data is encrypted in transit (HTTPS) and at rest. Only our staff can open customer records, through a separate staff login that
             requires an authenticator app; each person&apos;s access depends on their role, and views, exports and changes are logged. Card data stays
-            with Shopify.
+            with Stripe.
           </p>
         </section>
 
@@ -164,7 +166,8 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
           <p className="mb-3">Depending on where you live, you can:</p>
           <ul className="list-disc pl-5 space-y-2">
             <li>
-              <strong>Get a copy</strong> of your data, using the form below.
+              <strong>Get a copy</strong> of your data. Signed-in customers can download it any time from{" "}
+              <a href="/account/privacy" className="underline text-forest-700">Account, Privacy and data</a>; otherwise use the form below.
             </li>
             <li>
               <strong>Correct</strong> it, by emailing{" "}
@@ -204,6 +207,7 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
           <h2 className="font-display text-xl text-forest-800 mb-2">Request a copy or deletion of your data</h2>
           <p className="text-sm text-ink/75 mb-4">
             Enter the email address you used with us. We&apos;ll send a confirmation link to that address; nothing happens until you click it.
+            Signed in? It&apos;s quicker from your <a href="/account/privacy" className="underline text-forest-700">account page</a>.
           </p>
           <DataDeletionForm />
         </section>

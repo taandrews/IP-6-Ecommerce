@@ -1,6 +1,6 @@
 import type { Rule } from "@sanity/types";
 
-export default {
+const faqSchema = {
   name: "faq",
   title: "FAQ item",
   type: "document",
@@ -24,3 +24,5 @@ export default {
     { name: "order", title: "Display order", type: "number" },
   ],
 };
+
+export default faqSchema;

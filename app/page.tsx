@@ -31,7 +31,7 @@ const CTA = "inline-flex items-center gap-2 bg-button hover:bg-button-hover text
 export default async function HomePage() {
   const currency = resolveCurrency();
   const [catalog, settings] = await Promise.all([getCatalog(), getPreorderSettings()]);
-  const preorder = offerFor(settings, visitorGeo().sellable);
+  const preorder = offerFor(settings, (await visitorGeo()).sellable);
   const supplement = catalog.find((p) => p.slug === "ip6-original-supplement")!;
   const pet = catalog.find((p) => p.slug === "ip6-original-pet-powder");
 

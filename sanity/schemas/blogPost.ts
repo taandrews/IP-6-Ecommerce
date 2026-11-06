@@ -1,6 +1,6 @@
 import type { Rule } from "@sanity/types";
 
-export default {
+const blogPostSchema = {
   name: "blogPost",
   title: "Blog post",
   type: "document",
@@ -42,3 +42,5 @@ export default {
     select: { title: "title", media: "cover" },
   },
 };
+
+export default blogPostSchema;

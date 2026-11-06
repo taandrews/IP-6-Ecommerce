@@ -1,6 +1,6 @@
 import type { Rule } from "@sanity/types";
 
-export default {
+const authorSchema = {
   name: "author",
   title: "Author",
   type: "document",
@@ -11,3 +11,5 @@ export default {
     { name: "avatar", title: "Avatar", type: "image", options: { hotspot: true } },
   ],
 };
+
+export default authorSchema;

@@ -13,6 +13,7 @@ import {
   GlobalSignOutCommand,
   GetUserCommand,
   AdminCreateUserCommand,
+  AdminUpdateUserAttributesCommand,
   AdminAddUserToGroupCommand,
   AdminRemoveUserFromGroupCommand,
   AdminListGroupsForUserCommand,
@@ -266,6 +267,20 @@ export async function setStaffRole(username: string, role: Role) {
     await cognitoClient.send(new AdminAddUserToGroupCommand({ UserPoolId: staffPool(), Username: username, GroupName: target }));
   }
   await signOutStaffEverywhere(username);
+}
+
+/** Changes the display name. The email is the sign-in identity and can't be changed. */
+export async function setStaffName(username: string, name: string) {
+  await cognitoClient.send(
+    new AdminUpdateUserAttributesCommand({ UserPoolId: staffPool(), Username: username, UserAttributes: [{ Name: "name", Value: name }] }),
+  );
+}
+
+/** Emails a fresh temporary password (valid 24 hours) to someone who hasn't signed in yet. */
+export async function resendStaffInvite(email: string) {
+  await cognitoClient.send(
+    new AdminCreateUserCommand({ UserPoolId: staffPool(), Username: email, MessageAction: "RESEND", DesiredDeliveryMediums: ["EMAIL"] }),
+  );
 }
 
 /** Revokes access immediately: disables the login and ends every session. */

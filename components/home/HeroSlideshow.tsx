@@ -12,7 +12,7 @@ import { OrderLabel } from "@/components/store/OrderLabel";
 
 /* Full-bleed photo slideshow. Each slide opens under a navy-to-cyan duotone while the
    headline types in letter by letter, then the tint lifts to reveal the colour photo.
-   Every headline traces to the label, a Shopify setting, or copy already on the site. */
+   Every headline traces to the label, a store setting, or copy already on the site. */
 
 type Segment = { text: string; em?: boolean };
 // A slide with `video` plays it muted on loop (src is then its poster frame). `cta` overrides the shared button.
@@ -194,7 +194,6 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
           <div className={styles.productArtwork}>
             <picture className={styles.productPicture}>
               <source media="(max-width: 900px) and (orientation: portrait)" srcSet={approvedMobileSlide.src} />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={sellable ? approvedSlide.src : approvedSlideIntl.src}
                 alt={
@@ -249,7 +248,6 @@ export function HeroSlideshow({ ctaHref, petHref }: { ctaHref: string; petHref?:
           >
             <div className={styles.ph}>
               {/* Plain img: the slides are full-bleed covers with a hand-set focal point. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               {s.video ? (
                 <video
                   ref={(el) => {

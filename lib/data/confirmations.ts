@@ -4,9 +4,10 @@ import { DeleteCommand, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/l
 import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { hit } from "@/lib/rate-limit";
-import { emailKey } from "./keys";
-import { newsletterKey } from "./keys";
+import { emailKey } from "./orders";
+import { newsletterKey } from "./customers";
 import { waitlistKey } from "./waitlist";
+import { siteOrigin } from "@/lib/site-origin";
 
 /**
  * Double opt-in for the newsletter and the launch waitlist. A sign-up is
@@ -21,19 +22,17 @@ const TTL_SECONDS = 60 * 60 * 48;
 const hash = (token: string) => crypto.createHash("sha256").update(token).digest("hex");
 const storeKey = (token: string) => `confirm:${hash(token)}`;
 
-function siteOrigin(req: Request) {
-  // Never build an emailed link from the request's Host header (it can be
-  // spoofed to send the token to another site). Production uses the configured origin.
-  const configured = process.env.NEXT_PUBLIC_SITE_URL ? new URL(process.env.NEXT_PUBLIC_SITE_URL).origin : null;
-  if (!configured && process.env.NODE_ENV === "production") throw new Error("NEXT_PUBLIC_SITE_URL is not configured");
-  return configured ?? new URL(req.url).origin;
-}
 
 /**
  * Emails a confirmation link for a pending sign-up. At most one email per
  * address and list an hour, so the form can't be used to flood an inbox.
  */
-export async function requestConfirmation(req: Request, kind: ConfirmKind, email: string, consentVersion: string) {
+export type ConfirmRequest =
+  | { kind: "newsletter" }
+  | { kind: "waitlist"; firstName: string; country: string };
+
+export async function requestConfirmation(req: Request, request: ConfirmRequest, email: string, consentVersion: string) {
+  const { kind } = request;
   if (!(await hit(`confirm-mail:${kind}:${emailKey(email)}`, 1, 3600))) return;
   const token = crypto.randomBytes(32).toString("base64url");
   await docClient.send(
@@ -43,7 +42,10 @@ export async function requestConfirmation(req: Request, kind: ConfirmKind, email
     }),
   );
   const link = `${siteOrigin(req)}/api/confirm?token=${encodeURIComponent(token)}`;
-  const msg = kind === "newsletter" ? emailTemplates.newsletterConfirm(link) : emailTemplates.waitlistConfirm(link);
+  const msg =
+    request.kind === "newsletter"
+      ? emailTemplates.newsletterConfirm(link)
+      : emailTemplates.waitlistConfirm(link, { firstName: request.firstName, country: request.country });
   await sendEmailSafe(email, msg, `${kind} confirm`);
 }
 

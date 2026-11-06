@@ -1,6 +1,6 @@
 import type { Rule } from "@sanity/types";
 
-export default {
+const testimonialSchema = {
   name: "testimonial",
   title: "Testimonial",
   type: "document",
@@ -25,3 +25,5 @@ export default {
     { name: "publishedAt", title: "Published at", type: "datetime" },
   ],
 };
+
+export default testimonialSchema;

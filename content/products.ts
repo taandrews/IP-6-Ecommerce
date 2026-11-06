@@ -93,7 +93,7 @@ export const products: Product[] = [
     // labReport: add back once the real certificate of analysis PDF is in public/coa/
   },
   {
-    // Facts from the pet 120 g label and the live Shopify product (ip6-original-pet-powder).
+    // Facts from the pet 120 g label.
     slug: "ip6-original-pet-powder",
     sku: "PET-IP6-PWD120",
     name: "IP6 Original Pet Powder",

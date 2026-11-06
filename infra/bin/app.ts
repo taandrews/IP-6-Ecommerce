@@ -5,6 +5,7 @@ import { Ip6Stack } from "../lib/ip6-stack";
 import { Ip6AccountStack } from "../lib/account-stack";
 import { Ip6MonitoringStack } from "../lib/monitoring-stack";
 import { Ip6CiStack } from "../lib/ci-stack";
+import { Ip6HostingStack } from "../lib/hosting-stack";
 
 // Everything except Amplify Hosting lives in us-east-1 (the CDK bootstrap,
 // IAM/CloudTrail global events, CloudFront metrics, and the CLOUDFRONT-scoped
@@ -16,6 +17,13 @@ const account = process.env.CDK_DEFAULT_ACCOUNT;
 // Amplify Hosting app for the storefront (created in the console; lives in us-east-2).
 const AMPLIFY_APP_ID = "d1ypn0wsqjh17o";
 const AMPLIFY_REGION = "us-east-2";
+const DOMAIN = "ip6original.com";
+/**
+ * Where staff sign in, used in staff invitation emails. admin.<domain> takes
+ * over once its DNS records are in place (Ip6HostingStack); until then the
+ * Amplify address, which works today.
+ */
+const ADMIN_ORIGIN = "https://main.d1ypn0wsqjh17o.amplifyapp.com";
 
 // Every alert (security, availability, cost, email reputation) goes to the
 // alerts@ip6original.com Google Group; who receives them is managed in the group.
@@ -39,6 +47,14 @@ const accountStack = new Ip6AccountStack(app, "Ip6AccountStack", {
   amplifyRegion: AMPLIFY_REGION,
 });
 
+// Custom domains for the Amplify app (DNS at GoDaddy).
+new Ip6HostingStack(app, "Ip6HostingStack", {
+  env: { account, region: AMPLIFY_REGION },
+  amplifyAppId: AMPLIFY_APP_ID,
+  branchName: "main",
+  domainName: DOMAIN,
+});
+
 new Ip6MonitoringStack(app, "Ip6MonitoringStack", {
   env: { account, region: AMPLIFY_REGION },
   alertEmail: ALERT_EMAIL,
@@ -57,7 +73,8 @@ new Ip6Stack(app, "Ip6ProdStack", {
   env: { account, region: REGION },
   environment: "prod",
   tablePrefix: "ip6_prod_",
-  domainName: "ip6original.com",
+  domainName: DOMAIN,
+  adminOrigin: ADMIN_ORIGIN,
   alertsTopicArn: accountStack.alertsTopic.topicArn,
   amplifyAppId: AMPLIFY_APP_ID,
   amplifyRegion: AMPLIFY_REGION,

@@ -96,6 +96,7 @@ export function ArrivalWaitlist({ initial }: { initial: WaitlistPrompt | null })
 function ArrivalBand({ country, joined, onClose, onJoined }: { country: string; joined: boolean; onClose: () => void; onJoined: () => void }) {
   const id = useId();
   const options = useWaitlistCountries();
+  const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [chosen, setChosen] = useState(isSellableCountry(country) ? "" : country);
   const [consent, setConsent] = useState(false);
@@ -113,7 +114,7 @@ function ArrivalBand({ country, joined, onClose, onJoined }: { country: string; 
           <div role="status" className="flex items-start gap-3 pr-10">
             <Check className="size-6 mt-0.5 text-gold-300 shrink-0" aria-hidden="true" />
             <div>
-              <p id={`${id}-title`} className="font-display text-2xl lg:text-3xl text-surface">You&apos;re nearly on the list for {where}.</p>
+              <p id={`${id}-title`} className="font-display text-2xl lg:text-3xl text-surface">Thanks, {firstName.trim()}. You&apos;re nearly on the list for {where}.</p>
               <p className="mt-1 text-surface/80">We sent a confirmation link to {email}. Click it and we&apos;ll email you the day we launch there.</p>
             </div>
           </div>
@@ -132,40 +133,60 @@ function ArrivalBand({ country, joined, onClose, onJoined }: { country: string; 
               noValidate
               onSubmit={(e) => {
                 e.preventDefault();
-                void submit(e.currentTarget, { email, country: chosen, consent });
+                void submit(e.currentTarget, { firstName, email, country: chosen, consent });
               }}
               className="space-y-3"
             >
-              <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] gap-2 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto]">
-                <label htmlFor={`${id}-email`} className="sr-only">
-                  Email
-                </label>
-                <input
-                  id={`${id}-email`}
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="Your email"
-                  className="input text-ink"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <label htmlFor={`${id}-country`} className="sr-only">
-                  Country
-                </label>
-                <select id={`${id}-country`} required className="input text-ink" value={chosen} onChange={(e) => setChosen(e.target.value)}>
-                  <option value="" disabled>
-                    Your country
-                  </option>
-                  {options.map(([code, name]) => (
-                    <option key={code} value={code}>
-                      {name}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Each field sits in its own box so elements that browser extensions add beside inputs can't shift the grid. */}
+                <div className="min-w-0">
+                  <label htmlFor={`${id}-first`} className="sr-only">
+                    First name
+                  </label>
+                  <input
+                    id={`${id}-first`}
+                    required
+                    autoComplete="given-name"
+                    maxLength={60}
+                    placeholder="First name"
+                    className="input text-ink"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <label htmlFor={`${id}-email`} className="sr-only">
+                    Email
+                  </label>
+                  <input
+                    id={`${id}-email`}
+                    type="email"
+                    required
+                    autoComplete="email"
+                    placeholder="Your email"
+                    className="input text-ink"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="col-span-2 min-w-0 sm:col-span-1">
+                  <label htmlFor={`${id}-country`} className="sr-only">
+                    Country
+                  </label>
+                  <select id={`${id}-country`} required className="input text-ink" value={chosen} onChange={(e) => setChosen(e.target.value)}>
+                    <option value="" disabled>
+                      Your country
                     </option>
-                  ))}
-                </select>
+                    {options.map(([code, name]) => (
+                      <option key={code} value={code}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <button
                   type="submit"
-                  disabled={state === "saving" || !email || !chosen}
+                  disabled={state === "saving" || !firstName.trim() || !email || !chosen}
                   className="col-span-2 sm:col-span-1 btn justify-center rounded-full bg-gold-500 px-6 py-3 font-semibold text-navy-900 hover:bg-gold-400 disabled:bg-gold-300 disabled:text-navy-800/70 whitespace-nowrap"
                 >
                   {state === "saving" ? "Saving…" : "Notify me at launch"}
@@ -177,7 +198,7 @@ function ArrivalBand({ country, joined, onClose, onJoined }: { country: string; 
                   {WAITLIST_CONSENT_TEXT} Unsubscribe any time. <a href="/legal/privacy" className="underline">Privacy policy</a>.
                 </span>
               </label>
-              <Captcha appearance="interaction-only" />
+              <Captcha action="waitlist" appearance="interaction-only" />
               {error ? (
                 <p className="text-sm font-medium text-gold-200" role="alert">
                   {error}

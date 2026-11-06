@@ -1,5 +1,5 @@
 import "server-only";
-import { cookies, type UnsafeUnwrappedCookies } from "next/headers";
+import { cookies } from "next/headers";
 import { AUTH_COOKIES, CHALLENGE_MAX_AGE, REFRESH_MAX_AGE, sameSiteFor, secureCookies, type Realm } from "./config";
 import { verifyIdToken, type VerifiedUser } from "./jwt";
 
@@ -35,8 +35,8 @@ export async function setAuthCookies(tokens: TokenSet, realm: Realm = "customer"
   return user;
 }
 
-export function clearAuthCookies(realm: Realm = "customer") {
-  const c = (cookies() as unknown as UnsafeUnwrappedCookies);
+export async function clearAuthCookies(realm: Realm = "customer") {
+  const c = await cookies();
   for (const name of Object.values(AUTH_COOKIES[realm])) c.delete(name);
   // Cookie from the previous, unverified admin check. Removed wherever it lingers.
   c.delete("ip6_admin");
@@ -50,12 +50,12 @@ export interface PendingChallenge {
   next: string;
 }
 
-export function setChallengeCookie(ch: PendingChallenge, realm: Realm = "customer") {
-  (cookies() as unknown as UnsafeUnwrappedCookies).set(AUTH_COOKIES[realm].challenge, JSON.stringify(ch), cookieOpts(realm, CHALLENGE_MAX_AGE));
+export async function setChallengeCookie(ch: PendingChallenge, realm: Realm = "customer") {
+  (await cookies()).set(AUTH_COOKIES[realm].challenge, JSON.stringify(ch), cookieOpts(realm, CHALLENGE_MAX_AGE));
 }
 
-export function readChallengeCookie(realm: Realm = "customer"): PendingChallenge | null {
-  const raw = (cookies() as unknown as UnsafeUnwrappedCookies).get(AUTH_COOKIES[realm].challenge)?.value;
+export async function readChallengeCookie(realm: Realm = "customer"): Promise<PendingChallenge | null> {
+  const raw = (await cookies()).get(AUTH_COOKIES[realm].challenge)?.value;
   if (!raw) return null;
   try {
     const v = JSON.parse(raw) as PendingChallenge;
@@ -79,8 +79,8 @@ export async function getStaffUser(): Promise<SessionUser | null> {
   return verifyIdToken(token, "staff");
 }
 
-export function getAccessToken(realm: Realm = "customer"): string | null {
-  return (cookies() as unknown as UnsafeUnwrappedCookies).get(AUTH_COOKIES[realm].access)?.value ?? null;
+export async function getAccessToken(realm: Realm = "customer"): Promise<string | null> {
+  return (await cookies()).get(AUTH_COOKIES[realm].access)?.value ?? null;
 }
 
 export { safeNextPath } from "./redirect";

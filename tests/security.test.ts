@@ -2,9 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { CognitoIdentityProviderClient, ConfirmSignUpCommand, SignUpCommand } from "@aws-sdk/client-cognito-identity-provider";
 import { clientIpFrom } from "@/lib/client-ip";
+import { canonicalEmail, DISCOUNT_MESSAGES } from "@/lib/pricing/discount";
+import { priceLines } from "@/lib/pricing/quote";
 import { products } from "@/content/products";
-import { mergeCatalog } from "@/lib/data/merge-catalog";
+import { mergeCatalog } from "@/lib/data/catalog";
+import type { PreorderSettings } from "@/types/records";
 
 vi.mock("@/lib/captcha", () => ({ verifyCaptcha: async (v: unknown) => typeof v === "string" && v !== "bad" }));
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
@@ -15,10 +19,12 @@ process.env.COGNITO_CLIENT_ID = "client";
 
 const ddb = mockClient(DynamoDBDocumentClient);
 const ses = mockClient(SESClient);
+const cognito = mockClient(CognitoIdentityProviderClient);
 
 beforeEach(() => {
   ddb.reset();
   ses.reset();
+  cognito.reset();
   ses.on(SendEmailCommand).resolves({ MessageId: "m1" });
   vi.spyOn(console, "error").mockImplementation(() => undefined);
 });
@@ -34,6 +40,37 @@ describe("client IP for rate limits", () => {
     expect(clientIpFrom(new Headers({ "x-forwarded-for": "198.51.100.7, 64.252.74.146, 10.0.3.9" }))).toBe("198.51.100.7");
     expect(clientIpFrom(new Headers({ "x-forwarded-for": "203.0.113.5" }))).toBe("203.0.113.5");
     expect(clientIpFrom(new Headers(), "fallback")).toBe("fallback");
+  });
+});
+
+describe("discount codes", () => {
+  it("counts +tags, dots and case in Gmail as one customer", () => {
+    expect(canonicalEmail("A.Na+promo1@GMAIL.com")).toBe("ana@gmail.com");
+    expect(canonicalEmail("ana+2@googlemail.com")).toBe("ana@gmail.com");
+    expect(canonicalEmail("a.na+x@example.com")).toBe("a.na@example.com");
+  });
+
+  it("never confirms that a guessed code exists", () => {
+    const { minimum, ...rest } = DISCOUNT_MESSAGES;
+    expect(new Set(Object.values(rest))).toEqual(new Set(["That code isn't valid."]));
+    expect(minimum).not.toBe("That code isn't valid.");
+  });
+});
+
+describe("quantities and stock", () => {
+  const off: PreorderSettings = { active: false, discountPct: 0, label: "", shipNote: "" };
+  const supplement = products.find((p) => p.slug === "ip6-original-supplement")!;
+  const v = supplement.variants[0]!;
+
+  it("applies the per-item cap across repeated lines of the same variant", () => {
+    const lines = Array.from({ length: 3 }, () => ({ variantId: v.id, qty: 10 }));
+    expect(priceLines(products, lines, "USD", off)).toMatchObject({ ok: false, error: { code: "bad_quantity" } });
+  });
+
+  it("won't sell more than the stock left", () => {
+    const merged = mergeCatalog(products, [], [{ sku: v.sku, stock: 2, lowStockThreshold: 0, updatedAt: "" } as never]);
+    expect(priceLines(merged, [{ variantId: v.id, qty: 3 }], "USD", off)).toMatchObject({ ok: false, error: { code: "not_enough_stock" } });
+    expect(priceLines(merged, [{ variantId: v.id, qty: 2 }], "USD", off)).toMatchObject({ ok: true });
   });
 });
 
@@ -63,28 +100,20 @@ describe("public forms", () => {
   });
 });
 
-describe("catalog from Shopify", () => {
-  const supplement = products.find((p) => p.slug === "ip6-original-supplement")!;
-  const v = supplement.variants[0]!;
-
-  it("takes price, stock and plans from Shopify by SKU", () => {
-    const merged = mergeCatalog(products, [
-      {
-        handle: "ip-6-original",
-        availableForSale: true,
-        variants: [{ id: "gid://shopify/ProductVariant/1", sku: v.sku, priceCents: 5499, compareAtCents: null, availableForSale: false }],
-        sellingPlans: [{ id: "gid://shopify/SellingPlan/9", name: "Deliver every month, 15% off", days: 30, discountPct: 15 }],
-      },
-    ]);
-    const m = merged.find((p) => p.slug === supplement.slug)!;
-    expect(m.variants[0]).toMatchObject({ shopifyVariantId: "gid://shopify/ProductVariant/1", inStock: false });
-    expect(m.variants[0]!.priceCents.USD).toBe(5499);
-    expect(m.subscriptionCycles).toEqual([{ days: 30, discountPct: 15, sellingPlanId: "gid://shopify/SellingPlan/9" }]);
+describe("account enumeration", () => {
+  it("answers sign-up the same way for an existing account", async () => {
+    const { POST } = await import("@/app/api/auth/signup/route");
+    cognito.on(SignUpCommand).rejects(Object.assign(new Error("An account with the given email already exists."), { name: "UsernameExistsException" }));
+    const res = await POST(json("/api/auth/signup", { email: "ana@example.com", password: "Passw0rd!x", name: "Ana", captcha: "solved" }));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ ok: true });
   });
 
-  it("can't sell a variant Shopify doesn't return", () => {
-    const m = mergeCatalog(products, []).find((p) => p.slug === supplement.slug)!;
-    expect(m.variants[0]).toMatchObject({ inStock: false, shopifyVariantId: undefined });
+  it("never passes Cognito's own wording back from the confirm step", async () => {
+    const { POST } = await import("@/app/api/auth/confirm/route");
+    cognito.on(ConfirmSignUpCommand).rejects(Object.assign(new Error("User cannot be confirmed. Current status is CONFIRMED"), { name: "NotAuthorizedException" }));
+    const res = await POST(json("/api/auth/confirm", { email: "ana@example.com", code: "123456" }));
+    expect(JSON.stringify(await res.json())).not.toContain("CONFIRMED");
   });
 });
 

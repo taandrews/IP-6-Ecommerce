@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default async function ShopPage() {
   const currency = resolveCurrency();
   const [products, settings] = await Promise.all([getCatalog(), getPreorderSettings()]);
-  const preorder = offerFor(settings, visitorGeo().sellable);
+  const preorder = offerFor(settings, (await visitorGeo()).sellable);
   const reviewsBySku: Record<string, Review[]> = Object.fromEntries(await Promise.all(products.map(async (product) => [product.sku, (await getPublishedReviews(product.sku)).map(review => ({ ...review, rating: review.rating as Review["rating"] }))])));
   return (
     <>

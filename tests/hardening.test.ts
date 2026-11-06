@@ -43,7 +43,7 @@ describe("CAPTCHA (Cloudflare Turnstile)", () => {
   it("asks Cloudflare with our secret, the token and the visitor's real IP", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
     const spy = siteverify({ success: true, hostname: "localhost" });
-    expect(await verifyCaptcha("tok", req)).toBe(true);
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(true);
     const [url, init] = spy.mock.calls[0]!;
     expect(String(url)).toBe("https://challenges.cloudflare.com/turnstile/v0/siteverify");
     const body = new URLSearchParams(String((init as RequestInit).body));
@@ -54,9 +54,9 @@ describe("CAPTCHA (Cloudflare Turnstile)", () => {
   it("refuses what Cloudflare refuses (a used or expired token), and missing tokens without asking", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
     const spy = siteverify({ success: false, "error-codes": ["timeout-or-duplicate"] });
-    expect(await verifyCaptcha("used", req)).toBe(false);
-    expect(await verifyCaptcha(undefined, req)).toBe(false);
-    expect(await verifyCaptcha("", req)).toBe(false);
+    expect(await verifyCaptcha("used", req, "contact")).toBe(false);
+    expect(await verifyCaptcha(undefined, req, "contact")).toBe(false);
+    expect(await verifyCaptcha("", req, "contact")).toBe(false);
     expect(spy).toHaveBeenCalledTimes(1);
     spy.mockRestore();
   });
@@ -64,20 +64,55 @@ describe("CAPTCHA (Cloudflare Turnstile)", () => {
   it("fails closed when Cloudflare can't be reached", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
     const spy = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("network"));
-    expect(await verifyCaptcha("tok", req)).toBe(false);
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
     spy.mockRestore();
     const bad = siteverify({}, false);
-    expect(await verifyCaptcha("tok", req)).toBe(false);
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
     bad.mockRestore();
+  });
+
+  it("accepts a token once, even when Cloudflare passes it twice", async () => {
+    const { verifyCaptcha } = await import("@/lib/captcha");
+    const spy = siteverify({ success: true, hostname: "localhost" });
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(true);
+    const put = ddb.commandCalls(PutCommand)[0]!.args[0].input;
+    expect(put.Item?.key).toMatch(/^captcha#[0-9a-f]{64}$/);
+    expect(put.Item?.key).not.toContain("tok");
+    expect(put.ConditionExpression).toBe("attribute_not_exists(#k)");
+    ddb.on(PutCommand).rejects(Object.assign(new Error("exists"), { name: "ConditionalCheckFailedException" }));
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
+    spy.mockRestore();
+  });
+
+  it("fails closed when the used-token record can't be written", async () => {
+    const { verifyCaptcha } = await import("@/lib/captcha");
+    const spy = siteverify({ success: true, hostname: "localhost" });
+    ddb.on(PutCommand).rejects(Object.assign(new Error("down"), { name: "ServiceUnavailable" }));
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
+    spy.mockRestore();
   });
 
   it("in production, refuses a token issued for another site", async () => {
     const { verifyCaptcha } = await import("@/lib/captcha");
     vi.stubEnv("NODE_ENV", "production");
-    const spy = siteverify({ success: true, hostname: "evil.example" });
-    expect(await verifyCaptcha("tok", req)).toBe(false);
+    const spy = siteverify({ success: true, hostname: "evil.example", action: "contact" });
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
+    spy.mockResolvedValue(new Response(JSON.stringify({ success: true, hostname: "localhost", action: "contact" })));
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
+    spy.mockResolvedValue(new Response(JSON.stringify({ success: true, hostname: "ip6original.com", action: "contact" })));
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(true);
+    spy.mockRestore();
+    vi.unstubAllEnvs();
+  });
+
+  it("in production, refuses a token issued for a different form", async () => {
+    const { verifyCaptcha } = await import("@/lib/captcha");
+    vi.stubEnv("NODE_ENV", "production");
+    const spy = siteverify({ success: true, hostname: "ip6original.com", action: "newsletter" });
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
     spy.mockResolvedValue(new Response(JSON.stringify({ success: true, hostname: "ip6original.com" })));
-    expect(await verifyCaptcha("tok", req)).toBe(true);
+    expect(await verifyCaptcha("tok", req, "contact")).toBe(false);
+    expect(ddb.commandCalls(PutCommand)).toHaveLength(0);
     spy.mockRestore();
     vi.unstubAllEnvs();
   });

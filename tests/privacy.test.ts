@@ -4,6 +4,7 @@ import { maskAddress, maskEmail, maskName, maskPhone } from "@/lib/admin/pii";
 import { sealEmail, unsealEmail } from "@/lib/admin/seal";
 import { decodeCursor, encodeCursor } from "@/lib/data/cursor";
 import { parseConsent, serializeConsent } from "@/lib/consent";
+import { safeTrackingUrl } from "@/lib/orders/admin";
 
 describe("CSV export", () => {
   it("neutralizes spreadsheet formulas (CSV injection)", () => {
@@ -57,5 +58,13 @@ describe("cookie consent", () => {
     expect(parseConsent("custom:0:1")).toEqual({ analytics: false, marketing: true });
     expect(parseConsent("junk")).toBeNull();
     expect(serializeConsent({ analytics: true, marketing: false })).toBe("custom:1:0");
+  });
+});
+
+describe("tracking links", () => {
+  it("only stores http(s) URLs", () => {
+    expect(safeTrackingUrl("https://tools.usps.com/go/TrackConfirmAction?tLabels=1")).toContain("https://tools.usps.com");
+    expect(safeTrackingUrl("javascript:alert(1)")).toBeUndefined();
+    expect(safeTrackingUrl("not a url")).toBeUndefined();
   });
 });

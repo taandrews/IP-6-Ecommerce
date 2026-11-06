@@ -29,6 +29,11 @@ export interface Ip6StackProps extends StackProps {
   environment: "staging" | "prod";
   tablePrefix: string;
   domainName: string;
+  /**
+   * Where staff sign in, for the invitation email. Defaults to the domain;
+   * prod uses the Amplify URL until ip6original.com points at the site.
+   */
+  adminOrigin?: string;
   /** Account-wide alert topic (from Ip6AccountStack); bounces, complaints and CDN errors go here. */
   alertsTopicArn: string;
   /** The Amplify Hosting app allowed to use this stack's app role (prod only). */
@@ -297,8 +302,8 @@ export class Ip6Stack extends Stack {
       userInvitation: {
         emailSubject: "Your IP6 Original admin invitation",
         emailBody:
-          "You've been given access to the IP6 Original admin portal. Sign in at https://" +
-          props.domainName +
+          "You've been given access to the IP6 Original admin portal. Sign in at " +
+          (props.adminOrigin ?? `https://${props.domainName}`) +
           "/admin/login with username {username} and temporary password {####}. It expires in 24 hours. You'll be asked to set a new password and an authenticator app.",
       },
       deletionProtection: isProd,
@@ -433,25 +438,11 @@ export class Ip6Stack extends Stack {
     // Populate real values in the AWS console after deploy.
     const stripeSecret = new secrets.Secret(this, "StripeSecret", {
       secretName: `ip6/${props.environment}/stripe`,
-      // No longer read by the app (Shopify Payments replaced Stripe). Kept, not granted, until it is deleted on purpose.
       description: "Stripe API keys (test mode for staging; rotate to live at launch)",
       secretObjectValue: {
         secretKey: SecretValue.unsafePlainText("sk_test_REPLACE_ME"),
         publishableKey: SecretValue.unsafePlainText("pk_test_REPLACE_ME"),
         webhookSecret: SecretValue.unsafePlainText("whsec_REPLACE_ME"),
-      },
-      removalPolicy: removal,
-    });
-
-    // Shopify runs checkout, payments, orders and customer accounts. The
-    // Headless channel's private Storefront token reads the catalog and builds
-    // checkouts; the Admin API token serves the staff portal and privacy erasure.
-    const shopifySecret = new secrets.Secret(this, "ShopifySecret", {
-      secretName: `ip6/${props.environment}/shopify`,
-      description: "Shopify Admin API token and Headless private Storefront token",
-      secretObjectValue: {
-        adminToken: SecretValue.unsafePlainText("REPLACE_ME"),
-        storefrontToken: SecretValue.unsafePlainText("REPLACE_ME"),
       },
       removalPolicy: removal,
     });
@@ -543,7 +534,7 @@ export class Ip6Stack extends Stack {
         ]),
       }),
     );
-    [shopifySecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
+    [stripeSecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
 
     // The app's own keys rotate every 30 days. The previous value is kept so
     // anything signed just before a rotation still verifies (see the Lambda).
@@ -583,7 +574,6 @@ export class Ip6Stack extends Stack {
     new CfnOutput(this, "CloudfrontDomain", { value: distribution.distributionDomainName });
     new CfnOutput(this, "TablePrefix", { value: props.tablePrefix });
     new CfnOutput(this, "StripeSecretArn", { value: stripeSecret.secretArn });
-    new CfnOutput(this, "ShopifySecretArn", { value: shopifySecret.secretArn });
     new CfnOutput(this, "SanitySecretArn", { value: sanitySecret.secretArn });
     new CfnOutput(this, "AlgoliaSecretArn", { value: algoliaSecret.secretArn });
     new CfnOutput(this, "AppSecretArn", { value: appSecret.secretArn });

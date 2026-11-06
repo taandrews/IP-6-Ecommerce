@@ -299,7 +299,7 @@ export function PreBookPopup() {
                       <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} required /> Email
                       me my pre-order offer and occasional research-backed updates, and save my quiz answers to tailor them.
                     </label>
-                    <Captcha />
+                    <Captcha action="newsletter" />
                     {error && <div className={s.err}>Please enter your email, check the box and complete the check to continue.</div>}
                     <button type="submit" className={s.btn} disabled={checking}>
                       {checking ? "Checking…" : "Continue"}

@@ -4,7 +4,7 @@ export const EMAIL = {
   support: "support@ip6original.com",
   /** General inbox and the "Other" contact topic. */
   hello: "hello@ip6original.com",
-  /** Shopify's order and shipping emails are sent from here (Shopify > Settings > Notifications). */
+  /** Sends order confirmations and shipping notices. */
   orders: "orders@ip6original.com",
   /** Privacy policy and data requests. */
   privacy: "privacy@ip6original.com",

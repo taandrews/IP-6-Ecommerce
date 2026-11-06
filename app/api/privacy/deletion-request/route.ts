@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createPrivacyRequest } from "@/lib/data/privacy";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
-import { emailKey } from "@/lib/data/keys";
+import { emailKey } from "@/lib/data/orders";
 import { hit, limitByIp } from "@/lib/rate-limit";
 import { isBot } from "@/lib/honeypot";
 import { verifyCaptcha } from "@/lib/captcha";
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please enter a valid email address." }, { status: 400 });
   if (isBot(parsed.data.website)) return NextResponse.json({ ok: true });
-  if (!(await verifyCaptcha(parsed.data.captcha, req))) {
+  if (!(await verifyCaptcha(parsed.data.captcha, req, "deletion"))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   if (!(await hit(`privacy-mail:${emailKey(parsed.data.email)}`, 1, 3600))) return NextResponse.json({ ok: true });

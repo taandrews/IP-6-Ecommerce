@@ -4,16 +4,18 @@ import { AUTH_COOKIES, sameSiteFor, secureCookies, type Realm } from "@/lib/auth
 import { verifyIdToken, unverifiedUsername, type VerifiedUser } from "@/lib/auth/jwt";
 import { refreshTokens } from "@/lib/auth/refresh";
 import { roleFromGroups } from "@/lib/auth/roles";
-import { isShopifyOrigin } from "@/lib/storefronts";
 import { clientIpFrom } from "@/lib/client-ip";
 import { API_CSP, contentSecurityPolicy, createNonce } from "@/lib/csp";
 
-const AUTH_SCOPE = /^\/(admin|api)(?:\/|$)/;
+const AUTH_SCOPE = /^\/(admin|account|api)(?:\/|$)/;
 const ADMIN_PUBLIC = /^\/admin\/(login|forgot-password)(?:\/|$)/;
 const ADMIN_PATH = /^\/admin(?:\/|$)/;
 const ADMIN_API = /^\/api\/admin\//;
+const ACCOUNT_PATH = /^\/account(?!\/(login|register|forgot-password))(?:\/|$)/;
 const AUTH_API = /^\/api\/(auth|admin\/auth)\//;
 const RATE_LIMITED = /^\/api\/(shipping|reviews|newsletter|waitlist|privacy|contact|checkout|auth|admin\/auth)/;
+/** Server-to-server callers that never carry a browser Origin. */
+const ORIGIN_EXEMPT = /^\/api\/stripe\/webhook$/;
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 // Per-instance burst limiter. The routes behind it add a shared DynamoDB
@@ -91,7 +93,41 @@ function opts(realm: Realm, maxAge: number) {
  * names it. Next.js reads the policy from the request and puts the nonce on
  * its own scripts; the root layout passes it to ours.
  */
+/**
+ * The staff portal has its own hostname (NEXT_PUBLIC_ADMIN_ORIGIN, e.g.
+ * https://admin.ip6original.com). When it's set, the portal and its API answer
+ * only there, and that host serves nothing else. Unset (local dev), every
+ * host serves everything.
+ */
+function adminHost(): string | null {
+  const origin = process.env.NEXT_PUBLIC_ADMIN_ORIGIN;
+  if (!origin) return null;
+  try {
+    return new URL(origin).host;
+  } catch {
+    return null;
+  }
+}
+
+function hostSeparation(req: NextRequest): NextResponse | null {
+  const admin = adminHost();
+  if (!admin) return null;
+  const { pathname, search } = req.nextUrl;
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const adminArea = ADMIN_PATH.test(pathname) || ADMIN_API.test(pathname);
+  if (host === admin) {
+    if (adminArea) return null;
+    if (pathname.startsWith("/api/")) return json(404, { error: "not_found" });
+    return NextResponse.redirect(new URL("/admin", process.env.NEXT_PUBLIC_ADMIN_ORIGIN), 308);
+  }
+  if (ADMIN_API.test(pathname)) return json(404, { error: "not_found" });
+  if (ADMIN_PATH.test(pathname)) return NextResponse.redirect(new URL(pathname + search, process.env.NEXT_PUBLIC_ADMIN_ORIGIN), 308);
+  return null;
+}
+
 export async function middleware(req: NextRequest) {
+  const moved = hostSeparation(req);
+  if (moved) return moved;
   const isApi = req.nextUrl.pathname.startsWith("/api/");
   const nonce = createNonce();
   const csp = isApi ? API_CSP : contentSecurityPolicy(nonce);
@@ -102,10 +138,12 @@ export async function middleware(req: NextRequest) {
   headers.set("content-security-policy", csp);
   const res = AUTH_SCOPE.test(req.nextUrl.pathname) ? await guard(req, headers) : NextResponse.next({ request: { headers } });
   res.headers.set("Content-Security-Policy", csp);
+  // The staff portal is never indexed by search engines.
+  if (ADMIN_PATH.test(req.nextUrl.pathname)) res.headers.set("X-Robots-Tag", "noindex, nofollow");
   return res;
 }
 
-/** Rate limits, CSRF checks and staff sign-in for admin pages and the API. */
+/** Rate limits, CSRF checks and sign-in for admin pages, account pages and the API. */
 async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
   const isApi = pathname.startsWith("/api/");
@@ -118,16 +156,12 @@ async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> 
     }
   }
 
-  // The Shopify storefront may post its launch-waitlist form here (no cookies or login involved).
-  const shopifyWaitlist = pathname === "/api/waitlist" && isShopifyOrigin(req.headers.get("origin"));
-  if (isApi && MUTATING.has(req.method) && !shopifyWaitlist && !sameOrigin(req)) {
+  if (isApi && MUTATING.has(req.method) && !ORIGIN_EXEMPT.test(pathname) && !sameOrigin(req)) {
     return json(403, { error: "bad_origin" });
   }
 
-  // Only staff sign in to this site (customers use Shopify accounts), so only
-  // admin pages and admin APIs carry a session to verify.
-  if (!ADMIN_PATH.test(pathname) && !ADMIN_API.test(pathname)) return NextResponse.next({ request: { headers } });
-  const realm: Realm = "staff";
+  // Admin pages and admin APIs use the STAFF pool; everything else the customer pool.
+  const realm: Realm = ADMIN_PATH.test(pathname) || ADMIN_API.test(pathname) ? "staff" : "customer";
   const { user, renewed, refreshFailed } = await resolve(req, realm, !AUTH_API.test(pathname));
   const names = AUTH_COOKIES[realm];
 
@@ -139,6 +173,15 @@ async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> 
     const res = NextResponse.redirect(url);
     if (refreshFailed) res.cookies.delete(names.refresh);
     res.headers.set("Cache-Control", "no-store");
+    return res;
+  }
+  if (ACCOUNT_PATH.test(pathname) && !user) {
+    const url = req.nextUrl.clone();
+    url.pathname = "/account/login";
+    url.search = "";
+    url.searchParams.set("next", pathname + req.nextUrl.search);
+    const res = NextResponse.redirect(url);
+    if (refreshFailed) res.cookies.delete(names.refresh);
     return res;
   }
 
@@ -163,8 +206,10 @@ async function guard(req: NextRequest, headers: Headers): Promise<NextResponse> 
     if (refreshFailed) res.cookies.delete(names.refresh);
   }
 
-  res.headers.set("Cache-Control", "no-store");
-  res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  if (realm === "staff") {
+    res.headers.set("Cache-Control", "no-store");
+    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
   return res;
 }
 

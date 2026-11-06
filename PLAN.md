@@ -200,7 +200,7 @@ Domain components listed in §2 Phase 3. All expose variant/size props, forward 
 4. **Review** — full summary, terms checkbox.
 5. **Confirmation** — order number, estimated delivery, account-creation prompt for guests, SES order confirmation email dispatched.
 
-Guest + authenticated flows both supported. Server-side order creation happens after `payment_intent.succeeded` webhook, not client-side, to prevent double-charge/ghost-order issues.
+Guest + authenticated flows both supported. Server-side order fulfilment happens after the `checkout.session.completed` webhook (Stripe Checkout Sessions with the Payment Element), not client-side, to prevent double-charge/ghost-order issues.
 
 ---
 

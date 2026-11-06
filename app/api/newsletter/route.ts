@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
-import { emailKey } from "@/lib/data/keys";
-import { newsletterKey } from "@/lib/data/keys";
+import { emailKey } from "@/lib/data/orders";
+import { newsletterKey } from "@/lib/data/customers";
 import { requestConfirmation } from "@/lib/data/confirmations";
 import { limitByIp } from "@/lib/rate-limit";
 import { verifyCaptcha } from "@/lib/captcha";
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
   const { email, source, quiz, captcha, token } = parsed.data;
   const keys = await formTokenKeys();
   const followUp = checkFormToken(keys, emailKey(email), token);
-  if (!followUp && !(await verifyCaptcha(captcha, req))) {
+  if (!followUp && !(await verifyCaptcha(captcha, req, "newsletter"))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   const Key = { userId: newsletterKey(email) };
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
             },
           }),
         );
-        await requestConfirmation(req, "newsletter", email, consentVersion);
+        await requestConfirmation(req, { kind: "newsletter" }, email, consentVersion);
       }
     }
     if (quiz && Object.keys(quiz).length) {

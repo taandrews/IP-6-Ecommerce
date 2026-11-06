@@ -1,10 +1,9 @@
 /**
  * Where the store sells, in one place.
  *
- * SELLABLE_COUNTRIES is the setting this site's sales gates read (the
- * geo notice, the waitlist and the shop pages). Checkout itself is Shopify's:
- * its Markets settings must sell to the same places, so opening a new market
- * means changing this list and the Shopify market together.
+ * SELLABLE_COUNTRIES is the single setting every sales gate reads: the
+ * checkout country picker, the shipping quote, payment creation and the
+ * Stripe webhook re-check. Opening a new market is a change to this list.
  *
  * "US" means the 50 states and Washington, DC. US territories (which have
  * their own country codes and their own state codes inside US addresses) and

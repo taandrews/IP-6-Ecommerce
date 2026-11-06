@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Minus, Plus, RefreshCw, ShoppingBag, Check } from "lucide-react";
 import type { Product, Currency } from "@/types";
 import { formatPrice, cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartStore";
-import { startCheckout } from "@/components/cart/startCheckout";
 import { Badge } from "@/components/ui/Badge";
 import { AddToCartButton } from "./AddToCartButton";
 import { preorderUnitCents } from "@/lib/preorder";
@@ -47,8 +47,7 @@ export function PurchasePanel({
   const { add } = useCart();
   const PREORDER = usePreorder();
   const { sellable } = useGeo();
-  const [ordering, setOrdering] = useState(false);
-  const [orderError, setOrderError] = useState<string | null>(null);
+  const router = useRouter();
 
   if (!variant) return null;
 
@@ -76,17 +75,10 @@ export function PurchasePanel({
     };
   }
 
-  /** Pre Order Now: add the line and go straight to Shopify checkout with the whole cart. */
-  async function onOrderNow() {
+  /** Pre Order Now: add the line and go straight to checkout. */
+  function onOrderNow() {
     add(cartLine(), { openDrawer: false });
-    setOrderError(null);
-    setOrdering(true);
-    try {
-      await startCheckout(useCart.getState().lines);
-    } catch (err) {
-      setOrderError((err as Error).message);
-      setOrdering(false);
-    }
+    router.push("/checkout");
   }
 
   if (presentation === "editorial" || presentation === "catalog") return (
@@ -128,9 +120,8 @@ export function PurchasePanel({
           <button type="button" disabled={qty === 20} onClick={() => setQty(q => Math.min(20, q + 1))} aria-label="Increase quantity"><Plus size={16} /></button>
         </div>
         <AddToCartButton line={cartLine} disabled={!variant.inStock} className={styles.addButton} />
-        <button type="button" className={styles.orderButton} onClick={onOrderNow} disabled={!variant.inStock || ordering}>{!variant.inStock ? "Out of stock" : ordering ? "Opening checkout..." : "Pre Order Now"}</button>
+        <button type="button" className={styles.orderButton} onClick={onOrderNow} disabled={!variant.inStock}>{!variant.inStock ? "Out of stock" : "Pre Order Now"}</button>
       </div>}
-      {orderError && <p role="alert" className="text-sm text-red-700">{orderError}</p>}
       {PREORDER.active && <p className={styles.shipNote}>{PREORDER.shipNote}</p>}
     </div>
   );
@@ -292,12 +283,11 @@ export function PurchasePanel({
           </button>
         </div>
         <AddToCartButton line={cartLine} disabled={!variant.inStock} className="btn-secondary flex-1" />
-        <button onClick={onOrderNow} className="btn-primary flex-1" disabled={!variant.inStock || ordering}>
+        <button onClick={onOrderNow} className="btn-primary flex-1" disabled={!variant.inStock}>
           <ShoppingBag className="size-4" />
-          {!variant.inStock ? "Out of stock" : ordering ? "Opening checkout..." : "Pre Order Now"}
+          {!variant.inStock ? "Out of stock" : "Pre Order Now"}
         </button>
       </div>}
-      {orderError && <p role="alert" className="text-sm text-red-700">{orderError}</p>}
 
       {/* Delivery */}
       <p className="text-sm text-ink/70 leading-relaxed">

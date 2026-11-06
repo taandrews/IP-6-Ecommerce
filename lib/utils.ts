@@ -75,3 +75,12 @@ export const EU_UK_COUNTRIES = new Set([
 export function isEuOrUk(countryCode?: string) {
   return !!countryCode && EU_UK_COUNTRIES.has(countryCode.toUpperCase());
 }
+
+/**
+ * JSON for a <script type="application/ld+json"> block. "<" is escaped so no
+ * value can close the script tag. These blocks are data, not script, so they
+ * carry no CSP nonce.
+ */
+export function jsonLd(value: unknown) {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}

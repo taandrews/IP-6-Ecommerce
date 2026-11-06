@@ -25,8 +25,17 @@ export function operatorStatements(stack: Stack, amplifyAppArn: string): iam.Pol
     }),
     new iam.PolicyStatement({
       sid: "AppSecrets",
-      actions: ["secretsmanager:GetSecretValue", "secretsmanager:PutSecretValue", "secretsmanager:DescribeSecret"],
+      // UpdateSecretVersionStage lets a value be staged and then made live in one step
+      // (no wider than PutSecretValue, which can already replace the live value).
+      actions: ["secretsmanager:GetSecretValue", "secretsmanager:PutSecretValue", "secretsmanager:UpdateSecretVersionStage", "secretsmanager:DescribeSecret"],
       resources: [arn("secretsmanager", "us-east-1", "secret:ip6/*")],
+    }),
+    new iam.PolicyStatement({
+      // The Shopify keys left behind when the store moved to Stripe (the stack
+      // retains them). Deleting them is the only write, and only on that secret.
+      sid: "RetiredShopifySecret",
+      actions: ["secretsmanager:DeleteSecret"],
+      resources: [arn("secretsmanager", "us-east-1", "secret:ip6/*/shopify-*")],
     }),
     new iam.PolicyStatement({
       sid: "AmplifyApp",

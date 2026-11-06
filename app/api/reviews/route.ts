@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
+import type { OrderRecord } from "@/types/records";
 import crypto from "node:crypto";
 import { z } from "zod";
 import { lintContent } from "@/lib/compliance/claim-linter";
 import { createReview } from "@/lib/data/reviews";
+import { getSessionUser } from "@/lib/auth/session";
+import { emailKey, getOrder, listOrdersByUser, PAID_STATUSES } from "@/lib/data/orders";
 import { products } from "@/content/products";
-import { isVerifiedPurchase } from "@/lib/shopify/admin";
 import { limitByIp } from "@/lib/rate-limit";
 import { isBot } from "@/lib/honeypot";
 import { verifyCaptcha } from "@/lib/captcha";
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please complete every field." }, { status: 400 });
   if (isBot(parsed.data.website)) return NextResponse.json({ ok: true, status: "pending" });
-  if (!(await verifyCaptcha(parsed.data.captcha, req))) {
+  if (!(await verifyCaptcha(parsed.data.captcha, req, "review"))) {
     return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   const product = products.find((p) => p.sku === parsed.data.sku);
@@ -47,12 +49,21 @@ export async function POST(req: Request) {
     message: `${f.rule}: ${f.match}`,
   }));
 
+  // A verified purchase is a paid order for this product: the signed-in
+  // customer's own, or the order number and email from the confirmation.
+  const variantSkus = new Set(product.variants.map((v) => v.sku));
+  const hasProduct = (o: OrderRecord) => PAID_STATUSES.includes(o.status) && o.items.some((l) => variantSkus.has(l.sku));
+  const user = await getSessionUser().catch(() => null);
   let verifiedPurchase = false;
-  if (parsed.data.orderNumber && parsed.data.orderEmail) {
-    verifiedPurchase = await isVerifiedPurchase(parsed.data.orderNumber, parsed.data.orderEmail, product.variants.map((v) => v.sku)).catch((err) => {
-      console.error("[reviews] purchase check failed", (err as Error).name);
-      return false;
-    });
+  try {
+    if (user) verifiedPurchase = (await listOrdersByUser(user.sub, 100)).some(hasProduct);
+    if (!verifiedPurchase && parsed.data.orderNumber && parsed.data.orderEmail) {
+      const order = await getOrder(parsed.data.orderNumber.trim().toUpperCase());
+      verifiedPurchase = !!order && order.emailKey === emailKey(parsed.data.orderEmail) && hasProduct(order);
+    }
+  } catch (err) {
+    console.error("[reviews] purchase check failed", (err as Error).name);
+    verifiedPurchase = false;
   }
 
   try {
@@ -64,6 +75,7 @@ export async function POST(req: Request) {
       title: parsed.data.title,
       body: parsed.data.body,
       authorName: parsed.data.authorName,
+      ...(user ? { userId: user.sub } : {}),
       verifiedPurchase,
       ...(findings.length ? { findings } : {}),
       createdAt: new Date().toISOString(),

@@ -15,7 +15,7 @@ export const POST = withAdmin("customers:export", async (req, staff) => {
   const email = unsealEmail(k);
   if (!email) throw new HttpError(400, "link_expired");
   const profile = await getCustomerProfile(email);
-  await audit(staff.actor, "customer.export", "site-data", { shopifyCustomers: profile.shopify.length }, staff.ip);
+  await audit(staff.actor, "customer.export", profile.account?.sub ?? "guest", { orders: profile.orders.length }, staff.ip);
   return new NextResponse(JSON.stringify(buildExport(profile), null, 2), {
     headers: {
       "Content-Type": "application/json; charset=utf-8",

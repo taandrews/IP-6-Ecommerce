@@ -42,7 +42,7 @@ export async function completeAuth(
   const kind = challengeKind(res.ChallengeName);
   // Customers only ever see the new-password step; staff pools also require MFA.
   if (kind && res.Session && (realm === "staff" || kind === "NEW_PASSWORD")) {
-    setChallengeCookie(
+    await setChallengeCookie(
       {
         name: res.ChallengeName!,
         session: res.Session,

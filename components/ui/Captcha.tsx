@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { preconnect } from "react-dom";
 
 /**
  * Cloudflare Turnstile check (verified on the server in lib/captcha.ts).
@@ -24,6 +25,9 @@ const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000
 const SCRIPT_URL = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 const FIELD = "cf-turnstile-response";
 
+/** The form a token is for; the server refuses a token used on any other form. */
+export type CaptchaAction = "contact" | "deletion" | "newsletter" | "review" | "waitlist" | "signup" | "password-reset";
+
 let loading: Promise<void> | null = null;
 function loadTurnstile(): Promise<void> {
   if (window.turnstile) return Promise.resolve();
@@ -42,8 +46,10 @@ function loadTurnstile(): Promise<void> {
 }
 
 /** "interaction-only" keeps the widget hidden unless Cloudflare needs a click. */
-export function Captcha({ appearance = "always" }: { appearance?: "always" | "interaction-only" } = {}) {
+export function Captcha({ action, appearance = "always" }: { action: CaptchaAction; appearance?: "always" | "interaction-only" }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Opens the connection to Cloudflare while the page loads, so the check starts sooner.
+  preconnect("https://challenges.cloudflare.com");
   useEffect(() => {
     let id: string | undefined;
     let cancelled = false;
@@ -52,6 +58,7 @@ export function Captcha({ appearance = "always" }: { appearance?: "always" | "in
         if (cancelled || !ref.current || !window.turnstile) return;
         id = window.turnstile.render(ref.current, {
           sitekey: SITE_KEY,
+          action,
           theme: "light",
           size: "flexible",
           "response-field-name": FIELD,
@@ -65,7 +72,7 @@ export function Captcha({ appearance = "always" }: { appearance?: "always" | "in
       cancelled = true;
       if (id) window.turnstile?.remove(id);
     };
-  }, [appearance]);
+  }, [action, appearance]);
   return <div ref={ref} data-captcha className={appearance === "always" ? "min-h-[65px] w-full" : "w-full"} />;
 }
 

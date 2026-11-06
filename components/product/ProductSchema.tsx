@@ -1,5 +1,6 @@
 import type { Product, Currency } from "@/types";
 import { productHref } from "@/lib/product-links";
+import { jsonLd } from "@/lib/utils";
 
 export function ProductSchema({
   product,
@@ -55,8 +56,8 @@ export function ProductSchema({
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumb) }} />
     </>
   );
 }

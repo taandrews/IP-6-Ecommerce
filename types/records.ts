@@ -89,6 +89,9 @@ export interface OrderRecord {
   totalCents: number;
   /** "1" when any line is a pre-order; string so it can key a sparse index later. */
   preorder?: "1";
+  /** The Checkout Session the customer paid through. */
+  stripeCheckoutSessionId?: string;
+  /** Set when the payment succeeds (empty while pending). */
   stripePaymentIntentId: string;
   stripeCustomerId?: string;
   fulfillment?: OrderFulfillment;
@@ -100,6 +103,8 @@ export interface OrderRecord {
   expiresAt?: number;
   /** Set when the customer's personal data was erased on request. */
   anonymizedAt?: string;
+  /** Why the system cancelled the order (e.g. not_sellable_country, replaced_by_new_checkout). */
+  cancelReason?: string;
   /** After-payment steps already done (stock, email, ...), so webhook retries pick up where a failure stopped. */
   doneSteps?: Set<string>;
 }

@@ -1,7 +1,7 @@
 import "server-only";
 import { DeleteCommand, GetCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
-import { emailKey } from "./keys";
+import { emailKey } from "./orders";
 import { WAITLIST_CONSENT_VERSION } from "@/lib/waitlist-consent";
 
 /**
@@ -18,6 +18,9 @@ export function waitlistKey(email: string) {
 }
 
 
+/** Which form the sign-up came through. */
+export type WaitlistSource = "product" | "checkout" | "arrival";
+
 export interface WaitlistRecord {
   userId: string;
   email: string;
@@ -27,11 +30,15 @@ export interface WaitlistRecord {
   ipCountry?: string;
   /** SKUs the visitor was looking at, across signups. */
   products?: string[];
+  /** Where the first sign-up happened (kept; later sign-ups don't change it). */
+  signupSource?: WaitlistSource;
+  signupPage?: string;
+  /** utm_* of the first tagged link that led to a sign-up, if any. */
+  campaign?: { source?: string; medium?: string; campaign?: string };
+  /** The most recent sign-up (rows from before 2026-11-04 only have these). */
   lastProduct?: string;
   page: string;
-  source: "product" | "checkout" | "arrival";
-  /** Which storefront the signup came from. */
-  site?: "amplify" | "shopify";
+  source: WaitlistSource;
   consentVersion: string;
   consentedAt: string;
   /** When the visitor clicked the confirmation link (double opt-in). */
@@ -50,22 +57,24 @@ export async function saveWaitlist(input: {
   product?: string;
   page: string;
   source: WaitlistRecord["source"];
-  site?: "amplify" | "shopify";
+  campaign?: WaitlistRecord["campaign"];
 }) {
   const now = new Date().toISOString();
   const Key = { userId: waitlistKey(input.email) };
-  // Anyone can type someone else's address, so the first sign-up's details
-  // and consent are kept (if_not_exists); later ones only refresh where the
-  // visitor was browsing. The owner confirms through the emailed link
+  // Anyone can type someone else's address, so the first sign-up's details,
+  // consent and attribution are kept (if_not_exists); later ones only refresh
+  // the latest page, form and product. The owner confirms through the emailed link
   // (lib/data/confirmations.ts); until then the row expires after 30 days.
   const keep: Record<string, unknown> = {
     email: emailKey(input.email),
     segment: "waitlist",
     country: input.country,
-    site: input.site ?? "amplify",
     consentVersion: WAITLIST_CONSENT_VERSION,
     consentedAt: now,
     createdAt: now,
+    signupSource: input.source,
+    signupPage: input.page,
+    ...(input.campaign ? { campaign: input.campaign } : {}),
     ...(input.firstName ? { firstName: input.firstName } : {}),
     ...(input.ipCountry ? { ipCountry: input.ipCountry } : {}),
   };

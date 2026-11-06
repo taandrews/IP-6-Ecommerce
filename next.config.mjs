@@ -1,7 +1,3 @@
-// Shopify customer accounts (sign-in, orders, subscriptions). Required: the
-// site's Account links and the /account redirect point here.
-const SHOPIFY_ACCOUNT_URL = process.env.NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL;
-if (!SHOPIFY_ACCOUNT_URL) throw new Error("NEXT_PUBLIC_SHOPIFY_ACCOUNT_URL is not configured");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -38,10 +34,6 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Customer accounts (orders, subscriptions, addresses) are Shopify's; checkout is Shopify's hosted page.
-      { source: "/account", destination: SHOPIFY_ACCOUNT_URL, permanent: false },
-      { source: "/account/:path*", destination: SHOPIFY_ACCOUNT_URL, permanent: false },
-      { source: "/checkout", destination: "/shop", permanent: false },
       { source: "/science", destination: "/story", permanent: false },
       { source: "/about", destination: "/story#founder", permanent: false },
       { source: "/founder", destination: "/story#founder", permanent: true },

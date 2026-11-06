@@ -23,7 +23,7 @@ export default function CookiePolicyPage() {
     <>
       <p className="eyebrow mb-4">Legal</p>
       <h1 className="font-display text-display-xl text-forest-800 mb-6">Cookie Policy</h1>
-      <p className="text-sm text-ink/60 mb-10">Last updated: October 28, 2026</p>
+      <p className="text-sm text-ink/60 mb-10">Last updated: November 4, 2026</p>
 
       <div className="space-y-8 text-ink/85 leading-relaxed">
         <section>
@@ -62,6 +62,10 @@ export default function CookiePolicyPage() {
           <h2 className="font-display text-display-md text-forest-800 mb-3">Analytics (optional)</h2>
           <p>
             Google Analytics 4 (cookies starting <code>_ga</code>) shows us, in aggregate, how the site is used. IP addresses are anonymized.
+          </p>
+          <p className="mt-3">
+            <code>ip6_campaign</code> (browser storage, until you close the tab) remembers which campaign link brought you here, so that if you
+            join the launch list we know which link it came from.
           </p>
         </section>
 

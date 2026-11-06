@@ -8,7 +8,7 @@ import { CookieBanner } from "@/components/layout/CookieBanner";
 import { Analytics } from "@/components/layout/Analytics";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { PreBookPopup } from "@/components/layout/PreBookPopup";
-import { isEuOrUk } from "@/lib/utils";
+import { isEuOrUk, jsonLd } from "@/lib/utils";
 import { StoreSettingsProvider } from "@/components/store/StoreSettings";
 import { GeoProvider } from "@/components/store/Geo";
 import { ArrivalWaitlist } from "@/components/store/ArrivalWaitlist";
@@ -68,7 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Per-request script nonce from the middleware (see lib/csp.ts).
   const nonce = hdrs.get("x-nonce") ?? undefined;
   const [preorder, banner] = await Promise.all([getPreorderSettings(), getBannerSettings()]);
-  const geo = visitorGeo();
+  const geo = await visitorGeo();
   const promptCookie = (await cookies()).get(WAITLIST_PROMPT_COOKIE)?.value;
   const waitlistPrompt: WaitlistPrompt | null = promptCookie === "closed" || promptCookie === "joined" ? promptCookie : null;
   const country =
@@ -109,11 +109,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Analytics nonce={nonce} />
         </GeoProvider>
         </StoreSettingsProvider>
-        <script
-          type="application/ld+json"
-          nonce={nonce}
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(orgSchema) }} />
       </body>
     </html>
   );

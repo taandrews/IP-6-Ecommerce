@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "Please check what you entered." }, { status: 400 });
-  const pending = readChallengeCookie("staff");
+  const pending = await readChallengeCookie("staff");
   if (!pending) return NextResponse.json({ error: "Your sign-in timed out. Please sign in again.", restart: true }, { status: 401 });
   const kind = challengeKind(pending.name);
   const body = parsed.data;
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   try {
     if (body.type === "MFA_SETUP_START") {
       const { secret, session } = await startTotpEnrolment(pending.session);
-      setChallengeCookie({ ...pending, session }, "staff");
+      await setChallengeCookie({ ...pending, session }, "staff");
       const label = encodeURIComponent(`IP6 Original Admin:${pending.email}`);
       const uri = `otpauth://totp/${label}?secret=${secret}&issuer=${encodeURIComponent("IP6 Original Admin")}`;
       const qr = await QRCode.toDataURL(uri, { margin: 1, width: 220 });

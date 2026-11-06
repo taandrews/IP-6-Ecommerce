@@ -38,7 +38,7 @@ describe("newsletter sign-up (double opt-in)", () => {
     expect(signup!.UpdateExpression).toContain("#nl = if_not_exists(#nl, :f)");
     expect(signup!.ExpressionAttributeValues![":f"]).toBe(false);
     expect(signup!.UpdateExpression).toContain("#exp = :exp");
-    expect(confirm.calls[0]!.slice(1)).toEqual(["newsletter", "Ana@Example.com", "2026-10-29"]);
+    expect(confirm.calls[0]!.slice(1)).toEqual([{ kind: "newsletter" }, "Ana@Example.com", "2026-10-29"]);
     expect(answers!.ExpressionAttributeValues![":quiz"]).toEqual({ intent: "research" });
   });
 

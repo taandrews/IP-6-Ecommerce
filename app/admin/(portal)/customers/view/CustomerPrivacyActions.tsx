@@ -18,7 +18,7 @@ export function CustomerPrivacyActions({ k, canExport, canErase, requestId }: { 
         {msg ? <p role="status" className={msg.ok ? "text-emerald-700" : "text-danger"}>{msg.text}</p> : null}
         {canExport ? (
           <div>
-            <p className="mb-2">Download what this site holds (newsletter and waitlist sign-ups) for an access or portability request. Export the Shopify record from Shopify too (the customer's page, Export customer data). Store both securely and delete them once sent.</p>
+            <p className="mb-2">Download everything held about this customer (for an access or portability request). Store it securely and delete it once sent.</p>
             <button
               className="btn-secondary text-sm"
               disabled={busy}
@@ -43,7 +43,7 @@ export function CustomerPrivacyActions({ k, canExport, canErase, requestId }: { 
             className="space-y-2 border-t border-cloud-300 pt-4"
             onSubmit={async (e) => {
               e.preventDefault();
-              if (!window.confirm("Erase this customer now? This deletes their newsletter and waitlist sign-ups here and sends Shopify an erasure request for their account, orders and subscriptions. It cannot be undone.")) return;
+              if (!window.confirm("Erase this customer now? This cancels subscriptions, deletes the login and strips personal data from orders. It cannot be undone.")) return;
               setBusy(true);
               setMsg(null);
               try {
@@ -58,7 +58,7 @@ export function CustomerPrivacyActions({ k, canExport, canErase, requestId }: { 
             }}
           >
             <p className="font-medium text-danger">Erase customer (right to erasure)</p>
-            <p className="text-ink/70">Shopify completes its part on its own schedule and keeps order records it must hold by law. Cancel any active subscription in Shopify first. Only do this for a verified request.</p>
+            <p className="text-ink/70">Order amounts stay for tax records without name, email, phone or address. Only do this for a verified request.</p>
             <label className="block">
               <span className="label">Type the customer's email to confirm</span>
               <input className="input" type="email" required value={confirmEmail} onChange={(e) => setConfirmEmail(e.target.value)} autoComplete="off" />

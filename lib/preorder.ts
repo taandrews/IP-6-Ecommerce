@@ -1,10 +1,10 @@
 /**
- * Pre-order pricing shown on the site. One-time purchases get the pre-order
- * discount while the window is open; subscription lines keep their own plan
- * discount and the two never stack. The discount Shopify charges is its
- * "Pre-Order" automatic discount, whose state and percentage the site reads
- * (lib/data/settings.ts), so the prices shown match Shopify's checkout.
- * DEFAULT_PREORDER is the fallback when neither can be read.
+ * Pre-order pricing. One-time purchases get the pre-order discount while the
+ * window is open; subscription lines keep their own cycle discount and the
+ * two never stack. The live values come from the admin portal (Settings
+ * table); DEFAULT_PREORDER is the fallback when the table is unreachable.
+ * Shared by the storefront, the cart, checkout and the Checkout Session route
+ * so every price the customer sees matches what Stripe charges.
  */
 import type { PreorderSettings } from "@/types/records";
 
@@ -30,7 +30,8 @@ export function isPreorderLine(line: Pick<Discountable, "subscription">, p: Preo
 }
 
 export function lineTotalCents(line: Discountable, p: PreorderSettings = DEFAULT_PREORDER) {
-  return Math.round(line.unitPriceCents * line.qty * (1 - lineDiscountPct(line, p) / 100));
+  // Same rounding as the server quote: per item, then times the quantity.
+  return Math.round(line.unitPriceCents * (1 - lineDiscountPct(line, p) / 100)) * line.qty;
 }
 
 export function preorderUnitCents(unitPriceCents: number, p: PreorderSettings = DEFAULT_PREORDER) {

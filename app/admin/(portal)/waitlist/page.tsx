@@ -13,6 +13,18 @@ export const dynamic = "force-dynamic";
 
 const PRODUCT_NAMES = new Map(products.flatMap((p) => [[p.sku, p.name] as const, ...p.variants.map((v) => [v.sku, p.name] as const)]));
 
+const FORM_NAMES: Record<WaitlistRecord["source"], string> = {
+  product: "Product page",
+  checkout: "Checkout",
+  arrival: "Welcome notice",
+};
+
+/** The first sign-up's form and page; older rows only stored the latest. */
+const signupForm = (r: WaitlistRecord) => FORM_NAMES[r.signupSource ?? r.source];
+const signupPage = (r: WaitlistRecord) => r.signupPage ?? r.page;
+const productInterest = (r: WaitlistRecord) => [...new Set((r.products ?? []).map((s) => PRODUCT_NAMES.get(s) ?? s))].join(", ");
+const campaignLabel = (r: WaitlistRecord) => [r.campaign?.source, r.campaign?.medium, r.campaign?.campaign].filter(Boolean).join(" / ");
+
 function tally(rows: WaitlistRecord[], keys: (r: WaitlistRecord) => string[]) {
   const m = new Map<string, number>();
   for (const r of rows) for (const k of new Set(keys(r))) m.set(k, (m.get(k) ?? 0) + 1);
@@ -31,8 +43,10 @@ export default async function WaitlistPage() {
     error = true;
   }
   const byCountry = tally(rows, (r) => [r.country]);
-  const byProduct = tally(rows, (r) => (r.products?.length ? r.products.map((s) => PRODUCT_NAMES.get(s) ?? s) : ["No product (checkout)"]));
-  const fromCheckout = rows.filter((r) => r.source === "checkout").length;
+  const byProduct = tally(rows, (r) => (r.products?.length ? r.products.map((s) => PRODUCT_NAMES.get(s) ?? s) : ["No product viewed"]));
+  const byForm = tally(rows, (r) => [signupForm(r)]);
+  const byCampaign = tally(rows, (r) => [r.campaign?.source ?? "No campaign link"]);
+  const fromCheckout = rows.filter((r) => (r.signupSource ?? r.source) === "checkout").length;
 
   return (
     <div className="space-y-6">
@@ -44,7 +58,7 @@ export default async function WaitlistPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <Stat label="Signups" value={rows.length} />
         <Stat label="Countries" value={byCountry.length} />
-        <Stat label="Stopped at checkout" value={fromCheckout} hint="Entered a non-US address" />
+        <Stat label="Signed up at checkout" value={fromCheckout} hint="Entered a non-US address" />
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <Panel title="By country">
@@ -75,10 +89,38 @@ export default async function WaitlistPage() {
             <Empty>No signups yet.</Empty>
           )}
         </Panel>
+        <Panel title="By signup form">
+          {byForm.length ? (
+            <Table head={["Signup form", "Signups"]} minWidth={320}>
+              {byForm.map(([f, n]) => (
+                <tr key={f}>
+                  <td className="px-4 py-2">{f}</td>
+                  <td className="px-4 py-2 tabular-nums">{n}</td>
+                </tr>
+              ))}
+            </Table>
+          ) : (
+            <Empty>No signups yet.</Empty>
+          )}
+        </Panel>
+        <Panel title="By campaign source">
+          {byCampaign.length ? (
+            <Table head={["Campaign source", "Signups"]} minWidth={320}>
+              {byCampaign.map(([c, n]) => (
+                <tr key={c}>
+                  <td className="px-4 py-2">{c}</td>
+                  <td className="px-4 py-2 tabular-nums">{n}</td>
+                </tr>
+              ))}
+            </Table>
+          ) : (
+            <Empty>No signups yet.</Empty>
+          )}
+        </Panel>
       </div>
       <Panel title="Signups">
         {rows.length ? (
-          <Table head={["Email", "Name", "Country", "IP country", "Site", "Where", "Consent", "Updated"]} minWidth={960}>
+          <Table head={["Email", "Name", "Country", "IP country", "Signup form", "Signup page", "Product interest", "Campaign", "Consent", "Updated"]} minWidth={1280}>
             {rows.slice(0, 500).map((r) => (
               <tr key={r.userId}>
                 <td className="px-4 py-2">
@@ -87,8 +129,10 @@ export default async function WaitlistPage() {
                 <td className="px-4 py-2">{r.firstName ? (pii ? r.firstName : maskName(r.firstName)) : ""}</td>
                 <td className="px-4 py-2">{countryName(r.country)}</td>
                 <td className="px-4 py-2">{r.ipCountry ?? ""}</td>
-                <td className="px-4 py-2 text-xs">{r.site === "shopify" ? "Shopify" : "Amplify"}</td>
-                <td className="px-4 py-2 text-xs">{r.source === "checkout" ? "Checkout" : r.source === "arrival" ? `On arrival · ${r.page}` : r.lastProduct ? PRODUCT_NAMES.get(r.lastProduct) ?? r.lastProduct : r.page}</td>
+                <td className="px-4 py-2 text-xs">{signupForm(r)}</td>
+                <td className="px-4 py-2 text-xs font-mono">{signupPage(r)}</td>
+                <td className="px-4 py-2 text-xs">{productInterest(r)}</td>
+                <td className="px-4 py-2 text-xs">{campaignLabel(r)}</td>
                 <td className="px-4 py-2 text-xs">{r.consentedAt.slice(0, 10)} · v{r.consentVersion}{r.confirmedAt ? " · confirmed" : ""}</td>
                 <td className="px-4 py-2 text-xs tabular-nums">{r.updatedAt.slice(0, 10)}</td>
               </tr>

@@ -11,8 +11,8 @@ export interface ProductVariant {
   size?: string;
   priceCents: Record<Currency, number>;
   weightGrams: number;
-  /** Shopify ProductVariant GID, set from the live Shopify catalog. Without it the variant can't be bought. */
-  shopifyVariantId?: string;
+  stripePriceId?: string;
+  stripePriceIdSubscription?: Record<string, string>;
   inStock: boolean;
   /** Units left to sell, when stock is tracked and backorders are off. Undefined means no limit. */
   available?: number;
@@ -36,8 +36,7 @@ export interface Product {
   specifications?: { label: string; value: string }[];
   howToUse: string[];
   variants: ProductVariant[];
-  /** Subscribe-and-save plans: Shopify selling plans once merged with the live catalog. */
-  subscriptionCycles: { days: number; discountPct: number; sellingPlanId?: string }[];
+  subscriptionCycles: { days: number; discountPct: number }[];
   images: { url: string; alt: string; width: number; height: number }[];
   faq: { q: string; a: string }[];
   relatedSkus: string[];

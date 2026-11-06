@@ -8,6 +8,7 @@ import { useGeo } from "@/components/store/Geo";
 import { cn } from "@/lib/utils";
 import { WAITLIST_CONSENT_TEXT } from "@/lib/waitlist-consent";
 import { Captcha, captchaPayload } from "@/components/ui/Captcha";
+import { currentCampaign } from "@/lib/campaign";
 
 
 export type WaitlistSource = "product" | "checkout" | "arrival";
@@ -18,8 +19,12 @@ export function useWaitlistSubmit({ source, product, onDone }: { source: Waitlis
   const [state, setState] = useState<"idle" | "saving" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  async function submit(form: HTMLFormElement, v: { email: string; country: string; firstName?: string; consent: boolean }) {
+  async function submit(form: HTMLFormElement, v: { email: string; country: string; firstName: string; consent: boolean }) {
     setError(null);
+    if (!v.firstName.trim()) {
+      setError("Please add your first name.");
+      return;
+    }
     if (!v.consent) {
       setError("Please tick the box so we can email you at launch.");
       return;
@@ -30,7 +35,7 @@ export function useWaitlistSubmit({ source, product, onDone }: { source: Waitlis
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: v.email, country: v.country, firstName: v.firstName || undefined, consent: true, product, page: pathname, source, captcha }),
+        body: JSON.stringify({ email: v.email, country: v.country, firstName: v.firstName.trim(), consent: true, product, page: pathname, source, campaign: currentCampaign(), captcha }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
@@ -118,6 +123,20 @@ export function WaitlistForm({
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <label htmlFor={`${id}-first`} className="label">
+            First name <span className="text-danger" aria-hidden>*</span>
+          </label>
+          <input
+            id={`${id}-first`}
+            required
+            autoComplete="given-name"
+            maxLength={60}
+            className="input"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </div>
         <div>
           <label htmlFor={`${id}-email`} className="label">
             Email <span className="text-danger" aria-hidden>*</span>
@@ -147,31 +166,18 @@ export function WaitlistForm({
             ))}
           </select>
         </div>
-        <div className="sm:col-span-2">
-          <label htmlFor={`${id}-first`} className="label">
-            First name <span className="text-ink/50 font-normal">(optional)</span>
-          </label>
-          <input
-            id={`${id}-first`}
-            autoComplete="given-name"
-            maxLength={60}
-            className="input"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-        </div>
       </div>
       <label className="flex items-start gap-2.5 text-sm text-ink/80">
         <input type="checkbox" className="mt-0.5 size-4 accent-navy-800" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
         <span>{WAITLIST_CONSENT_TEXT}</span>
       </label>
-      <Captcha />
+      <Captcha action="waitlist" />
       {error ? (
         <p className="text-sm text-danger" role="alert">
           {error}
         </p>
       ) : null}
-      <button type="submit" className="btn-primary w-full justify-center" disabled={state === "saving" || !email || !country}>
+      <button type="submit" className="btn-primary w-full justify-center" disabled={state === "saving" || !firstName.trim() || !email || !country}>
         {state === "saving" ? "Saving…" : "Notify me at launch"}
       </button>
       <p className="text-xs text-ink/55">

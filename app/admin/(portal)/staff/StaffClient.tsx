@@ -51,7 +51,48 @@ export function InviteStaff() {
   );
 }
 
-export function StaffRowActions({ username, role, enabled }: { username: string; role: Role | null; enabled: boolean }) {
+/** Inline name editor; the email is the sign-in identity and isn't editable. */
+export function StaffName({ username, name }: { username: string; name?: string }) {
+  const router = useRouter();
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(name ?? "");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  if (!editing) {
+    return (
+      <span className="inline-flex items-center gap-2">
+        {name || <span className="text-ink/50">No name</span>}
+        <button className="btn-ghost text-xs" onClick={() => setEditing(true)} aria-label={`Edit name for ${name ?? username}`}>Edit</button>
+      </span>
+    );
+  }
+  return (
+    <form
+      className="flex flex-wrap items-center gap-2"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError(null);
+        try {
+          await adminRequest(`/api/admin/staff/${encodeURIComponent(username)}`, "PATCH", { action: "name", name: value });
+          setEditing(false);
+          router.refresh();
+        } catch (err) {
+          setError((err as Error).message);
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      <input className="input py-1 text-sm w-40" required maxLength={80} value={value} onChange={(e) => setValue(e.target.value)} aria-label="Name" autoFocus />
+      <button className="btn-primary text-xs px-3 py-1" disabled={busy}>Save</button>
+      <button type="button" className="btn-ghost text-xs" onClick={() => { setEditing(false); setValue(name ?? ""); }}>Cancel</button>
+      {error ? <span className="w-full text-xs text-danger">{error}</span> : null}
+    </form>
+  );
+}
+
+export function StaffRowActions({ username, role, enabled, pending }: { username: string; role: Role | null; enabled: boolean; pending: boolean }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +124,9 @@ export function StaffRowActions({ username, role, enabled }: { username: string;
         <option value="staff">Staff</option>
         <option value="owner">Owner</option>
       </select>
+      {pending && enabled ? (
+        <button className="btn-ghost text-xs" disabled={busy} onClick={() => act("PATCH", { action: "resend" }, "Email a new invite? The earlier temporary password stops working.")}>Resend invite</button>
+      ) : null}
       {enabled ? (
         <button className="btn-ghost text-xs" disabled={busy} onClick={() => act("PATCH", { action: "disable" }, "Disable this login? They're signed out everywhere immediately.")}>Disable</button>
       ) : (

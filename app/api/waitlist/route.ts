@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { countryName, isCountryCode, isSellableCountry } from "@/lib/countries";
+import { countryInSentence, countryName, isCountryCode, isSellableCountry } from "@/lib/countries";
 import { ipCountry } from "@/lib/geo";
 import { saveWaitlist } from "@/lib/data/waitlist";
 import { products } from "@/content/products";
-import { isShopifyOrigin } from "@/lib/storefronts";
 import { limitByIp } from "@/lib/rate-limit";
 import { verifyCaptcha } from "@/lib/captcha";
 import { requestConfirmation } from "@/lib/data/confirmations";
 import { getWaitlistEntry } from "@/lib/data/waitlist";
 import { WAITLIST_CONSENT_VERSION } from "@/lib/waitlist-consent";
+import { CAMPAIGN_VALUE } from "@/lib/campaign";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -24,12 +24,8 @@ const Body = z.object({
     .length(2)
     .transform((c) => c.toUpperCase())
     .refine((c) => isCountryCode(c), "Please choose your country."),
-  firstName: z
-    .string()
-    .trim()
-    .max(60)
-    .optional()
-    .transform((v) => v || undefined),
+  // The confirmation email greets the person by name, so a first name is required.
+  firstName: z.string().trim().min(1, "Please add your first name.").max(60),
   consent: z.literal(true),
   product: z
     .string()
@@ -42,64 +38,56 @@ const Body = z.object({
     .regex(/^\/[^\s]*$/)
     .default("/"),
   source: z.enum(["product", "checkout", "arrival"]),
-  site: z.enum(["amplify", "shopify"]).default("amplify"),
+  // utm_* of the link that brought the visitor in (sent only with analytics consent).
+  campaign: z
+    .object({
+      source: z.string().trim().regex(CAMPAIGN_VALUE).optional(),
+      medium: z.string().trim().regex(CAMPAIGN_VALUE).optional(),
+      campaign: z.string().trim().regex(CAMPAIGN_VALUE).optional(),
+    })
+    .strict()
+    .optional()
+    .catch(undefined),
   captcha: z.string().max(2048).nullish(),
 });
-
-/** CORS for the Shopify storefront, which posts its waitlist form here. */
-function cors(req: Request): Record<string, string> {
-  const origin = req.headers.get("origin");
-  return isShopifyOrigin(origin)
-    ? { "Access-Control-Allow-Origin": origin!, "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Access-Control-Max-Age": "86400", Vary: "Origin" }
-    : {};
-}
-
-export function OPTIONS(req: Request) {
-  return new NextResponse(null, { status: 204, headers: cors(req) });
-}
 
 /**
  * Launch waitlist sign-up for visitors in countries we don't ship to yet.
  * Needs a solved CAPTCHA; saved as pending until the emailed link is clicked.
  */
 export async function POST(req: Request) {
-  const headers = cors(req);
   const limited = (await limitByIp(req, "waitlist", 10)) ?? (await limitByIp(req, "waitlist-hour", 40, 3600));
-  if (limited) {
-    for (const [k, v] of Object.entries(headers)) limited.headers.set(k, v);
-    return limited;
-  }
+  if (limited) return limited;
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
-    const consentMissing = parsed.error.issues.some((i) => i.path[0] === "consent");
-    return NextResponse.json(
-      { error: consentMissing ? "Please tick the box so we can email you at launch." : "Please check your email and country." },
-      { status: 400, headers },
-    );
+    const first = parsed.error.issues[0]?.path[0];
+    const error =
+      first === "consent" ? "Please tick the box so we can email you at launch." : first === "firstName" ? "Please add your first name." : "Please check your email and country.";
+    return NextResponse.json({ error }, { status: 400 });
   }
   const d = parsed.data;
-  if (!(await verifyCaptcha(d.captcha, req))) {
-    return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400, headers });
+  if (!(await verifyCaptcha(d.captcha, req, "waitlist"))) {
+    return NextResponse.json({ error: "Please complete the check and try again.", captcha: true }, { status: 400 });
   }
   if (isSellableCountry(d.country)) {
-    return NextResponse.json({ error: `We already ship to ${countryName(d.country)}. You can order now.`, sellable: true }, { status: 400, headers });
+    return NextResponse.json({ error: `We already ship to ${countryName(d.country)}. You can order now.`, sellable: true }, { status: 400 });
   }
   try {
     await saveWaitlist({
       email: d.email,
       country: d.country,
       firstName: d.firstName,
-      ipCountry: ipCountry(),
+      ipCountry: await ipCountry(),
       product: d.product,
       page: d.page.split("?")[0]!,
       source: d.source,
-      site: d.site,
+      campaign: d.campaign && Object.keys(d.campaign).length ? d.campaign : undefined,
     });
     // Double opt-in: only a click on the emailed link confirms the sign-up.
-    if (!(await getWaitlistEntry(d.email))?.confirmedAt) await requestConfirmation(req, "waitlist", d.email, WAITLIST_CONSENT_VERSION);
-    return NextResponse.json({ ok: true }, { headers });
+    if (!(await getWaitlistEntry(d.email))?.confirmedAt) await requestConfirmation(req, { kind: "waitlist", firstName: d.firstName, country: countryInSentence(d.country) }, d.email, WAITLIST_CONSENT_VERSION);
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("[waitlist] save failed", (err as Error).name);
-    return NextResponse.json({ error: "We couldn't save that. Please try again." }, { status: 500, headers });
+    return NextResponse.json({ error: "We couldn't save that. Please try again." }, { status: 500 });
   }
 }

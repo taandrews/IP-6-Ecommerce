@@ -1,6 +1,6 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import { headers, type UnsafeUnwrappedHeaders } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAccessToken, getStaffUser, type SessionUser } from "@/lib/auth/session";
 import { accessTokenActive } from "@/lib/aws/cognito";
@@ -22,8 +22,8 @@ export class HttpError extends Error {
   }
 }
 
-function clientIp() {
-  return clientIpFrom((headers() as unknown as UnsafeUnwrappedHeaders), "");
+async function clientIp() {
+  return clientIpFrom(await headers(), "");
 }
 
 // Access tokens Cognito confirmed recently, so a page with many requests asks once.
@@ -32,7 +32,7 @@ const CONFIRM_TTL_MS = 30_000;
 
 /** Asks Cognito whether the session was revoked (removed, disabled or re-roled staff). */
 async function sessionLive(): Promise<boolean> {
-  const token = getAccessToken("staff");
+  const token = await getAccessToken("staff");
   if (!token) return false;
   const now = Date.now();
   const at = confirmed.get(token);
@@ -60,7 +60,7 @@ export async function getStaff(): Promise<StaffContext | null> {
   const role = roleFromGroups(user.groups);
   if (!role) return null;
   await loadLinkKey();
-  return { user, role, actor: { sub: user.sub, email: user.email, role }, ip: clientIp() };
+  return { user, role, actor: { sub: user.sub, email: user.email, role }, ip: await clientIp() };
 }
 
 /** For admin pages (server components). */

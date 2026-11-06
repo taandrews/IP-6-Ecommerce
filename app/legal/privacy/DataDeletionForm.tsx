@@ -49,7 +49,7 @@ export function DataDeletionForm() {
       </fieldset>
       <Input id="del-email" name="email" type="email" label="Email you used with us" required autoComplete="email" />
       <Textarea id="del-details" name="details" label="Details (optional)" hint="Anything that helps us find your data or understand your request." />
-      <Captcha />
+      <Captcha action="deletion" />
       <button type="submit" className="btn-primary" disabled={status === "submitting"}>
         {status === "submitting" ? "Sending…" : "Send confirmation link"}
       </button>

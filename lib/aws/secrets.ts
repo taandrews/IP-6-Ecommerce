@@ -11,7 +11,7 @@ import {
  * works without an AWS round-trip.
  *
  * Secrets are structured per service:
- *   ip6/{env}/shopify  → { adminToken, storefrontToken }
+ *   ip6/{env}/stripe   → { secretKey, publishableKey, webhookSecret }
  *   ip6/{env}/sanity   → { projectId, dataset, apiToken }
  *   ip6/{env}/algolia  → { appId, searchKey, adminKey }
  *   ip6/{env}/app      → { turnstileSecretKey, adminLinkKey, captchaHmacKey, rateLimitSecret }, the last three with a
@@ -38,7 +38,7 @@ async function fetchSecret(secretId: string): Promise<Record<string, string>> {
 }
 
 /** APP_ENV picks the secret set explicitly ("prod" or "staging"); production builds default to prod. */
-function secretName(service: "shopify" | "sanity" | "algolia" | "app") {
+function secretName(service: "stripe" | "sanity" | "algolia" | "app") {
   const explicit = process.env.APP_ENV;
   const env =
     explicit === "prod" || explicit === "staging"
@@ -49,25 +49,24 @@ function secretName(service: "shopify" | "sanity" | "algolia" | "app") {
   return `ip6/${env}/${service}`;
 }
 
-export interface ShopifySecrets {
-  /** Admin API token: staff portal and privacy erasure. */
-  adminToken: string;
-  /** Headless channel private Storefront API token: catalog and checkout. */
-  storefrontToken: string;
+export interface StripeSecrets {
+  secretKey: string;
+  publishableKey: string;
+  webhookSecret: string;
 }
 
-/**
- * Shopify tokens from ip6/{env}/shopify. Production always reads Secrets
- * Manager; local development may use SHOPIFY_ADMIN_TOKEN and
- * SHOPIFY_STOREFRONT_PRIVATE_TOKEN instead.
- */
-export async function getShopifySecrets(): Promise<ShopifySecrets> {
-  if (process.env.NODE_ENV !== "production" && process.env.SHOPIFY_ADMIN_TOKEN && process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN) {
-    return { adminToken: process.env.SHOPIFY_ADMIN_TOKEN, storefrontToken: process.env.SHOPIFY_STOREFRONT_PRIVATE_TOKEN };
+export async function getStripeSecrets(): Promise<StripeSecrets> {
+  // Local development may use env vars; production always reads Secrets Manager.
+  if (process.env.NODE_ENV !== "production" && process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PUBLISHABLE_KEY && process.env.STRIPE_WEBHOOK_SECRET) {
+    return {
+      secretKey: process.env.STRIPE_SECRET_KEY,
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY ?? "",
+      webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    };
   }
-  const s = await fetchSecret(secretName("shopify"));
-  if (!s.adminToken || !s.storefrontToken) throw new Error("adminToken or storefrontToken missing from ip6/*/shopify secret");
-  return { adminToken: s.adminToken, storefrontToken: s.storefrontToken };
+  const s = await fetchSecret(secretName("stripe"));
+  if (!s.secretKey || !s.publishableKey || !s.webhookSecret) throw new Error("secretKey, publishableKey or webhookSecret missing from ip6/*/stripe secret");
+  return { secretKey: s.secretKey, publishableKey: s.publishableKey, webhookSecret: s.webhookSecret };
 }
 
 export interface SanitySecrets {
