@@ -34,6 +34,11 @@ export interface Ip6StackProps extends StackProps {
    * prod uses the Amplify URL until ip6original.com points at the site.
    */
   adminOrigin?: string;
+  /**
+   * The live site, for scheduled calls to its /api/internal endpoints (EventBridge
+   * API destinations). Unset (no deployed site, e.g. staging): no schedules.
+   */
+  siteUrl?: string;
   /** Account-wide alert topic (from Ip6AccountStack); bounces, complaints and CDN errors go here. */
   alertsTopicArn: string;
   /** The Amplify Hosting app allowed to use this stack's app role (prod only). */
@@ -128,6 +133,25 @@ export class Ip6Stack extends Stack {
       partitionKey: { name: "category", type: dynamodb.AttributeType.STRING },
     });
 
+    // Inventory (lib/inventory/store.ts): locations, stock per SKU and location,
+    // lots with expiry, checkout holds and the append-only movement ledger, one
+    // table so every stock change commits in a single transaction.
+    const stock = new dynamodb.Table(this, "Stock", {
+      tableName: `${props.tablePrefix}Stock`,
+      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "sk", type: dynamodb.AttributeType.STRING },
+      ...tableDefaults,
+      // The ledger is a financial record: always recoverable.
+      pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: true },
+    });
+    // Holds by expiry, so the hourly sweep finds ones Stripe never reported.
+    stock.addGlobalSecondaryIndex({
+      indexName: "byHold",
+      partitionKey: { name: "holdState", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "holdUntil", type: dynamodb.AttributeType.STRING },
+    });
+
+    // Previous stock table: kept until the app on the Stock table is live.
     const inventory = new dynamodb.Table(this, "Inventory", {
       tableName: `${props.tablePrefix}Inventory`,
       partitionKey: { name: "sku", type: dynamodb.AttributeType.STRING },
@@ -241,7 +265,7 @@ export class Ip6Stack extends Stack {
       timeToLiveAttribute: "expiresAt",
     });
 
-    const appTables = [users, orders, orderItems, productsTable, inventory, subs, reviews, discounts, discountRedemptions, analytics, settings, auditLog, privacyRequests, rateLimits];
+    const appTables = [users, orders, orderItems, productsTable, stock, inventory, subs, reviews, discounts, discountRedemptions, analytics, settings, auditLog, privacyRequests, rateLimits];
 
     // -----------------------
     // Cognito: two separate user pools
@@ -534,7 +558,41 @@ export class Ip6Stack extends Stack {
         ]),
       }),
     );
-    [stripeSecret, sanitySecret, algoliaSecret, appSecret].forEach((s) => s.grantRead(appRole));
+    // Key for scheduled calls from EventBridge to the site's /api/internal endpoints.
+    const cronSecret = new secrets.Secret(this, "CronSecret", {
+      secretName: `ip6/${props.environment}/cron`,
+      description: "Key EventBridge sends with scheduled calls to the site (x-ip6-cron-key)",
+      generateSecretString: { secretStringTemplate: "{}", generateStringKey: "apiKey", passwordLength: 48, excludePunctuation: true },
+      removalPolicy: removal,
+    });
+
+    [stripeSecret, sanitySecret, algoliaSecret, appSecret, cronSecret].forEach((s) => s.grantRead(appRole));
+
+    if (props.siteUrl) {
+      const connection = new events.Connection(this, "SiteCronConnection", {
+        description: "Calls the site's scheduled endpoints with the cron key",
+        authorization: events.Authorization.apiKey("x-ip6-cron-key", SecretValue.secretsManager(cronSecret.secretArn, { jsonField: "apiKey" })),
+      });
+      const schedule = (id: string, task: string, every: Duration) =>
+        new events.Rule(this, id, {
+          ruleName: `ip6-${props.environment}-inventory-${task}`,
+          description: `Inventory ${task} job (lib/inventory)`,
+          schedule: events.Schedule.rate(every),
+          targets: [
+            new targets.ApiDestination(
+              new events.ApiDestination(this, `${id}Destination`, {
+                connection,
+                endpoint: `${props.siteUrl!.replace(/\/$/, "")}/api/internal/inventory?task=${task}`,
+                httpMethod: events.HttpMethod.POST,
+                rateLimitPerSecond: 1,
+              }),
+              { retryAttempts: 3, maxEventAge: Duration.hours(1) },
+            ),
+          ],
+        });
+      schedule("InventoryHoldSweep", "holds", Duration.hours(1));
+      schedule("InventoryDailyReport", "report", Duration.days(1));
+    }
 
     // The app's own keys rotate every 30 days. The previous value is kept so
     // anything signed just before a rotation still verifies (see the Lambda).

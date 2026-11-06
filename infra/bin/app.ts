@@ -75,6 +75,7 @@ new Ip6Stack(app, "Ip6ProdStack", {
   tablePrefix: "ip6_prod_",
   domainName: DOMAIN,
   adminOrigin: ADMIN_ORIGIN,
+  siteUrl: ADMIN_ORIGIN,
   alertsTopicArn: accountStack.alertsTopic.topicArn,
   amplifyAppId: AMPLIFY_APP_ID,
   amplifyRegion: AMPLIFY_REGION,
