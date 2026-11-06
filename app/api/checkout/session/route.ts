@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { CheckoutInputSchema } from "@/lib/checkout/schema";
 import { buildQuote } from "@/lib/checkout/build";
-import { applyShipping, createCheckoutSession, sessionAmounts } from "@/lib/checkout/session";
+import { applyShipping, createCheckoutSession, sessionAmounts, SESSION_TTL_SEC } from "@/lib/checkout/session";
+import { holdForCheckout, releaseOrder } from "@/lib/inventory/orders";
+import { InventoryError } from "@/lib/inventory/store";
 import { createPendingOrder, emailKey, getOrder, setOrderStatus } from "@/lib/data/orders";
 import { getSessionUser } from "@/lib/auth/session";
 import { getStripe, StripeConfigurationError } from "@/lib/stripe/server";
@@ -10,6 +12,7 @@ import { holdDiscount, releaseDiscountHold } from "@/lib/data/discounts";
 import { DISCOUNT_MESSAGES } from "@/lib/pricing/discount";
 import { limitByIp } from "@/lib/rate-limit";
 import { siteOrigin } from "@/lib/site-origin";
+import { cartRemindersEnabled } from "@/lib/cart-reminder";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,6 +37,7 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Please check your details and try again." }, { status: 400 });
   const input = parsed.data;
   let held: { code: string; orderId: string } | null = null;
+  let stockHeldFor: string | null = null;
 
   try {
     const built = await buildQuote(input);
@@ -53,12 +57,17 @@ export async function POST(req: Request) {
           else if (s.status === "complete") return; // Paid: the webhook fulfils it; never cancel a paid order.
         }
         await setOrderStatus(earlierId, "cancelled", { cancelReason: "replaced_by_new_checkout" }, ["pending"]);
+        await releaseOrder(earlierId);
       };
       if (!(await holdDiscount(q.discountCode, input.email, orderId, cancelEarlier))) {
         return NextResponse.json({ error: DISCOUNT_MESSAGES.used_up, discountMessage: DISCOUNT_MESSAGES.used_up }, { status: 422 });
       }
       held = { code: q.discountCode, orderId };
     }
+
+    // Hold the stock for as long as the shopper has to pay (plus a margin), before payment can start.
+    await holdForCheckout(orderId, q.lines.map((l) => ({ sku: l.sku, qty: l.qty })), input.address.country, new Date(Date.now() + (SESSION_TTL_SEC + 600) * 1000));
+    stockHeldFor = orderId;
 
     const session = await createCheckoutSession(stripe, {
       orderId,
@@ -95,6 +104,7 @@ export async function POST(req: Request) {
       taxCents: amounts.taxCents,
       totalCents: amounts.totalCents,
       ...(q.hasPreorder ? { preorder: "1" as const } : {}),
+      ...(input.cartReminder && cartRemindersEnabled() ? { cartReminder: true } : {}),
       stripeCheckoutSessionId: session.id,
       stripePaymentIntentId: "",
       refundedCents: 0,
@@ -110,6 +120,10 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("[checkout] session failed", (err as { type?: string }).type ?? (err as Error).name, (err as { code?: string }).code ?? "", (err as { param?: string }).param ?? "");
     if (held) await releaseDiscountHold(held.code, held.orderId).catch(() => undefined);
+    if (stockHeldFor) await releaseOrder(stockHeldFor).catch(() => undefined);
+    if (err instanceof InventoryError) {
+      return NextResponse.json({ error: "Some items just sold out or there isn't enough left. Please lower the quantity or try again later." }, { status: 422 });
+    }
     if (err instanceof StripeConfigurationError) {
       return NextResponse.json({ error: "Checkout is temporarily unavailable. Please try again later." }, { status: 503 });
     }

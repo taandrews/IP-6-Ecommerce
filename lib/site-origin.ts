@@ -12,3 +12,10 @@ export function siteOrigin(req: Request) {
   }
   return new URL(req.url).origin;
 }
+
+/** The configured site origin, for links built outside a request (webhooks, jobs). */
+export function configuredSiteOrigin() {
+  const url = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!url) throw new Error("NEXT_PUBLIC_SITE_URL is not configured");
+  return new URL(url).origin;
+}

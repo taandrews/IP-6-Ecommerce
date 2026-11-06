@@ -11,11 +11,18 @@ export function ShippingStep({
   email,
   onEmail,
   address,
+  reminderOffered,
+  reminder,
+  onReminder,
   onContinue,
 }: {
   email: string;
   onEmail: (v: string) => void;
   address: Address | null;
+  /** Shown only when cart reminders are switched on (lib/cart-reminder.ts). */
+  reminderOffered: boolean;
+  reminder: boolean;
+  onReminder: (v: boolean) => void;
   onContinue: (a: Address) => void;
 }) {
   const [form, setForm] = useState<Address>(
@@ -64,6 +71,12 @@ export function ShippingStep({
         value={email}
         onChange={(e) => onEmail(e.target.value)}
       />
+      {reminderOffered ? (
+        <label className="flex items-start gap-2 text-sm text-ink/80">
+          <input type="checkbox" className="mt-0.5" checked={reminder} onChange={(e) => onReminder(e.target.checked)} />
+          <span>Email me a link to my cart if I don&apos;t finish checking out. One email, and you can turn these off from it.</span>
+        </label>
+      ) : null}
       <h2 className="font-display text-xl text-forest-800 pt-4">Shipping address</h2>
       <div className="grid sm:grid-cols-2 gap-4">
         <Input

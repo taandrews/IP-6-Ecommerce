@@ -89,6 +89,11 @@ export interface OrderRecord {
   totalCents: number;
   /** "1" when any line is a pre-order; string so it can key a sparse index later. */
   preorder?: "1";
+  /** The shopper asked at checkout for one reminder email if they don't finish. */
+  cartReminder?: boolean;
+  /** Which location and lot each unit was sold from (lib/inventory/store.ts); used for returns and recalls. */
+  stockAllocations?: Array<{ sku: string; locationId: string; lotNo: string | null; qty: number }>;
+  cartReminderSentAt?: string;
   /** The Checkout Session the customer paid through. */
   stripeCheckoutSessionId?: string;
   /** Set when the payment succeeds (empty while pending). */
@@ -117,18 +122,6 @@ export interface ProductOverride {
   available?: Record<string, boolean>;
   updatedAt: string;
   updatedBy: string;
-}
-
-export interface InventoryItem {
-  /** Variant SKU. */
-  sku: string;
-  stock: number;
-  lowStockThreshold: number;
-  /** Keep selling at zero stock (used while pre-orders are open). */
-  allowBackorder: boolean;
-  lowStock?: "1";
-  updatedAt: string;
-  updatedBy?: string;
 }
 
 export interface PreorderSettings {

@@ -20,6 +20,18 @@ The admin portal lives at `/admin` on the Amplify site. It manages orders, pre-o
 - **At rest.** All tables are encrypted with a customer-managed KMS key; point-in-time recovery is on in prod, and the audit log always has it.
 - **Pricing.** The browser never sets a price: checkout prices are recomputed on the server from the catalog and the admin settings (`lib/pricing/quote.ts`). Stripe webhooks are signature-checked and idempotent.
 
+## Inventory
+
+Admin, Inventory (code: `lib/inventory/`, table `ip6_<env>_Stock`).
+
+- **Locations** are warehouses or fulfilment partners, each with the countries it ships to and a priority (lower ships first). Add one before receiving stock.
+- **Stock** is kept per product (SKU), location and lot. Each position shows on hand, held at checkout, and available (on hand minus held minus safety stock). Per position: safety stock, low-stock alert level, and a backorder limit (how far below zero it may sell, for pre-orders; 0 means never).
+- **Lots** carry the lot number and expiry date from the label. Sales take the lot that expires first and never an expired lot. Each order records the lots it shipped from (`stockAllocations`), for returns and recalls.
+- **Checkout** holds stock when payment starts (for the session's hour), payment turns the hold into a sale, and expiry or cancellation releases it. A paid order is never refused: if its hold had already ended, it sells anyway and the order gets a note to check stock.
+- **Movements**: receive, adjust or write off (damage, expired, correction, reason required), transfer between locations, and stock counts (paste `sku,location,lot,counted`, preview, apply). Every change is in the movement log with who and why; owners can export it as CSV per product.
+- **Alerts** go to orders@: low stock when a position reaches its alert level (once a day at most), and a daily report of lots expiring within 90 days, expired lots still in stock and positions sold past their limit. An hourly job releases holds Stripe never reported as expired. Both are EventBridge schedules calling `/api/internal/inventory` with the key in `ip6/<env>/cron`.
+- A product with no stock received anywhere is **not tracked** and sells without a limit; the page flags it.
+
 ## Deploying
 
 Done on 2026-10-21 (see `infra/README.md`): all four stacks are deployed, the Amplify app runs with the `ip6-prod-app` compute role (no access keys), its environment points at the `ip6_prod_` tables, the prod user pools, the prod assets bucket and CDN, and `APP_ENV=prod`. Local development uses the staging stack through `.env.staging`.

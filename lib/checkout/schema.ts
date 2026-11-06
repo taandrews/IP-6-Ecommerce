@@ -31,6 +31,8 @@ export const CheckoutInputSchema = z.object({
   currency: CurrencySchema,
   shippingRateId: z.string().max(40).optional(),
   discountCode: z.string().max(40).optional().nullable(),
+  /** Opt-in to one reminder email if this checkout isn't finished. */
+  cartReminder: z.boolean().optional(),
 });
 
 export type CheckoutInput = z.infer<typeof CheckoutInputSchema>;

@@ -63,6 +63,10 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
               the link we email you. Until you click it you are not on the list, and an unconfirmed sign-up is deleted after 30 days.
             </li>
             <li>
+              <strong>Cart reminder:</strong> only if you tick the box at checkout. If you don&apos;t finish paying, we email you once with a link
+              back to your cart, never more than one a day. The email has a link to stop these reminders.
+            </li>
+            <li>
               <strong>Launch waitlist:</strong> if you are outside the countries we ship to and ask to hear when we launch there, your email,
               the country you choose, your first name if you give it, the country your connection appears to come from (we don&apos;t keep your
               IP address), the product and page you signed up on, the date, and the wording you agreed to. We use it only to email you about
@@ -104,6 +108,7 @@ export default async function PrivacyPage(props: { searchParams: Promise<{ reque
               To take payment, ship your order, run subscriptions and send order, shipping, renewal and account emails (to perform our contract with
               you).
             </li>
+            <li>To send the one cart reminder you asked for at checkout (your consent, which you can withdraw from the email).</li>
             <li>To keep tax and accounting records (legal obligation).</li>
             <li>To prevent fraud, secure accounts and the site, and handle disputes (our legitimate interests).</li>
             <li>To send offers and updates, only if you agreed (consent; withdraw at any time).</li>

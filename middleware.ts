@@ -15,7 +15,8 @@ const ACCOUNT_PATH = /^\/account(?!\/(login|register|forgot-password))(?:\/|$)/;
 const AUTH_API = /^\/api\/(auth|admin\/auth)\//;
 const RATE_LIMITED = /^\/api\/(shipping|reviews|newsletter|waitlist|privacy|contact|checkout|auth|admin\/auth)/;
 /** Server-to-server callers that never carry a browser Origin. */
-const ORIGIN_EXEMPT = /^\/api\/stripe\/webhook$/;
+// Server-to-server callers (Stripe, AWS EventBridge) send no browser Origin; each verifies its own signature or key.
+const ORIGIN_EXEMPT = /^\/api\/(stripe\/webhook|internal\/inventory)$/;
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 // Per-instance burst limiter. The routes behind it add a shared DynamoDB

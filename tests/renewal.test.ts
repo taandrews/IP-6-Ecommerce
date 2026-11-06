@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
-import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, ScanCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import type Stripe from "stripe";
 import type { OrderRecord, SubscriptionRecord } from "@/types/records";
@@ -69,6 +69,8 @@ beforeEach(() => {
   ddb.on(PutCommand).resolves({});
   ddb.on(UpdateCommand).resolves({});
   ddb.on(ScanCommand).resolves({ Items: [] });
+  // Untracked SKU: the renewal sells without touching inventory.
+  ddb.on(QueryCommand).resolves({ Items: [] });
   ses.on(SendEmailCommand).resolves({ MessageId: "m1" });
 });
 

@@ -25,6 +25,12 @@ const MESSAGES: Record<string, string> = {
   bad_origin: "Request blocked. Reload the page and try again.",
   rate_limited: "Too many requests. Wait a minute and try again.",
   full_email_required: "Your role sees masked details, so type the customer's full email address.",
+  not_enough_stock: "There isn't enough stock for that.",
+  no_location: "No active location ships there.",
+  unknown_location: "That location doesn't exist. Add it first.",
+  lot_short: "That lot doesn't have enough units, or doesn't exist at that location.",
+  stock_changed: "Stock changed while you were editing, or the lot's expiry date doesn't match. Reload and try again.",
+  invalid: "Some numbers aren't valid.",
   server_error: "Something went wrong. Please try again.",
 };
 

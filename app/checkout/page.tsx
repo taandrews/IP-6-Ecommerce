@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { CheckoutFlow } from "./CheckoutFlow";
 import { getSessionUser } from "@/lib/auth/session";
 import { getStripeSecrets } from "@/lib/aws/secrets";
+import { cartRemindersEnabled } from "@/lib/cart-reminder";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -16,7 +17,7 @@ export default async function CheckoutPage() {
   return (
     <div className="min-h-[80vh] bg-ivory-100">
       <Suspense>
-        <CheckoutFlow signedIn={!!user} publishableKey={publishableKey} />
+        <CheckoutFlow signedIn={!!user} publishableKey={publishableKey} reminderOffered={cartRemindersEnabled()} />
       </Suspense>
     </div>
   );

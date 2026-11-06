@@ -1,7 +1,7 @@
 import "server-only";
 import type Stripe from "stripe";
 import { addRefund, appendOrderList, claimRefundMarker, getOrder, OPEN_STATUSES, setOrderStatus } from "@/lib/data/orders";
-import { restock } from "@/lib/data/catalog";
+import { returnOrderStock } from "@/lib/inventory/orders";
 import { recordRefund } from "@/lib/data/analytics";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { formatPrice } from "@/lib/utils";
@@ -106,7 +106,7 @@ export async function refund(
   );
   // The charge.refunded webhook sees no new amount for this refund, so count it here.
   await recordRefund(new Date().toISOString(), o.currency, amount);
-  if (opts.restockItems && total >= o.totalCents) await restock(o.items.map((l) => ({ sku: l.sku, qty: l.qty })));
+  if (opts.restockItems && total >= o.totalCents) await returnOrderStock(orderId, o.stockAllocations, actorEmail, `refunded: ${opts.reason}`);
   if (!o.anonymizedAt) {
     await sendEmailSafe(o.email, emailTemplates.refundIssued(firstName(o.customerName), orderId, formatPrice(amount, o.currency)), "refund email");
   }
@@ -127,7 +127,7 @@ export async function cancel(stripe: Stripe, orderId: string, reason: string, ac
   const r = await refund(stripe, orderId, { reason, restockItems: false, requestKey }, actorEmail);
   // A resubmitted cancel: the first request already restocks and emails.
   if (r.duplicate) return;
-  await restock(o.items.map((l) => ({ sku: l.sku, qty: l.qty })));
+  await returnOrderStock(orderId, o.stockAllocations, actorEmail, `cancelled: ${reason}`);
   await setOrderStatus(orderId, "cancelled", {});
   await addNote(orderId, `Cancelled: ${reason}` + (plans.length ? ` (subscription ${plans.map((p) => p.subscriptionId).join(", ")} ended)` : ""), actorEmail);
   if (!o.anonymizedAt) await sendEmailSafe(o.email, emailTemplates.orderCancelled(firstName(o.customerName), orderId), "cancel email");

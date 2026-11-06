@@ -4,7 +4,10 @@ import { unstable_cache, revalidateTag } from "next/cache";
 import { docClient, TABLES } from "@/lib/aws/dynamo";
 import { products as baseProducts } from "@/content/products";
 import type { Currency, Product } from "@/types";
-import type { InventoryItem, ProductOverride } from "@/types/records";
+import type { ProductOverride } from "@/types/records";
+import { allStock, listLocations } from "@/lib/inventory/store";
+import { summarize, type StockSummary } from "@/lib/inventory/availability";
+import { SELLABLE_COUNTRIES } from "@/lib/countries";
 import { mergeCatalog } from "./merge-catalog";
 import { getStripe } from "@/lib/stripe/server";
 import { syncProductToStripe, type SyncSummary } from "@/lib/stripe/sync";
@@ -27,15 +30,12 @@ async function scanAll<T>(table: string): Promise<T[]> {
 
 async function loadOverrides() {
   try {
-    const [overrides, stock] = await Promise.all([
-      scanAll<ProductOverride>(TABLES.Products),
-      scanAll<InventoryItem>(TABLES.Inventory),
-    ]);
-    return { overrides, stock };
+    const [overrides, { positions }, locations] = await Promise.all([scanAll<ProductOverride>(TABLES.Products), allStock(), listLocations()]);
+    return { overrides, stock: summarize(positions, locations, SELLABLE_COUNTRIES) };
   } catch (err) {
     // If the tables are unreachable the static catalog still renders.
     console.error("[catalog] override read failed", (err as Error).name);
-    return { overrides: [] as ProductOverride[], stock: [] as InventoryItem[] };
+    return { overrides: [] as ProductOverride[], stock: [] as StockSummary[] };
   }
 }
 
@@ -108,83 +108,7 @@ export async function listOverrides(): Promise<ProductOverride[]> {
   return scanAll<ProductOverride>(TABLES.Products);
 }
 
-export async function listInventory(): Promise<InventoryItem[]> {
-  return scanAll<InventoryItem>(TABLES.Inventory);
-}
-
-export async function setInventory(
-  sku: string,
-  values: { stock: number; lowStockThreshold: number; allowBackorder: boolean },
-  actor: string,
-) {
-  const low = values.stock <= values.lowStockThreshold;
-  await docClient.send(
-    new UpdateCommand({
-      TableName: TABLES.Inventory,
-      Key: { sku },
-      UpdateExpression: `SET stock = :s, lowStockThreshold = :t, allowBackorder = :b, updatedAt = :u, updatedBy = :a${
-        low ? ", lowStock = :one" : ""
-      }${low ? "" : " REMOVE lowStock"}`,
-      ExpressionAttributeValues: {
-        ":s": values.stock,
-        ":t": values.lowStockThreshold,
-        ":b": values.allowBackorder,
-        ":u": new Date().toISOString(),
-        ":a": actor,
-        ...(low ? { ":one": "1" } : {}),
-      },
-    }),
-  );
-  revalidateTag(CATALOG_TAG);
-}
-
-/**
- * Takes stock for a paid order. Items that allow back-orders may go below
- * zero; others never do (the condition fails instead and the order is
- * flagged for staff). Returns the SKUs that could not be decremented.
- */
-export async function decrementStock(lines: Array<{ sku: string; qty: number }>) {
-  const failed: string[] = [];
-  for (const { sku, qty } of lines) {
-    try {
-      await docClient.send(
-        new UpdateCommand({
-          TableName: TABLES.Inventory,
-          Key: { sku },
-          UpdateExpression: "SET stock = stock - :q, updatedAt = :u",
-          ConditionExpression: "attribute_exists(sku) AND (stock >= :q OR allowBackorder = :t)",
-          ExpressionAttributeValues: { ":q": qty, ":u": new Date().toISOString(), ":t": true },
-        }),
-      );
-    } catch (err) {
-      if ((err as Error).name === "ConditionalCheckFailedException") {
-        // Untracked SKUs (no inventory row yet) are not an error.
-        const row = await docClient.send(new GetCommand({ TableName: TABLES.Inventory, Key: { sku } }));
-        if (row.Item) failed.push(sku);
-      } else {
-        throw err;
-      }
-    }
-  }
-  if (lines.length) revalidateTag(CATALOG_TAG);
-  return failed;
-}
-
-export async function restock(lines: Array<{ sku: string; qty: number }>) {
-  for (const { sku, qty } of lines) {
-    await docClient
-      .send(
-        new UpdateCommand({
-          TableName: TABLES.Inventory,
-          Key: { sku },
-          UpdateExpression: "SET stock = stock + :q, updatedAt = :u",
-          ConditionExpression: "attribute_exists(sku)",
-          ExpressionAttributeValues: { ":q": qty, ":u": new Date().toISOString() },
-        }),
-      )
-      .catch((err) => {
-        if ((err as Error).name !== "ConditionalCheckFailedException") throw err;
-      });
-  }
+/** The storefront shows new stock levels at once after a sale or a stock change. */
+export function refreshCatalog() {
   revalidateTag(CATALOG_TAG);
 }

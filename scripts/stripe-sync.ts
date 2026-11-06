@@ -5,10 +5,10 @@ import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-sec
 import { products } from "../content/products";
 import { mergeCatalog } from "../lib/data/merge-catalog";
 import { syncCatalogToStripe } from "../lib/stripe/sync";
-import type { InventoryItem, ProductOverride } from "../types/records";
+import type { ProductOverride } from "../types/records";
 
 /*
-  Mirrors the catalog (static products + admin overrides + stock) into Stripe.
+  Mirrors the catalog (static products + admin price overrides) into Stripe. Stock doesn't affect Stripe products or prices.
     APP_ENV=staging npm run stripe:sync                  # mirror
     APP_ENV=staging npm run stripe:sync -- --archive-others   # also archive hand-made products
   Reads the Stripe key from Secrets Manager (ip6/<env>/stripe), or STRIPE_SECRET_KEY.
@@ -41,8 +41,8 @@ async function main() {
     } while (start);
     return out;
   };
-  const [overrides, stock] = await Promise.all([scan<ProductOverride>(`${prefix}Products`), scan<InventoryItem>(`${prefix}Inventory`)]);
-  const catalog = mergeCatalog(products, overrides, stock);
+  const overrides = await scan<ProductOverride>(`${prefix}Products`);
+  const catalog = mergeCatalog(products, overrides, []);
 
   const stripe = new Stripe(secretKey, { apiVersion: "2026-10-28.endive", typescript: true });
   console.log(`Syncing ${catalog.length} products to Stripe (${mode} mode, ${env} tables)${archiveOthers ? ", archiving hand-made products" : ""}`);

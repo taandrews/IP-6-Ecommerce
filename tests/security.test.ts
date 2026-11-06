@@ -68,7 +68,7 @@ describe("quantities and stock", () => {
   });
 
   it("won't sell more than the stock left", () => {
-    const merged = mergeCatalog(products, [], [{ sku: v.sku, stock: 2, lowStockThreshold: 0, updatedAt: "" } as never]);
+    const merged = mergeCatalog(products, [], [{ sku: v.sku, sellable: 2 }]);
     expect(priceLines(merged, [{ variantId: v.id, qty: 3 }], "USD", off)).toMatchObject({ ok: false, error: { code: "not_enough_stock" } });
     expect(priceLines(merged, [{ variantId: v.id, qty: 2 }], "USD", off)).toMatchObject({ ok: true });
   });

@@ -3,7 +3,7 @@ import { products } from "@/content/products";
 
 vi.mock("@/lib/rate-limit", () => ({ limitByIp: async () => null, hit: async () => true, tooMany: () => new Response(null, { status: 429 }) }));
 
-const deps = vi.hoisted(() => ({ secrets: vi.fn(), tax: vi.fn(), session: vi.fn(), sessionUpdate: vi.fn(), coupon: vi.fn(), discount: vi.fn(), order: vi.fn(), getOrder: vi.fn(), retrieve: vi.fn(), stripeProducts: { retrieve: async (id: string) => ({ id, name: "IP6 Original Supplement", active: true, metadata: { sku: "SUP-IP6-CAP240" } }), update: async () => ({}), create: async () => ({}) } }));
+const deps = vi.hoisted(() => ({ secrets: vi.fn(), tax: vi.fn(), session: vi.fn(), sessionUpdate: vi.fn(), coupon: vi.fn(), discount: vi.fn(), order: vi.fn(), getOrder: vi.fn(), retrieve: vi.fn(), hold: vi.fn(), release: vi.fn(), stripeProducts: { retrieve: async (id: string) => ({ id, name: "IP6 Original Supplement", active: true, metadata: { sku: "SUP-IP6-CAP240" } }), update: async () => ({}), create: async () => ({}) } }));
 vi.mock("@/lib/aws/secrets", () => ({ getStripeSecrets: deps.secrets }));
 vi.mock("stripe", () => ({
   default: class {
@@ -20,6 +20,7 @@ vi.mock("@/lib/data/settings", () => ({
 }));
 vi.mock("@/lib/data/discounts", () => ({ checkDiscount: deps.discount, holdDiscount: async () => true, releaseDiscountHold: async () => undefined }));
 vi.mock("@/lib/auth/session", () => ({ getSessionUser: async () => null }));
+vi.mock("@/lib/inventory/orders", () => ({ holdForCheckout: deps.hold, releaseOrder: deps.release }));
 vi.mock("@/lib/data/orders", () => ({ createPendingOrder: deps.order, getOrder: deps.getOrder, emailKey: (email: string) => email }));
 
 const input = {
@@ -147,7 +148,28 @@ describe("checkout with tax enabled", { timeout: 30_000 }, () => {
       shipping_options: [expect.objectContaining({ shipping_rate_data: expect.objectContaining({ fixed_amount: { amount: 775, currency: "usd" } }) })],
     }), expect.any(Object));
     expect(deps.coupon).not.toHaveBeenCalled();
+    // Stock is held for the order, for the destination, before payment can start.
+    expect(deps.hold).toHaveBeenCalledWith(body.orderId, [{ sku: "SUP-IP6-CAP240", qty: 1 }], "US", expect.any(Date));
     expect(deps.order).toHaveBeenCalledWith(expect.objectContaining({ taxCents: 300, totalCents: 5324, stripeCheckoutSessionId: "cs_fixture", stripePaymentIntentId: "" }));
+  });
+
+  it("refuses checkout and releases nothing it didn't take when stock just sold out", async () => {
+    const { InventoryError } = await import("@/lib/inventory/store");
+    deps.hold.mockRejectedValue(new InventoryError("not_enough_stock"));
+    const { POST } = await import("@/app/api/checkout/session/route");
+    const res = await POST(request());
+    expect(res.status).toBe(422);
+    expect(deps.session).not.toHaveBeenCalled();
+    expect(deps.release).not.toHaveBeenCalled();
+  });
+
+  it("releases the stock hold if Stripe fails after it was taken", async () => {
+    deps.session.mockRejectedValue(new Error("stripe down"));
+    deps.release.mockResolvedValue(undefined);
+    const { POST } = await import("@/app/api/checkout/session/route");
+    const res = await POST(request());
+    expect(res.status).toBe(500);
+    expect(deps.release).toHaveBeenCalledTimes(1);
   });
 
   it("applies a discount code as a single-use Stripe coupon for exactly the quoted amount", async () => {

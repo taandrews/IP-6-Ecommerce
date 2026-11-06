@@ -49,13 +49,13 @@ describe("priceLines (server-side pricing)", () => {
     const merged = mergeCatalog(
       products,
       [{ sku: supplement.sku, prices: { [big.id]: { USD: 4500 } }, updatedAt: "", updatedBy: "" }],
-      [{ sku: big.sku, stock: 0, lowStockThreshold: 5, allowBackorder: false, updatedAt: "" }],
+      [{ sku: big.sku, sellable: 0 }],
     );
     const v = merged.find((p) => p.sku === supplement.sku)!.variants.find((x) => x.id === big.id)!;
     expect(v.priceCents.USD).toBe(4500);
     expect(v.priceCents.CAD).toBe(big.priceCents.CAD);
     expect(v.inStock).toBe(false);
-    const backorder = mergeCatalog(products, [], [{ sku: big.sku, stock: 0, lowStockThreshold: 5, allowBackorder: true, updatedAt: "" }]);
+    const backorder = mergeCatalog(products, [], [{ sku: big.sku, sellable: 3 }]);
     expect(backorder.find((p) => p.sku === supplement.sku)!.variants.find((x) => x.id === big.id)!.inStock).toBe(true);
   });
 });

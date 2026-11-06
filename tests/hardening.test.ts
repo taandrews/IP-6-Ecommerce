@@ -3,6 +3,8 @@ import { mockClient } from "aws-sdk-client-mock";
 import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { contentSecurityPolicy, createNonce } from "@/lib/csp";
 import { checkFormToken, issueFormToken } from "@/lib/form-token";
+// Loaded before the tests run (vi.mock below is hoisted above it), so a slow cold load can't eat a test's time limit.
+import { confirmSignup } from "@/lib/data/confirmations";
 
 const keys = vi.hoisted(() => ({ captcha: { current: "Y3VycmVudC1rZXktY3VycmVudC1rZXktY3VycmVudA==" } as { current: string; previous?: string }, link: null as null | { current: string; previous?: string } }));
 vi.mock("@/lib/aws/secrets", () => ({ getFormTokenKey: async () => keys.captcha, getAdminLinkKey: async () => keys.link, getTurnstileSecret: async () => "test-secret" }));
@@ -148,7 +150,6 @@ describe("admin link sealing", () => {
 
 describe("double opt-in links", () => {
   it("confirm once and clear the pending expiry", async () => {
-    const { confirmSignup } = await import("@/lib/data/confirmations");
     ddb.on(GetCommand).resolves({ Item: { kind: "newsletter", email: "ana@example.com", consentVersion: "2026-10-29", expiresAt: Math.floor(Date.now() / 1000) + 600 } });
     ddb.on(DeleteCommand).resolvesOnce({}).rejects(Object.assign(new Error("gone"), { name: "ConditionalCheckFailedException" }));
     ddb.on(UpdateCommand).resolves({});
@@ -161,7 +162,6 @@ describe("double opt-in links", () => {
   });
 
   it("refuse an expired link", async () => {
-    const { confirmSignup } = await import("@/lib/data/confirmations");
     ddb.on(GetCommand).resolves({ Item: { kind: "waitlist", email: "ana@example.com", expiresAt: Math.floor(Date.now() / 1000) - 1 } });
     expect(await confirmSignup("t".repeat(43))).toBeNull();
     expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);

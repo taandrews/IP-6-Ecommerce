@@ -146,6 +146,17 @@ export const emailTemplates = {
       <p>It goes back to your original payment method. Banks usually take 5 to 10 business days to show it.</p>
     `),
   }),
+  cartReminder: (o: { name: string; lines: EmailLine[]; restoreLink: string; unsubscribeLink: string; postalAddress: string }) => ({
+    subject: "You left something in your cart · IP6 Original",
+    html: baseEmail(`
+      <h1 style="font-size:22px;">Hi ${e(o.name)},</h1>
+      <p>You started checking out but didn't finish. Your cart is saved:</p>
+      ${linesTable(o.lines)}
+      <p style="margin:24px 0;"><a href="${e(o.restoreLink)}" style="display:inline-block;padding:13px 28px;background:#001840;color:#ffffff;border-radius:999px;font-weight:600;text-decoration:none;">Return to my cart</a></p>
+      <p style="font-size:13px;color:#666;">Prices and availability are confirmed again at checkout. The link works for 7 days.</p>
+      <p style="font-size:12px;color:#666;margin-top:24px;">You're getting this one reminder because you asked for it at checkout. <a href="${e(o.unsubscribeLink)}" style="color:#666;">Don't send me cart reminders</a>.<br>IP6 Original · ${e(o.postalAddress)}</p>
+    `),
+  }),
   orderCancelled: (name: string, orderId: string) => ({
     subject: `Order ${orderId} cancelled · IP6 Original`,
     html: baseEmail(`
@@ -235,6 +246,19 @@ export const emailTemplates = {
     html: baseEmail(`
       <h1 style="font-size:22px;">Your data copy</h1>
       <p>Sign in at <a href="${SITE}/account/privacy" style="color:#0B1F3A;">${SITE.replace(/^https?:\/\//, "")}/account/privacy</a> to download it, or reply to this email if you no longer have an account and we'll send it securely.</p>
+    `),
+  }),
+  lowStockAlert: (sku: string, location: string, available: number, threshold: number) => ({
+    subject: `Low stock: ${sku} at ${location}`,
+    html: baseEmail(`<p><strong>${e(sku)}</strong> at ${e(location)} is down to <strong>${available}</strong> available (alert level ${threshold}).</p><p>Receive stock or adjust the level in Admin, Inventory.</p>`),
+  }),
+  inventoryDailyReport: (r: { expiringSoon: string[]; expired: string[]; belowZero: string[] }) => ({
+    subject: "Inventory check: lots to act on",
+    html: baseEmail(`
+      ${r.expired.length ? `<h2 style="font-size:16px;">Expired, still in stock (not sold; write off)</h2><ul>${r.expired.map((l) => `<li>${e(l)}</li>`).join("")}</ul>` : ""}
+      ${r.expiringSoon.length ? `<h2 style="font-size:16px;">Expiring within 90 days</h2><ul>${r.expiringSoon.map((l) => `<li>${e(l)}</li>`).join("")}</ul>` : ""}
+      ${r.belowZero.length ? `<h2 style="font-size:16px;">Sold beyond the backorder limit</h2><ul>${r.belowZero.map((l) => `<li>${e(l)}</li>`).join("")}</ul>` : ""}
+      <p>Details in Admin, Inventory.</p>
     `),
   }),
   staffPrivacyAlert: (type: "export" | "delete") => ({

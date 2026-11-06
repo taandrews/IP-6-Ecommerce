@@ -2,7 +2,7 @@ import { requireStaffPage } from "@/lib/admin/guard";
 import { can } from "@/lib/auth/roles";
 import { getDailyStats, lastNDays } from "@/lib/data/analytics";
 import { listOrdersByStatus } from "@/lib/data/orders";
-import { listInventory } from "@/lib/data/catalog";
+import { allStock } from "@/lib/inventory/store";
 import { listReviewsByStatus } from "@/lib/data/reviews";
 import { listPrivacyRequests } from "@/lib/data/privacy";
 import { Notice, PageHeader, Panel, Stat } from "@/components/admin/ui";
@@ -28,7 +28,7 @@ export default async function AdminDashboard(props: { searchParams: Promise<{ de
     safe(getDailyStats(days), []),
     safe(listOrdersByStatus("paid", undefined, 100), { orders: [], cursor: undefined }),
     safe(listOrdersByStatus("processing", undefined, 100), { orders: [], cursor: undefined }),
-    safe(listInventory(), []),
+    safe(allStock(), { positions: [], lots: [] }),
     safe(listReviewsByStatus("pending", undefined, 100), { reviews: [], cursor: undefined }),
     can(staff.role, "privacy:manage") ? safe(listPrivacyRequests("open"), []) : Promise.resolve({ value: [], ok: true }),
   ]);
@@ -45,7 +45,7 @@ export default async function AdminDashboard(props: { searchParams: Promise<{ de
     Object.keys(r).length ? Object.entries(r).map(([c, v]) => formatPrice(v ?? 0, c as Currency)).join(" · ") : formatPrice(0, "USD");
   const open = [...paid.value.orders, ...processing.value.orders];
   const openPreorders = open.filter((o) => o.preorder === "1").length;
-  const low = stock.value.filter((i) => i.stock <= i.lowStockThreshold && !i.allowBackorder);
+  const low = stock.value.positions.filter((p) => p.lowStockThreshold > 0 && p.available <= p.lowStockThreshold);
   const maxUsd = Math.max(1, ...s.map((d) => d.revenue.USD ?? 0));
   const n = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
@@ -64,7 +64,7 @@ export default async function AdminDashboard(props: { searchParams: Promise<{ de
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Stat label="To ship" value={open.length} hint="Paid or preparing" href="/admin/orders" />
-        <Stat label="Low stock" value={low.length} hint={low.map((i) => i.sku).join(", ") || "All above threshold"} href="/admin/products" />
+        <Stat label="Low stock" value={low.length} hint={[...new Set(low.map((p) => p.sku))].join(", ") || "All above their alert level"} href="/admin/inventory" />
         <Stat label="Reviews waiting" value={pendingReviews.value.reviews.length} href={can(staff.role, "reviews:moderate") ? "/admin/reviews" : undefined} />
         {can(staff.role, "privacy:manage") ? <Stat label="Privacy requests open" value={privacy.value.length} hint="Due within 30 days" href="/admin/privacy" /> : null}
       </div>

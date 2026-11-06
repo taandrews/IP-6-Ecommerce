@@ -20,7 +20,6 @@ export const TABLES = {
   Orders: `${prefix}Orders`,
   OrderItems: `${prefix}OrderItems`,
   Products: `${prefix}Products`,
-  Inventory: `${prefix}Inventory`,
   Subscriptions: `${prefix}Subscriptions`,
   Reviews: `${prefix}Reviews`,
   DiscountCodes: `${prefix}DiscountCodes`,
@@ -30,6 +29,8 @@ export const TABLES = {
   AuditLog: `${prefix}AuditLog`,
   PrivacyRequests: `${prefix}PrivacyRequests`,
   RateLimits: `${prefix}RateLimits`,
+  /** Inventory: locations, positions, lots, holds and the movement ledger (lib/inventory/store.ts). */
+  Stock: `${prefix}Stock`,
 } as const;
 
 /** Index names, matching infra/lib/ip6-stack.ts. */

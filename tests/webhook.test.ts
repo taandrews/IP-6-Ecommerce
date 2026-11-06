@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockClient } from "aws-sdk-client-mock";
-import { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, UpdateCommand, PutCommand, ScanCommand, QueryCommand, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import type Stripe from "stripe";
 import type { OrderRecord } from "@/types/records";
@@ -46,6 +46,18 @@ beforeEach(() => {
   ses.reset();
   ddb.on(GetCommand).resolves({ Item: order });
   ddb.on(ScanCommand).resolves({ Items: [] });
+  ddb.on(TransactWriteCommand).resolves({});
+  // Inventory: the SKU is tracked at one location with a lot, and the checkout held 1 unit.
+  ddb.on(QueryCommand).callsFake((input: { ExpressionAttributeValues?: Record<string, string> }) => {
+    const p = input.ExpressionAttributeValues?.[":p"] ?? "";
+    if (p === "LOC") return { Items: [{ pk: "LOC", sk: "us-east", locationId: "us-east", name: "US", countries: ["US"], priority: 1, active: true }] };
+    if (p.startsWith("SKU#")) return { Items: [
+      { pk: p, sk: "POS#us-east", sku: "SUP-IP6-CAP240", locationId: "us-east", onHand: 10, reserved: 1, available: 9, safetyStock: 0, lowStockThreshold: 0, backorderLimit: 0 },
+      { pk: p, sk: "LOT#us-east#L1", sku: "SUP-IP6-CAP240", locationId: "us-east", lotNo: "L1", onHand: 10, expiresOn: "2099-01-01" },
+    ] };
+    if (p.startsWith("HOLD#")) return { Items: [{ pk: p, sk: "SUP-IP6-CAP240#us-east", orderId: "IP6-TESTORDER1", sku: "SUP-IP6-CAP240", locationId: "us-east", qty: 1 }] };
+    return { Items: [] };
+  });
   ddb.on(PutCommand).resolves({});
   ses.on(SendEmailCommand).resolves({ MessageId: "m1" });
 });
@@ -57,7 +69,9 @@ describe("payment_intent.succeeded", () => {
     const updates = ddb.commandCalls(UpdateCommand).map((c) => c.args[0].input);
     expect(updates[0]!.ConditionExpression).toContain("#s = :pending");
     expect(updates[0]!.ExpressionAttributeValues![":amt"]).toBe(4892);
-    expect(updates.some((u) => String(u.UpdateExpression).includes("stock = stock - :q"))).toBe(true);
+    // Stock: the hold becomes a sale from lot L1, logged, in one transaction.
+    const sale = ddb.commandCalls(TransactWriteCommand)[0]!.args[0].input.TransactItems!;
+    expect(sale.some((i) => i.Put?.Item?.type === "sale" && i.Put.Item.lotNo === "L1")).toBe(true);
     expect(updates.some((u) => String(u.TableName).endsWith("AnalyticsDaily"))).toBe(true);
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(1);
     const sent = ses.commandCalls(SendEmailCommand)[0]!.args[0].input;
@@ -82,7 +96,7 @@ describe("payment_intent.succeeded", () => {
     ddb.on(UpdateCommand).rejectsOnce(err).resolves({});
     await handlePaymentSucceeded(stripe, pi);
     const updates = ddb.commandCalls(UpdateCommand).map((c) => String(c.args[0].input.UpdateExpression));
-    expect(updates.some((u) => u.includes("stock = stock - :q"))).toBe(false);
+    expect(ddb.commandCalls(TransactWriteCommand)).toHaveLength(0);
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(1);
     expect(updates.filter((u) => u.includes("ADD doneSteps"))).toHaveLength(2);
   });
@@ -123,7 +137,7 @@ describe("payment_intent.succeeded", () => {
     );
     const updates = ddb.commandCalls(UpdateCommand).map((c) => c.args[0].input);
     expect(updates[0]!.ExpressionAttributeValues![":s"]).toBe("cancelled");
-    expect(updates.some((u) => String(u.UpdateExpression).includes("stock = stock - :q"))).toBe(false);
+    expect(ddb.commandCalls(TransactWriteCommand)).toHaveLength(0);
     expect(updates.some((u) => String(u.TableName).endsWith("AnalyticsDaily"))).toBe(false);
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
   });
@@ -154,9 +168,15 @@ describe("Checkout Session events", () => {
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(1);
   });
 
-  it("waits for a bank debit to clear before fulfilling", async () => {
+  it("waits for a bank debit to clear before fulfilling, keeping its stock held meanwhile", async () => {
+    ddb.on(UpdateCommand).resolves({});
     await fulfillCheckoutSession(withPi, session({ payment_status: "unpaid" }));
-    expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);
+    // The only write extends the stock hold; nothing is marked paid, sold or emailed.
+    const updates = ddb.commandCalls(UpdateCommand).map((c) => c.args[0].input);
+    expect(updates).toHaveLength(1);
+    expect(updates[0]!.UpdateExpression).toBe("SET holdUntil = :u");
+    expect(new Date(String(updates[0]!.ExpressionAttributeValues![":u"])).getTime()).toBeGreaterThan(Date.now() + 9 * 86400000);
+    expect(ddb.commandCalls(TransactWriteCommand)).toHaveLength(0);
     expect(ses.commandCalls(SendEmailCommand)).toHaveLength(0);
   });
 

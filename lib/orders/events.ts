@@ -16,7 +16,8 @@ import {
   setOrderStatus,
   type PaidStep,
 } from "@/lib/data/orders";
-import { decrementStock } from "@/lib/data/catalog";
+import { extendHolds } from "@/lib/inventory/store";
+import { releaseOrder, sellNow, sellPaidOrder } from "@/lib/inventory/orders";
 import { recordRedemption, releaseDiscountHold } from "@/lib/data/discounts";
 import { recordRefund, recordSale } from "@/lib/data/analytics";
 import { getSubscription, upsertFromStripe } from "@/lib/data/subscriptions";
@@ -27,6 +28,8 @@ import { addressBlock, isSellableCountry } from "@/lib/countries";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
 import { formatPrice } from "@/lib/utils";
 import { getPreorderSettings } from "@/lib/data/settings";
+import { sendCartReminder } from "@/lib/cart-reminder";
+import { configuredSiteOrigin } from "@/lib/site-origin";
 import type { Currency } from "@/types";
 import type { OrderRecord, SubscriptionRecord } from "@/types/records";
 
@@ -50,26 +53,43 @@ export async function subscriberFirstName(rec: SubscriptionRecord) {
  * PaymentIntent and the amount, which must match the order.
  */
 export async function fulfillCheckoutSession(stripe: Stripe, session: Stripe.Checkout.Session) {
-  if (session.mode !== "payment" || session.payment_status !== "paid") return;
+  if (session.mode !== "payment") return;
+  if (session.payment_status !== "paid") {
+    // A bank payment completes the checkout unpaid and clears days later: keep the stock held until then.
+    if (session.status === "complete" && session.metadata?.orderId) await extendHolds(session.metadata.orderId, new Date(Date.now() + 10 * 24 * 3600 * 1000));
+    return;
+  }
   const piId = typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
   if (!piId) return;
   const pi = await stripe.paymentIntents.retrieve(piId);
   await handlePaymentSucceeded(stripe, pi, session.id);
 }
 
-/** checkout.session.expired / async_payment_failed: the unpaid order is closed and its discount code freed. */
+/**
+ * checkout.session.expired / async_payment_failed: the unpaid order is closed
+ * and its discount code freed. An expired checkout whose shopper asked for a
+ * reminder gets one (lib/cart-reminder.ts); a retried event finishes that step.
+ */
 export async function closeUnpaidCheckout(session: Stripe.Checkout.Session, reason: "checkout_expired" | "payment_failed") {
   const orderId = session.metadata?.orderId;
   if (!orderId) return;
   const order = await getOrder(orderId);
-  if (!order || order.status !== "pending" || order.stripeCheckoutSessionId !== session.id) return;
-  try {
-    await setOrderStatus(orderId, "cancelled", { cancelReason: reason }, ["pending"]);
-  } catch (err) {
-    if ((err as Error).name === "ConditionalCheckFailedException") return;
-    throw err;
+  if (!order || order.stripeCheckoutSessionId !== session.id) return;
+  if (order.status === "pending") {
+    try {
+      await setOrderStatus(orderId, "cancelled", { cancelReason: reason }, ["pending"]);
+    } catch (err) {
+      if ((err as Error).name === "ConditionalCheckFailedException") return;
+      throw err;
+    }
+    if (order.discountCode) await releaseDiscountHold(order.discountCode, orderId).catch(() => undefined);
+    await releaseOrder(orderId);
+  } else if (order.status !== "cancelled" || order.cancelReason !== reason) {
+    return;
   }
-  if (order.discountCode) await releaseDiscountHold(order.discountCode, orderId).catch(() => undefined);
+  if (reason === "checkout_expired" && order.cartReminder && !order.cartReminderSentAt) {
+    await sendCartReminder({ ...order, status: "cancelled", cancelReason: reason }, configuredSiteOrigin());
+  }
 }
 
 /**
@@ -145,12 +165,8 @@ export async function handlePaymentSucceeded(stripe: Stripe, pi: Stripe.PaymentI
       await markStepDone(orderId, name);
     };
 
-    await step("stock", async () => {
-      const failedStock = await decrementStock(order.items.map((l) => ({ sku: l.sku, qty: l.qty })));
-      if (failedStock.length) {
-        await appendOrderList(orderId, "notes", { at: new Date().toISOString(), by: SYSTEM, text: `Not enough stock recorded for ${failedStock.join(", ")}.` });
-      }
-    });
+    // The checkout's stock hold becomes a sale, drawn from the lots that expire first.
+    await step("stock", () => sellPaidOrder(orderId, order.items.map((l) => ({ sku: l.sku, qty: l.qty }))));
     if (order.discountCode) {
       await step("discount", async () => {
         const within = await recordRedemption(order.discountCode!, order.email, orderId);
@@ -386,12 +402,7 @@ export async function handleRenewalPaid(stripe: Stripe, invoice: Stripe.Invoice)
       await run();
       await markStepDone(order.orderId, name);
     };
-    await step("stock", async () => {
-      const failedStock = await decrementStock([{ sku: record.sku, qty }]);
-      if (failedStock.length) {
-        await appendOrderList(order.orderId, "notes", { at: new Date().toISOString(), by: SYSTEM, text: `Not enough stock recorded for ${failedStock.join(", ")}.` });
-      }
-    });
+    await step("stock", () => sellNow(order.orderId, [{ sku: record.sku, qty }], address.country));
     await step("sale", () => recordSale(now, currency, invoice.amount_paid, qty, false));
     await step("subscriptions", () => upsertFromStripe(sub));
     await step("email", () =>

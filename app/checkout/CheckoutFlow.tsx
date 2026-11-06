@@ -21,7 +21,7 @@ import type { ClientQuote } from "./types";
 type Step = "shipping" | "method" | "payment" | "confirmation";
 const ORDER: Step[] = ["shipping", "method", "payment", "confirmation"];
 
-export function CheckoutFlow({ signedIn, publishableKey }: { signedIn: boolean; publishableKey: string }) {
+export function CheckoutFlow({ signedIn, publishableKey, reminderOffered }: { signedIn: boolean; publishableKey: string; reminderOffered: boolean }) {
   const params = useSearchParams();
   const { lines, clear } = useCart();
   const preorder = usePreorder();
@@ -31,6 +31,8 @@ export function CheckoutFlow({ signedIn, publishableKey }: { signedIn: boolean; 
   const [returnState, setReturnState] = useState<"checking" | "paid" | "failed" | null>(returnSession ? "checking" : null);
   const [step, setStep] = useState<Step>(returnSession ? "confirmation" : "shipping");
   const [email, setEmail] = useState("");
+  // Opt-in only: unticked until the shopper ticks it.
+  const [reminder, setReminder] = useState(false);
   const [address, setAddress] = useState<Address | null>(null);
   const [quote, setQuote] = useState<ClientQuote | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -93,6 +95,7 @@ export function CheckoutFlow({ signedIn, publishableKey }: { signedIn: boolean; 
           currency,
           shippingRateId: rateId,
           ...(discountCode ? { discountCode } : {}),
+          ...(reminderOffered && reminder ? { cartReminder: true } : {}),
         }),
       });
       const data = (await res.json()) as { clientSecret?: string; orderId?: string; quote?: ClientQuote; error?: string };
@@ -124,6 +127,9 @@ export function CheckoutFlow({ signedIn, publishableKey }: { signedIn: boolean; 
               <ShippingStep
                 email={email}
                 onEmail={setEmail}
+                reminderOffered={reminderOffered}
+                reminder={reminder}
+                onReminder={setReminder}
                 address={address}
                 onContinue={(addr) => {
                   setAddress(addr);
