@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { asset } from "@/lib/assets";
 import s from "./PreBookPopup.module.css";
 import { products } from "@/content/products";
@@ -124,7 +125,15 @@ export function PreBookPopup() {
     (lastFocused.current as HTMLElement | null)?.focus?.();
   }, [save]);
 
+  // Never over checkout or the account pages: someone there is finishing a task.
+  const pathname = usePathname();
+  const quiet = /^\/(checkout|account)(\/|$)/.test(pathname ?? "");
   useEffect(() => {
+    if (quiet) setOpen(false);
+  }, [quiet]);
+
+  useEffect(() => {
+    if (quiet) return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("quiz") === "1" || window.location.hash === "#quiz") {
       try {
@@ -153,7 +162,7 @@ export function PreBookPopup() {
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("mouseout", onMouseOut);
     };
-  }, [show]);
+  }, [show, quiet]);
 
   useEffect(() => {
     if (!open) return;
