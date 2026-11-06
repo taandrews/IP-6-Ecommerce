@@ -151,17 +151,6 @@ export class Ip6Stack extends Stack {
       sortKey: { name: "holdUntil", type: dynamodb.AttributeType.STRING },
     });
 
-    // Previous stock table: kept until the app on the Stock table is live.
-    const inventory = new dynamodb.Table(this, "Inventory", {
-      tableName: `${props.tablePrefix}Inventory`,
-      partitionKey: { name: "sku", type: dynamodb.AttributeType.STRING },
-      ...tableDefaults,
-    });
-    inventory.addGlobalSecondaryIndex({
-      indexName: "GSI1",
-      partitionKey: { name: "lowStock", type: dynamodb.AttributeType.STRING },
-    });
-
     const subs = new dynamodb.Table(this, "Subscriptions", {
       tableName: `${props.tablePrefix}Subscriptions`,
       partitionKey: { name: "subscriptionId", type: dynamodb.AttributeType.STRING },
@@ -265,7 +254,7 @@ export class Ip6Stack extends Stack {
       timeToLiveAttribute: "expiresAt",
     });
 
-    const appTables = [users, orders, orderItems, productsTable, stock, inventory, subs, reviews, discounts, discountRedemptions, analytics, settings, auditLog, privacyRequests, rateLimits];
+    const appTables = [users, orders, orderItems, productsTable, stock, subs, reviews, discounts, discountRedemptions, analytics, settings, auditLog, privacyRequests, rateLimits];
 
     // -----------------------
     // Cognito: two separate user pools
