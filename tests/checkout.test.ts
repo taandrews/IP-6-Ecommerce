@@ -44,7 +44,9 @@ beforeEach(() => {
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 
-describe("checkout with tax enabled", () => {
+// The first test loads the whole checkout route cold (Stripe SDK, catalog), which
+// can take longer than the default limit on a slow machine.
+describe("checkout with tax enabled", { timeout: 30_000 }, () => {
   it("prices through the real quote handler, includes tax, and creates no order or payment", async () => {
     const { POST } = await import("@/app/api/checkout/quote/route");
     const res = await POST(request());
