@@ -3,9 +3,9 @@ import crypto from "node:crypto";
 import { getCronKey } from "@/lib/aws/secrets";
 import { EMAIL } from "@/lib/email-addresses";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
-import { dailyReport } from "@/lib/inventory/alerts";
+import { dailyReport, locationLabels } from "@/lib/inventory/alerts";
 import { releaseOrder } from "@/lib/inventory/orders";
-import { allStock, expiredHolds } from "@/lib/inventory/store";
+import { allStock, expiredHolds, listLocations } from "@/lib/inventory/store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,13 +33,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ released: orders.length });
     }
     if (task === "report") {
-      const { positions, lots } = await allStock();
+      const [{ positions, lots }, locations] = await Promise.all([allStock(), listLocations()]);
       const r = dailyReport(positions, lots);
-      const line = (l: { sku: string; lotNo: string; locationId: string; onHand: number; expiresOn: string }) => `${l.sku} lot ${l.lotNo} at ${l.locationId}: ${l.onHand} units, expires ${l.expiresOn}`;
+      const names = locationLabels(locations);
+      const at = (id: string) => names.get(id) ?? id;
+      const line = (l: { sku: string; lotNo: string; locationId: string; onHand: number; expiresOn: string }) => `${l.sku} lot ${l.lotNo} at ${at(l.locationId)}: ${l.onHand} units, expires ${l.expiresOn}`;
       const summary = {
         expired: r.expired.map(line),
         expiringSoon: r.expiringSoon.map(line),
-        belowZero: r.belowZero.map((p) => `${p.sku} at ${p.locationId}: ${p.available} available (limit -${p.backorderLimit})`),
+        belowZero: r.belowZero.map((p) => `${p.sku} at ${at(p.locationId)}: ${p.available} available (limit -${p.backorderLimit})`),
       };
       const any = summary.expired.length + summary.expiringSoon.length + summary.belowZero.length > 0;
       if (any) await sendEmailSafe(EMAIL.orders, emailTemplates.inventoryDailyReport(summary), "inventory report");

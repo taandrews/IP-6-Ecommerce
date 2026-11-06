@@ -5,12 +5,16 @@ import { asset } from "@/lib/assets";
 // can drift from the others. Rates are a fixed snapshot; update them here.
 const USD_RATES: Record<Currency, number> = { USD: 1, CAD: 1.37, GBP: 0.8, AUD: 1.51, EUR: 0.92, INR: 83.65 };
 
-/** USD cents in, every supported currency out, rounded to a .99 price (whole rupees for INR). */
-export function pricesFromUsd(usdCents: number): Record<Currency, number> {
+/**
+ * USD cents in, every supported currency out, rounded to a .99 price (whole
+ * rupees for INR). `set` fixes a currency's price where the business has set
+ * one, instead of converting it.
+ */
+export function pricesFromUsd(usdCents: number, set: Partial<Record<Currency, number>> = {}): Record<Currency, number> {
   const out = {} as Record<Currency, number>;
   for (const [c, rate] of Object.entries(USD_RATES) as [Currency, number][]) {
     const raw = usdCents * rate;
-    out[c] = c === "USD" ? usdCents : c === "INR" ? Math.round(raw / 100) * 100 : Math.max(99, Math.round(raw / 100) * 100 - 1);
+    out[c] = set[c] ?? (c === "USD" ? usdCents : c === "INR" ? Math.round(raw / 100) * 100 : Math.max(99, Math.round(raw / 100) * 100 - 1));
   }
   return out;
 }
@@ -57,7 +61,7 @@ export const products: Product[] = [
         name: "Capsules",
         format: "Capsule",
         size: "240 count",
-        priceCents: pricesFromUsd(4999),
+        priceCents: pricesFromUsd(5299, { GBP: 5299 }),
         weightGrams: 150,
         inStock: true,
         servings: 60,
@@ -128,7 +132,7 @@ export const products: Product[] = [
         name: "Powder",
         format: "Powder",
         size: "120 g",
-        priceCents: pricesFromUsd(4499),
+        priceCents: pricesFromUsd(5999, { GBP: 5999 }),
         weightGrams: 160,
         inStock: true,
         servings: 120,

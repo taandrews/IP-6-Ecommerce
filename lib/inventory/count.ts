@@ -1,16 +1,18 @@
-import type { Lot } from "./store";
+import type { Location, Lot } from "./store";
 
 export interface CountRow {
   sku: string;
-  locationId: string;
+  /** The location's code as staff and warehouses write it (e.g. MD1). */
+  code: string;
   lotNo: string;
   counted: number;
 }
 
 export interface CountLine extends CountRow {
+  locationId: string | null;
   onHand: number | null;
   delta: number;
-  problem?: "unknown_lot" | "bad_number";
+  problem?: "unknown_location" | "unknown_lot" | "bad_number";
 }
 
 /**
@@ -18,17 +20,20 @@ export interface CountLine extends CountRow {
  * with the lots on record. Lots on record but missing from the count are
  * left alone: a count only covers what it lists.
  */
-export function diffCount(rows: CountRow[], lots: Lot[]): CountLine[] {
+export function diffCount(rows: CountRow[], lots: Lot[], locations: Location[]): CountLine[] {
+  const idByCode = new Map(locations.map((l) => [l.code.toUpperCase(), l.locationId]));
   const byKey = new Map(lots.map((l) => [`${l.sku}|${l.locationId}|${l.lotNo}`, l]));
   return rows.map((r) => {
-    if (!Number.isInteger(r.counted) || r.counted < 0) return { ...r, onHand: null, delta: 0, problem: "bad_number" as const };
-    const lot = byKey.get(`${r.sku}|${r.locationId}|${r.lotNo}`);
-    if (!lot) return { ...r, onHand: null, delta: 0, problem: "unknown_lot" as const };
-    return { ...r, onHand: lot.onHand, delta: r.counted - lot.onHand };
+    const locationId = idByCode.get(r.code.toUpperCase()) ?? null;
+    if (!Number.isInteger(r.counted) || r.counted < 0) return { ...r, locationId, onHand: null, delta: 0, problem: "bad_number" as const };
+    if (!locationId) return { ...r, locationId, onHand: null, delta: 0, problem: "unknown_location" as const };
+    const lot = byKey.get(`${r.sku}|${locationId}|${r.lotNo}`);
+    if (!lot) return { ...r, locationId, onHand: null, delta: 0, problem: "unknown_lot" as const };
+    return { ...r, locationId, onHand: lot.onHand, delta: r.counted - lot.onHand };
   });
 }
 
-/** Parses "sku,location,lot,counted" lines (a header row is skipped). */
+/** Parses "sku,location,lot,counted" lines, location being the location code (a header row is skipped). */
 export function parseCountCsv(text: string): CountRow[] {
   return text
     .split(/\r?\n/)
@@ -36,5 +41,5 @@ export function parseCountCsv(text: string): CountRow[] {
     .filter(Boolean)
     .map((l) => l.split(",").map((c) => c.trim().replace(/^"|"$/g, "")))
     .filter((c) => c.length >= 4 && !/^sku$/i.test(c[0]!))
-    .map(([sku, locationId, lotNo, counted]) => ({ sku: sku!, locationId: locationId!, lotNo: lotNo!, counted: Number(counted) }));
+    .map(([sku, code, lotNo, counted]) => ({ sku: sku!, code: code!, lotNo: lotNo!, counted: Number(counted) }));
 }

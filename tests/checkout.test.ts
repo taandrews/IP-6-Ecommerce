@@ -41,7 +41,7 @@ beforeEach(() => {
   deps.secrets.mockResolvedValue({ secretKey: "sk_test_fixture", publishableKey: "pk_test_fixture", webhookSecret: "whsec_fixture" });
   deps.tax.mockResolvedValue({ id: "taxcalc_fixture", tax_amount_exclusive: 300 });
   deps.session.mockResolvedValue({ id: "cs_fixture" });
-  deps.sessionUpdate.mockResolvedValue({ id: "cs_fixture", client_secret: "cs_fixture_secret", amount_total: 5324, total_details: { amount_tax: 300 } });
+  deps.sessionUpdate.mockResolvedValue({ id: "cs_fixture", client_secret: "cs_fixture_secret", amount_total: 5579, total_details: { amount_tax: 300 } });
 });
 afterEach(() => { vi.unstubAllEnvs(); vi.restoreAllMocks(); });
 
@@ -52,9 +52,9 @@ describe("checkout with tax enabled", { timeout: 30_000 }, () => {
     const { POST } = await import("@/app/api/checkout/quote/route");
     const res = await POST(request());
     expect(res.status).toBe(200);
-    expect((await res.json()).quote).toMatchObject({ subtotalCents: 4249, taxCents: 300, totalCents: 5324 });
+    expect((await res.json()).quote).toMatchObject({ subtotalCents: 4504, taxCents: 300, totalCents: 5579 });
     expect(deps.tax).toHaveBeenCalledWith(expect.objectContaining({
-      currency: "usd", line_items: [{ amount: 4249, reference: "sup-capsule-240", quantity: 1 }],
+      currency: "usd", line_items: [{ amount: 4504, reference: "sup-capsule-240", quantity: 1 }],
       shipping_cost: { amount: 775 },
     }));
     expect(deps.session).not.toHaveBeenCalled();
@@ -128,13 +128,13 @@ describe("checkout with tax enabled", { timeout: 30_000 }, () => {
     const res = await POST(request({ ...input, totalCents: 1 }));
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body).toMatchObject({ clientSecret: "cs_fixture_secret", quote: { taxCents: 300, totalCents: 5324 } });
+    expect(body).toMatchObject({ clientSecret: "cs_fixture_secret", quote: { taxCents: 300, totalCents: 5579 } });
     const [params] = deps.session.mock.calls[0]!;
     expect(params).toMatchObject({
       ui_mode: "elements",
       mode: "payment",
       customer_email: input.email,
-      line_items: [{ quantity: 1, price_data: { currency: "usd", product: "ip6_sup_ip6_cap240", unit_amount: 4249 } }],
+      line_items: [{ quantity: 1, price_data: { currency: "usd", product: "ip6_sup_ip6_cap240", unit_amount: 4504 } }],
       automatic_tax: { enabled: true },
       permissions: { update_shipping_details: "server_only" },
       payment_intent_data: { metadata: { orderId: body.orderId } },
@@ -150,7 +150,7 @@ describe("checkout with tax enabled", { timeout: 30_000 }, () => {
     expect(deps.coupon).not.toHaveBeenCalled();
     // Stock is held for the order, for the destination, before payment can start.
     expect(deps.hold).toHaveBeenCalledWith(body.orderId, [{ sku: "SUP-IP6-CAP240", qty: 1 }], "US", expect.any(Date));
-    expect(deps.order).toHaveBeenCalledWith(expect.objectContaining({ taxCents: 300, totalCents: 5324, stripeCheckoutSessionId: "cs_fixture", stripePaymentIntentId: "" }));
+    expect(deps.order).toHaveBeenCalledWith(expect.objectContaining({ taxCents: 300, totalCents: 5579, stripeCheckoutSessionId: "cs_fixture", stripePaymentIntentId: "" }));
   });
 
   it("refuses checkout and releases nothing it didn't take when stock just sold out", async () => {
@@ -192,7 +192,7 @@ describe("checkout with tax enabled", { timeout: 30_000 }, () => {
     expect(res.status).toBe(200);
     const [params] = deps.session.mock.calls[0]!;
     expect(params).toMatchObject({ customer_creation: "always", payment_intent_data: { setup_future_usage: "off_session" } });
-    expect(params.line_items[0]).toMatchObject({ quantity: 2, price_data: { unit_amount: 4249 } });
+    expect(params.line_items[0]).toMatchObject({ quantity: 2, price_data: { unit_amount: 4504 } });
   });
 
   it("refuses payment with placeholder keys even when tax is disabled", async () => {

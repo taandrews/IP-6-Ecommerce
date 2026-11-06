@@ -1,11 +1,16 @@
 import "server-only";
 import { EMAIL } from "@/lib/email-addresses";
 import { emailTemplates, sendEmailSafe } from "@/lib/aws/ses";
-import { claimLowStockAlert, listLocations, skuStock, type Lot, type Position } from "./store";
+import { claimLowStockAlert, listLocations, skuStock, type Location, type Lot, type Position } from "./store";
+
+/** How staff see a location in emails and reports: "Name (CODE)". */
+export function locationLabels(locations: Location[]): Map<string, string> {
+  return new Map(locations.map((l) => [l.locationId, `${l.name} (${l.code})`]));
+}
 
 /** Emails the orders@ group when a position drops to its low-stock threshold (at most once a day per position). */
 export async function checkLowStock(skus: string[]) {
-  const names = new Map((await listLocations()).map((l) => [l.locationId, l.name]));
+  const names = locationLabels(await listLocations());
   for (const sku of new Set(skus)) {
     const { positions } = await skuStock(sku);
     for (const p of positions) {

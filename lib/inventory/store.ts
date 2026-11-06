@@ -26,14 +26,50 @@ import { docClient, TABLES } from "@/lib/aws/dynamo";
  * dashboard flags it until stock is received.
  */
 
+export type LocationType = "warehouse" | "3pl" | "store";
+
+export interface LocationAddress {
+  line1: string;
+  line2?: string;
+  city: string;
+  region?: string;
+  postalCode?: string;
+  /** ISO 3166-1 alpha-2. */
+  country: string;
+}
+
 export interface Location {
+  /** System-made and permanent (loc_ + 12 hex). Stock, holds and the ledger point at this, never at the code or name. */
   locationId: string;
+  /** Short code staff use on counts and labels (e.g. MD1). Unique and permanent once set. */
+  code: string;
   name: string;
+  type: LocationType;
+  /** Where stock ships from. */
+  address: LocationAddress;
+  /** GS1 Global Location Number, when the site or its 3PL has one. */
+  gln?: string;
+  /** The company that runs the site (ours, or the 3PL) and its main number (E.164). */
+  operator: { company: string; phone: string };
+  /** Primary point of contact. Personal data: staff portal only, never the shop. */
+  contact: { name: string; role?: string; email: string; phone: string };
+  /** Our account or customer number with the operator (3PLs ask for it on every ticket). */
+  accountNumber?: string;
+  /** Dock hours, appointment rules and the like, for inbound shipments. */
+  receivingNotes?: string;
   /** ISO country codes this location ships to; "*" for anywhere. */
   countries: string[];
   /** Lower ships first when several locations can fill an order. */
   priority: number;
   active: boolean;
+  updatedAt: string;
+}
+
+/** Item master: what identifies a SKU on a barcode. */
+export interface Item {
+  sku: string;
+  /** GTIN-14 (a UPC-A or EAN-13 padded with leading zeros). */
+  gtin: string;
   updatedAt: string;
 }
 
@@ -86,7 +122,7 @@ export interface Allocation {
 }
 
 export class InventoryError extends Error {
-  constructor(public code: "not_enough_stock" | "no_location" | "unknown_location" | "lot_short" | "invalid") {
+  constructor(public code: "not_enough_stock" | "no_location" | "unknown_location" | "lot_short" | "invalid" | "code_taken" | "gtin_taken" | "wrong_product") {
     super(code);
     this.name = "InventoryError";
   }
@@ -125,8 +161,95 @@ export async function listLocations(): Promise<Location[]> {
   return ((res.Items ?? []) as Location[]).sort((a, b) => a.priority - b.priority);
 }
 
-export async function saveLocation(loc: Omit<Location, "updatedAt">) {
-  await docClient.send(new PutCommand({ TableName: T(), Item: { pk: "LOC", sk: loc.locationId, ...loc, updatedAt: now() } }));
+export type LocationInput = Omit<Location, "locationId" | "updatedAt">;
+
+/** Adds a location with a new permanent ID; its code is claimed in the same transaction so two can't share one. */
+export async function createLocation(loc: LocationInput): Promise<string> {
+  const locationId = `loc_${crypto.randomBytes(6).toString("hex")}`;
+  try {
+    await transact([
+      { Put: { TableName: T(), Item: { pk: "LOCCODE", sk: loc.code, locationId }, ConditionExpression: "attribute_not_exists(pk)" } },
+      { Put: { TableName: T(), Item: { pk: "LOC", sk: locationId, locationId, ...loc, updatedAt: now() }, ConditionExpression: "attribute_not_exists(pk)" } },
+    ]);
+  } catch (err) {
+    if (cancelled(err)) throw new InventoryError("code_taken");
+    throw err;
+  }
+  return locationId;
+}
+
+/** Updates a location's details. The ID and code never change, so stock, labels and counts keep pointing at it. */
+export async function updateLocation(locationId: string, loc: Omit<LocationInput, "code">) {
+  // Every editable field is set; optional ones left blank are removed.
+  const fields: Record<string, unknown> = { ...loc, updatedAt: now() };
+  const set: string[] = [];
+  const remove: string[] = [];
+  const names: Record<string, string> = {};
+  const values: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(fields)) {
+    names[`#${k}`] = k;
+    if (v === undefined) remove.push(`#${k}`);
+    else {
+      set.push(`#${k} = :${k}`);
+      values[`:${k}`] = v;
+    }
+  }
+  for (const k of ["gln", "accountNumber", "receivingNotes"]) {
+    if (!(k in fields)) {
+      names[`#${k}`] = k;
+      remove.push(`#${k}`);
+    }
+  }
+  try {
+    await docClient.send(
+      new UpdateCommand({
+        TableName: T(),
+        Key: { pk: "LOC", sk: locationId },
+        UpdateExpression: `SET ${set.join(", ")}${remove.length ? ` REMOVE ${remove.join(", ")}` : ""}`,
+        ConditionExpression: "attribute_exists(pk)",
+        ExpressionAttributeNames: names,
+        ExpressionAttributeValues: values,
+      }),
+    );
+  } catch (err) {
+    if ((err as Error).name === "ConditionalCheckFailedException") throw new InventoryError("unknown_location");
+    throw err;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Item master (barcodes)
+// ---------------------------------------------------------------------------
+
+export async function listItems(): Promise<Item[]> {
+  const res = await docClient.send(new QueryCommand({ TableName: T(), KeyConditionExpression: "pk = :p", ExpressionAttributeValues: { ":p": "ITEM" } }));
+  return (res.Items ?? []) as Item[];
+}
+
+/** Sets a SKU's GTIN (14 digits). A GTIN belongs to one SKU only; the claim and the item change commit together. */
+export async function setItemGtin(sku: string, gtin: string | null) {
+  const current = (await docClient.send(new GetCommand({ TableName: T(), Key: { pk: "ITEM", sk: sku } }))).Item as Item | undefined;
+  if ((current?.gtin ?? null) === gtin) return;
+  const items: NonNullable<TransactWriteCommandInput["TransactItems"]> = [];
+  if (current?.gtin) items.push({ Delete: { TableName: T(), Key: { pk: "GTIN", sk: current.gtin }, ConditionExpression: "sku = :s", ExpressionAttributeValues: { ":s": sku } } });
+  if (gtin) {
+    items.push({ Put: { TableName: T(), Item: { pk: "GTIN", sk: gtin, sku }, ConditionExpression: "attribute_not_exists(pk)" } });
+    items.push({
+      Put: {
+        TableName: T(),
+        Item: { pk: "ITEM", sk: sku, sku, gtin, updatedAt: now() },
+        ...(current ? { ConditionExpression: "gtin = :old", ExpressionAttributeValues: { ":old": current.gtin } } : { ConditionExpression: "attribute_not_exists(pk)" }),
+      },
+    });
+  } else {
+    items.push({ Delete: { TableName: T(), Key: { pk: "ITEM", sk: sku }, ConditionExpression: "gtin = :old", ExpressionAttributeValues: { ":old": current!.gtin } } });
+  }
+  try {
+    await transact(items);
+  } catch (err) {
+    if (cancelled(err)) throw new InventoryError("gtin_taken");
+    throw err;
+  }
 }
 
 const serves = (loc: Location, country: string) => loc.active && (loc.countries.includes("*") || loc.countries.includes(country.toUpperCase()));
@@ -197,10 +320,15 @@ const POSITION_CREATE =
   "sku = :sku, locationId = :loc, reserved = if_not_exists(reserved, :z), safetyStock = if_not_exists(safetyStock, :z), lowStockThreshold = if_not_exists(lowStockThreshold, :z), backorderLimit = if_not_exists(backorderLimit, :z)";
 
 /** Goods in: adds to a lot (created on first receipt) and the position, and logs it. */
-export async function receive(input: { sku: string; locationId: string; lotNo: string; expiresOn: string; qty: number; actor: string; reason?: string }) {
+export async function receive(input: { sku: string; locationId: string; lotNo: string; expiresOn: string; qty: number; actor: string; reason?: string; scannedGtin?: string }) {
   const { sku, locationId, lotNo, expiresOn, qty, actor } = input;
   if (!Number.isInteger(qty) || qty <= 0 || !/^\d{4}-\d{2}-\d{2}$/.test(expiresOn) || !lotNo.trim()) throw new InventoryError("invalid");
   if (!(await listLocations()).some((l) => l.locationId === locationId)) throw new InventoryError("unknown_location");
+  // A scanned carton must be this SKU: its GTIN has to match the one on record.
+  if (input.scannedGtin) {
+    const item = (await docClient.send(new GetCommand({ TableName: T(), Key: { pk: "ITEM", sk: sku } }))).Item as Item | undefined;
+    if (item?.gtin !== input.scannedGtin) throw new InventoryError("wrong_product");
+  }
   const at = now();
   await transact([
     {

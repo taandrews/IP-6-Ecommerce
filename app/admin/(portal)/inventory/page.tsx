@@ -1,8 +1,8 @@
 import { requireStaffPage } from "@/lib/admin/guard";
 import { can } from "@/lib/auth/roles";
 import { products } from "@/content/products";
-import { allStock, ledger, listLocations, type Lot, type Movement, type Position } from "@/lib/inventory/store";
-import { dailyReport } from "@/lib/inventory/alerts";
+import { allStock, ledger, listItems, listLocations, type Item, type Lot, type Movement, type Position } from "@/lib/inventory/store";
+import { dailyReport, locationLabels } from "@/lib/inventory/alerts";
 import { Notice, PageHeader } from "@/components/admin/ui";
 import { InventoryClient } from "./InventoryClient";
 
@@ -15,10 +15,11 @@ export default async function InventoryPage() {
   let positions: Position[] = [];
   let lots: Lot[] = [];
   let locations: Awaited<ReturnType<typeof listLocations>> = [];
+  let items: Item[] = [];
   const recent: Record<string, Movement[]> = {};
   let error = false;
   try {
-    [{ positions, lots }, locations] = await Promise.all([allStock(), listLocations()]);
+    [{ positions, lots }, locations, items] = await Promise.all([allStock(), listLocations(), listItems()]);
     const logs = await Promise.all(variants.map((v) => ledger(v.sku, 25)));
     variants.forEach((v, i) => (recent[v.sku] = logs[i]!));
   } catch (err) {
@@ -26,6 +27,8 @@ export default async function InventoryPage() {
     error = true;
   }
   const report = dailyReport(positions, lots);
+  const names = locationLabels(locations);
+  const at = (id: string) => names.get(id) ?? id;
   const untracked = variants.filter((v) => !positions.some((p) => p.sku === v.sku));
 
   return (
@@ -41,11 +44,12 @@ export default async function InventoryPage() {
           Not tracked yet, so these sell without a stock limit: {untracked.map((v) => v.sku).join(", ")}. Receive their stock to start tracking.
         </Notice>
       ) : null}
-      {report.expired.length ? <Notice tone="bad">Expired lots still in stock (never sold; write them off): {report.expired.map((l) => `${l.sku} ${l.lotNo} at ${l.locationId}`).join(", ")}.</Notice> : null}
+      {report.expired.length ? <Notice tone="bad">Expired lots still in stock (never sold; write them off): {report.expired.map((l) => `${l.sku} ${l.lotNo} at ${at(l.locationId)}`).join(", ")}.</Notice> : null}
       {report.expiringSoon.length ? <Notice tone="warn">Expiring within 90 days: {report.expiringSoon.map((l) => `${l.sku} ${l.lotNo} (${l.expiresOn})`).join(", ")}.</Notice> : null}
       <InventoryClient
         variants={variants}
         locations={locations}
+        items={items}
         positions={positions}
         lots={lots}
         recent={recent}

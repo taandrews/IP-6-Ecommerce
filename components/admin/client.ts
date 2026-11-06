@@ -30,6 +30,13 @@ const MESSAGES: Record<string, string> = {
   unknown_location: "That location doesn't exist. Add it first.",
   lot_short: "That lot doesn't have enough units, or doesn't exist at that location.",
   stock_changed: "Stock changed while you were editing, or the lot's expiry date doesn't match. Reload and try again.",
+  code_taken: "Another location already uses that code. Codes are permanent, so choose a different one.",
+  gtin_taken: "That barcode number is already set on another product, or it changed while you were editing. Reload and check.",
+  wrong_product: "The scanned barcode isn't this product's GTIN. Check the carton, or set the product's GTIN below first.",
+  invalid_gtin: "That isn't a valid GTIN (8, 12, 13 or 14 digits with a correct check digit).",
+  invalid_scan: "That scan isn't a GS1 product barcode. Scan the carton label that shows (01), (10) and (17).",
+  scan_mismatch: "The lot or expiry date doesn't match the scanned barcode.",
+  invalid_phone: "A phone number isn't valid. Use the full number; add + and the country code if it's in another country.",
   invalid: "Some numbers aren't valid.",
   server_error: "Something went wrong. Please try again.",
 };

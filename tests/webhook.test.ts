@@ -50,12 +50,12 @@ beforeEach(() => {
   // Inventory: the SKU is tracked at one location with a lot, and the checkout held 1 unit.
   ddb.on(QueryCommand).callsFake((input: { ExpressionAttributeValues?: Record<string, string> }) => {
     const p = input.ExpressionAttributeValues?.[":p"] ?? "";
-    if (p === "LOC") return { Items: [{ pk: "LOC", sk: "us-east", locationId: "us-east", name: "US", countries: ["US"], priority: 1, active: true }] };
+    if (p === "LOC") return { Items: [{ pk: "LOC", sk: "loc_a1b2c3d4e5f6", locationId: "loc_a1b2c3d4e5f6", name: "US", countries: ["US"], priority: 1, active: true }] };
     if (p.startsWith("SKU#")) return { Items: [
-      { pk: p, sk: "POS#us-east", sku: "SUP-IP6-CAP240", locationId: "us-east", onHand: 10, reserved: 1, available: 9, safetyStock: 0, lowStockThreshold: 0, backorderLimit: 0 },
-      { pk: p, sk: "LOT#us-east#L1", sku: "SUP-IP6-CAP240", locationId: "us-east", lotNo: "L1", onHand: 10, expiresOn: "2099-01-01" },
+      { pk: p, sk: "POS#loc_a1b2c3d4e5f6", sku: "SUP-IP6-CAP240", locationId: "loc_a1b2c3d4e5f6", onHand: 10, reserved: 1, available: 9, safetyStock: 0, lowStockThreshold: 0, backorderLimit: 0 },
+      { pk: p, sk: "LOT#loc_a1b2c3d4e5f6#L1", sku: "SUP-IP6-CAP240", locationId: "loc_a1b2c3d4e5f6", lotNo: "L1", onHand: 10, expiresOn: "2099-01-01" },
     ] };
-    if (p.startsWith("HOLD#")) return { Items: [{ pk: p, sk: "SUP-IP6-CAP240#us-east", orderId: "IP6-TESTORDER1", sku: "SUP-IP6-CAP240", locationId: "us-east", qty: 1 }] };
+    if (p.startsWith("HOLD#")) return { Items: [{ pk: p, sk: "SUP-IP6-CAP240#loc_a1b2c3d4e5f6", orderId: "IP6-TESTORDER1", sku: "SUP-IP6-CAP240", locationId: "loc_a1b2c3d4e5f6", qty: 1 }] };
     return { Items: [] };
   });
   ddb.on(PutCommand).resolves({});
