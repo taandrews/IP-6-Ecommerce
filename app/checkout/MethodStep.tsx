@@ -108,7 +108,7 @@ export function MethodStep({
                   <label
                     className={cn(
                       "flex items-center gap-4 p-4 rounded-md border-2 cursor-pointer transition-colors",
-                      active ? "border-forest-700 bg-forest-50" : "border-ivory-300",
+                      active ? "border-forest-700 bg-forest-50" : "border-navy-300 hover:border-navy-400",
                     )}
                   >
                     <input

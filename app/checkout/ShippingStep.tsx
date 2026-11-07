@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Input, Select } from "@/components/ui/Input";
 import type { Address } from "@/types";
-import { ADDRESS_BLOCK_MESSAGES, addressBlock, countryOptions, isSellableCountry, type AddressBlock } from "@/lib/countries";
+import { ADDRESS_BLOCK_MESSAGES, addressBlock, countryOptions, isSellableCountry, US_STATES, usStateCode, type AddressBlock } from "@/lib/countries";
 import { WaitlistForm } from "@/components/store/WaitlistForm";
 
 
@@ -90,7 +90,10 @@ export function ShippingStep({
         <Input
           id="c-phone"
           label="Phone"
+          type="tel"
+          inputMode="tel"
           autoComplete="tel"
+          hint="For delivery questions only"
           value={form.phone ?? ""}
           onChange={(e) => set("phone", e.target.value)}
         />
@@ -119,19 +122,29 @@ export function ShippingStep({
           value={form.city}
           onChange={(e) => set("city", e.target.value)}
         />
-        <Input
-          id="c-region"
-          label="State / region"
-          required
-          autoComplete="address-level1"
-          value={form.region}
-          onChange={(e) => set("region", e.target.value)}
-        />
+        {form.country === "US" ? (
+          <Select id="c-region" label="State" required autoComplete="address-level1" value={usStateCode(form.region)} onChange={(e) => set("region", e.target.value)}>
+            <option value="" disabled>
+              Choose a state
+            </option>
+            {US_STATES.map(([code, name]) => (
+              <option key={code} value={code}>
+                {name}
+              </option>
+            ))}
+          </Select>
+        ) : (
+          <Input id="c-region" label="State / region" required autoComplete="address-level1" value={form.region} onChange={(e) => set("region", e.target.value)} />
+        )}
         <Input
           id="c-postal"
-          label="Postal code"
+          label={form.country === "US" ? "ZIP code" : "Postal code"}
           required
           autoComplete="postal-code"
+          inputMode={form.country === "US" ? "numeric" : undefined}
+          pattern={form.country === "US" ? "\\d{5}(-?\\d{4})?" : undefined}
+          title={form.country === "US" ? "5-digit ZIP code, or ZIP+4" : undefined}
+          maxLength={form.country === "US" ? 10 : 12}
           value={form.postalCode}
           onChange={(e) => set("postalCode", e.target.value)}
         />
@@ -140,6 +153,7 @@ export function ShippingStep({
         id="c-country"
         label="Country"
         required
+        autoComplete="country"
         value={form.country}
         onChange={(e) => set("country", e.target.value)}
       >

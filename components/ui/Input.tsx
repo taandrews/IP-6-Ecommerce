@@ -69,10 +69,26 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 ) {
   return (
     <div>
-      {label ? <label htmlFor={id} className="label">{label}</label> : null}
-      <select id={id} ref={ref} className={cn("input appearance-none pr-10", className)} {...props}>
-        {children}
-      </select>
+      {label ? (
+        <label htmlFor={id} className="label">
+          {label} {props.required ? <span className="text-danger" aria-hidden>*</span> : null}
+        </label>
+      ) : null}
+      <div className="relative">
+        <select
+          id={id}
+          ref={ref}
+          aria-invalid={!!error}
+          className={cn("input appearance-none pr-10 cursor-pointer", error && "border-danger", className)}
+          {...props}
+        >
+          {children}
+        </select>
+        {/* The native arrow is hidden for consistent styling, so draw one: it has to look like a dropdown. */}
+        <svg aria-hidden viewBox="0 0 20 20" className="pointer-events-none absolute right-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-navy-800" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <path d="M5 7.5l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
       {hint && !error ? <p className="mt-1 text-xs text-ink/60">{hint}</p> : null}
       {error ? <p className="mt-1 text-xs text-danger">{error}</p> : null}
     </div>

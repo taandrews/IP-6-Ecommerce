@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addressBlock, countryInSentence, countryOptions, isSellableCountry, SELLABLE_COUNTRIES } from "@/lib/countries";
+import { addressBlock, countryInSentence, countryOptions, isSellableCountry, SELLABLE_COUNTRIES, US_STATES, usStateCode } from "@/lib/countries";
 
 const us = { country: "US", region: "MD", city: "Towson", postalCode: "21204" };
 
@@ -53,5 +53,21 @@ describe("sales gate: where we sell", () => {
     expect(opts[0]).toEqual(["US", "United States"]);
     expect(opts.length).toBeGreaterThan(240);
     expect(opts.find(([c]) => c === "GB")?.[1]).toBe("United Kingdom");
+  });
+});
+
+describe("checkout state list", () => {
+  it("offers exactly the 50 states and Washington, DC, none of them blocked", () => {
+    expect(US_STATES).toHaveLength(51);
+    expect(US_STATES.map(([c]) => c)).toContain("DC");
+    for (const [code] of US_STATES) expect(addressBlock({ country: "US", region: code, city: "Anytown", postalCode: "21204" })).toBeNull();
+  });
+
+  it("reads a saved or autofilled state by code or full name, and nothing else", () => {
+    expect(usStateCode("md")).toBe("MD");
+    expect(usStateCode("Maryland")).toBe("MD");
+    expect(usStateCode("District of Columbia")).toBe("DC");
+    expect(usStateCode("Puerto Rico")).toBe("");
+    expect(usStateCode("")).toBe("");
   });
 });

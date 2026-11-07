@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Appearance, StripeCheckoutElementsSdkOptions } from "@stripe/stripe-js";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -35,10 +36,18 @@ export function CheckoutFlow({ signedIn, publishableKey, reminderOffered }: { si
   const [reminder, setReminder] = useState(false);
   const [address, setAddress] = useState<Address | null>(null);
   const [quote, setQuote] = useState<ClientQuote | null>(null);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  // The session's client secret as a promise: Stripe starts building the payment
+  // form while the server is still creating the session (Stripe's documented pattern).
+  const [secret, setSecret] = useState<Promise<string> | null>(null);
   const [orderId, setOrderId] = useState<string | null>(returnOrder);
-  const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
+
+  // Load Stripe.js as soon as checkout opens, so it is ready by the payment step.
+  useEffect(() => {
+    if (publishableKey) void getStripe(publishableKey);
+  }, [publishableKey]);
+
+  const elementsOptions = useMemo<StripeCheckoutElementsSdkOptions | null>(() => (secret ? { clientSecret: secret, elementsOptions: { appearance: APPEARANCE } } : null), [secret]);
 
   useEffect(() => {
     if (!returnSession || !returnOrder) return;
@@ -80,38 +89,36 @@ export function CheckoutFlow({ signedIn, publishableKey, reminderOffered }: { si
     );
   }
 
-  async function startPayment(rateId: string, discountCode: string | null) {
+  function startPayment(rateId: string, discountCode: string | null) {
     if (!address) return;
-    setStarting(true);
     setStartError(null);
-    try {
-      const res = await fetch("/api/checkout/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          address,
-          items: requestedLines(lines),
-          currency,
-          shippingRateId: rateId,
-          ...(discountCode ? { discountCode } : {}),
-          ...(reminderOffered && reminder ? { cartReminder: true } : {}),
-        }),
-      });
-      const data = (await res.json()) as { clientSecret?: string; orderId?: string; quote?: ClientQuote; error?: string };
-      if (!res.ok || !data.clientSecret || !data.orderId || !data.quote) {
-        setStartError(data.error ?? "We couldn't start payment. Please try again.");
-        return;
-      }
-      setClientSecret(data.clientSecret);
+    const created = fetch("/api/checkout/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        address,
+        items: requestedLines(lines),
+        currency,
+        shippingRateId: rateId,
+        ...(discountCode ? { discountCode } : {}),
+        ...(reminderOffered && reminder ? { cartReminder: true } : {}),
+      }),
+    }).then(async (res) => {
+      const data = (await res.json().catch(() => ({}))) as { clientSecret?: string; orderId?: string; quote?: ClientQuote; error?: string };
+      if (!res.ok || !data.clientSecret || !data.orderId || !data.quote) throw new Error(data.error ?? "We couldn't start payment. Please try again.");
       setOrderId(data.orderId);
       setQuote(data.quote);
-      setStep("payment");
-    } catch {
-      setStartError("We couldn't start payment. Please try again.");
-    } finally {
-      setStarting(false);
-    }
+      return data.clientSecret;
+    });
+    // If the server refuses (for example a code or stock changed), go back to delivery with its reason.
+    created.catch((err: Error) => {
+      setSecret(null);
+      setStartError(err.message || "We couldn't start payment. Please try again.");
+      setStep("method");
+    });
+    setSecret(created);
+    setStep("payment");
   }
 
   return (
@@ -145,35 +152,19 @@ export function CheckoutFlow({ signedIn, publishableKey, reminderOffered }: { si
                   items={lines}
                   currency={currency}
                   onQuote={onQuote}
-                  busy={starting}
+                  busy={false}
                   onBack={() => setStep("shipping")}
                   onContinue={startPayment}
                 />
                 {startError ? <p className="rounded-md bg-red-50 border border-red-200 text-danger text-sm p-3" role="alert">{startError}</p> : null}
               </>
             ) : null}
-            {step === "payment" && clientSecret && quote && orderId && address ? (
-              <CheckoutElementsProvider
-                stripe={getStripe(publishableKey)}
-                options={{
-                  clientSecret,
-                  elementsOptions: {
-                    appearance: {
-                      theme: "stripe",
-                      variables: {
-                        colorPrimary: "#0B1F3A",
-                        colorText: "#0B1F3A",
-                        fontFamily: "IBM Plex Sans, system-ui, sans-serif",
-                        borderRadius: "6px",
-                      },
-                    },
-                  },
-                }}
-              >
+            {step === "payment" && elementsOptions && address ? (
+              <CheckoutElementsProvider stripe={getStripe(publishableKey)} options={elementsOptions}>
                 <PaymentStep
-                  quote={quote}
+                  preorder={quote ? quote.lines.some((l) => l.preorder) : lines.some((l) => isPreorderLine(l, preorder))}
                   onBack={() => {
-                    setClientSecret(null);
+                    setSecret(null);
                     setStep("method");
                   }}
                   onPaid={() => {
@@ -309,3 +300,29 @@ function Stepper({ current }: { current: number }) {
     </ol>
   );
 }
+
+/** Stripe's payment fields, matched to checkout's own (globals.css .input): navy-300 edges are 3.8:1 on white. */
+const APPEARANCE: Appearance = {
+  theme: "stripe",
+  variables: {
+    colorPrimary: "#001840",
+    colorText: "#001840",
+    colorDanger: "#C0392B",
+    fontFamily: "IBM Plex Sans, system-ui, sans-serif",
+    fontSizeBase: "16px",
+    borderRadius: "6px",
+  },
+  rules: {
+    ".Input": { border: "1px solid #6C84AE", boxShadow: "none", padding: "12px 14px" },
+    ".Input:hover": { borderColor: "#3A5A90" },
+    ".Input:focus": { borderColor: "#001840", boxShadow: "0 0 0 3px rgba(0, 24, 64, 0.2)" },
+    ".Input--invalid": { borderColor: "#C0392B", boxShadow: "none" },
+    ".Label": { fontWeight: "500", color: "#001840" },
+    ".Tab": { border: "1px solid #6C84AE", boxShadow: "none" },
+    ".Tab:hover": { borderColor: "#3A5A90" },
+    ".Tab--selected": { borderColor: "#001840", boxShadow: "0 0 0 1px #001840" },
+    ".AccordionItem": { border: "1px solid #6C84AE", boxShadow: "none" },
+    ".AccordionItem:hover": { borderColor: "#3A5A90" },
+    ".AccordionItem--selected": { borderColor: "#001840" },
+  },
+};
