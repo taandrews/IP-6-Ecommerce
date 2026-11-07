@@ -33,13 +33,63 @@ const MESSAGES: Record<string, string> = {
   code_taken: "Another location already uses that code. Codes are permanent, so choose a different one.",
   gtin_taken: "That barcode number is already set on another product, or it changed while you were editing. Reload and check.",
   wrong_product: "The scanned barcode isn't this product's GTIN. Check the carton, or set the product's GTIN below first.",
-  invalid_gtin: "That isn't a valid GTIN (8, 12, 13 or 14 digits with a correct check digit).",
+  invalid_gtin: "That isn't a valid GTIN: it needs 8, 12, 13 or 14 digits, and the last digit must match the others.",
   invalid_scan: "That scan isn't a GS1 product barcode. Scan the carton label that shows (01), (10) and (17).",
   scan_mismatch: "The lot or expiry date doesn't match the scanned barcode.",
   invalid_phone: "A phone number isn't valid. Use the full number; add + and the country code if it's in another country.",
   invalid: "Some numbers aren't valid.",
   server_error: "Something went wrong. Please try again.",
 };
+
+/** Plain names for request fields, for "these fields aren't valid" messages. */
+const FIELD_NAMES: Record<string, string> = {
+  code: "code",
+  name: "name",
+  "address.line1": "street address",
+  "address.line2": "address line 2",
+  "address.city": "city",
+  "address.region": "state or region",
+  "address.postalCode": "postal code",
+  "address.country": "country",
+  gln: "GLN",
+  "operator.company": "company",
+  "operator.phone": "main phone",
+  "contact.name": "contact name",
+  "contact.role": "contact role",
+  "contact.email": "contact email",
+  "contact.phone": "contact direct phone",
+  accountNumber: "account number",
+  receivingNotes: "receiving notes",
+  countries: "ships to",
+  priority: "priority",
+  sku: "product",
+  locationId: "location",
+  from: "from location",
+  to: "to location",
+  lotNo: "lot number",
+  expiresOn: "expiry date",
+  qty: "quantity",
+  delta: "change",
+  reason: "reason",
+  gtin: "GTIN",
+  scan: "barcode scan",
+  email: "email",
+};
+
+/** "countries.2" reads as "ships to"; unknown paths fall back to their words ("safetyStock" to "safety stock"). */
+export function fieldName(path: string): string {
+  const p = path.replace(/\.\d+(?=\.|$)/g, "");
+  if (FIELD_NAMES[p]) return FIELD_NAMES[p];
+  const last = p.split(".").at(-1) ?? p;
+  return last.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase();
+}
+
+/** An admin API refusal: a readable message, plus the request fields that failed when the API names them. */
+export class AdminError extends Error {
+  constructor(message: string, public code: string, public fields: string[] = []) {
+    super(message);
+  }
+}
 
 export async function adminRequest<T = Record<string, unknown>>(url: string, method: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -48,10 +98,15 @@ export async function adminRequest<T = Record<string, unknown>>(url: string, met
     body: body !== undefined ? JSON.stringify(body) : undefined,
     cache: "no-store",
   });
-  const data = (await res.json().catch(() => ({}))) as { error?: string } & T;
+  const data = (await res.json().catch(() => ({}))) as { error?: string; fields?: unknown } & T;
   if (!res.ok) {
     if (res.status === 401) window.location.assign("/admin/login");
-    throw new Error(MESSAGES[data.error ?? ""] ?? MESSAGES.server_error);
+    const code = data.error ?? "server_error";
+    const fields = Array.isArray(data.fields) ? data.fields.filter((f): f is string => typeof f === "string") : [];
+    const base = MESSAGES[code] ?? MESSAGES.server_error!;
+    const names = [...new Set(fields.map(fieldName))];
+    const message = code === "invalid_request" && names.length ? `Check ${names.length === 1 ? "this field" : "these fields"}: ${names.join(", ")}.` : base;
+    throw new AdminError(message, code, fields);
   }
   return data;
 }

@@ -24,11 +24,24 @@ function checkDigitOk(digits: string): boolean {
   return (10 - (sum % 10)) % 10 === Number(digits.at(-1));
 }
 
+/** Spaces and hyphens people copy from labels and spreadsheets are ignored. */
+const stripGtin = (raw: string) => raw.replace(/[\s-]/g, "");
+
 /** Normalises a GTIN-8/12/13/14 to 14 digits, or null if it isn't one. */
 export function normalizeGtin(raw: string): string | null {
-  const s = raw.replace(/\s/g, "");
+  const s = stripGtin(raw);
   if (![8, 12, 13, 14].includes(s.length) || !checkDigitOk(s)) return null;
   return s.padStart(14, "0");
+}
+
+/** Why a GTIN is refused, in words staff can act on; null when it's valid. */
+export function gtinProblem(raw: string): string | null {
+  const s = stripGtin(raw);
+  if (!/^\d+$/.test(s)) return "Use digits only.";
+  if (![8, 12, 13, 14].includes(s.length)) return `A GTIN has 8, 12, 13 or 14 digits. This has ${s.length}.`;
+  if (checkDigitOk(s)) return null;
+  const expected = [...Array(10).keys()].find((d) => checkDigitOk(s.slice(0, -1) + d));
+  return `The last digit should be ${expected} for this number, not ${s.at(-1)}. Check it against the label for a typo.`;
 }
 
 /** True for a valid 13-digit GLN. */

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { gs1Date, isGln, normalizeGtin, parseGs1 } from "@/lib/inventory/gs1";
+import { gs1Date, gtinProblem, isGln, normalizeGtin, parseGs1 } from "@/lib/inventory/gs1";
 
 const today = new Date("2026-11-06T00:00:00Z");
 const GS = "\x1d";
@@ -57,5 +57,19 @@ describe("carton barcodes", () => {
   it("refuses non-GS1 text and a bad GTIN", () => {
     expect(parseGs1("hello", today)).toBeNull();
     expect(parseGs1("(01)00036000291453(10)A", today)).toBeNull();
+  });
+});
+
+describe("GTIN entry", () => {
+  it("ignores spaces and hyphens copied from labels", () => {
+    expect(normalizeGtin("0 36000 29145 2")).toBe("00036000291452");
+    expect(normalizeGtin("036000-291452")).toBe("00036000291452");
+  });
+
+  it("says what is wrong, including the check digit the number needs", () => {
+    expect(gtinProblem("036000291452")).toBeNull();
+    expect(gtinProblem("850057629307")).toBe("The last digit should be 9 for this number, not 7. Check it against the label for a typo.");
+    expect(gtinProblem("12345")).toBe("A GTIN has 8, 12, 13 or 14 digits. This has 5.");
+    expect(gtinProblem("03600029145A")).toBe("Use digits only.");
   });
 });

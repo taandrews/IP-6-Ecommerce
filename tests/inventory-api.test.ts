@@ -62,6 +62,20 @@ describe("inventory API: locations", () => {
     expect(store.createLocation).not.toHaveBeenCalled();
   });
 
+  it("names the fields that failed, never their values", async () => {
+    const res = await call({ ...location, code: "FC 1", countries: ["USA"], contact: { ...location.contact, email: "nope" } });
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { error: string; fields: string[] };
+    expect(body.error).toBe("invalid_request");
+    expect(body.fields.sort()).toEqual(["code", "contact.email", "countries.0"]);
+    expect(JSON.stringify(body)).not.toContain("nope");
+  });
+
+  it("says which phone number is wrong", async () => {
+    const res = await call({ ...location, operator: { company: "X Co", phone: "12345" } });
+    expect(await res.json()).toMatchObject({ error: "invalid_phone", fields: ["operator.phone"] });
+  });
+
   it("refuses an invalid phone, email or GLN", async () => {
     expect((await call({ ...location, operator: { company: "X Co", phone: "12" } })).status).toBe(400);
     expect((await call({ ...location, contact: { ...location.contact, email: "not-an-email" } })).status).toBe(400);

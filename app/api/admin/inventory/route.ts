@@ -57,7 +57,7 @@ const LocationFields = z.object({
 function withPhones<T extends z.infer<typeof LocationFields>>(loc: T): T {
   const operatorPhone = toE164(loc.operator.phone, loc.address.country);
   const contactPhone = toE164(loc.contact.phone, loc.address.country);
-  if (!operatorPhone || !contactPhone) throw new HttpError(400, "invalid_phone");
+  if (!operatorPhone || !contactPhone) throw new HttpError(400, "invalid_phone", [...(operatorPhone ? [] : ["operator.phone"]), ...(contactPhone ? [] : ["contact.phone"])]);
   return { ...loc, operator: { ...loc.operator, phone: operatorPhone }, contact: { ...loc.contact, phone: contactPhone } };
 }
 
@@ -129,7 +129,7 @@ export const POST = withAdmin("inventory:write", async (req, staff) => {
       }
       case "item": {
         const gtin = b.gtin ? normalizeGtin(b.gtin) : null;
-        if (b.gtin && !gtin) throw new HttpError(400, "invalid_gtin");
+        if (b.gtin && !gtin) throw new HttpError(400, "invalid_gtin", ["gtin"]);
         await setItemGtin(b.sku, gtin);
         await audit(staff.actor, "inventory.item", b.sku, { gtin: gtin ?? "removed" }, staff.ip);
         break;
@@ -169,7 +169,7 @@ export const POST = withAdmin("inventory:write", async (req, staff) => {
         break;
       case "count": {
         const rows = parseCountCsv(b.csv);
-        if (!rows.length || rows.length > 2000) throw new HttpError(400, "invalid_request");
+        if (!rows.length || rows.length > 2000) throw new HttpError(400, "invalid_request", ["csv"]);
         const [{ lots }, locations] = await Promise.all([allStock(), listLocations()]);
         const lines = diffCount(rows, lots, locations);
         if (!b.apply) return NextResponse.json({ lines });

@@ -17,7 +17,8 @@ export interface StaffContext {
 }
 
 export class HttpError extends Error {
-  constructor(public status: number, public code: string) {
+  /** `fields` names the request fields that failed (paths like "contact.email"), never their values. */
+  constructor(public status: number, public code: string, public fields?: string[]) {
     super(code);
   }
 }
@@ -88,17 +89,22 @@ export function withAdmin<P = Record<string, string>>(permission: Permission, ha
       res.headers.set("Cache-Control", "no-store");
       return res;
     } catch (err) {
-      if (err instanceof HttpError) return NextResponse.json({ error: err.code }, { status: err.status });
+      if (err instanceof HttpError) return NextResponse.json({ error: err.code, ...(err.fields?.length ? { fields: err.fields } : {}) }, { status: err.status });
       console.error("[admin] handler failed", permission, (err as Error).name);
       return NextResponse.json({ error: "server_error" }, { status: 500 });
     }
   };
 }
 
-/** Parses a JSON body with a zod schema, or throws a 400. */
-export async function parseBody<T>(req: Request, schema: { safeParse: (v: unknown) => { success: true; data: T } | { success: false } }) {
+type ParseResult<T> = { success: true; data: T } | { success: false; error?: { issues: ReadonlyArray<{ path: ReadonlyArray<PropertyKey> }> } };
+
+/** Parses a JSON body with a zod schema, or throws a 400 naming the fields that failed. */
+export async function parseBody<T>(req: Request, schema: { safeParse: (v: unknown) => ParseResult<T> }) {
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
-  if (!parsed.success) throw new HttpError(400, "invalid_request");
+  if (!parsed.success) {
+    const fields = [...new Set((parsed.error?.issues ?? []).map((i) => i.path.map(String).join(".")).filter(Boolean))].slice(0, 20);
+    throw new HttpError(400, "invalid_request", fields);
+  }
   return parsed.data;
 }
